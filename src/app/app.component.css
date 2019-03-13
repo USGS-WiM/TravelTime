@@ -1,0 +1,18 @@
+.right {
+  float: right;
+}
+
+#keepleft {
+  margin-right: 200px;
+}
+
+#leftbar {
+  float: left;
+}
+
+/*button {
+  width: 200px;
+}*/
+.gray {
+  color: gray;
+}
