@@ -1,15 +1,18 @@
 <!--The content below is only a placeholder and can be replaced.-->
+<div id="banner">
+    <h3>{{ title }}</h3>
+</div>
+<br />
+<!--<div float="right" id="searchWrapper">
+  <div id="searchBox"></div>
+  <button class="btn-link fullwidth" ng-click="vm.showSearchHelp = !vm.showSearchHelp">
+    <span ng-show="!vm.showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
+    <span ng-show="vm.showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
+  </button>
+
+</div>-->
 <div>
-  <!--<h1>
-    {{ title }}
-  </h1>-->
-  <h4>Enter spill coordinates or select spill location on map</h4>
-  <span class="fas fa-search gray"></span>&nbsp;
-  <mat-form-field>
-    <input matInput [(ngModel)]="location" placeholder="latitude, longitude">
-  </mat-form-field>
-  <br />
-  <button mat-raised-button (click)="openDialog()">Enter additional spill information</button>
+  <button mat-raised-button (click)="openDialog()">Jobsons</button>
   <app-leftbar></app-leftbar>
 
   <router-outlet></router-outlet>

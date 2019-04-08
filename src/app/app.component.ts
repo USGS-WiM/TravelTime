@@ -38,6 +38,7 @@ export class AppComponent {
   openDialog(): void {
     const dialogRef = this.dialog.open(AppComponentModal, {
       width: '500px',
+      height: '500px',
       data: { location: this.location, volume: this.volume }
     });
 
@@ -46,12 +47,16 @@ export class AppComponent {
       this.volume = result;
     });
   }
+  //public startSearch(e) {
+  //  e.stopPropagation(); e.preventDefault();
+  //  $("#searchBox").trigger($.Event("keyup", { "keyCode": 13 }));
+  //}
 }
 
 @Component({
-  selector: './app.component.modal',
-  templateUrl: './app.component.modal.html',
-  styleUrls: ['./app.component.css']
+  selector: './modal/modal.component',
+  templateUrl: './modal/modal.component.html',
+  styleUrls: ['./modal/modal.component.css']
 })
 export class AppComponentModal {
 
