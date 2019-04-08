@@ -1,18 +1,21 @@
+#banner {
+  display: table;
+  width: 100%;
+  background-color: black;
+  padding-left: 1em;
+  color: white;
+  height: 2em;
+  vertical-align: middle;
+}
+
 .right {
   float: right;
 }
 
-#keepleft {
-  margin-right: 200px;
-}
-
-#leftbar {
-  float: left;
-}
-
-/*button {
-  width: 200px;
-}*/
 .gray {
   color: gray;
+}
+
+button {
+  width: 200px;
 }

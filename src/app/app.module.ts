@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent, AppComponentModal } from './app.component';
 import { LeftbarComponent } from './leftbar/leftbar.component';
@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material';
 import { MapComponent } from './map/map.component';
+import { ContentsComponent } from './contents/contents.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { MapComponent } from './map/map.component';
     AppComponentModal,
     LeftbarComponent,
     ModalComponent,
-    MapComponent
+    MapComponent,
+    ContentsComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +32,7 @@ import { MapComponent } from './map/map.component';
     DemoMaterialModule,
     MatNativeDateModule,
     ReactiveFormsModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent],
