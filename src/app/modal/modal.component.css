@@ -3,3 +3,10 @@
   font-weight: 200;
   background-color: #F9F9F9;
 }
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442; /* red */
+}
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
