@@ -13,13 +13,13 @@ export class GetTimeoftravelService {
   constructor(private http: HttpClient) { }
 
   getReach():Observable <reach>{
-    this._myurl = "https://test.streamstats.usgs.gov/timeoftravelservices/traveltime"
+    this._myurl = "https://test.streamstats.usgs.gov/timeoftravelservices/jobsons"
     return this.http.get<reach>(this._myurl);
   }
 
   postReach(mylist,ini_mass, ini_time):Observable <reach>{
-    this._myurl = "https://test.streamstats.usgs.gov/timeoftravelservices/traveltime/?InitialMass_M_i_kg="+ini_mass+"&starttime="+ini_time;
-
+    this._myurl = "https://test.streamstats.usgs.gov/timeoftravelservices/jobsons?initialmassconcentration="+ini_mass+"&starttime="+ini_time;
+    //https://test.streamstats.usgs.gov/timeoftravelservices/jobsons?initialmassconcentration=6000&starttime=5
     var reaches ={ };
     mylist.map ((myObj, index) => {
       reaches[index] = myObj

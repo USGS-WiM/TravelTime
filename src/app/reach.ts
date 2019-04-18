@@ -17,8 +17,8 @@ export class reach {
         for (var i = 0; i < paramlist.length; i ++){
             let newparam = {};
      
-            //if (paramlist[i].name === "Slope"){}
-            //else {
+            if (paramlist[i].name === "Slope"){}
+                else {
                 for (var  mykey in paramlist[i] ){ //deep copy constructor
                     newparam[mykey] = paramlist[i][mykey]; // parameters[key 1][val 1] (key1: val1) //{units: }
                 }
@@ -27,7 +27,7 @@ export class reach {
                     newparam["value"] = undefined;
                 }
                 this.parameters.push(newparam);
-            //}
+            }
         };
     } //type of array with anything
 }
