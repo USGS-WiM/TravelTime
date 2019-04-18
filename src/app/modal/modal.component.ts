@@ -33,6 +33,7 @@ export class ModalComponent implements OnInit {
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
     let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
     this.mylist.push(newreach);    //push the object to the array of reaches
+    console.log (this.mylist)
   };
 
   onClick_removeReachLast() {  //remove last reach

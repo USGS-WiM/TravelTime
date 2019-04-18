@@ -86,7 +86,9 @@ Initial time: <input [(ngModel)]="ini_time" placeholder="value" name="initime">
         </li>
         <div *ngFor="let pars of item.parameters | keyvalue;  let i = index; trackBy:customTrackBy">
           <li>Parameter : {{pars.key}} </li>
+
           <div *ngFor="let subitems of pars.value | keyvalue; trackBy:customTrackBy">
+
             <div *ngIf="subitems.key !== 'unit'; else elseTemplate">
               <div *ngIf="subitems.key !== 'value';  else elseTemplate2">
                 {{subitems.key}}:{{subitems.value}}
@@ -94,17 +96,40 @@ Initial time: <input [(ngModel)]="ini_time" placeholder="value" name="initime">
               <ng-template #elseTemplate2>
                 {{subitems.key}}:
               </ng-template>
-              <ng-container *ngIf="subitems.key === 'value'">
-                <input [(ngModel)]="subitems.value" placeholder="value" name="value"
-                       ngControl="value"
-                       [(ngModel)]='item.parameters[i].value'>
-              </ng-container>
             </div>
+
+            <ng-container *ngIf="subitems.key === 'value'">
+              <div *ngFor = "let subitems_check of pars.value | keyvalue; trackBy:customTrackBy">
+
+                <div *ngIf = "subitems_check.value === true">
+
+                  <input [(ngModel)]="subitems.value" placeholder="value" name="value"
+                  type = number required minlength="1" ngControl="value"
+                  [(ngModel)]='item.parameters[i].value'>
+
+                  <!--<div *ngIf = "subitems.value === 'undefined'"
+                  class = "alert alert-danger">
+                    <div>
+                      Value is required
+                    </div>
+                  </div>-->
+                </div>
+
+                <div *ngIf = "subitems_check.value === false">
+                    <input [(ngModel)]="subitems.value" placeholder="value" name="value"
+                    type = number ngControl="value" [(ngModel)]='item.parameters[i].value'>
+                </div>
+              </div>
+              
+
+            </ng-container>
+
             <ng-template #elseTemplate>
               <div *ngFor="let child of subitems.value | keyvalue;">
-                {{child.key}}: {{child.value}}
+                <!--{{child.key}}: {{child.value}}-->
               </div>
             </ng-template>
+
           </div>
         </div>
       </ng-template>

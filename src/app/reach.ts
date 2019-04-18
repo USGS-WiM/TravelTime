@@ -16,18 +16,18 @@ export class reach {
     private _init (paramlist: Array<any>) { //paramlist should be one from the reference class ? how to bring it here ?
         for (var i = 0; i < paramlist.length; i ++){
             let newparam = {};
-     
-            if (paramlist[i].name === "Slope"){}
-                else {
-                for (var  mykey in paramlist[i] ){ //deep copy constructor
-                    newparam[mykey] = paramlist[i][mykey]; // parameters[key 1][val 1] (key1: val1) //{units: }
-                }
-
-                if (newparam["value"] == undefined){ //if there is no value key  in the dictionary --> add key
-                    newparam["value"] = undefined;
-                }
-                this.parameters.push(newparam);
+            for (var  mykey in paramlist[i] ){ //deep copy constructor
+                newparam[mykey] = paramlist[i][mykey]; // parameters[key 1][val 1] (key1: val1) //{units: }
             }
+
+            if (newparam["value"] == undefined){ //if there is no value key  in the dictionary --> add key
+                newparam["value"] = undefined;
+            }
+
+            if (newparam["required"] == undefined){
+                newparam["required"] = false;
+            }
+            this.parameters.push(newparam);
         };
     } //type of array with anything
 }
