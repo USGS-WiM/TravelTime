@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { reach } from '../reach';
 
 @Component({
@@ -18,7 +19,9 @@ export class ModalComponent implements OnInit {
   output: {};
 
   constructor(
-    private _GetTimeoftravelService: GetTimeoftravelService //services
+    public dialogRef: MatDialogRef<ModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
+    private _GetTimeoftravelService: GetTimeoftravelService
   ) { }
 
   ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
@@ -36,7 +39,6 @@ export class ModalComponent implements OnInit {
     this.mylist.pop();
   }
 
-
   onClick_removeReach(index) {   //remove reach by id
     if (index >= 0) {
       this.mylist.splice(index, 1);
@@ -47,10 +49,8 @@ export class ModalComponent implements OnInit {
     return index;
   }
 
-
   onClick_postReach() {
     this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.ini_time)
       .subscribe(data => this.output = data);
   }
-
 }

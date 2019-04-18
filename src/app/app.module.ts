@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent, AppComponentModal } from './app.component';
+import { AppComponent } from './app.component';
 import { LeftbarComponent } from './leftbar/leftbar.component';
 import { ModalComponent } from './modal/modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,7 +17,6 @@ import { ContentsComponent } from './contents/contents.component';
 @NgModule({
   declarations: [
     AppComponent,
-    AppComponentModal,
     LeftbarComponent,
     ModalComponent,
     MapComponent,
@@ -36,7 +35,7 @@ import { ContentsComponent } from './contents/contents.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AppComponentModal]
+  entryComponents: [AppComponent, ModalComponent]
 })
 export class AppModule { }
 
