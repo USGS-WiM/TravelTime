@@ -2,59 +2,61 @@
   <h4>Jobsons Travel Time Prediction</h4>
 </div>
 <div class="modal-body">
+
+
   <blockquote style="width:50%; float:left;">
     <label>Initial concentration:</label><br />
-    <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
+    <input [(ngModel)]="ini_mass" type="number" required placeholder="value" name="inimass">
     <app-contents [ini_mass]="ini_mass"></app-contents><br />
   </blockquote>
+
+
   <blockquote style="width:50%; float:right;">
     <label>Initial time:</label><br />
-    <input [(ngModel)]="ini_time" placeholder="value" name="initime">
+    <input [(ngModel)]="ini_time" type="number" required placeholder="value" name="initime">
     <app-contents [ini_time]="ini_time"></app-contents><br />
   </blockquote>
 
+
   <button class="btn-blue" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
 
-  <!--<input [(ngModel)]="index">-->
+  <!--<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of mylist" cdkDrag>{{item}}</div>
+  </div>Implemented Object rearrangement--> 
 
-  <div id="panel-group">
-    <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-      <ngb-panel *ngFor="let item of mylist; let i = index">
-        <ng-template ngbPanelTitle>
-          <span>Reach {{i + 1}}</span>
-        </ng-template>
-        <ng-template ngbPanelContent>
-          <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy"> <!--| keyvalue;  let i = index; trackBy:customTrackBy">
-            <div *ngFor="let subitems of pars.value | keyvalue; trackBy:customTrackBy">
-              <div *ngIf="subitems.key !== 'unit'; else elseTemplate">
-                <div *ngIf="subitems.key !== 'value';  else elseTemplate2">-->
-            <label>{{pars.name}} ({{pars.unit.unit}}):</label>
-            <input [(ngModel)]="pars.value" placeholder="value" name="value"
-                    ngControl="value"
-                    [(ngModel)]='item.parameters[i].value'>
+<div id="panel-group">
+  <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+    <ngb-panel *ngFor="let item of mylist; let i = index">
+
+
+      <ng-template ngbPanelHeader>
+        <div class="d-flex align-items-center justify-content-between">
+          <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0">Reach {{i + 1}}</button>
+          <div>
+            <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="onClick_removeReach(i)">Remove</button>
           </div>
-                <!--<ng-template #elseTemplate2>
-                  {{subitems.key}}:
-                </ng-template>
-                <ng-container *ngIf="subitems.key === 'value'">
-                  <input [(ngModel)]="subitems.value" placeholder="value" name="value"
-                         ngControl="value"
-                         [(ngModel)]='item.parameters[i].value'>
-                </ng-container>
-              </div>
-              <ng-template #elseTemplate>
-                <div *ngFor="let child of subitems.value | keyvalue;">
-                  {{child.key}}: {{child.value}}
-                </div>
-              </ng-template>
-            </div>
-          </div>-->
-        </ng-template>
-      </ngb-panel>
-    </ngb-accordion>
-  </div>
+        </div>
+      </ng-template>
 
-  <button class="btn-red" (click)="onClick_removeReachLast()"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Remove last</button>
-  <button class="btn-red" (click)="onClick_removeReach(index)"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Remove selected</button>
-  <button class="btn-blue" (click)="onClick_postReach()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
+
+      <ng-template ngbPanelContent>
+        <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy">
+          <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+          <div *ngIf="pars.required === true">
+            <input [(ngModel)]="pars.value" placeholder="value" name="value"
+                   type=number ngControl="value" required
+                   [(ngModel)]='item.parameters[i].value'>
+          </div>
+          <div *ngIf="pars.required === false">
+            <input [(ngModel)]="pars.value" placeholder="value" name="value"
+                   type=number ngControl="value"
+                   [(ngModel)]='item.parameters[i].value'>
+          </div>
+        </div>
+      </ng-template>
+
+
+    </ngb-panel>
+  </ngb-accordion>
+  <button class="btn-blue" (click)="onClick_uiResult()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
 </div>
