@@ -2,6 +2,7 @@ import { Component, OnInit, Inject} from '@angular/core';
 import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { reach } from '../reach';
+//import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
   selector: 'app-modal',
@@ -15,8 +16,7 @@ export class ModalComponent implements OnInit {
   reach_reference: reach;
   ini_mass: number;
   ini_time: number;
-  new_reach: reach;
-  output: {};
+  output = [];
 
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
@@ -27,7 +27,6 @@ export class ModalComponent implements OnInit {
   ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
     this._GetTimeoftravelService.getReach() // get reach
       .subscribe(data => this.reach_reference = data); //get service {description: Initial description}
-    this.new_reach = this.reach_reference;
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
@@ -51,6 +50,15 @@ export class ModalComponent implements OnInit {
 
   onClick_postReach() {
     this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.ini_time)
-      .subscribe(data => this.output = data);
+      .subscribe(data => this.output.push(data));
   }
+
+  onClick_uiResult() {
+    this.onClick_postReach();
+    console.log(this.output);
+  }
+
+  /*drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.mylist, event.previousIndex, event.currentIndex);
+  }*/ //used for object rearrangement
 }

@@ -54,17 +54,20 @@ export class GetTimeoftravelService {
     for (var i= 0; i<mylist.length; i++){
       var myreach = <reach>deepCopy(mylist[i]);
       reaches[i] = myreach;
-      reaches[i]['parameters'].map((parObj, iter)=>{
+
+      //Maps the object and removes parameters that were not used
+      reaches[i]['parameters'].map((parObj, iter) => {
         if (parObj['required'] == false && parObj['value'] == undefined)
         {
           reaches[i]['parameters'].splice(iter, 1);
         }
       })
+
     }
     
     //post a call
-    this.http.post<reach> (this._myurl, {reaches}) //something with services, slope returning as undefined
-    .subscribe (data => console.log (data));
+    /*this.http.post<reach> (this._myurl, {reaches}) //something with services, slope returning as undefined
+    .subscribe (data => console.log (data));*/
     
     return this.http.post<reach>(this._myurl, {reaches});
   }
