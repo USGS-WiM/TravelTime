@@ -38,8 +38,8 @@ export class AppComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AppComponentModal, {
-      width: '500px',
-      height: '500px',
+      width: '60%',
+      height: '80%',
       data: { location: this.location, volume: this.volume }
     });
 
