@@ -1,138 +1,37 @@
-<!--<h1 mat-dialog-title>Spill location: {{data.location}}</h1>
-<div mat-dialog-content>
-  <p>
-    Spill volume:
-    <mat-form-field>
-      <input id="volume" matInput [(ngModel)]="data.volume" formControlName="volume" required>
-    </mat-form-field>
-  </p>
 
-  <p>
-    Distance downstream:
-    <mat-form-field>
-      <input id="distance" matInput [(ngModel)]="data.distance" formControlName="distance" required>
-    </mat-form-field>
-  </p>
-
-  <h4>Optional variables:</h4>
-  <hr />
-
-  <p>
-    Drainage area:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.flow">
-    </mat-form-field>
-  </p>
-
-  <p>
-    Discharge:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.discharge">
-    </mat-form-field>
-  </p>
-
-  <p>
-    Mean-annual flow:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.MAflow">
-    </mat-form-field>
-  </p>
-
-  <p>
-    Basin slope:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.slope">
-    </mat-form-field>
-  </p>
+<div class="modal-header">
+  <h4>Jobsons Travel Time Prediction</h4>
 </div>
-<div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="data.volume" cdkFocusInitial>Calculate Travel Time</button>
-</div>-->
-<h2>Angular 2 Modal with Bootstrap CSS</h2>
-<button (click)="onClick_removeReachLast()">Remove last!</button>
-<button (click)="onClick_addReach()">Add Reach!</button>
-<input [(ngModel)]="index">
-<button (click)="onClick_removeReach(index)">Remove selected!</button>
-<br>
-<button (click)="onClick_postReach()">ToT</button>
-<br>
-Initial concentration: <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
-<app-contents [ini_mass]="ini_mass"></app-contents>
-Initial time: <input [(ngModel)]="ini_time" placeholder="value" name="initime">
-<app-contents [ini_time]="ini_time"></app-contents>
-<div id="panel-group">
-  <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-    <ngb-panel *ngFor="let item of mylist; let i = index">
-      <ng-template ngbPanelTitle>
-        <td class="myTitle">
-          <span> <b>Reach: {{i}}</b></span>
-        </td>
-      </ng-template>
-      <ng-template ngbPanelContent>
-        <li>
-          Name: <input [(ngModel)]="item.name" placeholder="value" name='name'
-                       ngControl="name"
-                       [(ngModel)]="item.name">
-        </li>
-        <li>
-          Description: <input [(ngModel)]="item.description" placeholder="value" name="descrp"
-                              ngControl="description"
-                              [(ngModel)]="item.description">
-        </li>
-        <li>
-          ID: <input [(ngModel)]="item.id" placeholder="id" name="id"
-                     ngControl="id"
-                     [(ngModel)]="item.id">
-        </li>
-        <div *ngFor="let pars of item.parameters | keyvalue;  let i = index; trackBy:customTrackBy">
-          <li>Parameter : {{pars.key}} </li>
 
-          <div *ngFor="let subitems of pars.value | keyvalue; trackBy:customTrackBy">
+<div class="modal-body">
+  <blockquote style="width:50%; float:left;">
+    <label>Initial concentration:</label><br />
+    <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
+    <app-contents [ini_mass]="ini_mass"></app-contents><br />
+  </blockquote>
 
-            <div *ngIf="subitems.key !== 'unit'; else elseTemplate">
-              <div *ngIf="subitems.key !== 'value';  else elseTemplate2">
-                {{subitems.key}}:{{subitems.value}}
-              </div>
-              <ng-template #elseTemplate2>
-                {{subitems.key}}:
-              </ng-template>
-            </div>
+  <blockquote style="width:50%; float:right;">
+    <label>Initial time:</label><br />
+    <input [(ngModel)]="ini_time" placeholder="value" name="initime">
+    <app-contents [ini_time]="ini_time"></app-contents><br />
+  </blockquote>
 
-            <ng-container *ngIf="subitems.key === 'value'">
-              <div *ngFor = "let subitems_check of pars.value | keyvalue; trackBy:customTrackBy">
-
-                <div *ngIf = "subitems_check.value === true">
-
-                  <input [(ngModel)]="subitems.value" placeholder="value" name="value"
-                  type = number required minlength="1" ngControl="value"
-                  [(ngModel)]='item.parameters[i].value'>
-
-                  <!--<div *ngIf = "subitems.value === 'undefined'"
-                  class = "alert alert-danger">
-                    <div>
-                      Value is required
-                    </div>
-                  </div>-->
-                </div>
-
-                <div *ngIf = "subitems_check.value === false">
-                    <input [(ngModel)]="subitems.value" placeholder="value" name="value"
-                    type = number ngControl="value" [(ngModel)]='item.parameters[i].value'>
-                </div>
-              </div>
-              
-
-            </ng-container>
-
-            <ng-template #elseTemplate>
-              <div *ngFor="let child of subitems.value | keyvalue;">
-                <!--{{child.key}}: {{child.value}}-->
-              </div>
-            </ng-template>
-
-          </div>
-        </div>
-      </ng-template>
-    </ngb-panel>
-  </ngb-accordion>
+<div class="modal-header">
+  <h4>Jobsons Travel Time Prediction</h4>
 </div>
+
+<div class="modal-body">
+
+  <blockquote style="width:50%; float:left;">
+    <label>Initial concentration:</label><br />
+    <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
+    <app-contents [ini_mass]="ini_mass"></app-contents><br />
+  </blockquote>
+
+  <blockquote style="width:50%; float:right;">
+    <label>Initial time:</label><br />
+    <input [(ngModel)]="ini_time" placeholder="value" name="initime">
+    <app-contents [ini_time]="ini_time"></app-contents><br />
+  </blockquote>
+
+  <button class="btn-blue" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
