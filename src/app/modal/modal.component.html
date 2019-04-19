@@ -1,33 +1,12 @@
-
 <div class="modal-header">
   <h4>Jobsons Travel Time Prediction</h4>
 </div>
-
 <div class="modal-body">
   <blockquote style="width:50%; float:left;">
     <label>Initial concentration:</label><br />
     <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
     <app-contents [ini_mass]="ini_mass"></app-contents><br />
   </blockquote>
-
-  <blockquote style="width:50%; float:right;">
-    <label>Initial time:</label><br />
-    <input [(ngModel)]="ini_time" placeholder="value" name="initime">
-    <app-contents [ini_time]="ini_time"></app-contents><br />
-  </blockquote>
-
-<div class="modal-header">
-  <h4>Jobsons Travel Time Prediction</h4>
-</div>
-
-<div class="modal-body">
-
-  <blockquote style="width:50%; float:left;">
-    <label>Initial concentration:</label><br />
-    <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
-    <app-contents [ini_mass]="ini_mass"></app-contents><br />
-  </blockquote>
-
   <blockquote style="width:50%; float:right;">
     <label>Initial time:</label><br />
     <input [(ngModel)]="ini_time" placeholder="value" name="initime">
@@ -35,3 +14,47 @@
   </blockquote>
 
   <button class="btn-blue" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
+
+  <!--<input [(ngModel)]="index">-->
+
+  <div id="panel-group">
+    <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+      <ngb-panel *ngFor="let item of mylist; let i = index">
+        <ng-template ngbPanelTitle>
+          <span>Reach {{i + 1}}</span>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy"> <!--| keyvalue;  let i = index; trackBy:customTrackBy">
+            <div *ngFor="let subitems of pars.value | keyvalue; trackBy:customTrackBy">
+              <div *ngIf="subitems.key !== 'unit'; else elseTemplate">
+                <div *ngIf="subitems.key !== 'value';  else elseTemplate2">-->
+            <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+            <input [(ngModel)]="pars.value" placeholder="value" name="value"
+                    ngControl="value"
+                    [(ngModel)]='item.parameters[i].value'>
+          </div>
+                <!--<ng-template #elseTemplate2>
+                  {{subitems.key}}:
+                </ng-template>
+                <ng-container *ngIf="subitems.key === 'value'">
+                  <input [(ngModel)]="subitems.value" placeholder="value" name="value"
+                         ngControl="value"
+                         [(ngModel)]='item.parameters[i].value'>
+                </ng-container>
+              </div>
+              <ng-template #elseTemplate>
+                <div *ngFor="let child of subitems.value | keyvalue;">
+                  {{child.key}}: {{child.value}}
+                </div>
+              </ng-template>
+            </div>
+          </div>-->
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+
+  <button class="btn-red" (click)="onClick_removeReachLast()"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Remove last</button>
+  <button class="btn-red" (click)="onClick_removeReach(index)"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Remove selected</button>
+  <button class="btn-blue" (click)="onClick_postReach()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
+</div>
