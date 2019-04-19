@@ -4,7 +4,7 @@
     "organization": "U.S. Geological Survey",
     "description": "Documents best practices for software development within WIM",
     "version": "v0.0.0",
-    "status": ["Ideation", "Development", "Alpha", "Beta", "Release Candidate", "Production", "Archival"],
+    "status": "Development",
 
     "permissions": {
       "usageType": "openSource",
@@ -16,33 +16,33 @@
       ]
     },
 
-    "homepageURL": "https://wim.usgs.gov",
-    "downloadURL": "https://github.com/USGS-WiM/wimpo/archive/master.zip",
-    "disclaimerURL": "https://github.com/USGS-WiM/wimpo/blob/master/DISCLAIMER.md",
-    "repositoryUrl": "https://github.com/USGS-WiM/wimpo",
+    "homepageURL": "https://streamstats.usgs.gov",
+    "downloadURL": "https://github.com/USGS-WiM/TravelTime/archive/master.zip",
+    "disclaimerURL": "https://github.com/USGS-WiM/TravelTime/blob/master/DISCLAIMER%20(preliminary).md",
+    "repositoryUrl": "https://github.com/USGS-WiM/TravelTime",
     "vcs": "git",
 
     "laborHours": null,
 
     "tags": [
       "client",
-      "service",
-      "script",
-      "guidance",
-      "template"
+      "streamstats",
+      "traveltime",
+      "jobsons"
     ],
 
     "languages": [
-      "Markdown"
+      "Markdown",
+      "angular"
     ],
 
     "contact": {
-      "name": "jessie doe",
-      "email": "jdoe@usgs.gov"
+      "name": "Jeremy Newson",
+      "email": "jknewson@usgs.gov"
     },
 
     "date": {
-      "metadataLastUpdated": "2017-10-25"
+      "metadataLastUpdated": "2019-04-19"
     }
   }
 ]
