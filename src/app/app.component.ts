@@ -13,6 +13,9 @@ export class AppComponent {
   constructor(public dialog: MatDialog) {}
 
   openDialog() {
-    let dialog = this.dialog.open(ModalComponent);
+    let dialog = this.dialog.open(ModalComponent, {
+      width: '60%',
+      height: '80%'
+    });
   }
 }
