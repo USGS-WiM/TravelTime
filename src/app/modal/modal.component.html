@@ -17,97 +17,44 @@
 
   <!--<input [(ngModel)]="index">-->
 
-  <p>
-    Drainage area:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.flow">
-    </mat-form-field>
-  </p>
-
-  <p>
-    Discharge:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.discharge">
-    </mat-form-field>
-  </p>
-
-  <p>
-    Mean-annual flow:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.MAflow">
-    </mat-form-field>
-  </p>
-
-  <p>
-    Basin slope:
-    <mat-form-field>
-      <input matInput [(ngModel)]="data.slope">
-    </mat-form-field>
-  </p>
-</div>
-<div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="data.volume" cdkFocusInitial>Calculate Travel Time</button>
-</div>-->
-<h2>Angular 2 Modal with Bootstrap CSS</h2>
-<button (click)="onClick_removeReachLast()">Remove last!</button>
-<button (click)="onClick_addReach()">Add Reach!</button>
-<input [(ngModel)]="index">
-<button (click)="onClick_removeReach(index)">Remove selected!</button>
-<br>
-<button (click)="onClick_postReach()">ToT</button>
-<br>
-Initial concentration: <input [(ngModel)]="ini_mass" placeholder="value" name="inimass">
-<app-contents [ini_mass]="ini_mass"></app-contents>
-Initial time: <input [(ngModel)]="ini_time" placeholder="value" name="initime">
-<app-contents [ini_time]="ini_time"></app-contents>
-<div id="panel-group">
-  <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-    <ngb-panel *ngFor="let item of mylist; let i = index">
-      <ng-template ngbPanelTitle>
-        <td class="myTitle">
-          <span> <b>Reach: {{i}}</b></span>
-        </td>
-      </ng-template>
-      <ng-template ngbPanelContent>
-        <li>
-          Name: <input [(ngModel)]="item.name" placeholder="value" name='name'
-                       ngControl="name"
-                       [(ngModel)]="item.name">
-        </li>
-        <li>
-          Description: <input [(ngModel)]="item.description" placeholder="value" name="descrp"
-                              ngControl="description"
-                              [(ngModel)]="item.description">
-        </li>
-        <li>
-          ID: <input [(ngModel)]="item.id" placeholder="id" name="id"
-                     ngControl="id"
-                     [(ngModel)]="item.id">
-        </li>
-        <div *ngFor="let pars of item.parameters | keyvalue;  let i = index; trackBy:customTrackBy">
-          <li>Parameter : {{pars.key}} </li>
-          <div *ngFor="let subitems of pars.value | keyvalue; trackBy:customTrackBy">
-            <div *ngIf="subitems.key !== 'unit'; else elseTemplate">
-              <div *ngIf="subitems.key !== 'value';  else elseTemplate2">
-                {{subitems.key}}:{{subitems.value}}
-              </div>
-              <ng-template #elseTemplate2>
-                {{subitems.key}}:
-              </ng-template>
-              <ng-container *ngIf="subitems.key === 'value'">
-                <input [(ngModel)]="subitems.value" placeholder="value" name="value"
-                       ngControl="value"
-                       [(ngModel)]='item.parameters[i].value'>
-              </ng-container>
-            </div>
-            <ng-template #elseTemplate>
-              <div *ngFor="let child of subitems.value | keyvalue;">
-                {{child.key}}: {{child.value}}
-              </div>
-            </ng-template>
+  <div id="panel-group">
+    <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+      <ngb-panel *ngFor="let item of mylist; let i = index">
+        <ng-template ngbPanelTitle>
+          <span>Reach {{i + 1}}</span>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy"> <!--| keyvalue;  let i = index; trackBy:customTrackBy">
+            <div *ngFor="let subitems of pars.value | keyvalue; trackBy:customTrackBy">
+              <div *ngIf="subitems.key !== 'unit'; else elseTemplate">
+                <div *ngIf="subitems.key !== 'value';  else elseTemplate2">-->
+            <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+            <input [(ngModel)]="pars.value" placeholder="value" name="value"
+                    ngControl="value"
+                    [(ngModel)]='item.parameters[i].value'>
           </div>
-        </div>
-      </ng-template>
-    </ngb-panel>
-  </ngb-accordion>
+                <!--<ng-template #elseTemplate2>
+                  {{subitems.key}}:
+                </ng-template>
+                <ng-container *ngIf="subitems.key === 'value'">
+                  <input [(ngModel)]="subitems.value" placeholder="value" name="value"
+                         ngControl="value"
+                         [(ngModel)]='item.parameters[i].value'>
+                </ng-container>
+              </div>
+              <ng-template #elseTemplate>
+                <div *ngFor="let child of subitems.value | keyvalue;">
+                  {{child.key}}: {{child.value}}
+                </div>
+              </ng-template>
+            </div>
+          </div>-->
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+
+  <button class="btn-red" (click)="onClick_removeReachLast()"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Remove last</button>
+  <button class="btn-red" (click)="onClick_removeReach(index)"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Remove selected</button>
+  <button class="btn-blue" (click)="onClick_postReach()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
 </div>
