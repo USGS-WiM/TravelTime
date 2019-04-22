@@ -16,6 +16,7 @@ export class ModalComponent implements OnInit {
   reach_reference: reach;
   ini_mass: number;
   ini_time: number;
+  id = []; //array for reach id's
   output = [];
 
   constructor(
@@ -32,6 +33,12 @@ export class ModalComponent implements OnInit {
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
     let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
     this.mylist.push(newreach);    //push the object to the array of reaches
+    if (this.mylist.length > 1) { 
+      this.id.push(this.id[this.id.length-1] + 1); //take the last value of id and add one
+    } else {
+      this.id = [];
+      this.id.push(1); //at any time when only one reach start id from 1 
+    }
   };
 
   onClick_removeReachLast() {  //remove last reach
@@ -41,6 +48,7 @@ export class ModalComponent implements OnInit {
   onClick_removeReach(index) {   //remove reach by id
     if (index >= 0) {
       this.mylist.splice(index, 1);
+      this.id.splice(index, 1);
     }
   }
 
