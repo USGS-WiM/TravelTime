@@ -3,9 +3,9 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\map",
-    "\\src\\app\\modal"
+    "\\src\\app\\modal",
+    "\\src\\app\\services"
   ],
-  "SelectedNode": "\\src\\app\\modal\\modal.component.ts",
+  "SelectedNode": "\\src\\app\\reach.ts",
   "PreviewInSolutionExplorer": false
 }
