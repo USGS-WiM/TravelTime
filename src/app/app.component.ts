@@ -15,7 +15,7 @@ export class AppComponent {
   openDialog() {
     let dialog = this.dialog.open(ModalComponent, {
       width: '60%',
-      height: '80%'
+      height: '90%'
     });
   }
 }
