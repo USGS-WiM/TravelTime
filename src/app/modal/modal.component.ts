@@ -2,6 +2,7 @@ import { Component, OnInit, Inject} from '@angular/core';
 import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { reach } from '../reach';
+
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -29,8 +30,10 @@ export class ModalComponent implements OnInit {
 
   ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
     this._GetTimeoftravelService.getReach() // get reach
-      .subscribe(data => this.reach_reference = data); //get service {description: Initial description}
-    this.showResult = false;
+      .toPromise().then(data => {
+        this.reach_reference = data;
+        this.onClick_addReach()
+      }); //get service {description: Initial description}
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
@@ -72,18 +75,16 @@ export class ModalComponent implements OnInit {
   onClick_uiResult() {
     this.onClick_postReach();
     this.showResult = true;
-    //console.log(this.arrayOut);
   }
 
   onClick_clear() {
     //this.mylist = null; //TS edit: assigning to null removes object and subscriptions, we need to keep subscriptions but flush the rest of the list
-    for (var i = 0; i < this.mylist.length+1; i++) {
-      this.mylist.splice(0, 1);
+    while (this.mylist.length != 0) {
+      this.mylist.splice(0, 1)
     }
-    for (var i = 0; i < this.output.length+1; i++) {
+    while (this.output.length != 0) {
       this.output.splice(0, 1);
     }
-    this.showResult = false;
   }
 
   checkList() {
