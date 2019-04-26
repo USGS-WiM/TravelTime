@@ -30,13 +30,14 @@ export class ModalComponent implements OnInit {
   ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
     this._GetTimeoftravelService.getReach() // get reach
       .subscribe(data => this.reach_reference = data); //get service {description: Initial description}
-
     this.showResult = false;
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
     let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-    newreach.name = "Reach " + (this.id.length + 1);
+
+    //newreach.name = "Reach " + (this.id.length + 1); //TS This is bug because: (add reach 4, remove reach 2 and add again- it will be 4 because length again 4 resulting in two reaches with name "Reach 4") (added solution-line 49)
+
     this.mylist.push(newreach);    //push the object to the array of reaches
     if (this.mylist.length > 1) { 
       this.id.push(this.id[this.id.length - 1] + 1); //take the last value of id and add one
@@ -44,7 +45,7 @@ export class ModalComponent implements OnInit {
       this.id = [];
       this.id.push(1); //at any time when only one reach start id from 1 
     }
-    console.log(this.mylist);
+    this.mylist[(this.mylist.length) - 1].name = "Reach " + this.id[(this.id.length)-1] //Modified default naming
   };
 
   onClick_removeReachLast() {  //remove last reach
@@ -75,8 +76,13 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_clear() {
-    this.mylist = null;
-    this.output = null;
+    //this.mylist = null; //TS edit: assigning to null removes object and subscriptions, we need to keep subscriptions but flush the rest of the list
+    for (var i = 0; i < this.mylist.length+1; i++) {
+      this.mylist.splice(0, 1);
+    }
+    for (var i = 0; i < this.output.length+1; i++) {
+      this.output.splice(0, 1);
+    }
     this.showResult = false;
   }
 
