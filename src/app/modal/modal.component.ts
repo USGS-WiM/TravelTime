@@ -2,6 +2,7 @@ import { Component, OnInit, Inject} from '@angular/core';
 import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { reach } from '../reach';
+
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -29,14 +30,17 @@ export class ModalComponent implements OnInit {
 
   ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
     this._GetTimeoftravelService.getReach() // get reach
-      .subscribe(data => this.reach_reference = data); //get service {description: Initial description}
-
-    this.showResult = false;
+      .toPromise().then(data => {
+        this.reach_reference = data;
+        this.onClick_addReach()
+      }); //get service {description: Initial description}
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
     let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-    newreach.name = "Reach " + (this.id.length + 1);
+
+    //newreach.name = "Reach " + (this.id.length + 1); //TS This is bug because: (add reach 4, remove reach 2 and add again- it will be 4 because length again 4 resulting in two reaches with name "Reach 4") (added solution-line 49)
+
     this.mylist.push(newreach);    //push the object to the array of reaches
     if (this.mylist.length > 1) { 
       this.id.push(this.id[this.id.length - 1] + 1); //take the last value of id and add one
@@ -44,7 +48,7 @@ export class ModalComponent implements OnInit {
       this.id = [];
       this.id.push(1); //at any time when only one reach start id from 1 
     }
-    console.log(this.mylist);
+    this.mylist[(this.mylist.length) - 1].name = "Reach " + this.id[(this.id.length)-1] //Modified default naming
   };
 
   onClick_removeReachLast() {  //remove last reach
@@ -71,13 +75,16 @@ export class ModalComponent implements OnInit {
   onClick_uiResult() {
     this.onClick_postReach();
     this.showResult = true;
-    //console.log(this.arrayOut);
   }
 
   onClick_clear() {
-    this.mylist = null;
-    this.output = null;
-    this.showResult = false;
+    //this.mylist = null; //TS edit: assigning to null removes object and subscriptions, we need to keep subscriptions but flush the rest of the list
+    while (this.mylist.length != 0) {
+      this.mylist.splice(0, 1)
+    }
+    while (this.output.length != 0) {
+      this.output.splice(0, 1);
+    }
   }
 
   checkList() {

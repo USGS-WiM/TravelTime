@@ -1,11 +1,16 @@
 {
   "ExpandedNodes": [
     "",
+    "\\e2e",
+    "\\e2e\\src",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\contents",
+    "\\src\\app\\leftbar",
     "\\src\\app\\map",
-    "\\src\\app\\modal"
+    "\\src\\app\\modal",
+    "\\src\\app\\services"
   ],
-  "SelectedNode": "\\src\\app\\modal\\modal.component.ts",
+  "SelectedNode": "\\src\\app\\leftbar\\leftbar.component.html",
   "PreviewInSolutionExplorer": false
 }

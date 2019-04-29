@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material';
 import { MapComponent } from './map/map.component';
 import { ContentsComponent } from './contents/contents.component';
+//import { ISubscription } from 'rxjs/Subscription';
 //import { DragDropModule } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @NgModule({
