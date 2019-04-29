@@ -31,3 +31,8 @@ export class reach {
         };
     } //type of array with anything
 }
+
+export class POINT {
+  lat: number
+  lng: number
+}
