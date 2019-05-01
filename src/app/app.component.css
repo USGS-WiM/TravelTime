@@ -19,3 +19,12 @@
 button {
   width: 200px;
 }
+
+.position-left {
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  top: 90px;
+  width: 100%;
+  z-index: 1;
+}

@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
 import { MatDialog } from '@angular/material';
-import {ModalComponent} from '../app/modal/modal.component'
+import { ModalComponent } from './modal/modal.component';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,9 @@ import {ModalComponent} from '../app/modal/modal.component'
 
 export class AppComponent {
   mod_accordion: Object;
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog
+  ) { }
 
   openDialog() {
     let dialog = this.dialog.open(ModalComponent, {

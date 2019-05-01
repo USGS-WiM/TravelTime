@@ -1,7 +1,10 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatProgressSpinnerModule } from '@angular/material';
 import { reach } from '../reach';
+import { MatDialog } from '@angular/material';
+import { PrintService } from '../services/print.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
@@ -19,16 +22,22 @@ export class ModalComponent implements OnInit {
   ini_time: number;
   id = []; //array for reach id's
   output = [];
+  openModal: boolean;
+  showInputs: boolean;
   showResult: boolean;
-  arrayOut = [];
+  showProgress: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
-    private _GetTimeoftravelService: GetTimeoftravelService
+    private _GetTimeoftravelService: GetTimeoftravelService,
+    public dialog: MatDialog,
+    public printService: PrintService
   ) { }
 
   ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
+    this.showInputs = true;
+    this.openModal = true;
     this._GetTimeoftravelService.getReach() // get reach
       .toPromise().then(data => {
         this.reach_reference = data;
@@ -73,8 +82,14 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_uiResult() {
+    this.showInputs = false;
+    this.showProgress = true;
     this.onClick_postReach();
-    this.showResult = true;
+    setTimeout(() => {
+      this.showProgress = false;
+      this.showResult = true;
+    }, 2000);
+    
   }
 
   onClick_clear() {
@@ -85,17 +100,31 @@ export class ModalComponent implements OnInit {
     while (this.output.length != 0) {
       this.output.splice(0, 1);
     }
+    this.showResult = false;
+    this.showInputs = true;
+    this.onClick_addReach();
   }
 
-  checkList() {
-    if (!Array.isArray(this.mylist) || !this.mylist.length) {
-      this.onClick_addReach();
-    }
+  onClick_return() {
+    this.showResult = false;
+    this.showInputs = true;
   }
-  //objectKeys(obj) {
-  //  return Object.keys(obj);
-  //}
-  
+
+  onPrintInvoice() {
+    const invoiceIds = ['101', '102'];
+    this.printService
+      .printDocument('invoice', invoiceIds);
+  }
+
+  validateForm(mainForm) {
+    if (mainForm.$valid) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
   /*drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.mylist, event.previousIndex, event.currentIndex);
   }*/ //used for object rearrangement

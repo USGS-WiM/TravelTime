@@ -1,18 +1,8 @@
-<!--The content below is only a placeholder and can be replaced.-->
 <div>
-  <h3>{{ title }}</h3>
-</div>
-<br />
-<!--<div float="right" id="searchWrapper">
-  <div id="searchBox"></div>
-  <button class="btn-link fullwidth" ng-click="vm.showSearchHelp = !vm.showSearchHelp">
-    <span ng-show="!vm.showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
-    <span ng-show="vm.showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
-  </button>
-
-</div>-->
-<div>
-  <button mat-raised-button (click)="openDialog()">Jobsons</button>
-  <app-map></app-map>
   <router-outlet></router-outlet>
+  <div class="position-left">
+    <button class="btnStyle" mat-raised-button (click)="openDialog()">Jobsons</button>
+  </div>
+  <app-map></app-map>
+
 </div>

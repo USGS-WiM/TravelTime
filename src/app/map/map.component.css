@@ -1,0 +1,11 @@
+.map-wrapper {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}

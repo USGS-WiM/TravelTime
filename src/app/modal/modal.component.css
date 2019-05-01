@@ -27,3 +27,30 @@ button.mainR {
 button.title {
   text-decoration-line:unset;
 }
+
+.center {
+  text-align: center;
+}
+.btn-wrapper {
+  margin-left:auto;
+  margin-right:auto;
+  width:auto;
+  display:inline-block;
+}
+
+.btn-results {
+  margin-left: 5px;
+  width:200px;
+}
+
+.loading {
+  margin: 0 auto;
+  zoom: 0.5;
+  stroke: #0F8AFF;
+}
+
+.load-wrapper {
+  height: 100%;
+  min-height: 100%;
+}
+
