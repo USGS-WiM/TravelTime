@@ -5,13 +5,13 @@
 <div class="modal-body">
   <div style="width:49%; float:left;">
     <label>Initial concentration:</label><br />
-    <input [(ngModel)]="ini_mass" type=number required placeholder="value" name="inimass">
+    <input [(ngModel)]="ini_mass" type=number required placeholder="value" name="inimass" autocomplete="off">
     <app-contents [ini_mass]="ini_mass"></app-contents><br />
   </div>
 
   <div style="width:49%; float:right;">
     <label>Initial time:</label><br />
-    <input [(ngModel)]="ini_time" type=number required placeholder="value" name="initime">
+    <input [(ngModel)]="ini_time" type=number required placeholder="value" name="initime" autocomplete="off">
     <app-contents [ini_time]="ini_time"></app-contents><br />
   </div>
   <!--{{checkList()}}-->
@@ -41,7 +41,7 @@
               <div>
                 <input [(ngModel)]="k.value" placeholder="value" name="name"
                        type="text" ngControl="value" ngMaxlength="25"
-                       [(ngModel)]='item.name'>
+                       [(ngModel)]='item.name' autocomplete="off">
               </div>
             </div>
           </div>
@@ -52,7 +52,7 @@
               <div>
                 <input [(ngModel)]="k.value" placeholder="value" name="value"
                        type="text" ngControl="value" ngMaxlength="50"
-                       [(ngModel)]='item.description'>
+                       [(ngModel)]='item.description' autocomplete="off">
               </div>
             </div>
           </div>
@@ -62,12 +62,12 @@
             <div *ngIf="pars.required === true">
               <input [(ngModel)]="pars.value" placeholder="value" name="value"
                      type=number ngControl="value" required
-                     [(ngModel)]='item.parameters[i].value'>
+                     [(ngModel)]='item.parameters[i].value' autocomplete="off">
             </div>
             <div *ngIf="pars.required === false">
               <input [(ngModel)]="pars.value" placeholder="value" name="value"
                      type=number ngControl="value"
-                     [(ngModel)]='item.parameters[i].value'>
+                     [(ngModel)]='item.parameters[i].value' autocomplete="off">
             </div>
           </div>
         </ng-template>

@@ -85,6 +85,7 @@ export class ModalComponent implements OnInit {
     while (this.output.length != 0) {
       this.output.splice(0, 1);
     }
+    this.onClick_addReach();
   }
 
   checkList() {

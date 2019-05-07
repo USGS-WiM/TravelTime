@@ -11,6 +11,6 @@
     "\\src\\app\\modal",
     "\\src\\app\\services"
   ],
-  "SelectedNode": "\\src\\app\\leftbar\\leftbar.component.html",
+  "SelectedNode": "\\src\\app\\map\\map.component.ts",
   "PreviewInSolutionExplorer": false
 }
