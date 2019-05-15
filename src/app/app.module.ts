@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material';
 import { MapComponent } from './map/map.component';
 import { ContentsComponent } from './contents/contents.component';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 //import { ISubscription } from 'rxjs/Subscription';
 //import { DragDropModule } from '@angular/cdk/drag-drop'; Object rearrangement
 
@@ -33,7 +34,8 @@ import { ContentsComponent } from './contents/contents.component';
     DemoMaterialModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    LeafletModule.forRoot()
     //DragDropModule Object rearrangement
   ],
   providers: [],

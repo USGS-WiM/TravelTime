@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
 
-<div id="map" style="height: 1200px">
-
+<div style="height: 1200px;"
+    leaflet 
+    [leafletOptions]="_MapService.mymap"
+    [leafletLayersControl]="_MapService.layersControl"
+    [leafletLayers]="_MapService.markers"
+    (leafletClick) = "onMapClick($event)">
 </div>

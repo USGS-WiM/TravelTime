@@ -8,7 +8,6 @@
     "\\src\\app\\contents",
     "\\src\\app\\leftbar",
     "\\src\\app\\map",
-    "\\src\\app\\modal",
     "\\src\\app\\services"
   ],
   "SelectedNode": "\\src\\app\\map\\map.component.ts",
