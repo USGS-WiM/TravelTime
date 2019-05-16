@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Gage } from '../gage';
+import { site } from '../site';
 import { latLng, tileLayer, Layer } from 'leaflet';
 import {POINT} from '../reach';
 import * as L from "leaflet";
@@ -11,9 +11,10 @@ import * as L from "leaflet";
 })
 export class MapService {
   public result = [];
-  public myGage: Gage;
+  public mySite: site;
   public mymap;
   public markers: Layer[] = [];
+  public gageMarkers: Layer [] = [];
   public myPoint;
   public layersControl;
 

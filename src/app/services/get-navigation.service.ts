@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, observable } from 'rxjs';
-import {Gage} from '../gage';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +16,7 @@ export class GetNavigationService {
     return this.http.get<any>(this._myurl);
   }
 
-  postGageUpstream(mylist): Observable <any>{
-    this._myurl = "https://test.streamstats.usgs.gov/NavigationServices/navigation/3/Route"
-    return this.http.post<any>(this._myurl, mylist);
-  }
-  postGageDownstream(mylist): Observable <any>{
+  postGage(mylist): Observable <any>{
     this._myurl = "https://test.streamstats.usgs.gov/NavigationServices/navigation/3/Route"
     return this.http.post<any>(this._myurl, mylist);
   }

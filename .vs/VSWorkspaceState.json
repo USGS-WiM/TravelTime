@@ -6,10 +6,7 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\contents",
-    "\\src\\app\\leftbar",
-    "\\src\\app\\map",
-    "\\src\\app\\services"
+    "\\src\\app\\leftbar"
   ],
-  "SelectedNode": "\\src\\app\\map\\map.component.ts",
   "PreviewInSolutionExplorer": false
 }
