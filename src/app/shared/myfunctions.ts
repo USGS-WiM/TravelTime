@@ -1,4 +1,4 @@
-export class myclass {
+export class myfunctions {
     
     constructor(){}
     //deepCopyConstructor
@@ -25,4 +25,9 @@ export class myclass {
         throw new Error("Unable to copy obj! Its type isn't supported.");
     };
 
+    public swapElement(array, indexA, indexB) {
+        var tmp = array[indexA];
+        array[indexA] = array[indexB];
+        array[indexB] = tmp;
+    }
 }

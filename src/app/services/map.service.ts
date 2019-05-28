@@ -9,12 +9,13 @@ import * as L from "leaflet";
 @Injectable({
   providedIn: 'root'
 })
+
 export class MapService {
   public result = [];
   public mySite: site;
   public mymap;
   public markers: Layer[] = [];
-  public gageMarkers: Layer [] = [];
+  public sites: Layer[] = [];
   public myPoint;
   public layersControl;
 
@@ -89,4 +90,12 @@ export class MapService {
       }
     }
   }
+
+  getUpstream(e, lat, lng, cond, option) {
+
+  };
+
+  getDownstream(e, lat, lng, cond, option) {
+
+  };
 }

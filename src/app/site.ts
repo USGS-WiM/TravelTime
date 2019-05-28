@@ -1,13 +1,13 @@
-import {myclass} from './shared/myfunctions';
+import {myfunctions} from './shared/myfunctions';
 
-export class mainPar extends myclass { //parameters
+export class parameters extends myfunctions { //parameters
     
-    constructor (arg:mainPar){
+    constructor (arg:parameters){
         super()
         this.id = arg.id
-        this.description = arg.description
         this.name = arg.name
         this.required = arg.required
+        this.description = arg.description
         this.valueType = arg.valueType
         this.value = []
         this._init (arg.value)
@@ -29,7 +29,7 @@ export class site { //site
     constructor(arg:Array<any>) {
         arg = arg['0'];
         for (var i=0; i< arg.length; i++){
-            var myval = new mainPar(arg[i]);
+            var myval = new parameters(arg[i]);
             this.mylist.push(myval);
         }
     }
