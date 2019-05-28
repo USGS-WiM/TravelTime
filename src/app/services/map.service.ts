@@ -14,7 +14,9 @@ export class MapService {
   public result = [];
   public mySite: site;
   public mymap;
+
   public markers: Layer[] = [];
+
   public sites: Layer[] = [];
   public myPoint;
   public layersControl;
@@ -91,11 +93,41 @@ export class MapService {
     }
   }
 
-  getUpstream(e, lat, lng, cond, option) {
-
+  getUpstream(data) {
+    for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
+      const marker = new L.marker([data['features'][i].geometry.coordinates[1], data['features'][i].geometry.coordinates[0]], {
+        //draggable: true,
+        icon: L.icon({
+          iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        })
+      })
+      marker.bindPopup(data['features'][i].properties['name']).openPopup();
+      this.sites.push(marker);
+    }
   };
 
-  getDownstream(e, lat, lng, cond, option) {
-
+  getDownstream(data) {
+    for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
+      if (data['features'][i].geometry['type'] == 'Point') { //if type of point, add marker
+        const marker = new L.marker([data['features'][i].geometry.coordinates[1], data['features'][i].geometry.coordinates[0]], {
+          //draggable: true,
+          icon: L.icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+          })
+        })
+        marker.bindPopup(data['features'][i].properties['name']).openPopup();
+        this.sites.push(marker);
+      }
+    }
   };
 }
