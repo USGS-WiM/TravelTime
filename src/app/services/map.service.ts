@@ -22,6 +22,12 @@ export class MapService extends myfunctions {
   public streamLine: Layer[] = [];
   public streamArray = [];
 
+  public gagesUpstream: Layer[] = [];
+  public gagesDownstream: Layer[] = [];
+
+  public gagesUpstreamArray = [];
+  public gagesDownstreamArray = [];
+
 
   constructor() {
     super()
@@ -98,27 +104,56 @@ export class MapService extends myfunctions {
 
   getUpstream(data) {
     for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
-      const marker = new L.marker([data['features'][i].geometry.coordinates[1], data['features'][i].geometry.coordinates[0]], {
-        //draggable: true,
-        icon: L.icon({
-          iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41]
-        })
-      })
-      marker.bindPopup(data['features'][i].properties['name']).openPopup();
-      this.sites.push(marker);
+      var gagesUpstream = this.deepCopy(data['features'][i]);
+      this.gagesUpstreamArray.push(gagesUpstream);
     }
+
+    function onEachFeature(feature, layer) {
+      // does this feature have a property named 'name, comid,uri, source'?
+      if (feature.properties && feature.properties.name) {
+        layer.bindPopup(feature.properties.comid + " "+ feature.properties.name + " " + feature.properties.uri + " "+ feature.properties.source);
+      }
+    };
+
+    var gagesUpstream = L.geoJSON(this.gagesUpstreamArray, {
+      onEachFeature: onEachFeature,
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, {
+          icon: L.icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+          })
+
+        });
+      }
+    });
+
+    this.sites.push(gagesUpstream);
   };
 
   getDownstream(data) {
     for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
       if (data['features'][i].geometry['type'] == 'Point') { //if type of point, add marker
-        const marker = new L.marker([data['features'][i].geometry.coordinates[1], data['features'][i].geometry.coordinates[0]], {
-          //draggable: true,
+        var gagesDownstream = this.deepCopy(data['features'][i]);
+        this.gagesDownstreamArray.push(gagesDownstream);
+      }
+    }
+
+    function onEachFeature(feature, layer) {
+      // does this feature have a property named 'name, comid,uri, source'?
+      if (feature.properties && feature.properties.name) {
+        layer.bindPopup(feature.properties.comid + " " + feature.properties.name + " " + feature.properties.uri + " " + feature.properties.source);
+      }
+    };
+
+    var gagesDownstream = L.geoJSON(this.gagesDownstreamArray, {
+      onEachFeature: onEachFeature,
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, {
           icon: L.icon({
             iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -127,12 +162,12 @@ export class MapService extends myfunctions {
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
           })
-        })
-        marker.bindPopup(data['features'][i].properties['name']).openPopup();
-        this.sites.push(marker);
-      }
-    }
 
+        });
+      }
+    });
+
+    this.sites.push(gagesDownstream);
     this.addPolyLine(data);
   };
 
