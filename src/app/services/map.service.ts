@@ -4,25 +4,28 @@ import { site } from '../site';
 import { latLng, tileLayer, Layer } from 'leaflet';
 import {POINT} from '../reach';
 import * as L from "leaflet";
+import { myfunctions } from '../shared/myfunctions'; 
 
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class MapService {
+export class MapService extends myfunctions {
   public result = [];
   public mySite: site;
-  public mymap;
-
+  public mymap: L.Map;
   public markers: Layer[] = [];
-
   public sites: Layer[] = [];
   public myPoint;
   public layersControl;
+  public streamLine: Layer[] = [];
+  public streamArray = [];
+
 
   constructor() {
-    
+    super()
+
     this.mymap = {
       layers: [
         tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 20, attribution: '...' })
@@ -129,5 +132,21 @@ export class MapService {
         this.sites.push(marker);
       }
     }
+
+    this.addPolyLine(data);
   };
+
+  addPolyLine(data) {
+
+    for (var i = 1; i < data['features'].length; i++) {
+      if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
+        var polylinePoints = this.deepCopy(data['features'][i]);
+        this.streamArray.push(polylinePoints);
+      }
+    }
+
+    this.streamLine = L.geoJSON(this.streamArray);
+    this.sites.push(this.streamLine);
+  }
+
 }
