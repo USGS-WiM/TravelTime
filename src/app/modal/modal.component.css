@@ -54,3 +54,10 @@ button.title {
   min-height: 100%;
 }
 
+table.small {
+  font-size:xx-small;
+}
+
+td, th {
+  padding-left: 10px;
+}

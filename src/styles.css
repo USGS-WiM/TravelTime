@@ -21,6 +21,32 @@ body {
   stroke: #0F8AFF;
 }
 
+.ng-invalid {
+  display: block;
+}
+
+.form-control {
+  display: block;
+}
+
+.ng-invalid {
+  display: block;
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.form-group {
+  border-color: $danger;
+}
+.form-control {
+  border-color: $danger;
+}
+  .ng-invalid {
+  border-color: $danger;
+}
+
 @font-face {
   font-family: Roboto;
   font-style: normal;
@@ -4031,18 +4057,15 @@ h3 {
 }
 
 h4 {
-  font-size: 21px;
-  line-height: 1.14285714em;
-  margin-bottom: 1.14285714em;
-  letter-spacing: -.025em;
-  font-style: italic;
+  font-size: 17px;
+  line-height: 24px;
   font-weight: 600;
+  font-style: italic;
 }
 
 h5 {
   font-size: 17px;
   line-height: 24px;
-  margin-bottom: 18px;
   font-weight: 400;
 }
 
@@ -5023,14 +5046,6 @@ ul {
   font-size: 16px;
   letter-spacing: .5px;
   text-align: center;
-}
-
-hr {
-  display: block;
-  width: 100%;
-  border: none;
-  border-bottom: 1px dashed rgba(16,21,44,.3);
-  margin: 35px 0;
 }
 
 .overflowtext {

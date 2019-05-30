@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatProgressSpinnerModule } from '@angula
 import { reach } from '../reach';
 import { MatDialog } from '@angular/material';
 import { PrintService } from '../services/print.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
@@ -19,13 +19,17 @@ export class ModalComponent implements OnInit {
   mylist = [];
   reach_reference: reach;
   ini_mass: number;
-  ini_time: number;
+  //ini_time: number;
   id = []; //array for reach id's
   output = [];
   openModal: boolean;
   showInputs: boolean;
   showResult: boolean;
   showProgress: boolean;
+  outputReach: number;
+  formGroup: FormGroup;
+  dateModel: Date = new Date();
+  //stringDateModel: string = new Date().toISOString();
 
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
@@ -43,6 +47,9 @@ export class ModalComponent implements OnInit {
         this.reach_reference = data;
         this.onClick_addReach()
       }); //get service {description: Initial description}
+    this.formGroup = new FormGroup({
+      activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
+    }, { updateOn: 'change' });
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
@@ -76,7 +83,7 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_postReach() {
-    this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.ini_time)
+    this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.dateModel.toISOString())
       .subscribe(data => this.output.push(data));
     console.log(this.output);
   }
@@ -89,7 +96,7 @@ export class ModalComponent implements OnInit {
       this.showProgress = false;
       this.showResult = true;
     }, 2000);
-    
+    console.log(this.mylist);
   }
 
   onClick_clear() {
@@ -108,26 +115,98 @@ export class ModalComponent implements OnInit {
   onClick_return() {
     this.showResult = false;
     this.showInputs = true;
-  }
 
-  onPrintInvoice() {
-    const invoiceIds = ['101', '102'];
-    this.printService
-      .printDocument('invoice', invoiceIds);
+    this.output.length = 0;
   }
 
   validateForm(mainForm) {
+
     if (mainForm.$valid) {
         return true;
     }
     else {
         return false;
     }
-}
+  }
+
+  getLabel(label) {
+    try {
+      switch (label) {
+        case 'leadingEdge':
+          return 'Leading Edge';
+        case 'MostProbable':
+          return 'Most Probable';
+        case 'concentration':
+          return 'Concentration';
+        case 'time':
+          return 'Time';
+        case 'MaximumProbable':
+          return 'Maximum Probable';
+        case 'peakConcentration':
+          return 'Peak Concentration';
+        case 'trailingEdge':
+          return 'Trailing Edge';
+        case 'name':
+          return 'Name';
+        case 'description':
+          return 'Description';
+      }//end switch
+    } catch (e) {
+      var x = e;
+    }
+  }
+
+  getUnits(shortname): any {
+    try {
+      switch (shortname) {
+        case 'sf':
+          return 'Streamflow (cubic feet per second)';
+        case 'drnarea':
+          return 'Drainage area (square miles)';
+        case 'l':
+          return 'Reach length (meters)';
+        case 'lc':
+          return 'Trailing Edge Concentration (mg/L)';
+        case 'pc':
+          return 'Peak Concentration (mg/L)';
+        case 'tc':
+          return 'Trailing Edge Concentration (mg/L)';
+      }//end switch
+    } catch (e) {
+      var x = e;
+    }
+  }
+
+  returnSpan(spanstring) {
+    let cleanspan = spanstring;
+    if (cleanspan.startsWith("0")) {                                   //check for zero days
+      cleanspan = cleanspan.substr(cleanspan.indexOf(', ') + 2);
+      if (cleanspan.startsWith("0")) {                                       //check for zero hours
+        cleanspan = cleanspan.substr(cleanspan.indexOf(', ') + 2);
+        if (cleanspan.startsWith("0")) {                                     //check for zero minutes
+          cleanspan = cleanspan.substr(cleanspan.indexOf(', ') + 2);
+        }
+      }
+    }
+    return cleanspan;
+  }
+
+  getReach(reach) {
+    this.outputReach = Number(reach);
+    console.log(this.outputReach);
+    return this.outputReach;
+  }
 
   /*drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.mylist, event.previousIndex, event.currentIndex);
   }*/ //used for object rearrangement
 }
-
-
+export const DateTimeValidator = (fc: FormControl) => {
+  const date = new Date(fc.value);
+  const isValid = !isNaN(date.valueOf());
+  return isValid ? null : {
+    isValid: {
+      valid: false
+    }
+  };
+};

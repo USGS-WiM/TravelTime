@@ -13,8 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material';
 import { MapComponent } from './map/map.component';
 import { ContentsComponent } from './contents/contents.component';
-//import { ISubscription } from 'rxjs/Subscription';
-//import { DragDropModule } from '@angular/cdk/drag-drop'; Object rearrangement
+import { DateTimePickerComponent } from './date-time-picker/date-time-picker.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,8 @@ import { ContentsComponent } from './contents/contents.component';
     LeftbarComponent,
     ModalComponent,
     MapComponent,
-    ContentsComponent
+    ContentsComponent,
+    DateTimePickerComponent
   ],
   imports: [
     BrowserModule,
@@ -33,8 +34,8 @@ import { ContentsComponent } from './contents/contents.component';
     DemoMaterialModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    NgbModule
-    //DragDropModule Object rearrangement
+    NgbModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent],
