@@ -1,11 +1,24 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
 
-<div style="height: 1200px;"
-     leaflet
-     [leafletOptions]="_MapService.mymap"
-     [leafletLayersControl]="_MapService.layersControl"
-     (leafletClick)="onMapClick($event)">
-  <div *ngIf="showLayer" [leafletLayers]="_MapService.markers"></div>
-  <div *ngIf ="!showLayer" [leafletLayers] ="_MapService.sites"></div>
+<div class="row">
+  <form class="col">
+
+    <button type="button"
+        class="btn btn-primary"
+        (click)="getUpstream()">Upstream</button>
+
+    <button type="button"
+        class="btn btn-primary"
+        (click)="getDownstream()">Downstream</button>
+
+  </form>
+
 </div>
+
+<div class="map"
+  leaflet style = "height: 600px;"
+  [leafletOptions]="options"
+  [leafletLayersControl]="layersControl"
+  [leafletLayers]="userselect_markers"
+  (leafletClick)="addMarker($event)"></div>
