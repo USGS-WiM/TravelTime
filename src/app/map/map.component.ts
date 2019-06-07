@@ -5,6 +5,8 @@ import { MapService } from '../services/map.service';
 import {site, parameters} from '../site';
 import {myfunctions} from '../shared/myfunctions';
 import { Observable, of } from 'rxjs';
+import { ModalComponent } from '../modal/modal.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: "app-map",
@@ -15,16 +17,27 @@ import { Observable, of } from 'rxjs';
 export class MapComponent extends myfunctions implements OnInit {
 
   constructor(
+    public dialog: MatDialog,
     private _GetNavigationService: GetNavigationService,
     private _MapService: MapService,
   ) { super () }
 
+  
   ngOnInit() {
     this._GetNavigationService.getRequiredConfig()
     .toPromise().then(data => {
       this.Site_reference = data['configuration'];
     }); //get service {description: Initial description}
+    //this.newFunc(); moving layers control to the sidebar
   }
+
+  openDialog() {
+    let dialog = this.dialog.open(ModalComponent, {
+      width: '60%',
+      height: '90%'
+    });
+  }
+
 
   layersControl = {
     baseLayers: {
@@ -54,61 +67,72 @@ export class MapComponent extends myfunctions implements OnInit {
     }
   }
 
+  zoom = 5;
+  center = L.latLng(40.0, -100.0)
   // Values to bind to Leaflet Directive
 	options = {
-		layers: [ this.layersControl.baseLayers.Topo],
-		zoom: 10,
-		center: L.latLng(39.6, -75.7)
+      layers: [this.layersControl.baseLayers.Topo],
+      zoom: this.zoom,
+      center: this.center
   };
-  
 
-  userselect_markers: L.Marker [] = [];
-  sitesupstream_markers: L.Marker [] = [];
-  sitesdownstream_markers: L.Marker [] = [];
-  downstream_polyline: L.Layer [] = [];
-  layers: L.Layer [] = [];
+
+
+  markers: L.Layer [] = [];
 
   Site_reference: site;
   results = [];
   sites_upstream = [];
   sites_downstream = [];
   fitBounds: any = null;
-
   marker_sites = [];
 
+  newFunc() {
+    // Create the control and add it to the map;
+    var control = L.control.layers(this.layersControl);
+    var htmlObject = control.getContainer();
+    var a = document.getElementById('example');
+    function setParent(el, newParent) {
+      newParent.appendChild(el);
+    }
+    setParent(htmlObject, a);
+  }
 
   addMarker(e) {
     let mySite = new site ([this.Site_reference]);
-    if (this.userselect_markers.length>0){
-      while (this.userselect_markers.length != 0) {
-        this.userselect_markers.splice(0, 1)
+    if (this.markers.length>0){
+      while (this.markers.length != 0) {
+        this.markers.splice(0, 1)
       }
     }
     const marker = new L.marker([e.latlng.lat, e.latlng.lng], {
       icon: L.icon({
-        iconUrl: "https://unpkg.com/leaflet@1.4.0/dist/images/marker-icon.png",
-        iconSize: [25, 35],
-        iconAnchor: [30 / 2, 35]
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
       })
-    }).on('click',this.swapElement(mySite['mylist'], 2, 3));
-    this.userselect_markers.push(marker);
-    this.marker_sites.push(mySite);
+    }).on('click', this.swapElement(mySite['mylist'], 2, 3));
+
+    this.markers.push(marker);
+    this._MapService.myPoint = marker;
+    this._MapService.result = mySite;
   }
 
-  getUpstream (){
-    let mySite = this.marker_sites[this.marker_sites.length-1];
-    let markerup = this.userselect_markers[0];
-    let e = markerup.getLatLng();
+  getUpstream() {
+    let mySite = this._MapService.result;
+    let e = this._MapService.myPoint.getLatLng();
     this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['gage'], 100);
   }
 
-  getDownstream(){
-    let mySite = this.marker_sites[this.marker_sites.length-1];
-    let markerdw = this.userselect_markers[0];
-    let e = markerdw.getLatLng();
+  getDownstream() {
+    let mySite = this._MapService.result;
+    let e = this._MapService.myPoint.getLatLng();
     this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['gage', 'flowline'], 100);
   }
-
+ 
   onMarkerClick(e, lat, lng, cond, option, len) {
     e[0]['value']['coordinates'] = [ lng, lat]; // add lat long
     e[1]['value'] = cond;
@@ -129,9 +153,15 @@ export class MapComponent extends myfunctions implements OnInit {
         } else {
           myreturn = this._MapService.getDownstream(data);
           polyline = this._MapService.addPolyLine(data);
-          this.userselect_markers.push(polyline);
+          this.markers.push(polyline);
         }
-        this.userselect_markers.push(myreturn);
+        this.markers.push(myreturn);
+        this.fitBounds = L.latLngBounds(this.markers);
+
+        var featureGroup = L.featureGroup(this.markers);
+        this.fitBounds = featureGroup.getBounds();
+        this.center = this.fitBounds.getCenter();
+        this.zoom = 8;
       }
     );
 

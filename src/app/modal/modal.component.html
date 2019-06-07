@@ -1,117 +1,234 @@
-<div class="modal-header">
-  <h4>Jobsons Travel Time Prediction</h4>
-</div>
-
-<div class="modal-body">
-  <div style="width:49%; float:left;">
-    <label>Initial concentration:</label><br />
-    <input [(ngModel)]="ini_mass" type=number required placeholder="value" name="inimass" autocomplete="off">
-    <app-contents [ini_mass]="ini_mass"></app-contents><br />
+<div *ngIf="showInputs === true">
+  <div class="modal-header">
+    <h4>Jobsons Travel Time Prediction</h4>
   </div>
 
-  <div style="width:49%; float:right;">
-    <label>Initial time:</label><br />
-    <input [(ngModel)]="ini_time" type=number required placeholder="value" name="initime" autocomplete="off">
-    <app-contents [ini_time]="ini_time"></app-contents><br />
-  </div>
-  <!--{{checkList()}}-->
-  <button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
-  <br /><br />
-  <!--<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of mylist" cdkDrag>{{item}}</div>
-  </div>Implemented Object rearrangement-->
+  <div class="modal-body">
+    <form form #myForm="ngForm">
+      <div class="form-group" style="width:49%; float:left;">
+        <label>Initial time:</label><br />
+        <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
+        <!--<input [(ngModel)]="ini_time" type=number required placeholder="Value" name="initime">
+        <app-contents [ini_time]="ini_time"></app-contents><br />-->
+      </div>
+      <div style="width:49%; float:right;">
+        <label>Initial concentration:</label><br />
+        <input [(ngModel)]="ini_mass" type=number required placeholder="Value" name="inimass">
+        <app-contents [ini_mass]="ini_mass"></app-contents><br />
+      </div>
 
-  <div id="panel-group">
-    <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
-      <ngb-panel *ngFor="let item of mylist; let i = index">
-        <ng-template ngbPanelHeader>
-          <div class="d-flex align-items-center justify-content-between">
-            <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
-            <div>
-              <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="onClick_removeReach(i)">Remove</button>
-            </div>
-          </div>
-        </ng-template>
-
-        <!--Name input-->
-        <ng-template ngbPanelContent>
-          <div *ngFor="let k of item | keyvalue;  let i = index; trackBy:customTrackBy">
-            <div *ngIf="k.key === 'name'">
-              <label>{{k.key}}</label>
-              <div>
-                <input [(ngModel)]="k.value" placeholder="value" name="name"
-                       type="text" ngControl="value" ngMaxlength="25"
-                       [(ngModel)]='item.name' autocomplete="off">
-              </div>
-            </div>
-          </div>
-          <!--Description input-->
-          <div *ngFor="let k of item | keyvalue; let i = index; trackBy:customTrackBy">
-            <div *ngIf="k.key === 'description'">
-              <label>{{k.key}}</label>
-              <div>
-                <input [(ngModel)]="k.value" placeholder="value" name="value"
-                       type="text" ngControl="value" ngMaxlength="50"
-                       [(ngModel)]='item.description' autocomplete="off">
-              </div>
-            </div>
-          </div>
-          <!--Parameters input-->
-          <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy">
-            <label>{{pars.name}} ({{pars.unit.unit}}):</label>
-            <div *ngIf="pars.required === true">
-              <input [(ngModel)]="pars.value" placeholder="value" name="value"
-                     type=number ngControl="value" required
-                     [(ngModel)]='item.parameters[i].value' autocomplete="off">
-            </div>
-            <div *ngIf="pars.required === false">
-              <input [(ngModel)]="pars.value" placeholder="value" name="value"
-                     type=number ngControl="value"
-                     [(ngModel)]='item.parameters[i].value' autocomplete="off">
-            </div>
-          </div>
-        </ng-template>
-      </ngb-panel>
-    </ngb-accordion>
-    <br />
-    <button *ngIf="mylist !== null" class="btn-red main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear All</button>
-    <button *ngIf="mylist !== null" class="btn-blue mainR" (click)="onClick_uiResult()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
-
-    <!--Will move this to new Results modal-->
-    <div *ngIf="showResult === true">
+      <button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
       <br /><br />
-      <div *ngFor="let element of output">
-        <div *ngFor="let v of element | keyvalue">
-          <div *ngIf="v.key === 'reaches'">
-            <div *ngFor="let reach of v.value | keyvalue">
-              <div *ngIf="reach.key !== '0'">
-                <h4>Reach {{reach.key}}</h4>
-                <div *ngFor="let items of reach.value | keyvalue">
-                  <div *ngIf="items.key === 'result'">
-                    <div *ngFor="let edge of items.value | keyvalue">
-                      <label>{{edge.key}}</label>
-                      <blockquote style="border-left: 3px solid #ccc;">
-                        <div *ngFor="let prob of edge.value | keyvalue">
-                          <label>{{prob.key}}</label>
-                          <div *ngFor="let p of prob.value | keyvalue">
-                            <!--<div *ngFor="let s of p.value | keyvalue">-->
-                            <table>
-                              <tr>
-                                <td>{{p.key}}:</td>
-                                <td>&nbsp;&nbsp;{{p.value}}</td>
-                              </tr>
-                            </table>
-                            <!--</div>-->
-                          </div>
-                        </div>
-                      </blockquote>
-                    </div>
+      <div id="panel-group">
+        <ngb-accordion #acc="ngbAccordion">
+          <!--closeOthers="true"-->
+          <ngb-panel *ngFor="let item of mylist; let i = index">
+            <ng-template ngbPanelHeader>
+              <div class="d-flex align-items-center justify-content-between">
+                <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
+                <div>
+                  <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="onClick_removeReach(i)">Remove</button>
+                </div>
+              </div>
+            </ng-template>
+
+            <!--Name input-->
+            <ng-template ngbPanelContent>
+              <div *ngFor="let k of item | keyvalue;  let i = index; trackBy:customTrackBy">
+                <div *ngIf="k.key === 'name'">
+                  <label>{{getLabel(k.key)}}</label>
+                  <div>
+                    <input [(ngModel)]="k.value" placeholder="value" name="name"
+                           type="text" ngControl="value" ngMaxlength="25" [(ngModel)]='item.name' autocomplete="off">
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+              <!--Description input-->
+              <div *ngFor="let k of item | keyvalue; let i = index; trackBy:customTrackBy">
+                <div *ngIf="k.key === 'description'">
+                  <label>{{getLabel(k.key)}}</label>
+                  <div>
+                    <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}"
+                           type="text" ngControl="value" ngMaxlength="50" [(ngModel)]='item.description' autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <!--Parameters input-->
+              <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy">
+                <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+                <div *ngIf="pars.required === true">
+                  <input [(ngModel)]="pars.value" placeholder="value" name="{{pars.name}}" id="paramR"
+                         type=number ngControl="value" required [(ngModel)]='item.parameters[i].value' autocomplete="off">
+                </div>
+                <div *ngIf="pars.required === false">
+                  <input [(ngModel)]="pars.value" placeholder="value" name="{{pars.name}}"
+                         type=number ngControl="value" [(ngModel)]='item.parameters[i].value' autocomplete="off">
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+      <br />
+      <button *ngIf="mylist !== null" class="btn-red main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear All</button>
+      <button [disabled]="!myForm.form.valid" class="btn-blue mainR" (click)="onClick_uiResult()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showProgress === true" class="load-wrapper">
+  <mat-spinner class="loading" color="#0F8AFF"></mat-spinner>
+</div>
+
+<div *ngIf="showResult === true">
+  <!--Begin Most Probable Results Table-->
+  <div *ngFor="let element of output">
+    <h3>{{ini_mass}} kg Spill occuring {{ element.initialTimeStamp | date:'medium' }}</h3>
+    <div style="border: solid #cccccc 1px; border-radius: 15px; padding: 4px 4px 4px 4px;">
+      <h4>Most Probable</h4>
+      <table class="small">
+        <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+          <th>Name</th>
+          <th matTooltip="{{getUnits(sf)}}">Streamflow</th>
+          <th matTooltip="{{getUnits(drnarea)}}">DRNAREA</th>
+          <th matTooltip="{{getUnits(l)}}">Reach Length</th>
+          <th matTooltip="{{getUnits(lc)}}">L Conc</th>
+          <th>L Time</th>
+          <th>L Time Span</th>
+          <th matTooltip="{{getUnits(pc)}}">Peak Conc</th>
+          <th>Peak Time</th>
+          <th>Peak Time Span</th>
+          <th matTooltip="{{getUnits(tc)}}">T Conc</th>
+          <th>T Time</th>
+          <th>T Time Span</th>
+        </tr>
+        <ng-container *ngFor="let v of element | keyvalue">
+          <ng-container *ngIf="v.key === 'reaches'">
+            <ng-container *ngFor="let reach of v.value | keyvalue">
+              <ng-container *ngIf="reach.key !== '0'">
+                <tr>
+                  <td>Reach {{reach.key}}</td>
+                  <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
+                    <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+                      <td>{{pars.value}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="pars.name === 'Drainage area'">
+                      <td>{{pars.value}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="pars.name === 'Distance'">
+                      <td>{{pars.value}}</td>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngFor="let items of reach.value | keyvalue">
+                    <ng-container *ngIf="items.key === 'result'">
+                      <ng-container *ngFor="let edge of items.value | keyvalue">
+                        <ng-container *ngFor="let prob of edge.value | keyvalue">
+                          <ng-container *ngIf="prob.key === 'MostProbable'">
+                            <ng-container *ngFor="let p of prob.value | keyvalue">
+                              <ng-container *ngIf="p.key === 'concentration'">
+                                <td>{{p.value.toFixed(2)}}</td>
+                              </ng-container>
+                              <ng-container *ngIf="p.key === 'time'">
+                                <td>
+                                  {{ p.value | date:'short' }}
+                                </td>
+                              </ng-container>
+                              <ng-container *ngIf="p.key === 'timeLapse'">
+                                <td>
+                                  {{returnSpan(p.value)}}
+                                </td>
+                              </ng-container>
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </table>
+    </div>
+    <!--End Most Probable Results Table-->
+    <br />
+    <br />
+    <!--Begin Max Probable Results Table-->
+    <div *ngFor="let element of output" style="border: solid #cccccc 1px; border-radius: 15px; padding: 4px 4px 4px 4px;">
+      <h4>Maximum Probable</h4>
+      <table class="small">
+        <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+          <th>Name</th>
+          <th matTooltip="{{getUnits(sf)}}">Streamflow</th>
+          <th matTooltip="{{getUnits(drnarea)}}">DRNAREA</th>
+          <th matTooltip="{{getUnits(l)}}">Reach Length</th>
+          <th matTooltip="{{getUnits(lc)}}">L Conc</th>
+          <th>L Time</th>
+          <th>L Time Span</th>
+          <th matTooltip="{{getUnits(pc)}}">Peak Conc</th>
+          <th>Peak Time</th>
+          <th>Peak Time Span</th>
+          <th matTooltip="{{getUnits(tc)}}">T Conc</th>
+          <th>T Time</th>
+          <th>T Time Span</th>
+        </tr>
+        <ng-container *ngFor="let v of element | keyvalue">
+          <ng-container *ngIf="v.key === 'reaches'">
+            <ng-container *ngFor="let reach of v.value | keyvalue">
+              <ng-container *ngIf="reach.key !== '0'">
+                <tr>
+                  <td>Reach {{reach.key}}</td>
+                  <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
+                    <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+                      <td>{{pars.value}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="pars.name === 'Drainage area'">
+                      <td>{{pars.value}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="pars.name === 'Distance'">
+                      <td>{{pars.value}}</td>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngFor="let items of reach.value | keyvalue">
+                    <ng-container *ngIf="items.key === 'result'">
+                      <ng-container *ngFor="let edge of items.value | keyvalue">
+                        <ng-container *ngFor="let prob of edge.value | keyvalue">
+                          <ng-container *ngIf="prob.key === 'MaximumProbable'">
+                            <ng-container *ngFor="let p of prob.value | keyvalue">
+                              <ng-container *ngIf="p.key === 'concentration'">
+                                <td>&nbsp;&nbsp;{{p.value.toFixed(2)}}</td>
+                              </ng-container>
+                              <ng-container *ngIf="p.key === 'time'">
+                                <td>
+                                  {{p.value | date:'short'}}
+                                </td>
+                              </ng-container>
+                              <ng-container *ngIf="p.key === 'timeLapse'">
+                                <td>
+                                  {{returnSpan(p.value)}}
+                                </td>
+                              </ng-container>
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </table>
+      <!--End Max Probable Results Table-->
+    </div>
+    <br />
+    <div class="center">
+      <div class="btn-wrapper">
+        <button *ngIf="mylist !== null" class="btn-red btn-results" (click)="onPrintInvoice()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Print</button>
+        <button *ngIf="mylist !== null" class="btn-blue btn-results" (click)="onClick_return()"><i class="fa fa-check"></i>&nbsp;&nbsp;Return to Jobsons</button>
+        <button class="btn-results" (click)="dialogRef.close()">Close</button>
       </div>
     </div>
   </div>

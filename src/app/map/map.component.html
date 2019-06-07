@@ -1,24 +1,91 @@
+<header>
+  <h3 class='Title'> USGS Time of Travel</h3>
+</header>
+
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
 
-<div class="row">
-  <form class="col">
+<div class="main">
+  <!-- Side navigation -->
+  <div class="sidenav">
+    <mat-accordion>
 
-    <button type="button"
-        class="btn btn-primary"
-        (click)="getUpstream()">Upstream</button>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          MAP LAYERS
+        </mat-expansion-panel-header>
+        <div id="example"> <!--Here the layer control menu will be added--></div>
 
-    <button type="button"
-        class="btn btn-primary"
-        (click)="getDownstream()">Downstream</button>
+      </mat-expansion-panel>
 
-  </form>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          SELECT SPILL LOCATION
+        </mat-expansion-panel-header>
 
+        This the expansion 2 content
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          IDENTIFY POINT(S) OF INTEREST
+        </mat-expansion-panel-header>
+
+        <div class="shadowtext">You have zoomed in sufficiently to select a spill location or downstream point of interest.</div>
+
+        <div class="footer">Choose an option below to select a trace method.</div>
+
+          <div style="text-align: left">
+            <button class="btnStyle"
+                    mat-raised-button color="primary"
+                    (click)="getDownstream()">
+              Trace downstream from spill location
+            </button>
+            <div class="divider"></div>
+            <button class="btnStyle"
+                    mat-raised-button color="primary"
+                    (click)="getUpstream()">
+              Trace upstream from point of interest
+            </button>
+
+          </div>
+
+</mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          CURRENT MANUAL JOBSON
+        </mat-expansion-panel-header>
+
+        <button mat-raised-button (click)="openDialog()">Jobsons</button>
+
+      </mat-expansion-panel>
+
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          BUILD A REPORT
+        </mat-expansion-panel-header>
+
+        This the expansion 2 content
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+  </div>
+
+  <div class="map-wrapper" id ="mapid"
+       leaflet style="height: 100vh;"
+       [leafletOptions]="options"
+       [leafletLayersControl]="layersControl"
+       [leafletLayers]="markers"
+       [(leafletCenter)]= "center"
+       (leafletClick)="addMarker($event)"
+       [(leafletZoom)] ="zoom">
+  </div>
 </div>
 
-<div class="map"
-  leaflet style = "height: 600px;"
-  [leafletOptions]="options"
-  [leafletLayersControl]="layersControl"
-  [leafletLayers]="userselect_markers"
-  (leafletClick)="addMarker($event)"></div>
+

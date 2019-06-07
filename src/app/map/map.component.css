@@ -1,0 +1,154 @@
+#map {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.Title {
+  color: white;
+  width: 100%;
+  padding: 12px 20px;
+  font-family: 'Roboto';
+  font-size: 24px;
+}
+
+.divider {
+  width: auto;
+  height: 5px;
+  display: inline-block;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+header {
+  height: 50px;
+  line-height: 20px;
+  background: black;
+  margin-top: 0px;
+}
+
+.map-wrapper {
+  margin-left: 350px; /* Same as the width of the sidebar */
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.position-left {
+  padding-left: 5px;
+  padding-right: 100px;
+  position: relative;
+  float: left;
+  width: 100%;
+  z-index: 1;
+}
+
+.shadowtext {
+  color: black;
+  width: 100%;
+  padding: 12px 12px;
+  margin-left: 0;
+  margin-right: 0;
+  font-family: 'Roboto';
+  font-size: 14px;
+  background-color: darkgrey;
+}
+
+.footer {
+  color: black;
+  width: 100%;
+  padding: 5px 5px;
+  margin-left: 0;
+  margin-right: 0;
+  font-family: 'Roboto';
+  font-size: 12px;
+}
+
+/* The sidenav */
+.sidenav {
+  height: 100%;
+  width: 350px;
+  z-index: 1;
+  top: 20;
+  left: 0;
+  position: absolute;
+  background-color: whitesmoke;
+  overflow-x: hidden;
+  padding-top: 0px;
+}
+
+  /* The navigation menu links */
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+  }
+
+.Jobsons {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+  .Jobsons div:hover {
+    color: black;
+  }
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: black;
+}
+
+
+.content {
+  height: 100vmax;
+  width: 100%;
+  float: right;
+  margin-top: 10px;
+  padding: 0;
+}
+
+/* Style page content */
+.main {
+  width: 100%;
+  height: 100%;
+}
+
+#banner {
+  display: table;
+  width: 100%;
+  background-color: black;
+  padding-left: 1em;
+  color: white;
+  height: 2em;
+  vertical-align: middle;
+}
+
+.right {
+  float: right;
+}
+
+.gray {
+  color: gray;
+}
+
+button {
+  width: 300px;
+}

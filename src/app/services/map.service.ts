@@ -12,7 +12,7 @@ import { Observable, of } from 'rxjs';
 })
 
 export class MapService extends myfunctions {
-  public result = [];
+  public result;
 
   public myPoint;
   public layersControl;
@@ -47,7 +47,7 @@ export class MapService extends myfunctions {
       pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {
           icon: L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
             iconSize: [25, 41],
             iconAnchor: [12, 41],
@@ -83,7 +83,7 @@ export class MapService extends myfunctions {
       pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {
           icon: L.icon({
-            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
             iconSize: [25, 41],
             iconAnchor: [12, 41],
@@ -98,14 +98,23 @@ export class MapService extends myfunctions {
   };
 
   //add polyline downstream
-  addPolyLine (data) {
+  addPolyLine(data) {
+    var myStyle = {
+      "color": "#FF3333",
+      "weight": 3,
+      "opacity": 0.60
+    }
+
+    while (this.streamArray.length != 0) {
+      this.streamArray.splice(0, 1)
+    }
     for (var i = 1; i < data['features'].length; i++) {
       if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
         var polylinePoints = this.deepCopy(data['features'][i]);
         this.streamArray.push(polylinePoints);
       }
     }
-    this.streamLine = L.geoJSON(this.streamArray);
+    this.streamLine = L.geoJSON(this.streamArray,{style:myStyle});
     return (this.streamLine);
   }
 

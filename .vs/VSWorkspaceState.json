@@ -1,12 +1,16 @@
 {
   "ExpandedNodes": [
     "",
+    "\\src",
     "\\src\\app",
     "\\src\\app\\contents",
+    "\\src\\app\\date-time-picker",
     "\\src\\app\\leftbar",
     "\\src\\app\\map",
-    "\\src\\app\\modal"
+    "\\src\\assets",
+    "\\src\\environments",
+    "\\src\\images"
   ],
-  "SelectedNode": "\\src",
+  "SelectedNode": "\\src\\app\\map\\map.component.html",
   "PreviewInSolutionExplorer": false
 }
