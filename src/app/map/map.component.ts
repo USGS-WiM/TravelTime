@@ -5,8 +5,12 @@ import { MapService } from '../services/map.service';
 import {site, parameters} from '../site';
 import {myfunctions} from '../shared/myfunctions';
 import { Observable, of } from 'rxjs';
+import { MatProgressButtonOptions } from 'mat-progress-buttons';
+import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material';
+import 'leaflet-search-control';
+import 'leaflet-search';
 
 @Component({
   selector: "app-map",
@@ -22,7 +26,6 @@ export class MapComponent extends myfunctions implements OnInit {
     private _MapService: MapService,
   ) { super () }
 
-  
   ngOnInit() {
     this._GetNavigationService.getRequiredConfig()
     .toPromise().then(data => {
@@ -31,13 +34,31 @@ export class MapComponent extends myfunctions implements OnInit {
     //this.newFunc(); moving layers control to the sidebar
   }
 
+  onMapReady(map: L.Map) {
+    var search = L.control.search({
+      url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+      placeholder: 'Search',
+      minNumberOfCharacters: 0,
+      searchOnEnter: true,
+      noResults: 'No Records Found',
+      jsonpParam: 'json_callback',
+      propertyName: 'display_name',
+      propertyLoc: ['lat', 'lon'],
+      marker: L.circleMarker([0, 0], { radius: 30 }),
+      autoCollapse: true,
+      autoType: false,
+      minLength: 2,
+      container: 'findbox'
+    });
+    search.addTo(map);
+  }
+
   openDialog() {
     let dialog = this.dialog.open(ModalComponent, {
       width: '60%',
       height: '90%'
     });
   }
-
 
   layersControl = {
     baseLayers: {
@@ -68,7 +89,7 @@ export class MapComponent extends myfunctions implements OnInit {
   }
 
   zoom = 5;
-  center = L.latLng(40.0, -100.0)
+  center = L.latLng(40.0, -100.0);
   // Values to bind to Leaflet Directive
 	options = {
       layers: [this.layersControl.baseLayers.Topo],
@@ -76,10 +97,7 @@ export class MapComponent extends myfunctions implements OnInit {
       center: this.center
   };
 
-
-
   markers: L.Layer [] = [];
-
   Site_reference: site;
   results = [];
   sites_upstream = [];
@@ -115,19 +133,46 @@ export class MapComponent extends myfunctions implements OnInit {
         shadowSize: [41, 41]
       })
     }).on('click', this.swapElement(mySite['mylist'], 2, 3));
-
     this.markers.push(marker);
     this._MapService.myPoint = marker;
     this._MapService.result = mySite;
   }
 
+  spinnerButtonOptions_downstream: MatProgressButtonOptions = {
+    active: false,
+    text: 'Trace downstream from spill location',
+    spinnerSize: 18,
+    raised: true,
+    stroked: false,
+    buttonColor: 'primary',
+    spinnerColor: 'accent',
+    fullWidth: false,
+    disabled: false,
+    mode: 'indeterminate',
+  }
+
+  spinnerButtonOptions_upstream: MatProgressButtonOptions = {
+    active: false,
+    text: 'Trace upstream from point of interest',
+    spinnerSize: 18,
+    raised: true,
+    stroked: false,
+    buttonColor: 'primary',
+    spinnerColor: 'accent',
+    fullWidth: false,
+    disabled: false,
+    mode: 'indeterminate',
+  }
+
   getUpstream() {
+    this.spinnerButtonOptions_upstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
     this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['gage'], 100);
   }
 
   getDownstream() {
+    this.spinnerButtonOptions_downstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
     this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['gage', 'flowline'], 100);
@@ -144,16 +189,19 @@ export class MapComponent extends myfunctions implements OnInit {
       let myvar = new parameters (e[2].value[0]);
       e[2].value = myvar;
     }
+    
     this._GetNavigationService.postGage(e)
       .toPromise().then(data => {
         let myreturn;
         let polyline;
         if (cond == 'upstream') {
           myreturn = this._MapService.getUpstream(data);
+          this.spinnerButtonOptions_upstream.active = false;
         } else {
           myreturn = this._MapService.getDownstream(data);
           polyline = this._MapService.addPolyLine(data);
           this.markers.push(polyline);
+          this.spinnerButtonOptions_downstream.active = false;
         }
         this.markers.push(myreturn);
         this.fitBounds = L.latLngBounds(this.markers);
@@ -164,6 +212,5 @@ export class MapComponent extends myfunctions implements OnInit {
         this.zoom = 8;
       }
     );
-
   }
 }

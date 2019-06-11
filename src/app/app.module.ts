@@ -4,6 +4,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LeftbarComponent } from './leftbar/leftbar.component';
+import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { ModalComponent } from './modal/modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from '../material-module';
@@ -39,7 +40,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReactiveFormsModule,
     NgbModule,
     LeafletModule.forRoot(),
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressButtonsModule.forRoot()
     //DragDropModule Object rearrangement
   ],
   providers: [],

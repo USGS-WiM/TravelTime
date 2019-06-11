@@ -27,6 +27,7 @@ export class MapService extends myfunctions {
     super()
   }
 
+
   //get upstream data from the marker
   getUpstream (data) {
     while (this.gagesUpstreamArray.length != 0) {
