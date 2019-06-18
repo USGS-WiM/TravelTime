@@ -9,7 +9,7 @@ import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material';
-import 'leaflet-search-control';
+import 'leaflet-search-control';//plugin functions
 import 'leaflet-search';
 
 @Component({
@@ -199,7 +199,13 @@ export class MapComponent extends myfunctions implements OnInit {
           this.spinnerButtonOptions_upstream.active = false;
         } else {
           myreturn = this._MapService.getDownstream(data);
-          polyline = this._MapService.addPolyLine(data);
+          var myStyle = {
+            "color": "#FF3333",
+            "weight": 3,
+            "opacity": 0.60
+          }
+          var lineArray = this._MapService.addPolyLine(data);
+          polyline = L.geoJSON(lineArray, { style: myStyle });
           this.markers.push(polyline);
           this.spinnerButtonOptions_downstream.active = false;
         }

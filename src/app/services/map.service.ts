@@ -100,12 +100,6 @@ export class MapService extends myfunctions {
 
   //add polyline downstream
   addPolyLine(data) {
-    var myStyle = {
-      "color": "#FF3333",
-      "weight": 3,
-      "opacity": 0.60
-    }
-
     while (this.streamArray.length != 0) {
       this.streamArray.splice(0, 1)
     }
@@ -115,8 +109,8 @@ export class MapService extends myfunctions {
         this.streamArray.push(polylinePoints);
       }
     }
-    this.streamLine = L.geoJSON(this.streamArray,{style:myStyle});
-    return (this.streamLine);
+    console.log(this.streamArray);
+    return (this.streamArray);
   }
 
 }

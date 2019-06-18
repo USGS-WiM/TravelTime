@@ -5,7 +5,7 @@ import { reach } from '../reach';
 import { MatDialog } from '@angular/material';
 import { PrintService } from '../services/print.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-
+import { MapService } from '../services/map.service';
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -35,6 +35,7 @@ export class ModalComponent implements OnInit {
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
     private _GetTimeoftravelService: GetTimeoftravelService,
+    private _MapService: MapService,
     public dialog: MatDialog,
     public printService: PrintService
   ) { }
@@ -53,18 +54,15 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
-    let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-
-    //newreach.name = "Reach " + (this.id.length + 1); //TS This is bug because: (add reach 4, remove reach 2 and add again- it will be 4 because length again 4 resulting in two reaches with name "Reach 4") (added solution-line 49)
-
-    this.mylist.push(newreach);    //push the object to the array of reaches
-    if (this.mylist.length > 1) {
-      this.id.push(this.id[this.id.length - 1] + 1); //take the last value of id and add one
-    } else {
-      this.id = [];
-      this.id.push(1); //at any time when only one reach start id from 1 
+    for (var i = 1; i < this._MapService.streamArray.length; i++) {
+      if (this._MapService.streamArray[i].properties.nhdplus_comid) {
+        let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
+        newreach.name = "Reach " + this._MapService.streamArray[i].properties.nhdplus_comid
+        this.mylist.push(newreach);
+      } else {
+      }
     }
-    this.mylist[(this.mylist.length) - 1].name = "Reach " + this.id[(this.id.length) - 1] //Modified default naming
+
   };
 
   onClick_removeReachLast() {  //remove last reach
@@ -85,7 +83,6 @@ export class ModalComponent implements OnInit {
   onClick_postReach() {
     this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.dateModel.toISOString())
       .subscribe(data => this.output.push(data));
-    console.log(this.output);
   }
 
   onClick_uiResult() {

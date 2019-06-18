@@ -3,13 +3,14 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\leftbar",
     "\\src\\app\\map",
     "\\src\\app\\modal",
+    "\\src\\app\\services",
+    "\\src\\app\\shared",
     "\\src\\assets",
-    "\\src\\assets\\img",
-    "\\src\\assets\\img\\search",
-    "\\src\\assets\\leaflet"
+    "\\src\\assets\\img"
   ],
-  "SelectedNode": "\\src\\app\\map\\map.component.html",
+  "SelectedNode": "\\src\\app\\app.component.spec.ts",
   "PreviewInSolutionExplorer": false
 }
