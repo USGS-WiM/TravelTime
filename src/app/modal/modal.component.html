@@ -106,45 +106,49 @@
           <ng-container *ngIf="v.key === 'reaches'">
             <ng-container *ngFor="let reach of v.value | keyvalue">
               <ng-container *ngIf="reach.key !== '0'">
-                <tr>
-                  <td>Reach {{reach.key}}</td>
-                  <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
-                    <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                    <ng-container *ngIf="pars.name === 'Drainage area'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                    <ng-container *ngIf="pars.name === 'Distance'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                  </ng-container>
-                  <ng-container *ngFor="let items of reach.value | keyvalue">
-                    <ng-container *ngIf="items.key === 'result'">
-                      <ng-container *ngFor="let edge of items.value | keyvalue">
-                        <ng-container *ngFor="let prob of edge.value | keyvalue">
-                          <ng-container *ngIf="prob.key === 'MostProbable'">
-                            <ng-container *ngFor="let p of prob.value | keyvalue">
-                              <ng-container *ngIf="p.key === 'concentration'">
-                                <td>{{p.value.toFixed(2)}}</td>
-                              </ng-container>
-                              <ng-container *ngIf="p.key === 'time'">
-                                <td>
-                                  {{ p.value | date:'short' }}
-                                </td>
-                              </ng-container>
-                              <ng-container *ngIf="p.key === 'timeLapse'">
-                                <td>
-                                  {{returnSpan(p.value)}}
-                                </td>
+                <ng-container *ngFor="let comid of reach.value | keyvalue">
+                  <ng-container *ngIf="comid.key === 'name'">
+                    <tr>
+                      <td>{{comid.value}}</td>
+                      <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
+                        <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="pars.name === 'Drainage area'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="pars.name === 'Distance'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngFor="let items of reach.value | keyvalue">
+                        <ng-container *ngIf="items.key === 'result'">
+                          <ng-container *ngFor="let edge of items.value | keyvalue">
+                            <ng-container *ngFor="let prob of edge.value | keyvalue">
+                              <ng-container *ngIf="prob.key === 'MostProbable'">
+                                <ng-container *ngFor="let p of prob.value | keyvalue">
+                                  <ng-container *ngIf="p.key === 'concentration'">
+                                    <td>{{p.value.toFixed(2)}}</td>
+                                  </ng-container>
+                                  <ng-container *ngIf="p.key === 'time'">
+                                    <td>
+                                      {{ p.value | date:'short' }}
+                                    </td>
+                                  </ng-container>
+                                  <ng-container *ngIf="p.key === 'timeLapse'">
+                                    <td>
+                                      {{returnSpan(p.value)}}
+                                    </td>
+                                  </ng-container>
+                                </ng-container>
                               </ng-container>
                             </ng-container>
                           </ng-container>
                         </ng-container>
                       </ng-container>
-                    </ng-container>
+                    </tr>
                   </ng-container>
-                </tr>
+                </ng-container>
               </ng-container>
             </ng-container>
           </ng-container>
