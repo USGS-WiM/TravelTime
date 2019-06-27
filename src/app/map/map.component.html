@@ -38,8 +38,9 @@
         <mat-expansion-panel-header>
           MAP LAYERS
         </mat-expansion-panel-header>
-        <div id="example"> <!--Here the layer control menu will be added-->
-        
+        <div id="example">
+          <!--Here the layer control menu will be added-->
+
         </div>
       </mat-expansion-panel>
 
@@ -76,10 +77,10 @@
 
           <div class="divider"></div>
 
-          <mat-spinner-button [options]="spinnerButtonOptions_upstream"
+          <!--<mat-spinner-button [options]="spinnerButtonOptions_upstream"
                               (btnClick)="getUpstream()">
             Trace upstream from point of interest
-          </mat-spinner-button>
+          </mat-spinner-button>-->
 
 
         </div>
@@ -107,16 +108,14 @@
 
   </div>
 
-  <div class="map-wrapper" id ="mapid"
+  <div class="map-wrapper" id="mapid"
        leaflet style="height: 100vh;"
        [leafletOptions]="options"
        [leafletLayersControl]="layersControl"
        [leafletLayers]="markers"
-       [(leafletCenter)]= "center"
+       [(leafletCenter)]="center"
        (leafletClick)="addMarker($event)"
-       [(leafletZoom)] ="zoom"
+       [(leafletZoom)]="zoom"
        (leafletMapReady)="onMapReady($event)">
   </div>
 </div>
-
-

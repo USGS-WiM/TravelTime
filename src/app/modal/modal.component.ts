@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatProgressSpinnerModule } from '@angular/material';
 import { reach } from '../reach';
@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material';
 import { PrintService } from '../services/print.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MapService } from '../services/map.service';
+import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -15,6 +16,13 @@ import { MapService } from '../services/map.service';
 })
 
 export class ModalComponent implements OnInit {
+  @ViewChild('acc') accordion: NgbAccordion;
+  model = {};
+  currentStep = 0;
+
+  beforeChange($event: NgbPanelChangeEvent) {
+    this.currentStep = +($event.panelId);
+  };
 
   mylist = [];
   reach_reference: reach;
