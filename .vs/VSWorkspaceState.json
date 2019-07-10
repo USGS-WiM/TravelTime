@@ -3,14 +3,13 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\contents",
+    "\\src\\app\\date-time-picker",
     "\\src\\app\\leftbar",
     "\\src\\app\\map",
-    "\\src\\app\\modal",
     "\\src\\app\\services",
-    "\\src\\app\\shared",
-    "\\src\\assets",
-    "\\src\\assets\\img"
+    "\\src\\app\\shared"
   ],
-  "SelectedNode": "\\src\\app\\app.component.spec.ts",
+  "SelectedNode": "\\src\\app\\map\\map.component.ts",
   "PreviewInSolutionExplorer": false
 }
