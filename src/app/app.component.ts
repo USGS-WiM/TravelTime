@@ -12,10 +12,10 @@ export class AppComponent {
   mod_accordion: Object;
   constructor(public dialog: MatDialog) {}
 
-  openDialog() {
-    let dialog = this.dialog.open(ModalComponent, {
-      width: '60%',
-      height: '90%'
-    });
-  }
+  //openDialog() {
+  //  let dialog = this.dialog.open(ModalComponent, {
+  //    width: '80%',
+  //    height: '90%'
+  //  });
+  //}
 }

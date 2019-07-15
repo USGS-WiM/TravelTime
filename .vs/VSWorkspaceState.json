@@ -8,9 +8,8 @@
     "\\src\\app\\modal",
     "\\src\\app\\services",
     "\\src\\app\\shared",
-    "\\src\\assets",
-    "\\src\\assets\\img"
+    "\\src\\assets"
   ],
-  "SelectedNode": "\\src\\app\\app.component.spec.ts",
+  "SelectedNode": "\\src\\app\\services\\get-navigation.service.ts",
   "PreviewInSolutionExplorer": false
 }

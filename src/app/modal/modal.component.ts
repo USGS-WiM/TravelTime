@@ -153,26 +153,28 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  getUnits(shortname): any {
-    try {
-      switch (shortname) {
-        case 'sf':
-          return 'Streamflow (cubic feet per second)';
-        case 'drnarea':
-          return 'Drainage area (square miles)';
-        case 'l':
-          return 'Reach length (meters)';
-        case 'lc':
-          return 'Trailing Edge Concentration (mg/L)';
-        case 'pc':
-          return 'Peak Concentration (mg/L)';
-        case 'tc':
-          return 'Trailing Edge Concentration (mg/L)';
-      }//end switch
-    } catch (e) {
-      var x = e;
-    }
-  }
+  //getUnits(shortname): any {
+  //  try {
+  //    switch (shortname) {
+  //      case 'sf':
+  //        return 'Streamflow (cubic feet per second)';
+  //      case 'drnarea':
+  //        return 'Drainage area (square miles)';
+  //      case 'l':
+  //        return 'Reach length (meters)';
+  //      case 'lc':
+  //        return 'Leading Edge Concentration (mg/L)';
+  //      case 'pc':
+  //        return 'Peak Concentration (mg/L)';
+  //      case 'tc':
+  //        return 'Trailing Edge Concentration (mg/L)';
+  //      case 'v':
+  //        return 'Velocity (meters per second)'
+  //    }//end switch
+  //  } catch (e) {
+  //    var x = e;
+  //  }
+  //}
 
   returnSpan(spanstring) {
     let cleanspan = spanstring;
