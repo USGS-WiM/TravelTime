@@ -4,9 +4,7 @@ import { GetNavigationService } from '../services/get-navigation.service';
 import { MapService } from '../services/map.service';
 import {site, parameters} from '../site';
 import {myfunctions} from '../shared/myfunctions';
-import { Observable, of } from 'rxjs';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
-import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material';
 import 'leaflet-search-control';//plugin functions
@@ -104,6 +102,7 @@ export class MapComponent extends myfunctions implements OnInit {
   sites_downstream = [];
   fitBounds: any = null;
   marker_sites = [];
+  nodemarker = [];
 
   newFunc() {
     // Create the control and add it to the map;
@@ -123,7 +122,10 @@ export class MapComponent extends myfunctions implements OnInit {
         this.markers.splice(0, 1)
       }
     }
+
     const marker = new L.marker([e.latlng.lat, e.latlng.lng], {
+      draggable: true,
+      autoPan: true,
       icon: L.icon({
         iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -204,18 +206,21 @@ export class MapComponent extends myfunctions implements OnInit {
             "weight": 3,
             "opacity": 0.60
           }
-          var lineArray = this._MapService.addPolyLine(data);
-          polyline = L.geoJSON(lineArray, { style: myStyle });
+          this._MapService.addPolyLine(data);
+          console.log(this._MapService.streamArray);
+          polyline = L.geoJSON(this._MapService.streamArray, { style: myStyle });
           this.markers.push(polyline);
           this.spinnerButtonOptions_downstream.active = false;
         }
         this.markers.push(myreturn);
         this.fitBounds = L.latLngBounds(this.markers);
-
         var featureGroup = L.featureGroup(this.markers);
         this.fitBounds = featureGroup.getBounds();
         this.center = this.fitBounds.getCenter();
         this.zoom = 8;
+        for (var i = 0; i < this._MapService.streamArray.length; i++) {
+          this.markers.push(this._MapService.lastnode[i])
+        }
       }
     );
   }

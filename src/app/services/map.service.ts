@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { site } from '../site';
 import { latLng, tileLayer, Layer } from 'leaflet';
-import {POINT} from '../reach';
 import * as L from "leaflet";
 import { myfunctions } from '../shared/myfunctions'; 
-import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +17,8 @@ export class MapService extends myfunctions {
 
   public gagesUpstreamArray = [];
   public gagesDownstreamArray = [];
+
+  public lastnode = [];
 
 
   constructor() {
@@ -103,13 +101,22 @@ export class MapService extends myfunctions {
     while (this.streamArray.length != 0) {
       this.streamArray.splice(0, 1)
     }
-    for (var i = 1; i < data['features'].length; i++) {
+    for (var i = 0; i < data['features'].length; i++) {
       if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
         var polylinePoints = this.deepCopy(data['features'][i]);
         this.streamArray.push(polylinePoints);
+        var temppoint = polylinePoints.geometry.coordinates[polylinePoints.geometry.coordinates.length - 1]
+        if (typeof polylinePoints.properties.nhdplus_comid === 'undefined') { } else {
+          const marker = new L.circle([temppoint[1], temppoint[0]], {
+            color: 'orange',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 100
+          }).bindPopup('Reach COMID ' + polylinePoints.properties.nhdplus_comid);
+            this.lastnode.push(marker)
+        }
       }
     }
-    console.log(this.streamArray);
     return (this.streamArray);
   }
 
