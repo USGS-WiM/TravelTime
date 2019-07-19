@@ -18,6 +18,8 @@ import 'leaflet-search';
 
 export class MapComponent extends myfunctions implements OnInit {
 
+  private map: L.map;
+
   constructor(
     public dialog: MatDialog,
     private _GetNavigationService: GetNavigationService,
@@ -49,6 +51,33 @@ export class MapComponent extends myfunctions implements OnInit {
       container: 'findbox'
     });
     search.addTo(map);
+    this.map = map;
+  }
+
+  step = 0;
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+  }
+
+  prevStep() {
+    this.step--;
+  }
+
+  handleEvent(map: L.map) {
+    if (typeof this.map === 'undefined') { } else {
+      if (this.map.getZoom() <= 8) {
+        this.setStep(0)
+      } else if (this.map.getZoom() > 8) {
+        this.setStep(1)
+      } else {
+        this.setStep (0)
+      }
+    }
   }
 
   openDialog() {
@@ -218,7 +247,7 @@ export class MapComponent extends myfunctions implements OnInit {
         this.fitBounds = featureGroup.getBounds();
         this.center = this.fitBounds.getCenter();
         this.zoom = 8;
-        for (var i = 0; i < this._MapService.streamArray.length; i++) {
+        for (var i = 0; i < this._MapService.lastnode.length; i++) {
           this.markers.push(this._MapService.lastnode[i])
         }
       }

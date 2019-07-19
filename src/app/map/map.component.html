@@ -44,7 +44,7 @@
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded] ="step === 0" (opened) ="setStep (0)">
         <mat-expansion-panel-header>
           SELECT SPILL LOCATION
         </mat-expansion-panel-header>
@@ -87,7 +87,7 @@
 
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
         <mat-expansion-panel-header>
           CURRENT JOBSON
         </mat-expansion-panel-header>
@@ -115,7 +115,8 @@
        [leafletLayers]="markers"
        [(leafletCenter)]="center"
        (leafletClick)="addMarker($event)"
-       [(leafletZoom)]="zoom"
+       (leafletMapMoveEnd) ="handleEvent ('mapMoveEnd', $event)"
+       (leafletMapZoomEnd) ="handleEvent ('mapMoveEnd', $event)"
        (leafletMapReady)="onMapReady($event)">
   </div>
 </div>
