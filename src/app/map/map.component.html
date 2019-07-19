@@ -59,7 +59,7 @@
 
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
         <mat-expansion-panel-header>
           IDENTIFY POINT(S) OF INTEREST
         </mat-expansion-panel-header>
@@ -77,23 +77,22 @@
 
           <div class="divider"></div>
 
-          <!--<mat-spinner-button [options]="spinnerButtonOptions_upstream"
+          <mat-spinner-button [options]="spinnerButtonOptions_upstream"
                               (btnClick)="getUpstream()">
             Trace upstream from point of interest
-          </mat-spinner-button>-->
+          </mat-spinner-button>
 
 
         </div>
 
       </mat-expansion-panel>
 
-      <mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
+      <mat-expansion-panel >
         <mat-expansion-panel-header>
           CURRENT JOBSON
         </mat-expansion-panel-header>
 
         <button mat-raised-button (click)="openDialog()">Jobsons</button>
-
       </mat-expansion-panel>
 
 
@@ -115,8 +114,7 @@
        [leafletLayers]="markers"
        [(leafletCenter)]="center"
        (leafletClick)="addMarker($event)"
-       (leafletMapMoveEnd) ="handleEvent ('mapMoveEnd', $event)"
-       (leafletMapZoomEnd) ="handleEvent ('mapMoveEnd', $event)"
+       (leafletMapZoomEnd) ="handleEvent ('mapZoomEnd', $event)"
        (leafletMapReady)="onMapReady($event)">
   </div>
 </div>

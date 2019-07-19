@@ -34,7 +34,7 @@ export class MapComponent extends myfunctions implements OnInit {
     //this.newFunc(); moving layers control to the sidebar
   }
 
-  onMapReady(map: L.Map) {
+  onMapReady(map: L.map) {
     var search = L.control.search({
       url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
       placeholder: 'Search',
@@ -72,11 +72,26 @@ export class MapComponent extends myfunctions implements OnInit {
     if (typeof this.map === 'undefined') { } else {
       if (this.map.getZoom() <= 8) {
         this.setStep(0)
+        this.checkZoom(this.map.getZoom(), this.markers)
       } else if (this.map.getZoom() > 8) {
         this.setStep(1)
+        if (this.markers.length < 1) {
+        } else {
+          this.checkZoom (this.map.getZoom(), this.markers)
+        }
       } else {
         this.setStep (0)
       }
+    }
+  }
+
+  checkZoom(zoom, markers) {
+    if (zoom > 8 && markers.length > 0) { //if there are more than 1 markers, zoom on
+      this.spinnerButtonOptions_downstream.disabled = false;
+      this.spinnerButtonOptions_upstream.disabled = false;
+    } else {
+      this.spinnerButtonOptions_downstream.disabled = true;
+      this.spinnerButtonOptions_upstream.disabled = true;
     }
   }
 
@@ -124,7 +139,7 @@ export class MapComponent extends myfunctions implements OnInit {
       center: this.center
   };
 
-  markers: L.Layer [] = [];
+  markers: L.layer [] = [];
   Site_reference: site;
   results = [];
   sites_upstream = [];
@@ -145,28 +160,32 @@ export class MapComponent extends myfunctions implements OnInit {
   }
 
   addMarker(e) {
-    let mySite = new site ([this.Site_reference]);
-    if (this.markers.length>0){
-      while (this.markers.length != 0) {
-        this.markers.splice(0, 1)
+    if (this.map.getZoom() > 8) {
+      let mySite = new site([this.Site_reference]);
+      if (this.markers.length > 0) {
+        while (this.markers.length != 0) {
+          this.markers.splice(0, 1)
+        }
       }
-    }
+      const marker = new L.marker([e.latlng.lat, e.latlng.lng], {
+        draggable: true,
+        autoPan: true,
+        icon: L.icon({
+          iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        })
+      }).on('click', this.swapElement(mySite['mylist'], 2, 3));
+      this.markers.push(marker);
+      this.checkZoom(this.map.getZoom(), this.markers)
+      this._MapService.myPoint = marker;
+      this._MapService.result = mySite;
+    } else {
 
-    const marker = new L.marker([e.latlng.lat, e.latlng.lng], {
-      draggable: true,
-      autoPan: true,
-      icon: L.icon({
-        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      })
-    }).on('click', this.swapElement(mySite['mylist'], 2, 3));
-    this.markers.push(marker);
-    this._MapService.myPoint = marker;
-    this._MapService.result = mySite;
+    }
   }
 
   spinnerButtonOptions_downstream: MatProgressButtonOptions = {
@@ -236,18 +255,17 @@ export class MapComponent extends myfunctions implements OnInit {
             "opacity": 0.60
           }
           this._MapService.addPolyLine(data);
-          console.log(this._MapService.streamArray);
           polyline = L.geoJSON(this._MapService.streamArray, { style: myStyle });
           this.markers.push(polyline);
-          this.spinnerButtonOptions_downstream.active = false;
         }
         this.markers.push(myreturn);
+        this.spinnerButtonOptions_downstream.active = false;
         this.fitBounds = L.latLngBounds(this.markers);
         var featureGroup = L.featureGroup(this.markers);
         this.fitBounds = featureGroup.getBounds();
         this.center = this.fitBounds.getCenter();
         this.zoom = 8;
-        for (var i = 0; i < this._MapService.lastnode.length; i++) {
+        for (var i = 0; i < this._MapService.streamArray.length; i++) {
           this.markers.push(this._MapService.lastnode[i])
         }
       }
