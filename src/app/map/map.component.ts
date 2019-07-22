@@ -7,7 +7,6 @@ import {myfunctions} from '../shared/myfunctions';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material';
-import 'leaflet-search-control';//plugin functions
 import 'leaflet-search';
 
 @Component({
@@ -218,14 +217,14 @@ export class MapComponent extends myfunctions implements OnInit {
     this.spinnerButtonOptions_upstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['gage'], 100);
+    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['gage'], 1000);
   }
 
   getDownstream() {
     this.spinnerButtonOptions_downstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['gage', 'flowline'], 100);
+    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['gage', 'flowline'], 1000);
   }
  
   onMarkerClick(e, lat, lng, cond, option, len) {
