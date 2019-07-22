@@ -1,66 +1,32 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
-export interface DialogData {
-  jobson: {
-    location: [];
-    volume: number;
-    distance: number;
-    locationDS: [];
-    DA: number;
-    discharge: number;
-    MAFlow: number;
-    slope: number;
-  };
-}
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import {ModalComponent} from '../modal/modal.component';
+import {MapComponent} from '../map/map.component';
 
 @Component({
   selector: 'app-leftbar',
   templateUrl: './leftbar.component.html',
-  styleUrls: ['./leftbar.component.css']
+  styleUrls: ['./leftbar.component.css'],
+  providers: [MapComponent]
 })
+
+
 export class LeftbarComponent {
-  title = 'Time of Travel';
-
-  location: [];
-  volume: number;
-  distance: number;
-  locationDS: [];
-  flow: number;
-  discharge: number;
-  MAflow: number;
-  slope: number;
-
-
-  constructor(public dialog: MatDialog) { }
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ReachConfigModal, {
-      width: '500px',
-      data: { location: this.location, volume: this.volume }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.volume = result;
-    });
-  }
-}
-
-@Component({
-  selector: '../modal/modal.component',
-  templateUrl: '../modal/modal.component.html',
-  styleUrls: ['../modal/modal.component.css']
-})
-export class ReachConfigModal {
-
   constructor(
-    public dialogRef: MatDialogRef<ReachConfigModal>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    public dialog: MatDialog,
+    private _MapComponent: MapComponent
+  ) { }
 
-  onNoClick(): void {
-    this.dialogRef.close();
+
+
+  getUpstream() {
+    this._MapComponent.getUpstream();
   }
+
+  getDownstream() {
+    this._MapComponent.getDownstream();
+  }
+
 }
 
 

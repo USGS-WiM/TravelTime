@@ -9,7 +9,7 @@
         <label>Initial time:</label><br />
         <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
         <!--<input [(ngModel)]="ini_time" type=number required placeholder="Value" name="initime">
-    <app-contents [ini_time]="ini_time"></app-contents><br />-->
+        <app-contents [ini_time]="ini_time"></app-contents><br />-->
       </div>
       <div style="width:49%; float:right;">
         <label>Initial concentration:</label><br />
@@ -20,8 +20,12 @@
       <button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
       <br /><br />
       <div id="panel-group">
-        <ngb-accordion #acc="ngbAccordion"> <!--closeOthers="true"-->
-          <ngb-panel *ngFor="let item of mylist; let i = index">
+
+        <!-- Accordion starts here -->
+        <ngb-accordion #acc="ngbAccordion" (panelChange)="beforeChange($event)">
+
+          <ngb-panel *ngFor="let item of mylist; let i = index" id="{{i}}">
+
             <ng-template ngbPanelHeader>
               <div class="d-flex align-items-center justify-content-between">
                 <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
@@ -33,36 +37,61 @@
 
             <!--Name input-->
             <ng-template ngbPanelContent>
-              <div *ngFor="let k of item | keyvalue;  let i = index; trackBy:customTrackBy">
+              <div *ngFor="let k of item | keyvalue;  let it1 = index; trackBy:customTrackBy">
                 <div *ngIf="k.key === 'name'">
+                  <!-- don't do anything with input condition-->
                   <label>{{getLabel(k.key)}}</label>
-                  <div>
-                    <input [(ngModel)]="k.value" placeholder="value" name="name"
-                           type="text" ngControl="value" ngMaxlength="25" [(ngModel)]='item.name' autocomplete="off">
+                  <div *ngIf="i === currentStep; else disable">
+                    <input [(ngModel)]='item.name' placeholder="Name" name="name"
+                           type="text" ngControl="value" ngMaxlength="25" autocomplete="off">
                   </div>
+                  <ng-template #disable>
+                    <input [value]="item.name" placeholder="Name"
+                           type="text">
+                  </ng-template>
+
+
                 </div>
               </div>
+
               <!--Description input-->
-              <div *ngFor="let k of item | keyvalue; let i = index; trackBy:customTrackBy">
+              <div *ngFor="let k of item | keyvalue; let it2 = index; trackBy:customTrackBy">
                 <div *ngIf="k.key === 'description'">
                   <label>{{getLabel(k.key)}}</label>
-                  <div>
+                  <div *ngIf="i === currentStep; else disable">
                     <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}"
-                           type="text" ngControl="value" ngMaxlength="50" [(ngModel)]='item.description' autocomplete="off">
+                           type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
                   </div>
+                  <ng-template #disable>
+                    <input [value]="k.value" placeholder="Name"
+                           type="text">
+                  </ng-template>
                 </div>
               </div>
+
               <!--Parameters input-->
-              <div *ngFor="let pars of item.parameters;  let i = index; trackBy:customTrackBy">
+              <div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy">
                 <label>{{pars.name}} ({{pars.unit.unit}}):</label>
-                <div *ngIf="pars.required === true">
-                  <input [(ngModel)]="pars.value" placeholder="value" name="{{pars.name}}" id="paramR"
-                         type=number ngControl="value" required [(ngModel)]='item.parameters[i].value' autocomplete="off">
+                <div *ngIf="i === currentStep; else disable">
+                  <div *ngIf="pars.required === true">
+                    <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
+                           type=number ngControl="value" required autocomplete="off">
+                  </div>
+                  <div *ngIf="pars.required === false">
+                    <input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                           type=number ngControl="value" autocomplete="off">
+                  </div>
                 </div>
-                <div *ngIf="pars.required === false">
-                  <input [(ngModel)]="pars.value" placeholder="value" name="{{pars.name}}"
-                         type=number ngControl="value" [(ngModel)]='item.parameters[i].value' autocomplete="off">
-                </div>
+                <ng-template #disable>
+                  <div *ngIf="pars.required === true">
+                    <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                           type=number ngControl="value" required autocomplete="off">
+                  </div>
+                  <div *ngIf="pars.required === false">
+                    <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                           type=number ngControl="value" autocomplete="off">
+                  </div>
+                </ng-template>
               </div>
             </ng-template>
           </ngb-panel>
@@ -82,68 +111,81 @@
 <div *ngIf="showResult === true">
   <!--Begin Most Probable Results Table-->
   <div *ngFor="let element of output">
-    <h3>{{ini_mass}} kg Spill occuring {{ element.initialTimeStamp | date:'medium' }}</h3>
+    <h3>{{ini_mass}} kg Spill Occuring {{ element.initialTimeStamp | date:'medium' }}</h3>
     <div style="border: solid #cccccc 1px; border-radius: 15px; padding: 4px 4px 4px 4px;">
       <h4>Most Probable</h4>
       <table class="small">
         <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
           <th>Name</th>
-          <th matTooltip="{{getUnits(sf)}}">Streamflow</th>
-          <th matTooltip="{{getUnits(drnarea)}}">DRNAREA</th>
-          <th matTooltip="{{getUnits(l)}}">Reach Length</th>
-          <th matTooltip="{{getUnits(lc)}}">L Conc</th>
-          <th>L Time</th>
-          <th>L Time Span</th>
-          <th matTooltip="{{getUnits(pc)}}">Peak Conc</th>
-          <th>Peak Time</th>
-          <th>Peak Time Span</th>
-          <th matTooltip="{{getUnits(tc)}}">T Conc</th>
-          <th>T Time</th>
-          <th>T Time Span</th>
+          <th title="Streamflow (cubic feet per second)">Q</th>
+          <th title="Drainage area (square miles)">D<sub>a</sub></th>
+          <th title="Reach length (meters)">L</th>
+          <th title="Velocity (meters per second)">V</th>
+          <th title="Traveltime of the leading edge">T<sub>l</sub></th>
+          <th title="Time span of leading edge">T<sub>l</sub> Span</th>
+          <th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
+          <th title="Traveltime of the peak">T<sub>p</sub></th>
+          <th title="Time span of the peak">T<sub>p</sub> Span</th>
+          <th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
+          <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
+          <th title="Time span of trailing edge">T<sub>d10</sub> Span</th>
         </tr>
         <ng-container *ngFor="let v of element | keyvalue">
           <ng-container *ngIf="v.key === 'reaches'">
             <ng-container *ngFor="let reach of v.value | keyvalue">
               <ng-container *ngIf="reach.key !== '0'">
-                <tr>
-                  <td>Reach {{reach.key}}</td>
-                  <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
-                    <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                    <ng-container *ngIf="pars.name === 'Drainage area'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                    <ng-container *ngIf="pars.name === 'Distance'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                  </ng-container>
-                  <ng-container *ngFor="let items of reach.value | keyvalue">
-                    <ng-container *ngIf="items.key === 'result'">
-                      <ng-container *ngFor="let edge of items.value | keyvalue">
-                        <ng-container *ngFor="let prob of edge.value | keyvalue">
-                          <ng-container *ngIf="prob.key === 'MostProbable'">
-                            <ng-container *ngFor="let p of prob.value | keyvalue">
-                              <ng-container *ngIf="p.key === 'concentration'">
-                                <td>{{p.value.toFixed(2)}}</td>
+                <ng-container *ngFor="let comid of reach.value | keyvalue">
+                  <ng-container *ngIf="comid.key === 'name'">
+                    <tr>
+                      <td>{{comid.value}}</td>
+                      <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
+                        <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="pars.name === 'Drainage area'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="pars.name === 'Distance'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngFor="let items of reach.value | keyvalue">
+                        <ng-container *ngIf="items.key === 'result'">
+                          <ng-container *ngFor="let response of items.value | keyvalue">
+                            <ng-container *ngIf="response.key === 'equations'">
+                              <ng-container *ngFor="let equation of response.value | keyvalue">
+                                <ng-container *ngIf="equation.key === 'vmax'">
+                                  <td>{{equation.value.value.toFixed(2)}}</td>
+                                </ng-container>
                               </ng-container>
-                              <ng-container *ngIf="p.key === 'time'">
-                                <td>
-                                  {{ p.value | date:'short' }}
-                                </td>
-                              </ng-container>
-                              <ng-container *ngIf="p.key === 'timeLapse'">
-                                <td>
-                                  {{returnSpan(p.value)}}
-                                </td>
+                            </ng-container>
+                            <ng-container *ngFor="let edge of response.value | keyvalue">
+                              <ng-container *ngFor="let prob of edge.value | keyvalue">
+                                <ng-container *ngIf="prob.key === 'MostProbable'">
+                                  <ng-container *ngFor="let p of prob.value | keyvalue">
+                                    <ng-container *ngIf="p.key === 'concentration' && edge.key !== 'leadingEdge'">
+                                      <td>&nbsp;&nbsp;{{p.value.toFixed(2)}}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="p.key === 'time'">
+                                      <td>
+                                        {{p.value | date:'short'}}
+                                      </td>
+                                    </ng-container>
+                                    <ng-container *ngIf="p.key === 'timeLapse'">
+                                      <td>
+                                        {{returnSpan(p.value)}}
+                                      </td>
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
                               </ng-container>
                             </ng-container>
                           </ng-container>
                         </ng-container>
                       </ng-container>
-                    </ng-container>
+                    </tr>
                   </ng-container>
-                </tr>
+                </ng-container>
               </ng-container>
             </ng-container>
           </ng-container>
@@ -159,62 +201,75 @@
       <table class="small">
         <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
           <th>Name</th>
-          <th matTooltip="{{getUnits(sf)}}">Streamflow</th>
-          <th matTooltip="{{getUnits(drnarea)}}">DRNAREA</th>
-          <th matTooltip="{{getUnits(l)}}">Reach Length</th>
-          <th matTooltip="{{getUnits(lc)}}">L Conc</th>
-          <th>L Time</th>
-          <th>L Time Span</th>
-          <th matTooltip="{{getUnits(pc)}}">Peak Conc</th>
-          <th>Peak Time</th>
-          <th>Peak Time Span</th>
-          <th matTooltip="{{getUnits(tc)}}">T Conc</th>
-          <th>T Time</th>
-          <th>T Time Span</th>
+          <th title="Streamflow (cubic feet per second)">Q</th>
+          <th title="Drainage area (square miles)">D<sub>a</sub></th>
+          <th title="Reach length (meters)">L</th>
+          <th title="Velocity (meters per second)">V</th>
+          <th title="Traveltime of the leading edge">T<sub>l</sub></th>
+          <th title="Time span of leading edge">T<sub>l</sub> Span</th>
+          <th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
+          <th title="Traveltime of the peak">T<sub>p</sub></th>
+          <th title="Time span of the peak">T<sub>p</sub> Span</th>
+          <th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
+          <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
+          <th title="Time span of trailing edge">T<sub>d10</sub> Span</th>
         </tr>
         <ng-container *ngFor="let v of element | keyvalue">
           <ng-container *ngIf="v.key === 'reaches'">
             <ng-container *ngFor="let reach of v.value | keyvalue">
               <ng-container *ngIf="reach.key !== '0'">
-                <tr>
-                  <td>Reach {{reach.key}}</td>
-                  <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
-                    <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                    <ng-container *ngIf="pars.name === 'Drainage area'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                    <ng-container *ngIf="pars.name === 'Distance'">
-                      <td>{{pars.value}}</td>
-                    </ng-container>
-                  </ng-container>
-                  <ng-container *ngFor="let items of reach.value | keyvalue">
-                    <ng-container *ngIf="items.key === 'result'">
-                      <ng-container *ngFor="let edge of items.value | keyvalue">
-                        <ng-container *ngFor="let prob of edge.value | keyvalue">
-                          <ng-container *ngIf="prob.key === 'MaximumProbable'">
-                            <ng-container *ngFor="let p of prob.value | keyvalue">
-                              <ng-container *ngIf="p.key === 'concentration'">
-                                <td>&nbsp;&nbsp;{{p.value.toFixed(2)}}</td>
+                <ng-container *ngFor="let comid of reach.value | keyvalue">
+                  <ng-container *ngIf="comid.key === 'name'">
+                    <tr>
+                      <td>{{comid.value}}</td>
+                      <ng-container *ngFor="let pars of mylist[getReach(reach.key)].parameters">
+                        <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="pars.name === 'Drainage area'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="pars.name === 'Distance'">
+                          <td>{{pars.value}}</td>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngFor="let items of reach.value | keyvalue">
+                        <ng-container *ngIf="items.key === 'result'">
+                          <ng-container *ngFor="let response of items.value | keyvalue">
+                            <ng-container *ngIf="response.key === 'equations'">
+                              <ng-container *ngFor="let equation of response.value | keyvalue">
+                                <ng-container *ngIf="equation.key === 'vmax'">
+                                  <td>{{equation.value.value.toFixed(2)}}</td>
+                                </ng-container>
                               </ng-container>
-                              <ng-container *ngIf="p.key === 'time'">
-                                <td>
-                                  {{p.value | date:'short'}}
-                                </td>
-                              </ng-container>
-                              <ng-container *ngIf="p.key === 'timeLapse'">
-                                <td>
-                                  {{returnSpan(p.value)}}
-                                </td>
-                              </ng-container>
+                            </ng-container>
+                            <ng-container *ngFor="let edge of response.value | keyvalue">
+                              <ng-container *ngFor="let prob of edge.value | keyvalue">
+                                <ng-container *ngIf="prob.key === 'MaximumProbable'">
+                                  <ng-container *ngFor="let p of prob.value | keyvalue">
+                                    <ng-container *ngIf="p.key === 'concentration' && edge.key !== 'leadingEdge'">
+                                      <td>&nbsp;&nbsp;{{p.value.toFixed(2)}}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="p.key === 'time'">
+                                      <td>
+                                        {{p.value | date:'short'}}
+                                      </td>
+                                    </ng-container>
+                                    <ng-container *ngIf="p.key === 'timeLapse'">
+                                      <td>
+                                        {{returnSpan(p.value)}}
+                                      </td>
+                                    </ng-container>
+                                  </ng-container>
+                                </ng-container>
+                              </ng-container>                          
                             </ng-container>
                           </ng-container>
                         </ng-container>
                       </ng-container>
-                    </ng-container>
+                    </tr>
                   </ng-container>
-                </tr>
+                </ng-container>
               </ng-container>
             </ng-container>
           </ng-container>

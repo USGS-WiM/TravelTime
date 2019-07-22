@@ -3,13 +3,14 @@
   font-weight: 200;
   background-color: #F9F9F9;
 }
+
 .ng-invalid[required] {
   border: 1px solid orange;
 }
 
 /*.ng-valid {
   border: 1px solid #42A948; 
-}*//* green */
+}*/ /* green */
 
 .remove_bt {
   flex: 1 1 auto;
@@ -20,27 +21,28 @@ button.main {
 }
 
 button.mainR {
-  width:200px;
-  float:right;
+  width: 200px;
+  float: right;
 }
 
 button.title {
-  text-decoration-line:unset;
+  text-decoration-line: unset;
 }
 
 .center {
   text-align: center;
 }
+
 .btn-wrapper {
-  margin-left:auto;
-  margin-right:auto;
-  width:auto;
-  display:inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  display: inline-block;
 }
 
 .btn-results {
   margin-left: 5px;
-  width:200px;
+  width: 200px;
 }
 
 .loading {
@@ -55,7 +57,7 @@ button.title {
 }
 
 table.small {
-  font-size:xx-small;
+  font-size: xx-small;
 }
 
 td, th {

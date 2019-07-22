@@ -1,7 +1,120 @@
+<header>
+  <h3 class='Title'> USGS Time of Travel</h3>
+</header>
+
+<style>
+  #findbox {
+    background: #eee;
+    border-radius: .125em;
+    border: 2px solid #1978cf;
+    box-shadow: 0 0 8px #999;
+    margin-bottom: 10px;
+    padding: 2px 0;
+    width: 250px;
+    height: 26px;
+  }
+
+  .search-tooltip {
+    width: 200px;
+  }
+
+  .leaflet-control-search .search-cancel {
+    position: static;
+    float: left;
+    margin-left: -22px;
+  }
+</style>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
-<div class="map-wrapper">
-  <div id="map">
+<link rel="stylesheet" href="/assets/leaflet/leaflet-search.css" />
 
+<div class="main">
+  <!-- Side navigation -->
+  <div class="sidenav">
+    <mat-accordion>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          MAP LAYERS
+        </mat-expansion-panel-header>
+        <div id="example">
+          <!--Here the layer control menu will be added-->
+
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded] ="step === 0" (opened) ="setStep (0)">
+        <mat-expansion-panel-header>
+          SELECT SPILL LOCATION
+        </mat-expansion-panel-header>
+
+        <div class="shadowtext">
+          1: Use the map or the search tool to identify a feature
+          of interest. At zoom level 10 or greater spill location selection
+          will be enabled.
+        </div>
+
+        <div id="findbox"></div>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
+        <mat-expansion-panel-header>
+          IDENTIFY POINT(S) OF INTEREST
+        </mat-expansion-panel-header>
+
+        <div class="shadowtext">You have zoomed in sufficiently to select a spill location or downstream point of interest.</div>
+
+        <div class="footer">Choose an option below to select a trace method.</div>
+
+        <div style="text-align: left">
+
+          <mat-spinner-button [options]="spinnerButtonOptions_downstream"
+                              (btnClick)="getDownstream()">
+            Trace downstream from spill location
+          </mat-spinner-button>
+
+          <div class="divider"></div>
+
+          <mat-spinner-button [options]="spinnerButtonOptions_upstream"
+                              (btnClick)="getUpstream()">
+            Trace upstream from point of interest
+          </mat-spinner-button>
+
+
+        </div>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel >
+        <mat-expansion-panel-header>
+          CURRENT JOBSON
+        </mat-expansion-panel-header>
+
+        <button mat-raised-button (click)="openDialog()">Jobsons</button>
+      </mat-expansion-panel>
+
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          BUILD A REPORT
+        </mat-expansion-panel-header>
+        This the expansion 2 content
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+  </div>
+
+  <div class="map-wrapper" id="mapid"
+       leaflet style="height: 100vh;"
+       [leafletOptions]="options"
+       [leafletLayersControl]="layersControl"
+       [leafletLayers]="markers"
+       [(leafletCenter)]="center"
+       (leafletClick)="addMarker($event)"
+       (leafletMapZoomEnd) ="handleEvent ('mapZoomEnd', $event)"
+       (leafletMapReady)="onMapReady($event)">
   </div>
 </div>

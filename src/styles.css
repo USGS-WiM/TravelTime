@@ -1,4 +1,4 @@
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @charset "UTF-8";
 
 body {
@@ -14,7 +14,6 @@ body {
   font-size: 8pt;
   float: right;
 }
-
 .loading {
   margin: 0 auto;
   zoom: 0.5;
@@ -40,12 +39,15 @@ body {
 .form-group {
   border-color: $danger;
 }
+
 .form-control {
   border-color: $danger;
 }
-  .ng-invalid {
+
+.ng-invalid {
   border-color: $danger;
 }
+
 
 @font-face {
   font-family: Roboto;
@@ -4057,15 +4059,18 @@ h3 {
 }
 
 h4 {
-  font-size: 17px;
-  line-height: 24px;
-  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.14285714em;
+  margin-bottom: 1.14285714em;
+  letter-spacing: -.025em;
   font-style: italic;
+  font-weight: 600;
 }
 
 h5 {
   font-size: 17px;
   line-height: 24px;
+  margin-bottom: 18px;
   font-weight: 400;
 }
 
@@ -5046,6 +5051,14 @@ ul {
   font-size: 16px;
   letter-spacing: .5px;
   text-align: center;
+}
+
+hr {
+  display: block;
+  width: 100%;
+  border: none;
+  border-bottom: 1px dashed rgba(16,21,44,.3);
+  margin: 35px 0;
 }
 
 .overflowtext {
