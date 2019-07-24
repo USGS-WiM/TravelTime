@@ -20,7 +20,7 @@
 
 .divider {
   width: auto;
-  height: 5px;
+  height: 1px;
   display: inline-block;
 }
 
@@ -63,9 +63,10 @@ header {
   padding: 12px 12px;
   margin-left: 0;
   margin-right: 0;
+  margin-bottom: 1em;
   font-family: 'Roboto';
-  font-size: 14px;
-  background-color: darkgrey;
+  font-size: 13px;
+  background-color: #DDDDDD;
 }
 
 .footer {
@@ -145,11 +146,11 @@ header {
   float: right;
 }
 
-.gray {
+/*.gray {
   color: gray;
 }
 
 button {
   width: 300px;
-}
+}*/
 

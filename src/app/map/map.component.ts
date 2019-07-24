@@ -69,10 +69,10 @@ export class MapComponent extends myfunctions implements OnInit {
 
   handleEvent(map: L.map) {
     if (typeof this.map === 'undefined') { } else {
-      if (this.map.getZoom() <= 8) {
+      if (this.map.getZoom() <= 9) {
         this.setStep(0)
         this.checkZoom(this.map.getZoom(), this.markers)
-      } else if (this.map.getZoom() > 8) {
+      } else if (this.map.getZoom() > 9) {
         this.setStep(1)
         if (this.markers.length < 1) {
         } else {
@@ -189,28 +189,28 @@ export class MapComponent extends myfunctions implements OnInit {
 
   spinnerButtonOptions_downstream: MatProgressButtonOptions = {
     active: false,
-    text: 'Trace downstream from spill location',
+    text: 'Spill Response',
     spinnerSize: 18,
     raised: true,
     stroked: false,
     buttonColor: 'primary',
     spinnerColor: 'accent',
-    fullWidth: false,
+    fullWidth: true,
     disabled: false,
-    mode: 'indeterminate',
+    mode: 'indeterminate'
   }
 
   spinnerButtonOptions_upstream: MatProgressButtonOptions = {
     active: false,
-    text: 'Trace upstream from point of interest',
+    text: 'Spill Planning',
     spinnerSize: 18,
     raised: true,
     stroked: false,
     buttonColor: 'primary',
     spinnerColor: 'accent',
-    fullWidth: false,
-    disabled: false,
-    mode: 'indeterminate',
+    fullWidth: true,
+    disabled: true,
+    mode: 'indeterminate'
   }
 
   getUpstream() {
@@ -225,6 +225,7 @@ export class MapComponent extends myfunctions implements OnInit {
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
     this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['gage', 'flowline'], 1000);
+    //this.setStep(3);
   }
  
   onMarkerClick(e, lat, lng, cond, option, len) {

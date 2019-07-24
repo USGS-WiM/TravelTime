@@ -44,52 +44,57 @@
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel [expanded] ="step === 0" (opened) ="setStep (0)">
+      <mat-expansion-panel [expanded] ="step === 0 || step === 1">
         <mat-expansion-panel-header>
-          SELECT SPILL LOCATION
+          IDENTIFY AREA
         </mat-expansion-panel-header>
 
-        <div class="shadowtext">
-          1: Use the map or the search tool to identify a feature
-          of interest. At zoom level 10 or greater spill location selection
-          will be enabled.
+        <div *ngIf="step === 0">
+          <div class="shadowtext">
+            <b>Step 1:</b> Use the map or the search tool to identify a feature
+            of interest. At zoom level 10 or greater spill location selection
+            will be enabled.
+          </div>
+
+          <div id="findbox"></div>
         </div>
 
-        <div id="findbox"></div>
+        <div *ngIf="step === 1">
+          <div class="shadowtext">You have zoomed in sufficiently to select a spill location or downstream point of interest.</div>
 
-      </mat-expansion-panel>
+          <div class="footer">Choose an option below to select a trace method.</div>
 
-      <mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
+          <div style="text-align: left">
+
+            <mat-spinner-button [options]="spinnerButtonOptions_downstream"
+                                (btnClick)="getDownstream()">
+              Spill Response
+            </mat-spinner-button>
+            <div class="divider">&nbsp;</div>
+
+            <mat-spinner-button [options]="spinnerButtonOptions_upstream"
+                                (btnClick)="getUpstream()">
+              Spill Planning
+            </mat-spinner-button>
+          </div>
+        </div>
+       </mat-expansion-panel>
+
+      <!--<mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
         <mat-expansion-panel-header>
           IDENTIFY POINT(S) OF INTEREST
         </mat-expansion-panel-header>
 
-        <div class="shadowtext">You have zoomed in sufficiently to select a spill location or downstream point of interest.</div>
 
-        <div class="footer">Choose an option below to select a trace method.</div>
-
-        <div style="text-align: left">
-
-          <mat-spinner-button [options]="spinnerButtonOptions_downstream"
-                              (btnClick)="getDownstream()">
-            Trace downstream from spill location
-          </mat-spinner-button>
-
-          <div class="divider"></div>
-
-          <mat-spinner-button [options]="spinnerButtonOptions_upstream"
-                              (btnClick)="getUpstream()">
-            Trace upstream from point of interest
-          </mat-spinner-button>
 
 
         </div>
 
-      </mat-expansion-panel>
+      </mat-expansion-panel>-->
 
-      <mat-expansion-panel >
+      <mat-expansion-panel [expanded]="step === 3">
         <mat-expansion-panel-header>
-          CURRENT JOBSON
+          SCENARIOS
         </mat-expansion-panel-header>
 
         <button mat-raised-button (click)="openDialog()">Jobsons</button>
