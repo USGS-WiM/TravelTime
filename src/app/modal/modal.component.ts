@@ -62,15 +62,18 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
-    for (var i = 1; i < this._MapService.streamArray.length; i++) {
+    for (var i = 0; i < this._MapService.streamArray.length-2; i++) { //remove last travercing lines
       if (this._MapService.streamArray[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this._MapService.streamArray[i].properties.nhdplus_comid
+        newreach.parameters[0].value = this._MapService.streamArray[i].properties.Discharge * 0.028316847
+        newreach.parameters[2].value = this._MapService.streamArray[i].properties.Slope
+        newreach.parameters[3].value = this._MapService.streamArray[i].properties.DrainageArea
+        newreach.parameters[4].value = this._MapService.streamArray[i].properties.Length * 1000
         this.mylist.push(newreach);
       } else {
       }
     }
-
   };
 
   onClick_removeReachLast() {  //remove last reach
@@ -101,7 +104,6 @@ export class ModalComponent implements OnInit {
       this.showProgress = false;
       this.showResult = true;
     }, 2000);
-    console.log(this.mylist);
   }
 
   onClick_clear() {
@@ -114,7 +116,7 @@ export class ModalComponent implements OnInit {
     }
     this.showResult = false;
     this.showInputs = true;
-    this.onClick_addReach();
+    //this.onClick_addReach();
   }
 
   onClick_return() {
@@ -200,7 +202,6 @@ export class ModalComponent implements OnInit {
 
   getReach(reach) {
     this.outputReach = Number(reach);
-    console.log(this.outputReach);
     return this.outputReach;
   }
 

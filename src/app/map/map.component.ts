@@ -217,14 +217,14 @@ export class MapComponent extends myfunctions implements OnInit {
     this.spinnerButtonOptions_upstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['gage'], 1000);
+    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['streamStatsgage'], 1000);
   }
 
   getDownstream() {
     this.spinnerButtonOptions_downstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['gage', 'flowline'], 1000);
+    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['streamStatsgage', 'flowline'], 1000);
   }
  
   onMarkerClick(e, lat, lng, cond, option, len) {
@@ -238,7 +238,7 @@ export class MapComponent extends myfunctions implements OnInit {
       let myvar = new parameters (e[2].value[0]);
       e[2].value = myvar;
     }
-    
+
     this._GetNavigationService.postGage(e)
       .toPromise().then(data => {
         let myreturn;
@@ -255,7 +255,9 @@ export class MapComponent extends myfunctions implements OnInit {
           }
           this._MapService.addPolyLine(data);
           polyline = L.geoJSON(this._MapService.streamArray, { style: myStyle });
-          this.markers.push(polyline);
+          if (typeof polyline === 'undefined') { } else {
+            this.markers.push(polyline);
+          }
         }
         this.markers.push(myreturn);
         this.spinnerButtonOptions_downstream.active = false;
@@ -264,7 +266,7 @@ export class MapComponent extends myfunctions implements OnInit {
         this.fitBounds = featureGroup.getBounds();
         this.center = this.fitBounds.getCenter();
         this.zoom = 8;
-        for (var i = 0; i < this._MapService.streamArray.length; i++) {
+        for (var i = 0; i < this._MapService.lastnode.length; i++) {
           this.markers.push(this._MapService.lastnode[i])
         }
       }
