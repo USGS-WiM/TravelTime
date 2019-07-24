@@ -1,34 +1,3 @@
-<header>
-  <h3 class='Title'> USGS Time of Travel</h3>
-</header>
-
-<style>
-  #findbox {
-    background: #eee;
-    border-radius: .125em;
-    border: 2px solid #1978cf;
-    box-shadow: 0 0 8px #999;
-    margin-bottom: 10px;
-    padding: 2px 0;
-    width: 250px;
-    height: 26px;
-  }
-
-  .search-tooltip {
-    width: 200px;
-  }
-
-  .leaflet-control-search .search-cancel {
-    position: static;
-    float: left;
-    margin-left: -22px;
-  }
-</style>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
-<link rel="stylesheet" href="/assets/leaflet/leaflet-search.css" />
-
 <div class="main">
   <!-- Side navigation -->
   <div class="sidenav">
@@ -44,41 +13,39 @@
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel [expanded] ="step === 0 || step === 1">
+      <mat-expansion-panel [expanded]="step === 0 || step === 1">
         <mat-expansion-panel-header>
           IDENTIFY AREA
         </mat-expansion-panel-header>
 
         <div *ngIf="step === 0">
           <div class="shadowtext">
-            <b>Step 1:</b> Use the map or the search tool to identify a feature
-            of interest. At zoom level 10 or greater spill location selection
-            will be enabled.
+            <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
           </div>
-
-          <div id="findbox"></div>
         </div>
 
         <div *ngIf="step === 1">
-          <div class="shadowtext">You have zoomed in sufficiently to select a spill location or downstream point of interest.</div>
-
-          <div class="footer">Choose an option below to select a trace method.</div>
+          <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
+        </div>
+        <table class="search">
+          <tr>
+            <td style="align-content:center; width:10%; vertical-align:top; font-size:x-large;"><span class="fas fa-search"></span></td>
+            <td><div id="findbox"></div></td>
+          </tr>
+        </table>
+        
 
           <div style="text-align: left">
 
-            <mat-spinner-button [options]="spinnerButtonOptions_downstream"
+            <mat-bar-button [options]="spinnerButtonOptions_downstream"
                                 (btnClick)="getDownstream()">
-              Spill Response
-            </mat-spinner-button>
-            <div class="divider">&nbsp;</div>
+            </mat-bar-button>
 
-            <mat-spinner-button [options]="spinnerButtonOptions_upstream"
+            <mat-bar-button [options]="spinnerButtonOptions_upstream"
                                 (btnClick)="getUpstream()">
-              Spill Planning
-            </mat-spinner-button>
+            </mat-bar-button>
           </div>
-        </div>
-       </mat-expansion-panel>
+      </mat-expansion-panel>
 
       <!--<mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">
         <mat-expansion-panel-header>
@@ -92,7 +59,7 @@
 
       </mat-expansion-panel>-->
 
-      <mat-expansion-panel [expanded]="step === 3">
+      <mat-expansion-panel [expanded]="step === 2">
         <mat-expansion-panel-header>
           SCENARIOS
         </mat-expansion-panel-header>
@@ -112,7 +79,7 @@
 
   </div>
 
-  <div class="map-wrapper" id="mapid"
+  <div class="map-wrapper"
        leaflet style="height: 100vh;"
        [leafletOptions]="options"
        [leafletLayersControl]="layersControl"

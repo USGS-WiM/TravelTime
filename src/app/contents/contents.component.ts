@@ -1,5 +1,5 @@
-import { Component, OnInit, Input} from '@angular/core';
-import {GetTimeoftravelService} from '../services/get-timeoftravel.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
 
 @Component({
   selector: 'app-contents',
@@ -9,8 +9,8 @@ import {GetTimeoftravelService} from '../services/get-timeoftravel.service';
 
 export class ContentsComponent implements OnInit {
 
-  @Input () ini_mass;
-  @Input () ini_time;
+  @Input() ini_mass;
+  @Input() ini_time;
 
   constructor(
     private _GetTimeoftravelService: GetTimeoftravelService
@@ -20,9 +20,9 @@ export class ContentsComponent implements OnInit {
   }
 
 
-  onClick_edit (){
+  onClick_edit() {
     //const findReach = this.mylist.find();
     //console.log (findReach);
   }
-  
+
 }

@@ -33,6 +33,10 @@ export class MapService extends myfunctions {
     }
     for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
       var gagesUpstream = this.deepCopy(data['features'][i]);
+      var d = new Date(); // for now
+      //console.log (d.getFullYear ())
+      //console.log (d.getMonth ())
+      //console.log (d.getDate ())
       this.gagesUpstreamArray.push(gagesUpstream);
     }
     function onEachFeature(feature, layer) {
@@ -65,7 +69,7 @@ export class MapService extends myfunctions {
     while (this.gagesDownstreamArray.length != 0) {
       this.gagesDownstreamArray.splice(0, 1)
     }
-    for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
+    for (var i = 0; i < data['features'].length; i++) { //first one is the user selected site
       if (data['features'][i].geometry['type'] == 'Point') { //if type of point, add marker
         var gagesDownstream = this.deepCopy(data['features'][i]);
         this.gagesDownstreamArray.push(gagesDownstream);
@@ -103,7 +107,7 @@ export class MapService extends myfunctions {
     }
     for (var i = 0; i < data['features'].length; i++) {
       if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
-        var polylinePoints = this.deepCopy(data['features'][i]);
+        var polylinePoints = this.deepCopy(data['features'][i]); //not implemented yet (services - for discussion tomorrow)
         this.streamArray.push(polylinePoints);
         var temppoint = polylinePoints.geometry.coordinates[polylinePoints.geometry.coordinates.length - 1]
         if (typeof polylinePoints.properties.nhdplus_comid === 'undefined') { } else {
@@ -112,7 +116,9 @@ export class MapService extends myfunctions {
             fillColor: '#f03',
             fillOpacity: 0.5,
             radius: 100
-          }).bindPopup('Reach COMID ' + polylinePoints.properties.nhdplus_comid);
+          }).bindPopup(
+            'Reach COMID ' + polylinePoints.properties.nhdplus_comid
+          );
             this.lastnode.push(marker)
         }
       }
