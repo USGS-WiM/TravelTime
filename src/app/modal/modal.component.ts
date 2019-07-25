@@ -7,6 +7,7 @@ import { PrintService } from '../services/print.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MapService } from '../services/map.service';
 import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
+import '../shared/extension-method'
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -37,14 +38,12 @@ export class ModalComponent implements OnInit {
   outputReach: number;
   formGroup: FormGroup;
   dateModel: Date = new Date();
-  //stringDateModel: string = new Date().toISOString();
 
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
     private _GetTimeoftravelService: GetTimeoftravelService,
     private _MapService: MapService,
-    public dialog: MatDialog,
     public printService: PrintService
   ) { }
 
@@ -66,15 +65,20 @@ export class ModalComponent implements OnInit {
       if (this._MapService.streamArray[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this._MapService.streamArray[i].properties.nhdplus_comid
-        newreach.parameters[0].value = this._MapService.streamArray[i].properties.Discharge * 0.028316847
-        newreach.parameters[2].value = this._MapService.streamArray[i].properties.Slope
-        newreach.parameters[3].value = this._MapService.streamArray[i].properties.DrainageArea
-        newreach.parameters[4].value = this._MapService.streamArray[i].properties.Length * 1000
+        newreach.parameters[0].value = (this._MapService.streamArray[i].properties.Discharge * 0.028316847).toUSGSvalue()
+        newreach.parameters[2].value = (this._MapService.streamArray[i].properties.Slope).toUSGSvalue()
+        newreach.parameters[3].value = this._MapService.streamArray[i].properties.DrainageArea * 1000000
+        newreach.parameters[4].value = (this._MapService.streamArray[i].properties.Length * 1000).toUSGSvalue()
         this.mylist.push(newreach);
       } else {
       }
     }
-  };
+  }
+
+  onClick_selectStation() {
+    this._MapService.spill_date = this.dateModel;
+    this._MapService.diag.close;
+  }
 
   onClick_removeReachLast() {  //remove last reach
     this.mylist.pop();

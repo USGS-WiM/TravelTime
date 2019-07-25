@@ -20,7 +20,6 @@ export class MapComponent extends myfunctions implements OnInit {
   private map: L.map;
 
   constructor(
-    public dialog: MatDialog,
     private _GetNavigationService: GetNavigationService,
     private _MapService: MapService,
   ) { super () }
@@ -95,10 +94,11 @@ export class MapComponent extends myfunctions implements OnInit {
   }
 
   openDialog() {
-    let dialog = this.dialog.open(ModalComponent, {
+    this._MapService.diag = this._MapService.dialog.open(ModalComponent, {
       width: '90%',
       height: '90%'
     });
+    this._MapService.diag.close;
   }
 
   layersControl = {
@@ -217,14 +217,14 @@ export class MapComponent extends myfunctions implements OnInit {
     this.spinnerButtonOptions_upstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['streamStatsgage'], 1000);
+    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['nwisgage'], 1000);
   }
 
   getDownstream() {
     this.spinnerButtonOptions_downstream.active = true;
     let mySite = this._MapService.result;
     let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['streamStatsgage', 'flowline'], 1000);
+    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['nwisgage', 'flowline'], 1000);
   }
  
   onMarkerClick(e, lat, lng, cond, option, len) {
@@ -272,4 +272,7 @@ export class MapComponent extends myfunctions implements OnInit {
       }
     );
   }
+
+
+
 }

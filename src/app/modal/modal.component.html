@@ -9,7 +9,7 @@
         <label>Initial time:</label><br />
         <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
         <!--<input [(ngModel)]="ini_time" type=number required placeholder="Value" name="initime">
-        <app-contents [ini_time]="ini_time"></app-contents><br />-->
+    <app-contents [ini_time]="ini_time"></app-contents><br />-->
       </div>
       <div style="width:49%; float:right;">
         <label>Initial concentration:</label><br />
@@ -18,6 +18,7 @@
       </div>
 
       <button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
+      <button class="btn-blue main" (click)="onClick_selectStation()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select station</button>
       <br /><br />
       <div id="panel-group">
 
