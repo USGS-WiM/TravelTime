@@ -39,11 +39,14 @@ export class ModalComponent implements OnInit {
   formGroup: FormGroup;
   dateModel: Date = new Date();
 
+  //stringDateModel: string = new Date().toISOString();
+
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
     private _GetTimeoftravelService: GetTimeoftravelService,
     private _MapService: MapService,
+    public dialog: MatDialog,
     public printService: PrintService
   ) { }
 
@@ -76,8 +79,8 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_selectStation() {
-    this._MapService.spill_date = this.dateModel;
-    this._MapService.diag.close;
+    this._MapService.diag.close();
+    this._MapService.gageFlag = 1;
   }
 
   onClick_removeReachLast() {  //remove last reach

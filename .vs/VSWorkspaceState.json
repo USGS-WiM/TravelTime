@@ -11,6 +11,6 @@
     "\\src\\app\\services",
     "\\src\\assets"
   ],
-  "SelectedNode": "\\src\\app\\map\\map.component.ts",
+  "SelectedNode": "\\src\\app\\services\\map.service.ts",
   "PreviewInSolutionExplorer": false
 }

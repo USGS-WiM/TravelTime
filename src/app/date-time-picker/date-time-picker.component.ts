@@ -3,6 +3,7 @@ import { NgbTimeStruct, NgbDateStruct, NgbPopoverConfig, NgbPopover, NgbDatepick
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, NgControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { DateTimeModel } from './date-time.model';
+import { MapService } from '../services/map.service';
 import { noop } from 'rxjs';
 
 @Component({
@@ -52,7 +53,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   private ngControl: NgControl;
 
-  constructor(private config: NgbPopoverConfig, private inj: Injector) {
+  constructor(private config: NgbPopoverConfig, private inj: Injector, private _MapService: MapService) {
     config.autoClose = 'outside';
     config.placement = 'auto';
   }
@@ -131,7 +132,11 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     this.datetime.day = date.day;
 
     this.dp.navigateTo({ year: this.datetime.year, month: this.datetime.month });
-    console.log('test');
+    this._MapService.spill_date = (this.datetime.year + '-' + this.datetime.month + '-' + this.datetime.day)
+    //to filter out hour and minute when the spill occured
+    // + '-' + this.datetime.hour + '-' + this.datetime.minute
+    console.log(this._MapService.spill_date);
+    console.log ('test')
     this.setDateStringModel();
   }
 

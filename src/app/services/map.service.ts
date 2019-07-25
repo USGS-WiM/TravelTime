@@ -4,6 +4,7 @@ import * as L from "leaflet";
 import { myfunctions } from '../shared/myfunctions'; 
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material';
+import { catchError, retry } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class MapService extends myfunctions {
   public gagesUpstreamArray = [];
   public gagesDownstreamArray = [];
   public lastnode = [];
-  public spill_date: Date;
+  public spill_date: string;
   public diag;
 
   constructor(
@@ -81,6 +82,17 @@ export class MapService extends myfunctions {
     return (gagesUpstream);
   };
 
+  public gageFlag = 0;
+
+  getInstantFlow(USGSID, date) {
+    var myurl = "https://nwis.waterdata.usgs.gov/nwis/uv?cb_00060=on&cb_00065=on&format=rdb&site_no=" + USGSID + "&period=&begin_date=" + date + "&end_date=" + date;
+    return (this.http.get<any>(myurl)
+      .pipe(
+        retry(3)//,
+        //catchError(this.handleError)
+    )
+      );
+  }
   //get downstream data from the marker
   getDownstream(data) {
 
@@ -88,7 +100,9 @@ export class MapService extends myfunctions {
       var numb = e.target.feature.properties.identifier;
       numb = numb.match(/\d/g);
       numb = numb.join("");
-      this.getInstantFlow(numb, this.date); 
+      if (typeof this.spill_date === 'undefined') { } else {
+        this.getInstantFlow(numb, this.spill_date);
+      }
     }
 
     function onEachFeature(feature, layer) {
@@ -129,15 +143,6 @@ export class MapService extends myfunctions {
     });
     return (gagesDownstream);
   };
-
-
-  gageFlag = 0;
-  getInstantFlow(USGSID, date) {
-    if (this.gageFlag == 1) {
-      var myurl = "https://nwis.waterdata.usgs.gov/nwis/uv?cb_00060=on&cb_00065=on&format=rdb&site_no=" + USGSID + "&period=&begin_date=" + date + "&end_date=" + date
-      return (this.http.get<any>(myurl));
-    }
-  }
 
 
   //add polyline downstream

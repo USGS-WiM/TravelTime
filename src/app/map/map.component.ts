@@ -98,7 +98,6 @@ export class MapComponent extends myfunctions implements OnInit {
       width: '90%',
       height: '90%'
     });
-    this._MapService.diag.close;
   }
 
   layersControl = {
