@@ -6,7 +6,7 @@ import {site, parameters} from '../site';
 import {myfunctions} from '../shared/myfunctions';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ModalComponent } from '../modal/modal.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import 'leaflet-search';
 
 @Component({
@@ -23,13 +23,13 @@ export class MapComponent extends myfunctions implements OnInit {
     public dialog: MatDialog,
     private _GetNavigationService: GetNavigationService,
     private _MapService: MapService,
-  ) { super () }
+  ) { super() }
 
   ngOnInit() {
     this._GetNavigationService.getRequiredConfig()
-    .toPromise().then(data => {
-      this.Site_reference = data['configuration'];
-    }); //get service {description: Initial description}
+      .toPromise().then(data => {
+        this.Site_reference = data['configuration'];
+      }); //get service {description: Initial description}
     //this.newFunc(); moving layers control to the sidebar
   }
 
@@ -69,25 +69,27 @@ export class MapComponent extends myfunctions implements OnInit {
 
   handleEvent(map: L.map) {
     if (typeof this.map === 'undefined') { } else {
-      if (this.map.getZoom() <= 8) {
-        this.setStep(0)
-        this.checkZoom(this.map.getZoom(), this.markers)
-      } else if (this.map.getZoom() > 8) {
-        this.setStep(1)
-        if (this.markers.length < 1) {
-        } else {
-          this.checkZoom (this.map.getZoom(), this.markers)
+      if (this.step === 1 || this.step === 2) { } else {
+        if (this.map.getZoom() <= 9) {
+          this.setStep(0)
+          this.checkZoom(this.map.getZoom())//, this.markers)
+        } else if (this.map.getZoom() > 9) {
+          this.setStep(1);
+          //if (this.markers.length < 1) {
+          //} else {
+          this.checkZoom(this.map.getZoom())//, this.markers)
         }
-      } else {
-        this.setStep (0)
+        //} else {
+        //  this.setStep (0)
+        //}
       }
     }
   }
 
-  checkZoom(zoom, markers) {
-    if (zoom > 8 && markers.length > 0) { //if there are more than 1 markers, zoom on
+  checkZoom(zoom) { //, markers) {
+    if (zoom > 9) { // && markers.length > 0) { //if there are more than 1 markers, zoom on
       this.spinnerButtonOptions_downstream.disabled = false;
-      this.spinnerButtonOptions_upstream.disabled = false;
+      this.spinnerButtonOptions_upstream.disabled = true;
     } else {
       this.spinnerButtonOptions_downstream.disabled = true;
       this.spinnerButtonOptions_upstream.disabled = true;
@@ -107,8 +109,8 @@ export class MapComponent extends myfunctions implements OnInit {
         maxZoom: 20,
         zIndex: 1,
         attribution:
-        'Imagery from <a href="https://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a>' +
-        '&mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          'Imagery from <a href="https://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a>' +
+          '&mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }),
 
       'Topo': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -132,20 +134,22 @@ export class MapComponent extends myfunctions implements OnInit {
   zoom = 5;
   center = L.latLng(40.0, -100.0);
   // Values to bind to Leaflet Directive
-	options = {
-      layers: [this.layersControl.baseLayers.Topo],
-      zoom: this.zoom,
-      center: this.center
+  options = {
+    layers: [this.layersControl.baseLayers.Topo],
+    zoom: this.zoom,
+    center: this.center
   };
 
-  markers: L.layer [] = [];
+  markers: L.layer[] = [];
   Site_reference: site;
   results = [];
   sites_upstream = [];
   sites_downstream = [];
-  fitBounds: any = null;
+  bounds: any = null;
   marker_sites = [];
   nodemarker = [];
+  mapReady: boolean = false;
+  methodType: string = null;
 
   newFunc() {
     // Create the control and add it to the map;
@@ -159,8 +163,8 @@ export class MapComponent extends myfunctions implements OnInit {
   }
 
   addMarker(e) {
-    if (this.map.getZoom() > 8) {
-      let mySite = new site([this.Site_reference]);
+    if (this.map.getZoom() > 9 && this.mapReady === true) {
+      let mySpill = new site([this.Site_reference]);
       if (this.markers.length > 0) {
         while (this.markers.length != 0) {
           this.markers.splice(0, 1)
@@ -177,65 +181,74 @@ export class MapComponent extends myfunctions implements OnInit {
           popupAnchor: [1, -34],
           shadowSize: [41, 41]
         })
-      }).on('click', this.swapElement(mySite['mylist'], 2, 3));
+      }).on('click', this.swapElement(mySpill['mylist'], 2, 3));
+      L.DomUtil.removeClass(this.map._container, 'crosshair-cursor-enabled');
+      this.mapReady = false;
       this.markers.push(marker);
-      this.checkZoom(this.map.getZoom(), this.markers)
+      this.checkZoom(this.map.getZoom())//, this.markers)
       this._MapService.myPoint = marker;
-      this._MapService.result = mySite;
-    } else {
-
-    }
+      this._MapService.result = mySpill;
+      if (this.methodType === "downstream") {
+        let mySite = this._MapService.result;
+        let e = this._MapService.myPoint.getLatLng();
+        this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['streamStatsgage', 'flowline'], 1000);
+        this.spinnerButtonOptions_downstream.active = true;
+      } else if (this.methodType === "upstream") {
+        let mySite = this._MapService.result;
+        let e = this._MapService.myPoint.getLatLng();
+        this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['streamStatsgage'], 1000);
+        this.spinnerButtonOptions_upstream.active = true;
+      }
+    } else { }
   }
 
   spinnerButtonOptions_downstream: MatProgressButtonOptions = {
     active: false,
-    text: 'Trace downstream from spill location',
+    text: 'Spill Response',
     spinnerSize: 18,
     raised: true,
     stroked: false,
     buttonColor: 'primary',
     spinnerColor: 'accent',
-    fullWidth: false,
-    disabled: false,
-    mode: 'indeterminate',
+    fullWidth: true,
+    disabled: true,
+    mode: 'indeterminate'
   }
 
   spinnerButtonOptions_upstream: MatProgressButtonOptions = {
     active: false,
-    text: 'Trace upstream from point of interest',
+    text: 'Spill Planning',
     spinnerSize: 18,
     raised: true,
     stroked: false,
     buttonColor: 'primary',
     spinnerColor: 'accent',
-    fullWidth: false,
-    disabled: false,
-    mode: 'indeterminate',
+    fullWidth: true,
+    disabled: true,
+    mode: 'indeterminate'
   }
 
   getUpstream() {
-    this.spinnerButtonOptions_upstream.active = true;
-    let mySite = this._MapService.result;
-    let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['streamStatsgage'], 1000);
+    this.mapReady = true;
+    L.DomUtil.addClass(this.map._container, 'crosshair-cursor-enabled');
+    this.methodType = "upstream";
   }
 
   getDownstream() {
-    this.spinnerButtonOptions_downstream.active = true;
-    let mySite = this._MapService.result;
-    let e = this._MapService.myPoint.getLatLng();
-    this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['streamStatsgage', 'flowline'], 1000);
+    this.mapReady = true;
+    L.DomUtil.addClass(this.map._container, 'crosshair-cursor-enabled');
+    this.methodType = "downstream";
   }
- 
+
   onMarkerClick(e, lat, lng, cond, option, len) {
-    e[0]['value']['coordinates'] = [ lng, lat]; // add lat long
+    e[0]['value']['coordinates'] = [lng, lat]; // add lat long
     e[1]['value'] = cond;
     e[3]['value'] = option;
     //for upstream only
     if (e[2].value instanceof Array) { //if array, set limit of 100, copy parameters into a tuple, else do nothing since it should be already set
       e[2].value[0].value = len;
-      e[2].value.splice(1,1);
-      let myvar = new parameters (e[2].value[0]);
+      e[2].value.splice(1, 1);
+      let myvar = new parameters(e[2].value[0]);
       e[2].value = myvar;
     }
 
@@ -261,15 +274,13 @@ export class MapComponent extends myfunctions implements OnInit {
         }
         this.markers.push(myreturn);
         this.spinnerButtonOptions_downstream.active = false;
-        this.fitBounds = L.latLngBounds(this.markers);
-        var featureGroup = L.featureGroup(this.markers);
-        this.fitBounds = featureGroup.getBounds();
-        this.center = this.fitBounds.getCenter();
-        this.zoom = 8;
+        var group = L.featureGroup(this.markers);
+        this.map.fitBounds(group.getBounds());
         for (var i = 0; i < this._MapService.lastnode.length; i++) {
           this.markers.push(this._MapService.lastnode[i])
         }
+        this.setStep(2);
       }
-    );
+      );
   }
 }

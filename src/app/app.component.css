@@ -28,3 +28,18 @@ button {
   width: 100%;
   z-index: 1;
 }
+
+header {
+  height: 50px;
+  line-height: 20px;
+  background: black;
+  margin-top: 0px;
+}
+
+.Title {
+  color: white;
+  width: 100%;
+  padding: 12px 20px;
+  font-family: 'Roboto';
+  font-size: 24px;
+}
