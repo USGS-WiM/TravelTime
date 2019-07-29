@@ -87,12 +87,14 @@
 
       </mat-expansion-panel>
 
-      <mat-expansion-panel >
+      <mat-expansion-panel>
         <mat-expansion-panel-header>
           CURRENT JOBSON
         </mat-expansion-panel-header>
 
         <button mat-raised-button (click)="openDialog()">Jobsons</button>
+        <button mat-raised-button (click)="this._MapService.getInstantFlow()">GetFlow</button>
+
       </mat-expansion-panel>
 
 

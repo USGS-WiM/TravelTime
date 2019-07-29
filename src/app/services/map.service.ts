@@ -32,16 +32,13 @@ export class MapService extends myfunctions {
 
 
   //get upstream data from the marker
-  getUpstream (data) {
+  getUpstream(data) {
     while (this.gagesUpstreamArray.length != 0) {
       this.gagesUpstreamArray.splice(0, 1)
     }
     for (var i = 1; i < data['features'].length; i++) { //first one is the user selected site
       var gagesUpstream = this.deepCopy(data['features'][i]);
       var d = new Date(); // for now
-      //console.log (d.getFullYear ())
-      //console.log (d.getMonth ())
-      //console.log (d.getDate ())
       this.gagesUpstreamArray.push(gagesUpstream);
     }
 
@@ -83,37 +80,23 @@ export class MapService extends myfunctions {
   };
 
   public gageFlag = 0;
-
-  getInstantFlow(USGSID, date) {
-    var myurl = "https://nwis.waterdata.usgs.gov/nwis/uv?cb_00060=on&cb_00065=on&format=rdb&site_no=" + USGSID + "&period=&begin_date=" + date + "&end_date=" + date;
-    return (this.http.get<any>(myurl)
-      .pipe(
-        retry(3)//,
-        //catchError(this.handleError)
+  state = 'pa';
+  getInstantFlow() {
+    console.log('triggered');
+    console.log(this.statid);
+    console.log(this.spill_date);
+    var myurl = "https://waterdata.usgs.gov/" + this.state +"/nwis/uv?cb_00060=on&format=rdb&site_no=" + this.statid + "&period=&begin_date=" + this.spill_date + "&end_date=" + this.spill_date;
+    return (this.http.get<any>(myurl).subscribe(
+      (data: any) => {
+        console.log(data)
+      }
     )
-      );
+    );
   }
+
+  statid: string;
   //get downstream data from the marker
   getDownstream(data) {
-
-    function whenClicked(e) {
-      var numb = e.target.feature.properties.identifier;
-      numb = numb.match(/\d/g);
-      numb = numb.join("");
-      if (typeof this.spill_date === 'undefined') { } else {
-        this.getInstantFlow(numb, this.spill_date);
-      }
-    }
-
-    function onEachFeature(feature, layer) {
-      // does this feature have a property named 'name, comid,uri, source'?
-      if (feature.properties && feature.properties.name) {
-        layer.bindPopup(feature.properties.comid + " " + feature.properties.name + " " + feature.properties.uri + " " + feature.properties.source);
-        layer.on({
-          click: whenClicked
-        });
-      }
-    };
 
     while (this.gagesDownstreamArray.length != 0) {
       this.gagesDownstreamArray.splice(0, 1)
@@ -126,7 +109,20 @@ export class MapService extends myfunctions {
     }
 
     var gagesDownstream = L.geoJSON(this.gagesDownstreamArray, {
-      onEachFeature: onEachFeature,
+      onEachFeature: (feature, layer) => {
+        if (feature.properties && feature.properties.name) {
+          console.log(feature);
+          layer.bindPopup(feature.properties.comid + " " + feature.properties.name + " " + feature.properties.uri + " " + feature.properties.source);
+          layer.on({
+            'click': (e) => {
+              var statid = e.target.feature.properties.identifier;
+              this.statid = statid.match(/\d/g).join("");
+
+              this.getInstantFlow();
+            }
+          });
+        }
+      },
       pointToLayer: function (feature, latlng) {
         const marker = new L.marker(latlng, {
           icon: L.icon({
@@ -137,12 +133,13 @@ export class MapService extends myfunctions {
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
           })
-        });
+        })
         return marker;
       }
     });
     return (gagesDownstream);
   };
+
 
 
   //add polyline downstream

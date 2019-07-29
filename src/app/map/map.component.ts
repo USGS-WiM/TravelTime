@@ -21,7 +21,7 @@ export class MapComponent extends myfunctions implements OnInit {
 
   constructor(
     private _GetNavigationService: GetNavigationService,
-    private _MapService: MapService,
+    private _MapService: MapService
   ) { super () }
 
   ngOnInit() {
@@ -98,6 +98,7 @@ export class MapComponent extends myfunctions implements OnInit {
       width: '90%',
       height: '90%'
     });
+    this.showGages();
   }
 
   layersControl = {
@@ -140,8 +141,8 @@ export class MapComponent extends myfunctions implements OnInit {
   markers: L.layer [] = [];
   Site_reference: site;
   results = [];
-  sites_upstream = [];
-  sites_downstream = [];
+  sites_upstream;
+  sites_downstream;
   fitBounds: any = null;
   marker_sites = [];
   nodemarker = [];
@@ -219,6 +220,22 @@ export class MapComponent extends myfunctions implements OnInit {
     this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['nwisgage'], 1000);
   }
 
+  showGages() {
+    //Do not push any gages downstream, instead allow user to click select gages first. Once the user clicks selectGages,
+    //push anything upstream, anything downstream and allow user to select a gage of interest.
+    //Once the user selected a gage of interest, pull all the data from NWIS for select gage and add to the modal gageInfo.
+    if (typeof this.sites_downstream === 'undefined') {
+    } else {
+      this.markers.push(this.sites_downstream);
+    }
+
+    if (typeof this.sites_upstream === 'undefined') {
+    } else {
+      this.markers.push(this.sites_upstream);
+    }
+
+  }
+
   getDownstream() {
     this.spinnerButtonOptions_downstream.active = true;
     let mySite = this._MapService.result;
@@ -240,13 +257,13 @@ export class MapComponent extends myfunctions implements OnInit {
 
     this._GetNavigationService.postGage(e)
       .toPromise().then(data => {
-        let myreturn;
         let polyline;
         if (cond == 'upstream') {
-          myreturn = this._MapService.getUpstream(data);
+          //myreturn = this._MapService.getUpstream(data);
+          this.sites_upstream = this._MapService.getUpstream(data);
           this.spinnerButtonOptions_upstream.active = false;
         } else {
-          myreturn = this._MapService.getDownstream(data);
+          this.sites_downstream = this._MapService.getDownstream(data);
           var myStyle = {
             "color": "#FF3333",
             "weight": 3,
@@ -258,7 +275,6 @@ export class MapComponent extends myfunctions implements OnInit {
             this.markers.push(polyline);
           }
         }
-        this.markers.push(myreturn);
         this.spinnerButtonOptions_downstream.active = false;
         this.fitBounds = L.latLngBounds(this.markers);
         var featureGroup = L.featureGroup(this.markers);
