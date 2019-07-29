@@ -6,12 +6,11 @@
     "\\src\\app\\contents",
     "\\src\\app\\date-time-picker",
     "\\src\\app\\leftbar",
+    "\\src\\app\\map",
+    "\\src\\app\\modal",
     "\\src\\app\\services",
-    "\\src\\assets",
-    "\\src\\assets\\leaflet",
-    "\\src\\environments",
-    "\\src\\images"
+    "\\src\\app\\shared"
   ],
-  "SelectedNode": "\\src\\app\\map\\map.component.ts",
+  "SelectedNode": "\\src\\app\\modal\\modal.component.ts",
   "PreviewInSolutionExplorer": false
 }

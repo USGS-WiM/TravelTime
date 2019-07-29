@@ -5,6 +5,7 @@ import { myfunctions } from '../shared/myfunctions';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material';
 import { catchError, retry } from 'rxjs/operators';
+//import fs from 'fs';
 
 @Injectable({
   providedIn: 'root'
@@ -79,19 +80,18 @@ export class MapService extends myfunctions {
     return (gagesUpstream);
   };
 
+  siteinfo;
   public gageFlag = 0;
   state = 'pa';
   getInstantFlow() {
-    console.log('triggered');
-    console.log(this.statid);
-    console.log(this.spill_date);
-    var myurl = "https://waterdata.usgs.gov/" + this.state +"/nwis/uv?cb_00060=on&format=rdb&site_no=" + this.statid + "&period=&begin_date=" + this.spill_date + "&end_date=" + this.spill_date;
-    return (this.http.get<any>(myurl).subscribe(
-      (data: any) => {
-        console.log(data)
-      }
-    )
-    );
+    var myurl = "https://waterdata.usgs.gov/" + this.state + "/nwis/uv?cb_00060=on&format=rdb&site_no=" + this.statid + "&period=&begin_date=" + this.spill_date + "&end_date=" + this.spill_date;
+    this.http.get(myurl, { responseType: 'text' })
+      .subscribe((data) => {
+        //console.log(data);
+        for (const line of data.split(/[\r\n]+/)) {
+          console.log(line);
+        }
+      });
   }
 
   statid: string;
