@@ -18,33 +18,38 @@
           IDENTIFY AREA
         </mat-expansion-panel-header>
 
+        <div *ngIf="step === 2">
+          <button style="background-color: red;" mat-raised-button (click)="reset()">Start Over</button>
+          <br /><br />
+        </div>
+
         <div *ngIf="step === 0">
           <div class="shadowtext">
             <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
           </div>
         </div>
 
-        <div *ngIf="step === 1">
+        <div *ngIf="step === 1 || step === 2">
           <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
         </div>
+
         <table class="search">
           <tr>
             <td style="align-content:center; width:10%; vertical-align:top; font-size:x-large;"><span class="fas fa-search"></span></td>
             <td><div id="findbox"></div></td>
           </tr>
         </table>
-        
 
-          <div style="text-align: left">
+        <div style="text-align: left">
 
-            <mat-bar-button [options]="spinnerButtonOptions_downstream"
-                                (btnClick)="getDownstream()">
-            </mat-bar-button>
+          <mat-bar-button [options]="spinnerButtonOptions_downstream"
+                          (btnClick)="getDownstream()">
+          </mat-bar-button>
 
-            <mat-bar-button [options]="spinnerButtonOptions_upstream"
-                                (btnClick)="getUpstream()">
-            </mat-bar-button>
-          </div>
+          <mat-bar-button [options]="spinnerButtonOptions_upstream"
+                          (btnClick)="getUpstream()">
+          </mat-bar-button>
+        </div>
       </mat-expansion-panel>
 
       <!--<mat-expansion-panel [expanded] ="step === 1" (opened) ="setStep (1)">

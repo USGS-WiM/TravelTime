@@ -131,7 +131,7 @@ export class MapComponent extends myfunctions implements OnInit {
     }
   }
 
-  zoom = 5;
+  zoom = 4;
   center = L.latLng(40.0, -100.0);
   // Values to bind to Leaflet Directive
   options = {
@@ -274,6 +274,7 @@ export class MapComponent extends myfunctions implements OnInit {
         }
         this.markers.push(myreturn);
         this.spinnerButtonOptions_downstream.active = false;
+        this.spinnerButtonOptions_downstream.disabled = true;
         var group = L.featureGroup(this.markers);
         this.map.fitBounds(group.getBounds());
         for (var i = 0; i < this._MapService.lastnode.length; i++) {
@@ -282,5 +283,13 @@ export class MapComponent extends myfunctions implements OnInit {
         this.setStep(2);
       }
       );
+  }
+
+  reset() {
+    this.markers.length = 0;
+    this.setStep(0);
+    this.spinnerButtonOptions_downstream.active = false;
+    this.spinnerButtonOptions_upstream.active = false;
+    this.map.flyTo([40.0, -100.0], 4);s
   }
 }

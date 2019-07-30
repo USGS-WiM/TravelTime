@@ -62,7 +62,7 @@ export class ModalComponent implements OnInit {
   }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
-    for (var i = 0; i < this._MapService.streamArray.length-2; i++) { //remove last travercing lines
+    for (var i = 0; i < this._MapService.streamArray.length-2; i++) { //remove last traversing lines
       if (this._MapService.streamArray[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this._MapService.streamArray[i].properties.nhdplus_comid
@@ -82,8 +82,8 @@ export class ModalComponent implements OnInit {
 
   onClick_removeReach(index) {   //remove reach by id
     if (index >= 0) {
-      this.mylist.splice(index, 1);
-      this.id.splice(index, 1);
+      this.mylist.splice(index, this.mylist.length);
+      this.id.splice(index, this.mylist.length);
     }
   }
 
