@@ -84,7 +84,7 @@ export class MapService extends myfunctions {
   public gageFlag = 0;
   state = 'pa';
   getInstantFlow() {
-    var myurl = "https://waterdata.usgs.gov/" + this.state + "/nwis/uv?cb_00060=on&format=rdb&site_no=" + this.statid + "&period=&begin_date=" + this.spill_date + "&end_date=" + this.spill_date;
+    var myurl = "https://waterdata.usgs.gov" + "/nwis/uv?cb_00060=on&format=rdb&site_no=" + this.statid + "&period=&begin_date=" + this.spill_date + "&end_date=" + this.spill_date;
     this.http.get(myurl, { responseType: 'text' })
       .subscribe((data) => {
         //console.log(data);

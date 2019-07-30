@@ -11,6 +11,6 @@
     "\\src\\app\\services",
     "\\src\\app\\shared"
   ],
-  "SelectedNode": "\\src\\app\\modal\\modal.component.ts",
+  "SelectedNode": "\\src\\app\\services\\map.service.ts",
   "PreviewInSolutionExplorer": false
 }
