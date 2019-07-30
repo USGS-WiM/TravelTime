@@ -290,6 +290,6 @@ export class MapComponent extends myfunctions implements OnInit {
     this.setStep(0);
     this.spinnerButtonOptions_downstream.active = false;
     this.spinnerButtonOptions_upstream.active = false;
-    this.map.flyTo([40.0, -100.0], 4);s
+    this.map.flyTo([40.0, -100.0], 4);
   }
 }
