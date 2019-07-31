@@ -7,6 +7,7 @@ import { PrintService } from '../services/print.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MapService } from '../services/map.service';
 import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
+import '../../../src/extensions/SurveyRound';
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -16,19 +17,31 @@ import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class ModalComponent implements OnInit {
+  @ViewChild('reaches') accordion1: NgbAccordion;
   @ViewChild('acc') accordion: NgbAccordion;
   model = {};
   currentStep = 0;
+  showreaches = "Show Reaches";
 
   beforeChange($event: NgbPanelChangeEvent) {
     this.currentStep = +($event.panelId);
   };
+
+  showhideReaches($event: NgbPanelChangeEvent) {
+    if ($event.nextState === false) {
+      this.showreaches = 'Show Reaches';
+    } else {
+      this.showreaches = 'Hide Reaches';
+      //console.log(this.mylist);
+    }
+  }
 
   mylist = [];
   reach_reference: reach;
   ini_mass: number;
   //ini_time: number;
   id = []; //array for reach id's
+  discharge: number;
   output = [];
   openModal: boolean;
   showInputs: boolean;
@@ -103,7 +116,8 @@ export class ModalComponent implements OnInit {
     setTimeout(() => {
       this.showProgress = false;
       this.showResult = true;
-    }, 2000);
+      this.dialogRef.updateSize('90%', '90%');
+    }, 3000);
   }
 
   onClick_clear() {
@@ -114,16 +128,30 @@ export class ModalComponent implements OnInit {
     while (this.output.length != 0) {
       this.output.splice(0, 1);
     }
+    this.discharge = null;
+    this.ini_mass = null;
+    this.dateModel = null;
     this.showResult = false;
     this.showInputs = true;
     //this.onClick_addReach();
   }
 
   onClick_return() {
+    this.dialogRef.updateSize('40%', '90%');
     this.showResult = false;
     this.showInputs = true;
-
     this.output.length = 0;
+
+  }
+
+  setDischarge(event) {
+    if (this.mylist) {
+      console.log("so far so good");
+      this.mylist.forEach((item) => {
+        item.parameters[1].value = this.discharge;
+        console.log(item.parameters[1].name);
+      })
+    }
   }
 
   validateForm(mainForm) {
@@ -161,6 +189,10 @@ export class ModalComponent implements OnInit {
     } catch (e) {
       var x = e;
     }
+  }
+
+  selectGage() {
+    this.dialogRef.close();
   }
 
   //getUnits(shortname): any {

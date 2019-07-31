@@ -126,4 +126,10 @@ export class MapService extends myfunctions {
     return (this.streamArray);
   }
 
+  clear() {
+    this.gagesDownstreamArray = [];
+    this.gagesUpstreamArray = [];
+    this.streamArray = [];
+  }
+
 }
