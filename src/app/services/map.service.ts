@@ -5,6 +5,7 @@ import { myfunctions } from '../shared/myfunctions';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material';
 import { catchError, retry } from 'rxjs/operators';
+import { measurements } from '../site';
 //import fs from 'fs';
 
 @Injectable({
@@ -82,15 +83,27 @@ export class MapService extends myfunctions {
 
   siteinfo;
   public gageFlag = 0;
-  state = 'pa';
+
+  flows = [];
+
   getInstantFlow() {
     var myurl = "https://waterdata.usgs.gov" + "/nwis/uv?cb_00060=on&format=rdb&site_no=" + this.statid + "&period=&begin_date=" + this.spill_date + "&end_date=" + this.spill_date;
     this.http.get(myurl, { responseType: 'text' })
       .subscribe((data) => {
-        //console.log(data);
+        var i = 0;
+        var arraylist = [];
+
         for (const line of data.split(/[\r\n]+/)) {
-          console.log(line);
+          if (i > 27) {
+            this.flows.push(line);
+            var ar = line.split(/(\s+)/).filter(function (e) { return e.trim().length > 0; }); // split string on comma space
+            //console.log(ar);
+            var flow = new measurements([ar[3], ar[5]]);
+            arraylist.push(flow);
+          }
+          i = i+1;
         }
+        console.log(arraylist);
       });
   }
 

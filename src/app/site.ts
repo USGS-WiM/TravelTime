@@ -35,3 +35,12 @@ export class site { //site
     }
     mylist = [];
 }
+
+export class measurements {
+  constructor(arg: Array<any>) {
+    this.Time = arg[0];
+    this.Flow = +arg[1];
+  }
+  Time: string;
+  Flow: number;
+}
