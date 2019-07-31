@@ -19,7 +19,7 @@
         </mat-expansion-panel-header>
 
         <div *ngIf="step === 2">
-          <button style="background-color: red;" mat-raised-button (click)="reset()">Start Over</button>
+          <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
           <br /><br />
         </div>
 

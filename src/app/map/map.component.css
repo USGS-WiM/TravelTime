@@ -165,3 +165,8 @@ button {
   float: left;
   margin-left: -22px;
 }
+
+.startover {
+  background-color:red;
+  color:white;
+}

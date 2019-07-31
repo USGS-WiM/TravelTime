@@ -11,6 +11,7 @@ export class ContentsComponent implements OnInit {
 
   @Input() ini_mass;
   @Input() ini_time;
+  @Input() discharge;
 
   constructor(
     private _GetTimeoftravelService: GetTimeoftravelService

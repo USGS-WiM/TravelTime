@@ -5,97 +5,107 @@
 
   <div class="modal-body">
     <form form #myForm="ngForm">
-      <div class="form-group" style="width:49%; float:left;">
-        <label>Initial time:</label><br />
-        <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
-        <!--<input [(ngModel)]="ini_time" type=number required placeholder="Value" name="initime">
-        <app-contents [ini_time]="ini_time"></app-contents><br />-->
-      </div>
-      <div style="width:49%; float:right;">
-        <label>Initial concentration:</label><br />
-        <input [(ngModel)]="ini_mass" type=number required placeholder="Value" name="inimass">
-        <app-contents [ini_mass]="ini_mass"></app-contents><br />
+      <div class="form-group" style="width:100%;">
+        <div class="initial-input">
+          <label>Time of Spill:</label>
+          <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
+        </div>
+        <div class="input-with-icon initial-input">
+          <label>Discharge (cubic meters per second):</label>
+          <input [(ngModel)]="discharge" (ngModelChange)="setDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control">
+          <div class="icon">
+            <span class="far fa-map" (click)="selectGage()"></span>
+          </div>
+          <app-contents [discharge]="discharge"></app-contents>
+        </div><br />
+        <div class="initial-input">
+          <label>Spill Concentration (kilograms):</label>
+          <input [(ngModel)]="ini_mass" type=number required placeholder="Value" name="inimass" class="up">
+          <app-contents [ini_mass]="ini_mass"></app-contents>
+        </div>
       </div>
 
-      <button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>
-      <br /><br />
-      <div id="panel-group">
-
+      <!--<button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>-->
+      <!--<br style="clear:both;" />-->
+      <div id="panel-group">        
         <!-- Accordion starts here -->
-        <ngb-accordion #acc="ngbAccordion" (panelChange)="beforeChange($event)">
-
-          <ngb-panel *ngFor="let item of mylist; let i = index" id="{{i}}">
-
-            <ng-template ngbPanelHeader>
-              <div class="d-flex align-items-center justify-content-between">
-                <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
-                <div>
-                  <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="onClick_removeReach(i)">Remove</button>
-                </div>
-              </div>
-            </ng-template>
-
-            <!--Name input-->
+        <ngb-accordion #reaches="ngbAccordion" (panelChange)="showhideReaches($event)">
+          <ngb-panel title="{{showreaches}}">
             <ng-template ngbPanelContent>
-              <div *ngFor="let k of item | keyvalue;  let it1 = index; trackBy:customTrackBy">
-                <div *ngIf="k.key === 'name'">
-                  <!-- don't do anything with input condition-->
-                  <label>{{getLabel(k.key)}}</label>
-                  <div *ngIf="i === currentStep; else disable">
-                    <input [(ngModel)]='item.name' placeholder="Name" name="name"
-                           type="text" ngControl="value" ngMaxlength="25" autocomplete="off">
-                  </div>
-                  <ng-template #disable>
-                    <input [value]="item.name" placeholder="Name"
-                           type="text">
+              <ngb-accordion #acc="ngbAccordion" (panelChange)="beforeChange($event)" [closeOthers]="true">
+                <ngb-panel *ngFor="let item of mylist; let i = index" id="{{i}}">
+                  <ng-template ngbPanelHeader>
+                    <div class="d-flex align-items-center justify-content-between">
+                      <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
+                      <div>
+                        <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="onClick_removeReach(i)">Remove</button>
+                      </div>
+                    </div>
                   </ng-template>
 
+                  <!--Name input-->
+                  <ng-template ngbPanelContent>
+                    <div *ngFor="let k of item | keyvalue;  let it1 = index; trackBy:customTrackBy">
+                      <div *ngIf="k.key === 'name'">
+                        <!-- don't do anything with input condition-->
+                        <label>{{getLabel(k.key)}}</label>
+                        <div *ngIf="i === currentStep; else disable">
+                          <input [(ngModel)]='item.name' placeholder="Name" name="name"
+                                 type="text" ngControl="value" ngMaxlength="25" autocomplete="off">
+                        </div>
+                        <ng-template #disable>
+                          <input [value]="item.name" placeholder="Name"
+                                 type="text">
+                        </ng-template>
+                      </div>
+                    </div>
 
-                </div>
-              </div>
+                    <!--Description input-->
+                    <div *ngFor="let k of item | keyvalue; let it2 = index; trackBy:customTrackBy">
+                      <div *ngIf="k.key === 'description'">
+                        <label>{{getLabel(k.key)}}</label>
+                        <div *ngIf="i === currentStep; else disable">
+                          <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}"
+                                 type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
+                        </div>
+                        <ng-template #disable>
+                          <input [value]="k.value" placeholder="Name"
+                                 type="text">
+                        </ng-template>
+                      </div>
+                    </div>
 
-              <!--Description input-->
-              <div *ngFor="let k of item | keyvalue; let it2 = index; trackBy:customTrackBy">
-                <div *ngIf="k.key === 'description'">
-                  <label>{{getLabel(k.key)}}</label>
-                  <div *ngIf="i === currentStep; else disable">
-                    <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}"
-                           type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
-                  </div>
-                  <ng-template #disable>
-                    <input [value]="k.value" placeholder="Name"
-                           type="text">
+                    <!--Parameters input-->
+                    <div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy">
+                      <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+                      <div *ngIf="i === currentStep; else disable">
+                        <div *ngIf="pars.required === true">
+                          <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
+                                 type=number ngControl="value" required autocomplete="off">
+                        </div>
+                        <div *ngIf="pars.required === false">
+                          <input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                                 type=number ngControl="value" autocomplete="off">
+                        </div>
+                      </div>
+                      <ng-template #disable>
+                        <div *ngIf="pars.required === true">
+                          <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                                 type=number ngControl="value" required autocomplete="off">
+                        </div>
+                        <div *ngIf="pars.required === false">
+                          <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                                 type=number ngControl="value" autocomplete="off">
+                        </div>
+                      </ng-template>
+                    </div>
                   </ng-template>
-                </div>
-              </div>
-
-              <!--Parameters input-->
-              <div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy">
-                <label>{{pars.name}} ({{pars.unit.unit}}):</label>
-                <div *ngIf="i === currentStep; else disable">
-                  <div *ngIf="pars.required === true">
-                    <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
-                           type=number ngControl="value" required autocomplete="off">
-                  </div>
-                  <div *ngIf="pars.required === false">
-                    <input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-                           type=number ngControl="value" autocomplete="off">
-                  </div>
-                </div>
-                <ng-template #disable>
-                  <div *ngIf="pars.required === true">
-                    <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-                           type=number ngControl="value" required autocomplete="off">
-                  </div>
-                  <div *ngIf="pars.required === false">
-                    <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-                           type=number ngControl="value" autocomplete="off">
-                  </div>
-                </ng-template>
-              </div>
+                </ngb-panel>
+              </ngb-accordion>
             </ng-template>
           </ngb-panel>
         </ngb-accordion>
+
       </div>
       <br />
       <button *ngIf="mylist !== null" class="btn-red main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear All</button>
@@ -108,12 +118,12 @@
   <mat-spinner class="loading" color="#0F8AFF"></mat-spinner>
 </div>
 
-<div *ngIf="showResult === true">
+<div *ngIf="showResult === true" style="height:100%;">
   <!--Begin Most Probable Results Table-->
   <div *ngFor="let element of output">
     <h3>{{ini_mass}} kg Spill Occuring {{ element.initialTimeStamp | date:'medium' }}</h3>
-    <div style="border: solid #cccccc 1px; border-radius: 15px; padding: 4px 4px 4px 4px;">
-      <h4>Most Probable</h4>
+    <h4>Most Probable</h4>
+    <div style="border: solid #cccccc 1px; border-radius: 10px; padding: 4px 4px 4px 4px;" id="scroll">
       <table class="small">
         <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
           <th>Name</th>
@@ -155,7 +165,7 @@
                             <ng-container *ngIf="response.key === 'equations'">
                               <ng-container *ngFor="let equation of response.value | keyvalue">
                                 <ng-container *ngIf="equation.key === 'vmax'">
-                                  <td>{{equation.value.value.toFixed(2)}}</td>
+                                  <td>{{equation.value.value.toUSGSvalue()}}</td>
                                 </ng-container>
                               </ng-container>
                             </ng-container>
@@ -164,7 +174,7 @@
                                 <ng-container *ngIf="prob.key === 'MostProbable'">
                                   <ng-container *ngFor="let p of prob.value | keyvalue">
                                     <ng-container *ngIf="p.key === 'concentration' && edge.key !== 'leadingEdge'">
-                                      <td>&nbsp;&nbsp;{{p.value.toFixed(2)}}</td>
+                                      <td>&nbsp;&nbsp;{{p.value.toUSGSvalue()}}</td>
                                     </ng-container>
                                     <ng-container *ngIf="p.key === 'time'">
                                       <td>
@@ -194,10 +204,9 @@
     </div>
     <!--End Most Probable Results Table-->
     <br />
-    <br />
     <!--Begin Max Probable Results Table-->
-    <div *ngFor="let element of output" style="border: solid #cccccc 1px; border-radius: 15px; padding: 4px 4px 4px 4px;">
-      <h4>Maximum Probable</h4>
+    <h4>Maximum Probable</h4>
+    <div *ngFor="let element of output" style="border: solid #cccccc 1px; border-radius: 10px; padding: 4px 4px 4px 4px;" id="scroll">
       <table class="small">
         <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
           <th>Name</th>
@@ -239,7 +248,7 @@
                             <ng-container *ngIf="response.key === 'equations'">
                               <ng-container *ngFor="let equation of response.value | keyvalue">
                                 <ng-container *ngIf="equation.key === 'vmax'">
-                                  <td>{{equation.value.value.toFixed(2)}}</td>
+                                  <td>{{equation.value.value.toUSGSvalue()}}</td>
                                 </ng-container>
                               </ng-container>
                             </ng-container>
@@ -248,7 +257,7 @@
                                 <ng-container *ngIf="prob.key === 'MaximumProbable'">
                                   <ng-container *ngFor="let p of prob.value | keyvalue">
                                     <ng-container *ngIf="p.key === 'concentration' && edge.key !== 'leadingEdge'">
-                                      <td>&nbsp;&nbsp;{{p.value.toFixed(2)}}</td>
+                                      <td>&nbsp;&nbsp;{{p.value.toUSGSvalue()}}</td>
                                     </ng-container>
                                     <ng-container *ngIf="p.key === 'time'">
                                       <td>
@@ -262,7 +271,7 @@
                                     </ng-container>
                                   </ng-container>
                                 </ng-container>
-                              </ng-container>                          
+                              </ng-container>
                             </ng-container>
                           </ng-container>
                         </ng-container>
@@ -278,7 +287,7 @@
       <!--End Max Probable Results Table-->
     </div>
     <br />
-    <div class="center">
+    <div class="center" style="margin-bottom:3em;">
       <div class="btn-wrapper">
         <button *ngIf="mylist !== null" class="btn-red btn-results" (click)="onPrintInvoice()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Print</button>
         <button *ngIf="mylist !== null" class="btn-blue btn-results" (click)="onClick_return()"><i class="fa fa-check"></i>&nbsp;&nbsp;Return to Jobsons</button>

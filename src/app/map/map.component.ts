@@ -98,8 +98,11 @@ export class MapComponent extends myfunctions implements OnInit {
 
   openDialog() {
     let dialog = this.dialog.open(ModalComponent, {
-      width: '90%',
+      width: '40%',
       height: '90%'
+    });
+    dialog.afterClosed().subscribe(result => {
+      this.mapReady = true;
     });
   }
 
@@ -287,9 +290,10 @@ export class MapComponent extends myfunctions implements OnInit {
 
   reset() {
     this.markers.length = 0;
+    this._MapService.clear();
     this.setStep(0);
     this.spinnerButtonOptions_downstream.active = false;
     this.spinnerButtonOptions_upstream.active = false;
-    this.map.flyTo([40.0, -100.0], 4);s
+    this.map.flyTo([40.0, -100.0], 4);
   }
 }
