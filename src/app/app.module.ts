@@ -17,6 +17,7 @@ import { ContentsComponent } from './contents/contents.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { DateTimePickerComponent } from './date-time-picker/date-time-picker.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NwisSiteComponent } from './nwis-site/nwis-site.component';
 //import { ISubscription } from 'rxjs/Subscription';
 //import { DragDropModule } from '@angular/cdk/drag-drop'; Object rearrangement
 
@@ -27,7 +28,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ModalComponent,
     MapComponent,
     ContentsComponent,
-    DateTimePickerComponent
+    DateTimePickerComponent,
+    NwisSiteComponent
   ],
   imports: [
     BrowserModule,

@@ -103,7 +103,7 @@ export class MapService extends myfunctions {
           }
           i = i+1;
         }
-        console.log(arraylist);
+        console.log(arraylist); //can be returned to the modal component
       });
   }
 
