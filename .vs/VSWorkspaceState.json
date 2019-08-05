@@ -3,9 +3,11 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\date-time-picker",
+    "\\src\\app\\modal",
     "\\src\\app\\shared",
     "\\src\\extensions"
   ],
-  "SelectedNode": "\\src\\extensions\\SurveyRound.ts",
+  "SelectedNode": "\\src\\index.html",
   "PreviewInSolutionExplorer": false
 }
