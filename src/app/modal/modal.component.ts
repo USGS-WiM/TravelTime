@@ -114,7 +114,7 @@ export class ModalComponent implements OnInit {
     }
     this.mylist.forEach((item) => {
       if (typeof (item.parameters[1].value) === 'undefined') {
-        item.parameters[1].value = this._MapService.discharge;
+        item.parameters[1].value = item.parameters[0].value * (this._MapService.discharge / item.parameters[0].value)
       }
     })
 
@@ -156,11 +156,8 @@ export class ModalComponent implements OnInit {
       console.log("so far so good");
 
       this._MapService.discharge = this.discharge;
-
-
       this.mylist.forEach((item) => {
-        item.parameters[1].value = this._MapService.discharge;
-        //console.log(item.parameters[1].name);
+        item.parameters[1].value = item.parameters[0].value * (this._MapService.discharge / item.parameters[0].value)
       })
     }
   }
