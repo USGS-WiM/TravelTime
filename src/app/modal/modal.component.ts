@@ -35,7 +35,7 @@ export class ModalComponent implements OnInit {
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
     private _GetTimeoftravelService: GetTimeoftravelService,
-    private _MapService: MapService,
+    public _MapService: MapService,
     public dialog: MatDialog,
     public printService: PrintService
   ) { }
@@ -61,10 +61,9 @@ export class ModalComponent implements OnInit {
 
   mylist = [];
   reach_reference: reach;
-  ini_mass: number;
-  //ini_time: number;
+  ini_mass = this._MapService.ini_conc;
+  discharge = this._MapService.discharge;
   id = []; //array for reach id's
-  discharge: number;// = this._MapService.discharge;
   output = [];
   openModal: boolean;
   showInputs: boolean;
@@ -73,6 +72,7 @@ export class ModalComponent implements OnInit {
   outputReach: number;
   formGroup: FormGroup;
   dateModel: Date = new Date();
+
 
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
@@ -106,12 +106,13 @@ export class ModalComponent implements OnInit {
   }
 
   reset = false;
+
   onClick_postReach() {
     if (this.dateModel instanceof Date) {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
-      this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.dateModel.toISOString())
+    this._GetTimeoftravelService.postReach(this.mylist, this._MapService.ini_conc , this.dateModel.toISOString())
         .subscribe(data => this.output.push(data));
   }
 
@@ -129,6 +130,8 @@ export class ModalComponent implements OnInit {
     onClick_clear() {
       this.discharge = null;
       this.ini_mass = null;
+      this._MapService.discharge = null;
+      this._MapService.ini_conc = null;
       this.dateModel = new Date(Date.parse(Date()));;
       this.showResult = false;
       this.showInputs = true;
@@ -145,10 +148,20 @@ export class ModalComponent implements OnInit {
   setDischarge(event) {
     if (this.mylist) {
       console.log("so far so good");
+
+      this._MapService.discharge = this.discharge;
+
+
       this.mylist.forEach((item) => {
-        item.parameters[1].value = this.discharge;
+        item.parameters[1].value = this._MapService.discharge;
         console.log(item.parameters[1].name);
       })
+    }
+  }
+
+  setConc(event) {
+    if (this.mylist) {
+      this._MapService.ini_conc = this.ini_mass;
     }
   }
 

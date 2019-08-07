@@ -23,7 +23,7 @@
         </div><br />
         <div class="initial-input">
           <label>Spill Concentration (kilograms):</label>
-          <input [(ngModel)]="ini_mass" type=number required placeholder="Value" name="inimass" class="up">
+          <input [(ngModel)]="ini_mass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="inimass" class="up">
           <app-contents [ini_mass]="ini_mass"></app-contents>
         </div>
       </div>
