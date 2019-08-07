@@ -112,6 +112,12 @@ export class ModalComponent implements OnInit {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
+    this.mylist.forEach((item) => {
+      if (typeof (item.parameters[1].value) === 'undefined') {
+        item.parameters[1].value = this._MapService.discharge;
+      }
+    })
+
     this._GetTimeoftravelService.postReach(this.mylist, this._MapService.ini_conc , this.dateModel.toISOString())
         .subscribe(data => this.output.push(data));
   }
@@ -154,7 +160,7 @@ export class ModalComponent implements OnInit {
 
       this.mylist.forEach((item) => {
         item.parameters[1].value = this._MapService.discharge;
-        console.log(item.parameters[1].name);
+        //console.log(item.parameters[1].name);
       })
     }
   }
