@@ -117,17 +117,10 @@ export class ModalComponent implements OnInit {
       this.showProgress = false;
       this.showResult = true;
       this.dialogRef.updateSize('90%', '90%');
-    }, 3000);
+    }, 4000);
   }
 
   onClick_clear() {
-    //this.mylist = null; //TS edit: assigning to null removes object and subscriptions, we need to keep subscriptions but flush the rest of the list
-    while (this.mylist.length != 0) {
-      this.mylist.splice(0, 1)
-    }
-    while (this.output.length != 0) {
-      this.output.splice(0, 1);
-    }
     this.discharge = null;
     this.ini_mass = null;
     this.dateModel = null;

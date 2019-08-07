@@ -16,13 +16,19 @@
   flex: 1 1 auto;
 }
 
-button.main {
-  width: 200px;
+#buttonrow button {
+  padding-left:2em;
+  padding-right:2em;
+  width: 100px;
 }
 
-button.mainR {
-  width: 200px;
-  float: right;
+button.btn-gray {
+  background-color: #808080;
+  color: #FFF;
+}
+
+button.middle {
+  align-self:center;
 }
 
 button.title {
@@ -38,6 +44,11 @@ button.title {
   margin-right: auto;
   width: auto;
   display: inline-block;
+}
+
+.btn-main {
+  margin-left: 5px;
+  width:120px;
 }
 
 .btn-results {
