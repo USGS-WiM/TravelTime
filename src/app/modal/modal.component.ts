@@ -7,7 +7,7 @@ import { PrintService } from '../services/print.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MapService } from '../services/map.service';
 import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
-import '../../../src/extensions/SurveyRound';
+import '../shared/extension-method';
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
 @Component({
@@ -17,6 +17,29 @@ import '../../../src/extensions/SurveyRound';
 })
 
 export class ModalComponent implements OnInit {
+
+  ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
+    this.showInputs = true;
+    this.openModal = true;
+    this._GetTimeoftravelService.getReach() // get reach
+      .toPromise().then(data => {
+        this.reach_reference = data;
+        this.onClick_addReach()
+      }); //get service {description: Initial description}
+    this.formGroup = new FormGroup({
+      activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
+    }, { updateOn: 'change' });
+  }
+
+  constructor(
+    public dialogRef: MatDialogRef<ModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
+    private _GetTimeoftravelService: GetTimeoftravelService,
+    private _MapService: MapService,
+    public dialog: MatDialog,
+    public printService: PrintService
+  ) { }
+
   @ViewChild('reaches') accordion1: NgbAccordion;
   @ViewChild('acc') accordion: NgbAccordion;
   model = {};
@@ -41,7 +64,7 @@ export class ModalComponent implements OnInit {
   ini_mass: number;
   //ini_time: number;
   id = []; //array for reach id's
-  discharge: number;
+  discharge: number;// = this._MapService.discharge;
   output = [];
   openModal: boolean;
   showInputs: boolean;
@@ -50,39 +73,17 @@ export class ModalComponent implements OnInit {
   outputReach: number;
   formGroup: FormGroup;
   dateModel: Date = new Date();
-  //stringDateModel: string = new Date().toISOString();
 
-  constructor(
-    public dialogRef: MatDialogRef<ModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ModalComponent,
-    private _GetTimeoftravelService: GetTimeoftravelService,
-    private _MapService: MapService,
-    public dialog: MatDialog,
-    public printService: PrintService
-  ) { }
-
-  ngOnInit(): any {   //on init, get the services for first reach, and add them as parameters to accordion
-    this.showInputs = true;
-    this.openModal = true;
-    this._GetTimeoftravelService.getReach() // get reach
-      .toPromise().then(data => {
-        this.reach_reference = data;
-        this.onClick_addReach()
-      }); //get service {description: Initial description}
-    this.formGroup = new FormGroup({
-      activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
-    }, { updateOn: 'change' });
-  }
 
   onClick_addReach() {   //add class jobson to an array of items that has been iterated over on ui side
     for (var i = 0; i < this._MapService.streamArray.length-2; i++) { //remove last traversing lines
       if (this._MapService.streamArray[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this._MapService.streamArray[i].properties.nhdplus_comid
-        newreach.parameters[0].value = this._MapService.streamArray[i].properties.Discharge * 0.028316847
+        newreach.parameters[0].value = (this._MapService.streamArray[i].properties.Discharge * 0.028316847)//.toUSGSvalue()
         newreach.parameters[2].value = this._MapService.streamArray[i].properties.Slope
-        newreach.parameters[3].value = this._MapService.streamArray[i].properties.DrainageArea
-        newreach.parameters[4].value = this._MapService.streamArray[i].properties.Length * 1000
+        newreach.parameters[3].value = (this._MapService.streamArray[i].properties.DrainageArea*1000000)//.toUSGSvalue()
+        newreach.parameters[4].value = (this._MapService.streamArray[i].properties.Length * 1000)//.toUSGSvalue()
         this.mylist.push(newreach);
       } else {
       }
@@ -104,9 +105,14 @@ export class ModalComponent implements OnInit {
     return index;
   }
 
+  reset = false;
   onClick_postReach() {
-    this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.dateModel.toISOString())
-      .subscribe(data => this.output.push(data));
+    if (this.dateModel instanceof Date) {
+    } else {
+      this.dateModel = new Date(this.dateModel);
+    }
+      this._GetTimeoftravelService.postReach(this.mylist, this.ini_mass, this.dateModel.toISOString())
+        .subscribe(data => this.output.push(data));
   }
 
   onClick_uiResult() {
@@ -120,14 +126,13 @@ export class ModalComponent implements OnInit {
     }, 4000);
   }
 
-  onClick_clear() {
-    this.discharge = null;
-    this.ini_mass = null;
-    this.dateModel = null;
-    this.showResult = false;
-    this.showInputs = true;
-    //this.onClick_addReach();
-  }
+    onClick_clear() {
+      this.discharge = null;
+      this.ini_mass = null;
+      this.dateModel = new Date(Date.parse(Date()));;
+      this.showResult = false;
+      this.showInputs = true;
+    }
 
   onClick_return() {
     this.dialogRef.updateSize('40%', '90%');

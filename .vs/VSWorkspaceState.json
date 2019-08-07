@@ -4,10 +4,12 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\date-time-picker",
+    "\\src\\app\\map",
     "\\src\\app\\modal",
+    "\\src\\app\\services",
     "\\src\\app\\shared",
     "\\src\\extensions"
   ],
-  "SelectedNode": "\\src\\index.html",
+  "SelectedNode": "\\src\\app\\modal\\modal.component.ts",
   "PreviewInSolutionExplorer": false
 }

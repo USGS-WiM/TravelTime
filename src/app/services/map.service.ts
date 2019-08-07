@@ -23,11 +23,12 @@ export class MapService extends myfunctions {
   public gagesDownstreamArray = [];
   public lastnode = [];
   public spill_date: string;
-  public diag;
+  public ini_conc: number;
+  public discharge: number;
+  public dateModel: Date = new Date();
 
   constructor(
-    private http: HttpClient,
-    public dialog: MatDialog
+    private http: HttpClient
   ) {
     super()
   }
@@ -97,7 +98,6 @@ export class MapService extends myfunctions {
           if (i > 27) {
             this.flows.push(line);
             var ar = line.split(/(\s+)/).filter(function (e) { return e.trim().length > 0; }); // split string on comma space
-            //console.log(ar);
             var flow = new measurements([ar[3], ar[5]]);
             arraylist.push(flow);
           }
