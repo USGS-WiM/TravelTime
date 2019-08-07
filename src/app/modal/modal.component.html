@@ -1,6 +1,9 @@
 <div *ngIf="showInputs === true">
   <div class="modal-header">
     <h4>Jobsons Travel Time Prediction</h4>
+    <button type="button" class="close-modal" aria-label="Close" (click)="dialogRef.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
 
   <div class="modal-body">
@@ -27,7 +30,7 @@
 
       <!--<button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>-->
       <!--<br style="clear:both;" />-->
-      <div id="panel-group">        
+      <div id="panel-group">
         <!-- Accordion starts here -->
         <ngb-accordion #reaches="ngbAccordion" (panelChange)="showhideReaches($event)">
           <ngb-panel title="{{showreaches}}">
@@ -108,8 +111,13 @@
 
       </div>
       <br />
-      <button *ngIf="mylist !== null" class="btn-red main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear All</button>
-      <button [disabled]="!myForm.form.valid" class="btn-blue mainR" (click)="onClick_uiResult()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
+      <div class="center" style="margin-bottom:3em;">
+        <div class="btn-wrapper">
+          <button *ngIf="mylist !== null" class="btn-red btn-main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear</button>
+          <button [disabled]="!myForm.form.valid" class="btn-blue btn-main" (click)="onClick_uiResult()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
+          <button class="btn-gray btn-main" (click)="dialogRef.close()"><i class="fa fa-window-close"></i>&nbsp;&nbsp;Close</button>
+        </div>
+      </div>
     </form>
   </div>
 </div>
@@ -121,7 +129,12 @@
 <div *ngIf="showResult === true" style="height:100%;">
   <!--Begin Most Probable Results Table-->
   <div *ngFor="let element of output">
-    <h3>{{ini_mass}} kg Spill Occuring {{ element.initialTimeStamp | date:'medium' }}</h3>
+    <div class="modal-header">
+      <h3>{{ini_mass}} kg Spill Occuring {{ element.initialTimeStamp | date:'medium' }}</h3>
+      <button type="button" class="close-modal" aria-label="Close" (click)="dialogRef.close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <h4>Most Probable</h4>
     <div style="border: solid #cccccc 1px; border-radius: 10px; padding: 4px 4px 4px 4px;" id="scroll">
       <table class="small">
@@ -289,9 +302,9 @@
     <br />
     <div class="center" style="margin-bottom:3em;">
       <div class="btn-wrapper">
-        <button *ngIf="mylist !== null" class="btn-red btn-results" (click)="onPrintInvoice()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Print</button>
+        <button *ngIf="mylist !== null" class="btn-red btn-results" (click)="onPrintInvoice()"><i class="fa fa-print"></i>&nbsp;&nbsp;Print</button>
         <button *ngIf="mylist !== null" class="btn-blue btn-results" (click)="onClick_return()"><i class="fa fa-check"></i>&nbsp;&nbsp;Return to Jobsons</button>
-        <button class="btn-results" (click)="dialogRef.close()">Close</button>
+        <button class="btn-gray btn-results" (click)="dialogRef.close()"><i class="fa fa-window-close"></i>&nbsp;&nbsp;Close</button>
       </div>
     </div>
   </div>

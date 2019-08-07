@@ -99,7 +99,8 @@ export class MapComponent extends myfunctions implements OnInit {
   openDialog() {
     let dialog = this.dialog.open(ModalComponent, {
       width: '40%',
-      height: '90%'
+      height: '90%',
+      disableClose: true
     });
     dialog.afterClosed().subscribe(result => {
       this.mapReady = true;
