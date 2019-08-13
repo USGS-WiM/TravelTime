@@ -7,6 +7,7 @@ import { PrintService } from '../services/print.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MapService } from '../services/map.service';
 import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
+import { ErrorDialogService } from '../services/error-dialog.service';
 import '../shared/extension-method';
 //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 
@@ -37,7 +38,8 @@ export class ModalComponent implements OnInit {
     private _GetTimeoftravelService: GetTimeoftravelService,
     public _MapService: MapService,
     public dialog: MatDialog,
-    public printService: PrintService
+    public printService: PrintService,
+    public errorDialogService: ErrorDialogService
   ) { }
 
   @ViewChild('reaches') accordion1: NgbAccordion;
@@ -112,8 +114,26 @@ export class ModalComponent implements OnInit {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
-    this._GetTimeoftravelService.postReach(this.mylist, this._MapService.ini_conc , this.dateModel.toISOString())
-        .subscribe(data => this.output.push(data));
+    this._GetTimeoftravelService.postReach(this.mylist, this._MapService.ini_conc, this.dateModel.toISOString())
+      .toPromise().then(data => this.output.push(data))
+      .catch((err) => {
+        console.log("error: ", err.message);
+        this.sendAlert(err, "Time of Travel Services");
+        this.showProgress = false;
+        this.showResult = false;
+        this.showInputs = true;
+      });
+  }
+
+  sendAlert(err, serv) {
+    let data = {};
+    data = {
+      //reason: error && error.error.reason ? error.error.reason : '',
+      status: err.status,
+      url: err.url,
+      service: serv
+    };
+    this.errorDialogService.openDialog(data);
   }
 
   onClick_uiResult() {
@@ -121,10 +141,10 @@ export class ModalComponent implements OnInit {
     this.showProgress = true;
     this.onClick_postReach();
     setTimeout(() => {
-      this.showProgress = false;
-      this.showResult = true;
-      this.dialogRef.updateSize('90%', '90%');
-    }, 4000);
+    this.showProgress = false;
+    this.showResult = true;
+    this.dialogRef.updateSize('90%', '90%');
+    }, 5000);
   }
 
     onClick_clear() {

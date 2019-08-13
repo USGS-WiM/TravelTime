@@ -140,3 +140,18 @@ input {
   height:40%;
   max-height:250px;
 }
+
+.modal-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  border-bottom: none;
+  border-top-left-radius: .3rem;
+  border-top-right-radius: .3rem;
+}
