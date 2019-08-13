@@ -11,7 +11,7 @@ action "Filters for GitHub Actions" {
 action "GitHub Action for AWS" {
   uses = "actions/aws/cli@efb074ae4510f2d12c7801e4461b65bf5e8317e6"
   needs = ["Filters for GitHub Actions"]
-  args = "s3 cp $GITHUB_WORKSPACE/dist/ s3://test.streamstats.usgs.gov/ss/  --recursive"
+  args = "s3 cp $GITHUB_WORKSPACE/dist/ s3://test.streamstats.usgs.gov/tot/  --recursive"
   secrets = ["AWS_SECRET_ACCESS_KEY", "AWS_ACCESS_KEY_ID"]
 }
 
