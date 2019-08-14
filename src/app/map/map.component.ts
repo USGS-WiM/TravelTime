@@ -7,6 +7,7 @@ import {myfunctions} from '../shared/myfunctions';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
+import { ErrorDialogService } from '../services/error-dialog.service';
 import 'leaflet-search';
 
 @Component({
@@ -23,6 +24,7 @@ export class MapComponent extends myfunctions implements OnInit {
     public dialog: MatDialog,
     private _GetNavigationService: GetNavigationService,
     private _MapService: MapService,
+    public errorDialogService: ErrorDialogService
   ) { super() }
 
   ngOnInit() {
@@ -88,11 +90,11 @@ export class MapComponent extends myfunctions implements OnInit {
 
   checkZoom(zoom) { //, markers) {
     if (zoom > 9) { // && markers.length > 0) { //if there are more than 1 markers, zoom on
-      this.spinnerButtonOptions_downstream.disabled = false;
-      this.spinnerButtonOptions_upstream.disabled = true;
+      this.barButtonOptions_downstream.disabled = false;
+      this.barButtonOptions_upstream.disabled = true;
     } else {
-      this.spinnerButtonOptions_downstream.disabled = true;
-      this.spinnerButtonOptions_upstream.disabled = true;
+      this.barButtonOptions_downstream.disabled = true;
+      this.barButtonOptions_upstream.disabled = true;
     }
   }
 
@@ -196,17 +198,17 @@ export class MapComponent extends myfunctions implements OnInit {
         let mySite = this._MapService.result;
         let e = this._MapService.myPoint.getLatLng();
         this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'downstream', ['streamStatsgage', 'flowline'], 1000);
-        this.spinnerButtonOptions_downstream.active = true;
+        this.barButtonOptions_downstream.active = true;
       } else if (this.methodType === "upstream") {
         let mySite = this._MapService.result;
         let e = this._MapService.myPoint.getLatLng();
         this.onMarkerClick(mySite['mylist'], e.lat, e.lng, 'upstream', ['streamStatsgage'], 1000);
-        this.spinnerButtonOptions_upstream.active = true;
+        this.barButtonOptions_upstream.active = true;
       }
     } else { }
   }
 
-  spinnerButtonOptions_downstream: MatProgressButtonOptions = {
+  barButtonOptions_downstream: MatProgressButtonOptions = {
     active: false,
     text: 'Spill Response',
     spinnerSize: 18,
@@ -219,7 +221,7 @@ export class MapComponent extends myfunctions implements OnInit {
     mode: 'indeterminate'
   }
 
-  spinnerButtonOptions_upstream: MatProgressButtonOptions = {
+  barButtonOptions_upstream: MatProgressButtonOptions = {
     active: false,
     text: 'Spill Planning',
     spinnerSize: 18,
@@ -242,6 +244,7 @@ export class MapComponent extends myfunctions implements OnInit {
     this.mapReady = true;
     L.DomUtil.addClass(this.map._container, 'crosshair-cursor-enabled');
     this.methodType = "downstream";
+    this.barButtonOptions_downstream.buttonColor = 'accent';
   }
 
   onMarkerClick(e, lat, lng, cond, option, len) {
@@ -262,7 +265,7 @@ export class MapComponent extends myfunctions implements OnInit {
         let polyline;
         if (cond == 'upstream') {
           myreturn = this._MapService.getUpstream(data);
-          this.spinnerButtonOptions_upstream.active = false;
+          this.barButtonOptions_upstream.active = false;
         } else {
           myreturn = this._MapService.getDownstream(data);
           var myStyle = {
@@ -277,24 +280,42 @@ export class MapComponent extends myfunctions implements OnInit {
           }
         }
         this.markers.push(myreturn);
-        this.spinnerButtonOptions_downstream.active = false;
-        this.spinnerButtonOptions_downstream.disabled = true;
+        this.barButtonOptions_downstream.active = false;
+        this.barButtonOptions_downstream.disabled = true;
         var group = L.featureGroup(this.markers);
         this.map.fitBounds(group.getBounds());
         for (var i = 0; i < this._MapService.lastnode.length; i++) {
           this.markers.push(this._MapService.lastnode[i])
         }
         this.setStep(2);
-      }
-      );
+      })
+      .catch((err) => {
+        console.log("error: ", err.message);
+        this.sendAlert(err, "Navigation Services");
+        this.barButtonOptions_downstream.active = false;
+        this.barButtonOptions_downstream.buttonColor = 'primary';
+        this.markers = [];
+      });
+    };
+
+
+  sendAlert(err, serv) {
+    let data = {};
+    data = {
+      //reason: error && error.error.reason ? error.error.reason : '',
+      status: err.status,
+      url: err.url,
+      service: serv
+    };
+    this.errorDialogService.openDialog(data);
   }
 
   reset() {
     this.markers.length = 0;
     this._MapService.clear();
     this.setStep(0);
-    this.spinnerButtonOptions_downstream.active = false;
-    this.spinnerButtonOptions_upstream.active = false;
+    this.barButtonOptions_downstream.active = false;
+    this.barButtonOptions_upstream.active = false;
     this.map.flyTo([40.0, -100.0], 4);
   }
 }
