@@ -1,16 +1,16 @@
 ![WiM](wimlogo.png)
 
 
-# Project Title
+# Travel Time
 
-One Paragraph of project description goes here
+A web-based map application for estimating plume trajectories and travel times in rivers
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+This project has dependencies that require [Node 6.9.0] (https://nodejs.org/en/) or higher, which includes NPM 3 or higher, and Angular CLI.
 
 ```
-Give examples
+npm install -g @angular/cli
 ```
 
 ## Getting Started
@@ -19,36 +19,27 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
+https://help.github.com/articles/cloning-a-repository/
 
-Say what the step will be
+* Run `npm install`. 
 
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
 
 ## Building and testing
 
-Explain how to run the debugging 'watch' script for this repo, if applicable
-
-Explain how to run unit tests, if applicable
+Run `ng serve -o` for a dev server. 
+Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system. **Do not include any credentials, IP addresses, or other sensitive information**
+Run `ng build` to build a deployed project. Configureation has now moved to angular.json file
+
+see [CLI build](https://github.com/angular/angular-cli/wiki/build) for additional options.
 
 ## Built With
 
 * [Angular](https://angular.io/) - The main web framework used
-* [Clarity UI](https://vmware.github.io/clarity/) - Top-level UI framework if you have one 
+* [Leaflet](https://leafletjs.com/) - an open-source JavaScript library for mobile-friendly interactive maps 
 * [NPM](https://www.npmjs.com/) - Dependency Management
-* [Others](https://www.npmjs.com/) - Any other high-level dependencies
 
 ## Contributing
 
@@ -66,8 +57,9 @@ To push tags to remote origin: `git push origin --tags`
 
 ## Authors
 
-* **[Jordan Doe](PROFILE_PAGE_URL_HERE)**  - *Lead Developer* - [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
-* **[Jessie Smith](PROFILE_PAGE_URL_HERE)** - *Developer* -  [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
+* **[Jeremy Newson](https://www.usgs.gov/staff-profiles/jeremy-k-newson)**  - *Lead Developer* - [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
+* **[Tara Gross](https://www.usgs.gov/staff-profiles/tara-a-gross)** - *Developer* -  [USGS Colorado Water Science Center](https://www.usgs.gov/centers/co-water)
+* **Timur Sabitov ** - *Developer* -  [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
 
 See also the list of [contributors](../../graphs/contributors) who participated in this project.
 
@@ -83,8 +75,6 @@ In the spirit of open source, please cite any re-use of the source code stored i
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration Note 
 
 ## About WIM
 * This project authored by the [USGS WIM team](https://wim.usgs.gov)
