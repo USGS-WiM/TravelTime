@@ -24,7 +24,6 @@ export class parameters extends myfunctions { //parameters
     }
 }
 
-
 export class site { //site
     constructor(arg:Array<any>) {
         arg = arg['0'];

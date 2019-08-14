@@ -9,7 +9,7 @@ import { ModalComponent } from './modal/modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from '../material-module';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material';
 import { MapComponent } from './map/map.component';
@@ -18,6 +18,11 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { DateTimePickerComponent } from './date-time-picker/date-time-picker.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NwisSiteComponent } from './nwis-site/nwis-site.component';
+import { MatDialogModule } from '@angular/material';
+import { HttpConfigInterceptor } from './interceptor/httpconfig.interceptor';
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
+import { ErrorDialogService } from './services/error-dialog.service';
+import { GetNavigationService } from './services/get-navigation.service';
 //import { ISubscription } from 'rxjs/Subscription';
 //import { DragDropModule } from '@angular/cdk/drag-drop'; Object rearrangement
 
@@ -29,7 +34,8 @@ import { NwisSiteComponent } from './nwis-site/nwis-site.component';
     MapComponent,
     ContentsComponent,
     DateTimePickerComponent,
-    NwisSiteComponent
+    NwisSiteComponent,
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -43,12 +49,20 @@ import { NwisSiteComponent } from './nwis-site/nwis-site.component';
     NgbModule,
     LeafletModule.forRoot(),
     MatTooltipModule,
-    MatProgressButtonsModule.forRoot()
+    MatProgressButtonsModule.forRoot(),
+    MatDialogModule,
     //DragDropModule Object rearrangement
   ],
-  providers: [],
+  providers: [
+    ErrorDialogService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpConfigInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, ModalComponent]
+  entryComponents: [AppComponent, ModalComponent, ErrorDialogComponent]
 })
 export class AppModule { }
 
