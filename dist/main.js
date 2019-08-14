@@ -2247,7 +2247,7 @@ var DemoMaterialModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\tgross\wim.github\TravelTime\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! D:\WiM\GitHub\TravelTime\src\main.ts */"./src/main.ts");
 
 
 /***/ })
