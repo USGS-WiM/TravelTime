@@ -57,7 +57,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   constructor(private config: NgbPopoverConfig, private inj: Injector, private _MapService: MapService) {
     config.autoClose = 'outside';
-    config.placement = 'auto';
+    config.placement = 'left-top';
   }
 
   ngOnInit(): void {
