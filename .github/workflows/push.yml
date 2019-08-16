@@ -1,7 +1,7 @@
 on: 
   push:
     branches:
-    -staging
+    - staging 
 name: Deploy to Test
 jobs:
   filtersForGitHubActions:
