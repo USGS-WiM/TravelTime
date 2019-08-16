@@ -8,6 +8,7 @@ jobs:
     name: Filters for GitHub Actions
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@staging
     - name: GitHub Action for AWS
       uses: actions/aws/cli@efb074ae4510f2d12c7801e4461b65bf5e8317e6
       env:
