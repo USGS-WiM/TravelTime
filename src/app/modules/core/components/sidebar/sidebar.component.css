@@ -1,0 +1,8 @@
+* {  
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  background-color: white; 
+  overflow-x: hidden;
+}

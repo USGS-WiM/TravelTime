@@ -19,19 +19,19 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "./node_modules/leaflet/dist/images",
-                "output": "leaflet/"
-              },
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
+            "styles": [  
+                       
+              "./node_modules/leaflet/dist/leaflet.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.css",
+              "./node_modules/ngx-toastr/toastr.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+            ],
+            "assets": [
+              "src/assets/favicon.png",
+              "src/assets"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
@@ -85,12 +85,16 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": [
+            "styles": [              
+              "./node_modules/leaflet/dist/leaflet.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.css",
+              "./node_modules/ngx-toastr/toastr.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [ 
+            ],
             "assets": [
-              "src/favicon.ico",
+              "src/assets/favicon.png",
               "src/assets"
             ]
           }

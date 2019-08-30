@@ -1,0 +1,18 @@
+nav.wim-nav{
+    box-shadow: none;
+}
+.nav-links a span {
+    display: block!important;
+    white-space: nowrap!important;
+}
+.wim-nav .container .nav-links .nav-link-text {
+    display: inline-block!important;
+    padding-left: 4px!important;
+}
+.wim-nav .container .nav-links a:hover{
+    cursor:pointer;
+    color: #FFF;
+    border-bottom:2px solid #FFF;
+    -webkit-transition:.1s;
+    transition:.1s
+}

@@ -1,7 +1,17 @@
 <div>
   <header>
-    <h3 class='Title'> USGS Time of Travel</h3>
+    <h3 class='Title'>{{title}}</h3>
   </header>
-  <app-map></app-map>
-  <router-outlet></router-outlet>
+  <wim-navbar>
+    <div nav-title>{{title}}</div>
+    <div nav-links>
+      <a (click)="open()">
+          <span>
+              <i class="ion-information-circled"></i>
+              <span class="nav-link-text">About</span>
+          </span>
+      </a>
+    </div>
+  </wim-navbar>
+  <tot-core></tot-core>
 </div>

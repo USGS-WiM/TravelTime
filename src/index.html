@@ -2,22 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TravelTimeClient</title>
+  <title>Travel Time</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="/path/to/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
-  <link rel="stylesheet" href="/assets/leaflet/leaflet-search.css" />
-  <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <style>
+      body,html{
+          margin: 0;
+          padding: 0;
+      }
+      .initial-loader {
+          position: fixed!important;
+          width:100%;
+          height: 100%;
+          opacity: 1;
+          z-index: 5000;
+          background-color: rgba(0,0,30,0.6);
+          background-image:url('https://wim.usgs.gov/website-assets/branding/usgsanimated.svg');
+          display: block !important;
+          background-repeat: no-repeat;
+          background-size: 120px auto;
+          background-position: center center;
+      }
+      .initial-loader:after{
+          content: 'Loading...';
+          position: fixed;
+          top: 64%;
+          font-size: 22px;
+          color: white;
+          width: 100%;
+          text-align: center;
+          z-index: 5001;
+      }
+  </style>
 </head>
-
 <body>
   <div>
-    <app-root>loading</app-root>
+    <app-root><div class="initial-loader"></div></app-root>
   </div>
 </body>
 </html>
