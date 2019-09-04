@@ -18,6 +18,7 @@ export class MapComponent implements OnInit {
 	private MapService:MapService;
 
 	public get LayersControl(){
+
 		return this.MapService.layersControl;
 	}
 	public get MapOptions(){
@@ -34,22 +35,17 @@ export class MapComponent implements OnInit {
 	 }
 
   ngOnInit() {
-
-	 
   }
 
 	public onZoomChange(zoom: number) {	
-		
+		this.MapService.CurrentZoomLevel=zoom;
+			
 		this.sm("Zoom changed to "+ zoom);
 	}
 	public onMouseClick(evnt:any) {
 		
 		this.sm("Mouse click "+ evnt.latlng.lat +" "+ evnt.latlng.lng);
 	}
-
-
-	
-
 	//#region "Helper methods"
 	private sm(msg: string, mType:string = messageType.INFO,title?:string,timeout?:number) {
 		try {
