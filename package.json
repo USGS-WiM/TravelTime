@@ -35,7 +35,7 @@
     "leaflet-search": "^2.9.8",
     "leaflet-search-control": "^2.0.5",
     "mat-progress-buttons": "^8.0.4",
-    "ngx-toastr": "^10.1.0",
+    "ngx-toastr": "^10.2.0",
     "rxjs": "^6.3.3",
     "toastr": "^2.1.4",
     "tslib": "^1.9.0",

@@ -1,6 +1,6 @@
 <div class="sidebar">
     <p>help me become the sidebar I was meant to be!</p>
-    <!-- <mat-accordion>
+    <mat-accordion>
 
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -13,10 +13,34 @@
         
         <mat-expansion-panel>
             <mat-expansion-panel-header>
-                SELECT SPILL LOCATION
+                IDENTIFY AREA
             </mat-expansion-panel-header>
         
-            This the expansion 2 content
+            <div *ngIf="SelectedProcedureType === 2">
+                <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
+                <br /><br />
+            </div>
+
+            <div *ngIf="step === 0">
+                <div class="shadowtext">
+                  <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
+                </div>
+              </div>
+      
+              <div *ngIf="step === 1 || step === 2">
+                <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
+              </div>
+
+              <div style="text-align: left">
+
+                <mat-bar-button [options]="barButtonOptions_downstream"
+                                (btnClick)="SetScenarioType('response')">
+                </mat-bar-button>
+      
+                <mat-bar-button [options]="barButtonOptions_upstream"
+                                (btnClick)="SetScenarioType('planning')">
+                </mat-bar-button>
+              </div>
         
         </mat-expansion-panel>
 
@@ -43,6 +67,6 @@
         
         </mat-expansion-panel>
             
-    </mat-accordion> -->
+    </mat-accordion> 
 
   </div>   

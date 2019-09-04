@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { StudyAreaService } from '../../services/studyArea.service';
+import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 
@@ -11,11 +13,11 @@ import * as messageType from "../../../../shared/messageType";
 
 
 export class SidebarComponent {
-  public AvailableScenarioTypes
+  public AvailableScenarioTypes: [];
   public Collapsed:boolean;
   public SelectedProcedureType:ProcedureType;
   public get SelectedStudyArea() {return ""}
-  public get SelectedSencarioType() {return ""}
+  public get SelectedScenarioType() {return ""}
 
   private messanger:ToastrService;
   
@@ -39,6 +41,33 @@ export class SidebarComponent {
     if (this.Collapsed) this.Collapsed = false;
             else this.Collapsed = true; 
   }
+
+  public barButtonOptions_downstream: MatProgressButtonOptions = {
+    active: false,
+    text: 'Spill Response',
+    spinnerSize: 18,
+    raised: true,
+    stroked: false,
+    buttonColor: 'primary',
+    spinnerColor: 'accent',
+    fullWidth: true,
+    disabled: true,
+    mode: 'indeterminate'
+  }
+
+  public barButtonOptions_upstream: MatProgressButtonOptions = {
+    active: false,
+    text: 'Spill Planning',
+    spinnerSize: 18,
+    raised: true,
+    stroked: false,
+    buttonColor: 'primary',
+    spinnerColor: 'accent',
+    fullWidth: true,
+    disabled: true,
+    mode: 'indeterminate'
+  }
+
   //#endregion
 
   //#region "Private methods"
@@ -58,7 +87,7 @@ export class SidebarComponent {
                 return true;
             case ProcedureType.REPORT:
                 if(!this.SelectedStudyArea) throw new Error("Can not proceed until study area options are selected.")
-                if(!this.SelectedSencarioType) throw new Error("Can not proceed until Scenario options are selected.")
+                if(!this.SelectedScenarioType) throw new Error("Can not proceed until Scenario options are selected.")
                 return true;
             default:
                 return false;
