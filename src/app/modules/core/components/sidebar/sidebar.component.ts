@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
+import {MapService} from '../../services/map.services';
 
 @Component({
   selector: 'tot-sidebar',
@@ -11,16 +12,21 @@ import * as messageType from "../../../../shared/messageType";
 
 
 export class SidebarComponent {
+  private MapService:MapService;
   public AvailableScenarioTypes
   public Collapsed:boolean;
   public SelectedProcedureType:ProcedureType;
   public get SelectedStudyArea() {return ""}
   public get SelectedSencarioType() {return ""}
+  public get ZoomLevel():number{
+    return this.MapService.CurrentZoomLevel;
+  }
 
   private messanger:ToastrService;
   
-  constructor(toastr: ToastrService) {
+  constructor(mapservice:MapService, toastr: ToastrService) {
     this.messanger = toastr;
+    this.MapService=mapservice;
    }
 
   //#region "Methods"
@@ -29,7 +35,7 @@ export class SidebarComponent {
     console.log(ScenarioType)
   }
   
-  public SetProcedureType(pType){
+  public SetProcedureType(pType:ProcedureType){
     if(!this.canUpdateProcedure(pType)) return;
   
     this.SelectedProcedureType = pType;
@@ -65,7 +71,7 @@ export class SidebarComponent {
         }//end switch          
     }
     catch (e) {
-        this.sm(e.message,messageType.ERROR )
+        this.sm(e.message,messageType.WARNING);         
         return false;
     }
   }
