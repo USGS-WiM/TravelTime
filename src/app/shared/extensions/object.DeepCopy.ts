@@ -29,5 +29,6 @@ export class deepCopy {
         var tmp = array[indexA];
         array[indexA] = array[indexB];
         array[indexB] = tmp;
+        return array;
     }
 }

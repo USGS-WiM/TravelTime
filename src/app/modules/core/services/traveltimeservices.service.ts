@@ -6,7 +6,7 @@ import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType'
 
 @Injectable()
-export class NavigationService {
+export class TravelTimeService {
 public get baseURL() {return "https://test.streamstats.usgs.gov/timeoftravelservices/";}
 private messanger:ToastrService;
   constructor(private http: HttpClient,toastr: ToastrService) {

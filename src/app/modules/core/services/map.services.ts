@@ -80,4 +80,8 @@ export class MapService implements OnInit {
 
     return features;
   }
+
+  public changeCursor(cursorType) {
+    //L.DomUtil.addClass(._container,'crosshair-cursor-enabled');
+  }
 }
