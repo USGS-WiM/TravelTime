@@ -4,6 +4,8 @@ import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import {MapService} from '../../services/map.services';
+import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
+// import {MatExpansionModule} from '@angular/material/expansion';
 
 @Component({
   selector: 'tot-sidebar',
@@ -15,25 +17,75 @@ import {MapService} from '../../services/map.services';
 
 export class SidebarComponent {
   private MapService:MapService;
+  private StudyAreaService:StudyAreaService;
   public AvailableScenarioTypes
+  public dialog: MatDialog;
   public Collapsed:boolean;
   public SelectedProcedureType:ProcedureType;
+  public PanelData = [ 
+    {id:0, header:'MAP LAYERS', content: '', expanded: false},
+    {id:1, header:'IDENTIFY AREA', expanded: true},
+    {id:2, header:'SCENARIOS', content: '', expanded: false, disabled: true},
+    {id:3, header:'BUILD REPORT', content: '', expanded: false, disabled: true}
+  ];
   public get SelectedStudyArea() {return ""}
-  public get SelectedSencarioType() {return ""}
+  public get SelectedScenarioType() {return ""}
   public get ZoomLevel():number{
+    if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
+      this.barButtonOptions_downstream.disabled = false;
+      this.toggleButton = false;
+    }
     return this.MapService.CurrentZoomLevel;
   }
 
   private messanger:ToastrService;
+  private toggleButton = true;
+
+  public barButtonOptions_downstream: MatProgressButtonOptions;
+  public barButtonOptions_upstream: MatProgressButtonOptions;
   
   constructor(mapservice:MapService, toastr: ToastrService) {
     this.messanger = toastr;
-    this.MapService=mapservice;
+    this.MapService = mapservice;
+   }
+
+   ngOnInit() {
+     this.barButtonOptions_downstream = {
+      active: false,
+      text: 'Spill Response',
+      spinnerSize: 18,
+      raised: true,
+      stroked: false,
+      buttonColor: 'primary',
+      spinnerColor: 'accent',
+      fullWidth: true,
+      disabled: this.ZoomLevel < 10,
+      mode: 'indeterminate'
+    }
+
+    this.barButtonOptions_upstream = {
+      active: false,
+      text: 'Spill Planning',
+      spinnerSize: 18,
+      raised: true,
+      stroked: false,
+      buttonColor: 'primary',
+      spinnerColor: 'accent',
+      fullWidth: true,
+      disabled: true,
+      mode: 'indeterminate'
+    }
    }
 
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
-    // spill response | planning
+    if (ScenarioType = "Response") {
+      this.StudyAreaService.selectedStudyArea.MethodType = ScenarioType;
+      //this.MapService.changeCursor("crosshair-cursor-enabled");
+      this.barButtonOptions_downstream.buttonColor = 'accent';
+    } else if (ScenarioType = "Spill Planning") {
+
+    }
     console.log(ScenarioType)
   }
   
@@ -48,32 +100,27 @@ export class SidebarComponent {
             else this.Collapsed = true; 
   }
 
-  public barButtonOptions_downstream: MatProgressButtonOptions = {
-    active: false,
-    text: 'Spill Response',
-    spinnerSize: 18,
-    raised: true,
-    stroked: false,
-    buttonColor: 'primary',
-    spinnerColor: 'accent',
-    fullWidth: true,
-    disabled: true,
-    mode: 'indeterminate'
-  }
+  /* public openDialog() {
+    let dialog = this.dialog.open(ModalComponent, {
+      width: '40%',
+      height: '90%',
+      disableClose: true
+    });
+    dialog.afterClosed().subscribe(result => {
+      this.mapReady = true;
+    });
+  } */
 
-  public barButtonOptions_upstream: MatProgressButtonOptions = {
-    active: false,
-    text: 'Spill Planning',
-    spinnerSize: 18,
-    raised: true,
-    stroked: false,
-    buttonColor: 'primary',
-    spinnerColor: 'accent',
-    fullWidth: true,
-    disabled: true,
-    mode: 'indeterminate'
-  }
-
+  public toggleLayer(newVal: string) {
+    /* this.MapService.chosenBaseLayer = newVal;
+    this.MapService.map.removeLayer(this.MapService.baseMaps['OpenStreetMap']);
+    this.MapService.map.removeLayer(this.MapService.baseMaps['Topo']);
+    this.MapService.map.removeLayer(this.MapService.baseMaps['Terrain']);
+    this.MapService.map.removeLayer(this.MapService.baseMaps['Satellite']);
+    this.MapService.map.removeLayer(this.MapService.baseMaps['Gray']);
+    this.MapService.map.removeLayer(this.MapService.baseMaps['Nautical']);
+    this.MapService.map.addLayer(this.MapService.baseMaps[newVal]); */
+}
   //#endregion
 
   //#region "Private methods"
@@ -89,11 +136,20 @@ export class SidebarComponent {
                 return true;
             case ProcedureType.SCENARIO:
                 //proceed only if StudyArea Selected
-                if(!this.SelectedStudyArea) throw new Error("Can not proceed until study area options are selected.")
+                if(!this.SelectedStudyArea) {
+                  this.PanelData[pType].expanded = false;
+                  throw new Error("Can not proceed until study area options are selected.");
+                }
                 return true;
             case ProcedureType.REPORT:
-                if(!this.SelectedStudyArea) throw new Error("Can not proceed until study area options are selected.")
-                if(!this.SelectedScenarioType) throw new Error("Can not proceed until Scenario options are selected.")
+                if(!this.SelectedStudyArea) {
+                  this.PanelData[pType].expanded = false;
+                  throw new Error("Can not proceed until study area options are selected.")
+                }
+                if(!this.SelectedScenarioType) {
+                  this.PanelData[pType].expanded = false;
+                  throw new Error("Can not proceed until Scenario options are selected.")
+                }
                 return true;
             default:
                 return false;
@@ -115,7 +171,6 @@ export class SidebarComponent {
     }
   }
   //#endregion
-
 }
 
 enum ProcedureType{

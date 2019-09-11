@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { LatLng } from 'leaflet';
-
+import { StudyArea } from '../models/studyarea';
+ 
 @Injectable()
 export class StudyAreaService {
-    public methodType: String;
-    public spillLocation: LatLng;
-    public reaches: [];
-    public results: [];
+    public selectedStudyArea: StudyArea;
 }

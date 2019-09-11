@@ -11,12 +11,13 @@ export class MapService {
   // for layers not shown in the leaflet control
   public ActiveLayers: Array<any> = [];
 
-  public CurrentZoomLevel;
+  public CurrentZoomLevel = undefined;
 
   constructor() {
     this.options = {     
-      zoom: 10,
-      center: L.latLng(46.95, -122)
+      zoom: 4,
+      center: L.latLng(40, -100),
+      //cursor: 
     };
     this.CurrentZoomLevel = this.options.zoom;
 
@@ -35,10 +36,10 @@ export class MapService {
       }
     };
 
-    // this.ActiveLayers.push(this.layersControl['baseLayers']['National Geographic']);
-    // this.ActiveLayers.push(this.layersControl['overlays']['State Cities']);
-    // this.ActiveLayers.push(this.layersControl['overlays']['Big Circle']);
-    // this.ActiveLayers.push(this.layersControl['overlays']['Big Square']);    
+    this.ActiveLayers.push(this.layersControl['baseLayers']['National Geographic']);
+    this.ActiveLayers.push(this.layersControl['overlays']['State Cities']);
+    this.ActiveLayers.push(this.layersControl['overlays']['Big Circle']);
+    this.ActiveLayers.push(this.layersControl['overlays']['Big Square']);    
   }
 
   public addFeatureLayer() {
@@ -64,5 +65,9 @@ export class MapService {
     });
 
     return features;
+  }
+
+  public changeCursor(cursorType) {
+    //L.DomUtil.addClass(._container,'crosshair-cursor-enabled');
   }
 }
