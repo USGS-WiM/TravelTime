@@ -6,6 +6,7 @@ import { NavbarComponent} from './components/navbar/navbar.component';
 import {NgbTabsetModule,NgbModule,NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrModule, ToastNoAnimation, ToastNoAnimationModule} from 'ngx-toastr';
 import { CoreModule } from './modules/core/core.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { CoreModule } from './modules/core/core.module';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     CoreModule,
     NgbTabsetModule,
     ToastNoAnimationModule.forRoot({

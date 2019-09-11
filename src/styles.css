@@ -5120,6 +5120,12 @@ hr {
   border-color: #7fc1ff;
 }
 
+.info h4 {
+  margin: 0 0 5px;
+  color: #777;
+}
+
+
   .info.intense {
     background-color: #0F8AFF;
     border-color: #0070db;
@@ -5189,3 +5195,38 @@ ul {
     box-sizing: border-box;
     padding: 6px 0;
   }
+
+
+.info-legend {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+  width: 200px;
+  height: 200px;
+}
+
+.legend-item {
+  display: flex;
+  justify-content: flex-start;
+}
+  /* Colored Box */
+  .legend-item i {
+    display: block;
+    height: 22px;
+    width: 22px;
+  }
+  /* Legend item text */
+  .legend-item span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    flex-grow: 3;
+  }
+
+/*.leaflet-control-layers {
+  visibility: hidden !important;
+}*/
