@@ -1,0 +1,55 @@
+<div class="sidebar">
+    <div>Current Zoom {{ZoomLevel}}</div>
+    <mat-accordion>
+      <mat-expansion-panel [(ngModel)]="PanelData[0]" [expanded]="false" [disabled]="false" ngDefaultControl>
+        <mat-expansion-panel-header>
+          MAP LAYERS
+        </mat-expansion-panel-header>
+        Map Layers go here 
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  
+        <mat-expansion-panel-header (click)="SetProcedureType(1)">
+          IDENTIFY AREA
+        </mat-expansion-panel-header>
+
+        <div *ngIf="SelectedProcedureType === 2">
+          <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
+          <br /><br />
+        </div>
+        <div *ngIf="ZoomLevel <= 9">
+          <div class="shadowtext">
+            <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
+          </div>
+        </div>
+        <div *ngIf="ZoomLevel >=10">
+          <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
+        </div>
+        <div style="text-align: left">
+          <mat-bar-button [options]="barButtonOptions_downstream"
+                          (btnClick)="SetScenarioType('response')">
+          </mat-bar-button>
+          <mat-bar-button [options]="barButtonOptions_upstream"
+                          (btnClick)="SetScenarioType('planning')">
+          </mat-bar-button>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [(ngModel)]="PanelData[2]" [expanded]="false" [disabled]="true" ngDefaultControl>
+          <mat-expansion-panel-header (click)="SetProcedureType(2)">
+              SCENARIOS
+            </mat-expansion-panel-header>
+
+        <button mat-raised-button (click)="openDialog()">Jobsons</button>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [(ngModel)]="PanelData[3]" [expanded]="false" [disabled]="true" ngDefaultControl>     
+        <mat-expansion-panel-header (click)="SetProcedureType(3)">
+            BUILD REPORT
+        </mat-expansion-panel-header>
+
+        This the expansion 2 content
+      </mat-expansion-panel>
+    </mat-accordion> 
+
+  </div>   

@@ -1,0 +1,21 @@
+.sidebar {  
+  height: 100%;
+  width: 360px;
+  position: fixed;
+  /*z-index: 100;*/
+  left: 0;
+  background-color: white; 
+  overflow-x: hidden;
+}
+
+.shadowtext {
+    color: black;
+    width: 100%;
+    padding: 12px 12px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 1em;
+    font-family: 'Roboto';
+    font-size: 13px;
+    background-color: #DDDDDD;
+  }

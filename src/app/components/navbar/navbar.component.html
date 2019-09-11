@@ -1,0 +1,14 @@
+<nav class="wim-nav">
+    <div class="container" style="width: 100%;">
+        <button class="mobile-nav-toggle" (click)="toggleSidebar()"></button>
+        <a href="https://usgs.gov" class="nav-branding">
+            <img src="https://wim.usgs.gov/website-assets/usgs-logo.png" />
+        </a>
+        <span class="nav-title">
+            <ng-content select="[nav-title]"></ng-content>
+        </span>
+        <div class="nav-links">
+            <ng-content select ="[nav-links]"></ng-content>        
+        </div>
+    </div>
+</nav>

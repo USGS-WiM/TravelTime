@@ -1,21 +1,27 @@
 import { Component} from '@angular/core';
-import { MatDialog } from '@angular/material';
-import {ModalComponent} from '../app/modal/modal.component'
+import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
+import {AboutModalComponent} from './components/about/about.component'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers:[NgbModalConfig, NgbModal]
 })
 
 export class AppComponent {
-  mod_accordion: Object;
-  constructor(public dialog: MatDialog) {}
+  public title:string;
 
-  //openDialog() {
-  //  let dialog = this.dialog.open(ModalComponent, {
-  //    width: '80%',
-  //    height: '90%'
-  //  });
-  //}
+  constructor(config: NgbModalConfig, private modalService: NgbModal) {
+   this.title = "USGS Time of Travel";
+
+    config.backdrop = 'static';
+    config.keyboard = false;
+   }
+//#region "Methods"
+  public open(){
+    const modalRef = this.modalService.open(AboutModalComponent);
+    modalRef.componentInstance.title = 'About';
+  }
+//#endregion
 }
