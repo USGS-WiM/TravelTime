@@ -33,7 +33,7 @@ export class MapComponent extends deepCopy implements OnInit {
 	private marker_sites = [];
 	private nodemarker = [];
 	private mapReady: boolean = false;
-	private methodType: string = null;
+  private methodType: string = null;
 
 	public get LayersControl(){
 
@@ -41,10 +41,7 @@ export class MapComponent extends deepCopy implements OnInit {
 	}
 	public get MapOptions(){
 		return this.MapService.options;
-	}
-	public get Layers(){
-		return this.MapService.ActiveLayers;
-	}	
+  }
   
 	constructor(mapservice:MapService, toastr: ToastrService) {
 		super();

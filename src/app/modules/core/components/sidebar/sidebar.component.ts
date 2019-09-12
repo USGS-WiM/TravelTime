@@ -32,7 +32,7 @@ export class SidebarComponent {
   public get SelectedScenarioType() {return ""}
   public get ZoomLevel():number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      this.barButtonOptions_downstream.disabled = false;
+      //this.barButtonOptions_downstream.disabled = false;
       this.toggleButton = false;
     }
     return this.MapService.CurrentZoomLevel;
