@@ -80,7 +80,7 @@ export class SidebarComponent {
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
     if (ScenarioType = "Response") {
-      this.StudyAreaService.selectedStudyArea.MethodType = ScenarioType;
+      this.StudyAreaService.selectedStudyArea.methodType = ScenarioType;
       //this.MapService.changeCursor("crosshair-cursor-enabled");
       this.barButtonOptions_downstream.buttonColor = 'accent';
     } else if (ScenarioType = "Spill Planning") {

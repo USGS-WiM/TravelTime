@@ -23,7 +23,6 @@ export class MapComponent extends deepCopy implements OnInit {
 	private MapService: MapService;
 	private NavigationService: NavigationService;
 	private StudyAreaService: StudyAreaService;
-
 	private markers: L.Layer[] = [];
 	private Site_reference: site;
 	//private results = [];
@@ -35,31 +34,40 @@ export class MapComponent extends deepCopy implements OnInit {
 	private mapReady: boolean = false;
   private methodType: string = null;
 
-	public get LayersControl(){
 
-		return this.MapService.layersControl;
-	}
-	public get MapOptions(){
-		return this.MapService.options;
+	public get LayersControl(){
+    return this.MapService.layersControl;
   }
-  
+
+  public get MapOptions() {
+    return this.MapService.options;//this.MapService.options;
+  }
+
+  ngOnInit() {
+    this.MapService.baselayer()
+    this.NavigationService.getNavigationResource("3")
+      .toPromise().then(data => {
+        this.Site_reference = data['configuration'];
+      });
+
+    //this.newFunc(); moving layers control to the sidebar
+  }
+
+
+  /*options = {
+    layers: this.MapService.layer,//L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+    zoom: 10,
+    center: L.latLng(46.95, -122)
+  };*/
+
 	constructor(mapservice:MapService, toastr: ToastrService) {
 		super();
 		this.messager = toastr;		  
-		this.MapService = mapservice;	  
-	 } 
-
-  ngOnInit() {
-	this.NavigationService.getNavigationResource("3")
-	.toPromise().then(data => {
-	  this.Site_reference = data['configuration'];
-	}); //get service {description: Initial description}
-  //this.newFunc(); moving layers control to the sidebar
-  }
+    this.MapService = mapservice;
+	 }
 
 	public onZoomChange(zoom: number) {	
 		this.MapService.CurrentZoomLevel=zoom;
-			
 		this.sm("Zoom changed to "+ zoom);
 	}
 	//public onMouseClick(evnt:any) {
