@@ -43,8 +43,12 @@ export class MapComponent extends deepCopy implements OnInit {
     return this.MapService.options;//this.MapService.options;
   }
 
+  public onMapReady(map: L.Map) {
+    this.MapService.onMapReady(map);
+  }
+
   ngOnInit() {
-    this.MapService.baselayer()
+
     this.NavigationService.getNavigationResource("3")
       .toPromise().then(data => {
         this.Site_reference = data['configuration'];

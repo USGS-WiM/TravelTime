@@ -31,37 +31,35 @@
         "layer": "Topographic",
         "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
-        "visible": false,
-        "attributionUrl": "https://static.arcgis.com/attribution/World_Topo_Map"
-      },
+        "visible": false
+      }
+    ],
+    "overlays": [
       {
         "name": "Texas",
         "layer": "TexasHydro",
+        "url": "https://txgeo.usgs.gov/arcgis/rest/services/Mapping/HydroBaseMapForTerrain/MapServer/tile/{z}/{y}/{x}",
+        "type": "overlay",
         "layerOptions": {
           "maxZoom": 11,
           "minZoom": 5,
-          "attribution": "Texas Streamer Esri product"
+          "attribution": "Texas Streamer Esri product",
+          "zIndex": 1
         },
-        "url": "https://txgeo.usgs.gov/arcgis/rest/services/Mapping/HydroBaseMapForTerrain/MapServer/tile/{z}/{y}/{x}",
-        "type": "tile",
-        "visible": false
-      }
-
-
-
-    ],
-    "overlayLayers": [
+        "visible": true
+      },
       {
         "name": "Regulation Points",
+        "layer": "RegulationPoints",
         "url": "https://gis.streamstats.usgs.gov/arcgis/rest/services/regulations/co/MapServer",
         "type": "agsDynamic",
-        "visible": true,
         "layerOptions": {
           "zIndex": 1,
           "format": "png8",
           "layers": [ 0 ],
           "f": "image"
-        }
+        },
+        "visible": true
       }
     ]
   }
