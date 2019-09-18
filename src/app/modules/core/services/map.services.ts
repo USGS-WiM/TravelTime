@@ -17,19 +17,20 @@ export class MapService {
   public layers;
   public options: L.MapOptions;
   public layersControl: layerControl = { baseLayers: {}, overlays: {} };
-
+  public map: L.Map; //reference to the object
+  
   constructor(public http: HttpClient) {
     this.options = {
-      layers: [],//L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")],
+      layers: [],
       zoom: 10,
       center: L.latLng(46.95, -122)
     };
   }
 
   public onMapReady(map) {
+    this.map = map;
     this.http.get("../../../.././assets/config.json").subscribe(data => {
-      //load baselayers
-      var conf: any = data;
+      var conf: any = data;      //load baselayers
 
       conf.mapLayers.baseLayers.forEach(ml => {
         this.layersControl.baseLayers[ml.name] = this.loadLayer(ml, map);
@@ -51,22 +52,42 @@ export class MapService {
       case 'tile':
         layer = L.tileLayer(ml.url, ml.layerOptions);
       case 'overlay':
-        layer = L.tileLayer(ml.url, ml.layerOptions).addTo(map);
+        layer = L.tileLayer(ml.url, ml.layerOptions);
       case 'agsDynamic':
-        layer = esri.dynamicMapLayer({
-          url: ml.url,
-          zIndex: 1,
-          format: "png8",
-          layers: [0],
-          f: "image"
-        }).addTo(map);
-
+          layer = esri.dynamicMapLayer({
+            url: ml.url,
+            zIndex: 1,
+            format: "png8",
+            layers: [0],
+            f: "image"
+          })
     }//end switch
+    layer.addTo(map);
     if (ml.visible && layer != null) {
       this.options.layers.splice(0, 1);
       this.options.layers.push(layer);
     }
     return layer;
+  }
+
+  public interactwOverlayer(LayerName: string) {
+
+    if (this.map.hasLayer(this.layersControl.overlays[LayerName])) {
+      this.map.removeLayer(this.layersControl.overlays[LayerName]);
+    }
+    else {
+      this.map.addLayer(this.layersControl.overlays[LayerName]);
+    }
+  }
+
+  public interactwBaselayer(LayerName: string) {
+
+    if (this.map.hasLayer(this.layersControl.baseLayers[LayerName])) {
+      this.map.removeLayer(this.layersControl.baseLayers[LayerName]);
+    }
+    else {
+      this.map.addLayer(this.layersControl.baseLayers[LayerName]);
+    }
   }
 
  /*  public addFeatureLayer(esriurl) {

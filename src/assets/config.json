@@ -17,21 +17,21 @@
           "attribution": "..."
         },
         "type": "tile",
-        "visible": false
+        "visible": true
       },
       {
         "name": "Streets",
         "layer": "Streets",
         "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
-        "visible": false
+        "visible": true
       },
       {
         "name": "Topographic",
         "layer": "Topographic",
         "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
-        "visible": false
+        "visible": true
       }
     ],
     "overlays": [
@@ -59,7 +59,7 @@
           "layers": [ 0 ],
           "f": "image"
         },
-        "visible": true
+        "visible": false
       }
     ]
   }

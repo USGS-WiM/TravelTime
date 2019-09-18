@@ -5227,6 +5227,6 @@ ul {
     flex-grow: 3;
   }
 
-/*.leaflet-control-layers {
+.leaflet-control-layers {
   visibility: hidden !important;
-}*/
+}

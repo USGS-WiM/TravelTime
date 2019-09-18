@@ -5,7 +5,27 @@
         <mat-expansion-panel-header>
           MAP LAYERS
         </mat-expansion-panel-header>
-        Map Layers go here 
+
+        <mat-bar-button [options]="maplayerButton_natgeo"
+                        (btnClick)="SetLayer('National Geographic')">
+        </mat-bar-button>
+
+        <mat-bar-button [options]="maplayerButton_osm"
+                        (btnClick)="SetLayer('Open Street Map')">
+        </mat-bar-button>
+
+        <mat-bar-button [options]="maplayerButton_texas"
+                        (btnClick)="SetOverlay('Texas')">
+        </mat-bar-button>
+
+        <mat-bar-button [options]="maplayerButton_topo"
+                        (btnClick)="SetLayer('Topographic')">
+        </mat-bar-button>
+
+        <mat-bar-button [options]="maplayerButton_points"
+                        (btnClick)="SetOverlay('Regulation Points')">
+        </mat-bar-button>
+
       </mat-expansion-panel>
 
       <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  
