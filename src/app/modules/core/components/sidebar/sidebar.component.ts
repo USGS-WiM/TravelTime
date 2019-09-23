@@ -95,7 +95,7 @@ export class SidebarComponent {
 
      this.maplayerButton_texas = {
        active: false,
-       text: 'Texas Hydro',
+       text: 'Texas',
        spinnerSize: 18,
        raised: true,
        stroked: false,

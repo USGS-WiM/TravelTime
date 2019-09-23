@@ -3,13 +3,6 @@
   "mapLayers": {
     "baseLayers": [
       {
-        "name": "National Geographic",
-        "layer": "NationalGeographic",
-        "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
-        "type": "agsbase",
-        "visible": true
-      },
-      {
         "name": "Open Street Map",
         "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         "layerOptions": {
@@ -17,6 +10,13 @@
           "attribution": "..."
         },
         "type": "tile",
+        "visible": true
+      },
+      {
+        "name": "National Geographic",
+        "layer": "NationalGeographic",
+        "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
+        "type": "agsbase",
         "visible": true
       },
       {
@@ -59,10 +59,8 @@
           "layers": [ 0 ],
           "f": "image"
         },
-        "visible": false
+        "visible": true
       }
     ]
   }
 }
-
-
