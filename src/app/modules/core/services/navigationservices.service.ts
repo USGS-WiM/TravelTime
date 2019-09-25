@@ -18,6 +18,7 @@ private messanger:ToastrService;
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getAvailableNavigationResources',[])));
   }
+
   public getNavigationResource(identifier:string): Observable <any>{
     let url = this.baseURL+"/NavigationServices/navigation/"+identifier;
     return this.http.get<any>(url)

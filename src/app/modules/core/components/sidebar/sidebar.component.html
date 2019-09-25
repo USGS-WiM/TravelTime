@@ -5,7 +5,18 @@
         <mat-expansion-panel-header>
           MAP LAYERS
         </mat-expansion-panel-header>
-        Map Layers go here 
+        <!-- Basemaps content -->
+        <div class="sidebar-content" [ngClass]="{ expanded: showBasemaps }">
+          <div id="sidebarBasemaps">
+            <div class="basemap" id="basemap1" (click)="toggleLayer('OpenStreetMap')" [ngClass]="{ active: chosenBaseLayer == 'OpenStreetMap' }">Streets</div>
+            <div class="basemap" id="basemap2" (click)="toggleLayer('Topo')" [ngClass]="{ active: chosenBaseLayer == 'Topo' }">Topographic</div>
+            <div class="basemap" id="basemap3" (click)="toggleLayer('CartoDB')" [ngClass]="{ active: chosenBaseLayer == 'CartoDB' }">CartoDB</div>
+            <div class="basemap" id="basemap4" (click)="toggleLayer('Terrain')" [ngClass]="{ active: chosenBaseLayer == 'Terrain' }">Terrain</div>
+            <div class="basemap" id="basemap5" (click)="toggleLayer('Satellite')" [ngClass]="{ active: chosenBaseLayer == 'Satellite' }">Satellite</div>
+            <div class="basemap" id="basemap5" (click)="toggleLayer('Gray')" [ngClass]="{ active: chosenBaseLayer == 'Gray' }">Gray</div>
+            <div class="basemap" id="basemap6" (click)="toggleLayer('Nautical')" [ngClass]="{ active: chosenBaseLayer == 'Nautical' }">Nautical</div>
+          </div>
+        </div>
       </mat-expansion-panel>
 
       <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  

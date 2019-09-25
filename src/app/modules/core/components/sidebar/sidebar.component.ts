@@ -38,14 +38,14 @@ export class SidebarComponent {
     return this.MapService.CurrentZoomLevel;
   }
 
-  private messanger:ToastrService;
+  private messager:ToastrService;
   private toggleButton = true;
 
   public barButtonOptions_downstream: MatProgressButtonOptions;
   public barButtonOptions_upstream: MatProgressButtonOptions;
   
   constructor(mapservice:MapService, toastr: ToastrService) {
-    this.messanger = toastr;
+    this.messager = toastr;
     this.MapService = mapservice;
    }
 
@@ -79,11 +79,10 @@ export class SidebarComponent {
 
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
-    if (ScenarioType = "Response") {
+    if (ScenarioType = "response") {
       this.StudyAreaService.selectedStudyArea.MethodType = ScenarioType;
-      //this.MapService.changeCursor("crosshair-cursor-enabled");
       this.barButtonOptions_downstream.buttonColor = 'accent';
-    } else if (ScenarioType = "Spill Planning") {
+    } else if (ScenarioType = "planning") {
 
     }
     console.log(ScenarioType)
@@ -165,7 +164,7 @@ export class SidebarComponent {
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
 
-      this.messanger.show(msg,title,options, mType)
+      this.messager.show(msg,title,options, mType)
     }
     catch (e) {
     }
