@@ -1,10 +1,10 @@
-.sidebar {  
+.sidebar {
   height: 100%;
   width: 360px;
   position: fixed;
   /*z-index: 100;*/
   left: 0;
-  background-color: white; 
+  background-color: white;
   overflow-x: hidden;
 }
 

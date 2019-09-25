@@ -48,13 +48,17 @@ export class SidebarComponent {
   public maplayerButton_texas : MatProgressButtonOptions;
   public maplayerButton_topo: MatProgressButtonOptions;
   public maplayerButton_osm: MatProgressButtonOptions;
+  public baselayers;
+  public overlays;
+  public model;
 
   constructor(mapservice:MapService, toastr: ToastrService) {
     this.messanger = toastr;
     this.MapService = mapservice;
    }
 
-   ngOnInit() {
+  ngOnInit() {
+
      this.barButtonOptions_downstream = {
       active: false,
       text: 'Spill Response',
@@ -79,67 +83,15 @@ export class SidebarComponent {
       fullWidth: true,
       disabled: true,
       mode: 'indeterminate'
-     }
+    }
 
-     this.maplayerButton_natgeo = {
-       active: false,
-       text: 'National Geographic',
-       spinnerSize: 18,
-       raised: true,
-       stroked: false,
-       buttonColor: 'primary',
-       spinnerColor: 'accent',
-       fullWidth: true,
-       mode: 'indeterminate'
-     }
+    this.baselayers = this.MapService.baselayernames;
+    this.overlays = this.MapService.overlaynames;
 
-     this.maplayerButton_texas = {
-       active: false,
-       text: 'Texas',
-       spinnerSize: 18,
-       raised: true,
-       stroked: false,
-       buttonColor: 'primary',
-       spinnerColor: 'accent',
-       fullWidth: true,
-       mode: 'indeterminate'
-     }
-
-     this.maplayerButton_osm = {
-       active: false,
-       text: 'Open Street Maps',
-       spinnerSize: 18,
-       raised: true,
-       stroked: false,
-       buttonColor: 'primary',
-       spinnerColor: 'accent',
-       fullWidth: true,
-       mode: 'indeterminate'
-     }
-
-     this.maplayerButton_topo = {
-       active: false,
-       text: 'Topographic',
-       spinnerSize: 18,
-       raised: true,
-       stroked: false,
-       buttonColor: 'primary',
-       spinnerColor: 'accent',
-       fullWidth: true,
-       mode: 'indeterminate'
-     }
-
-     this.maplayerButton_points = {
-       active: false,
-       text: 'points',
-       spinnerSize: 18,
-       raised: true,
-       stroked: false,
-       buttonColor: 'primary',
-       spinnerColor: 'accent',
-       fullWidth: true,
-       mode: 'indeterminate'
-     }
+    this.model = {
+      baselayers: {},
+      overlays: {}
+    };
    }
 
   //#maplayer "basemaps"

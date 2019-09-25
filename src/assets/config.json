@@ -17,21 +17,21 @@
         "layer": "NationalGeographic",
         "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
-        "visible": true
+        "visible": false
       },
       {
         "name": "Streets",
         "layer": "Streets",
         "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
-        "visible": true
+        "visible": false
       },
       {
         "name": "Topographic",
         "layer": "Topographic",
         "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
-        "visible": true
+        "visible": false
       }
     ],
     "overlays": [

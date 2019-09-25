@@ -6,25 +6,19 @@
           MAP LAYERS
         </mat-expansion-panel-header>
 
-        <mat-bar-button [options]="maplayerButton_natgeo"
-                        (btnClick)="SetLayer('National Geographic')">
-        </mat-bar-button>
 
-        <mat-bar-button [options]="maplayerButton_osm"
-                        (btnClick)="SetLayer('Open Street Map')">
-        </mat-bar-button>
+        <label *ngFor="let item of overlays">
+          <input type="checkbox" name="options" (change)="model.overlays = item; SetOverlay(item);"
+                  [checked]="item === model.overlays">
 
-        <mat-bar-button [options]="maplayerButton_texas"
-                        (btnClick)="SetOverlay('Texas')">
-        </mat-bar-button>
+          {{item}}
+        </label>
 
-        <mat-bar-button [options]="maplayerButton_topo"
-                        (btnClick)="SetLayer('Topographic')">
-        </mat-bar-button>
-
-        <mat-bar-button [options]="maplayerButton_points"
-                        (btnClick)="SetOverlay('Regulation Points')">
-        </mat-bar-button>
+        <label *ngFor="let item of baselayers">
+          <input type="radio" name="options" (click)="model.baselayers = item; SetLayer(item);"
+                 [checked]="item === model.baselayers">
+          {{item}}
+        </label>
 
       </mat-expansion-panel>
 
