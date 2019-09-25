@@ -7,18 +7,21 @@
         </mat-expansion-panel-header>
 
 
-        <label *ngFor="let item of overlays">
-          <input type="checkbox" name="options" (change)="model.overlays = item; SetOverlay(item);"
-                  [checked]="item === model.overlays">
-
-          {{item}}
+        <label *ngFor="let item of overlays" class="map-layer">
+			<div class="map-layer-check">
+				<input type="checkbox" name="options" (change)="model.overlays = item; SetOverlay(item);"
+					[checked]="item === model.overlays">
+			</div>
+          	<span class="map-layer-title">{{item}}</span>
         </label>
 
-        <label *ngFor="let item of baselayers">
-          <input type="radio" name="options" (click)="model.baselayers = item; SetLayer(item);"
-                 [checked]="item === model.baselayers">
-          {{item}}
-        </label>
+        <label *ngFor="let item of baselayers" class="map-layer">
+			<div class="map-layer-check">
+          		<input type="radio" name="options" (click)="model.baselayers = item; SetLayer(item);"
+					[checked]="item === model.baselayers">
+			</div>
+			<span class="map-layer-title">{{item}}</span>
+		</label>
 
       </mat-expansion-panel>
 
