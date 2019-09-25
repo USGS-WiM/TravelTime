@@ -2,97 +2,102 @@ import { Injectable, ElementRef, EventEmitter, Injector } from '@angular/core';
 import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
+import { Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 export interface layerControl{
-  baseLayers:any;
-  overlays:any
+  baseLayers:Array<any>;
+  overlays: Array<any>
 }
 @Injectable()
 export class MapService {
 
-  public options: L.MapOptions;
+  public Options: L.MapOptions;
   // for layers that will show up in the leaflet control
-  public layersControl: layerControl={baseLayers: {},overlays: {}};
+  public LayersControl:Subject<layerControl> = new Subject<any>();
+  private _layersControl: layerControl={baseLayers:[],overlays:[]};
   public CurrentZoomLevel;
-  public esriurl;
-  public layers;
-  public layerid: string;
-  public layermethod: any;
-  public layername: string;
 
   constructor(http: HttpClient) {
 
-    this.options = {
-      layers: [],
+    this.Options = {
       zoom: 10,
       center: L.latLng(46.95, -122)
     };
 
-    http.get("../../../.././assets/config.json").subscribe(data => {
+    http.get("../../../../../assets/config.json").subscribe(data => {
      
       //load baselayers
       var conf:any = data;
       conf.mapLayers.baseLayers.forEach(ml => {
-        this.layersControl.baseLayers[ml.name]=this.loadLayer(ml);
+        ml.layer =this.loadLayer(ml);
+        if(ml.layer != null)
+          this._layersControl.baseLayers.push(ml);
       });
-      /* conf.mapLayers.overlays.forEach(ml => {
-        this.layersControl.overlays[ml.name]=this.loadLayer(ml);
-      }); */
+      conf.mapLayers.overlayLayers.forEach(ml => {
+        ml.layer =this.loadLayer(ml);
+        if(ml.layer != null)
+          this._layersControl.overlays.push(ml);
+      });
+      this.LayersControl.next(this._layersControl);
+    });
 
-      this.layersControl.overlays= {          
-          'Big Circle': L.circle([46.95, -122], { radius: 5000 }),
-          'Big Square': L.polygon([[46.8, -121.55], [46.9, -121.55], [46.9, -121.7], [46.8, -121.7]])
-        }
-      });
     
+    this.CurrentZoomLevel = this.Options.zoom;
+  }
+  
+  public AddLayer(point:any){
+    //this is just and example of how to add layers
+    var newlayer = {
+      name:'Big Circle',
+      layer:L.circle(point, { radius: 5000 }), 
+      visible:true
+    };
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === newlayer.name ));
+    if(ml != null) ml.layer = newlayer.layer;
+    else this._layersControl.overlays.push(newlayer); 
 
-    this.CurrentZoomLevel = this.options.zoom;
+    //Notify subscribers
+    this.LayersControl.next(this._layersControl);
+  }
+
+  public ToggleLayerVisibility(layername:string){
+    var ml = this._layersControl.overlays.find((l:any)=> (l.name === layername))
+    if (!ml) return;
+
+    if(ml.visible) ml.visible= false;
+    else ml.visible = true;
+    console.log("visibility toggled");
+    this.LayersControl.next(this._layersControl);
   }
 
   private loadLayer(ml):L.Layer{
-    var layer:L.Layer = null;
-    switch (ml.type) {
-      case 'agsbase':
-        layer =esri.basemapLayer(ml.layer);
-      case 'tile':
-        //https://leafletjs.com/reference-1.5.0.html#tilelayer
-        layer =L.tileLayer(ml.url, ml.layerOptions);
-      case 'agsDynamic':
-        //https://esri.github.io/esri-leaflet/api-reference/layers/dynamic-map-layer.html
-        var options = ml.layerOptions;
-        options.url = ml.url;
-        layer= esri.dynamicMapLayer(options);
+    try { 
+      switch (ml.type) {
+        case 'agsbase':
+          return esri.basemapLayer(ml.layer);
+        
+        case 'tile':
+          //https://leafletjs.com/reference-1.5.0.html#tilelayer
+          return L.tileLayer(ml.url, ml.layerOptions);
           
-    }//end switch
-    if (ml.visible && layer != null) this.options.layers.push(layer);
-    return layer;
+        case 'agsDynamic':
+          //https://esri.github.io/esri-leaflet/api-reference/layers/dynamic-map-layer.html
+          var options = ml.layerOptions;
+          options.url = ml.url;
+          return esri.dynamicMapLayer(options);  
+        case 'agsTile':
+            var options = ml.layerOptions;
+            options.url = ml.url;
+            return esri.tiledMapLayer(options); 
+        default:
+          console.warn ("No condition exists for maplayers of type ", ml.type, "see config maplayer for: "+ml.name)
+
+            
+      }//end switch
+  } catch (error) {
+      console.error(ml.name + " failed to load mapllayer", error)
+      return null;
   }
 
- /*  public addFeatureLayer(esriurl) {
-    const features = esri.featureLayer({
-      url: esriurl,
-      pointToLayer: function (geojson, latlng) {
-        return new L.CircleMarker(latlng, {
-          color: 'green',
-          radius: 1
-        });
-      },
-      onEachFeature: function (feature, layer) {
-        // layer.bindPopup( fl => {
-        //   const popupEl: NgElement & WithProperties<PopupComponent> = document.createElement('popup-element') as any;
-        //   // Listen to the close event
-        //   popupEl.addEventListener('closed', () => document.body.removeChild(popupEl));
-        //   popupEl.message = `${feature.properties.areaname}, ${feature.properties.st}`;
-        //   // Add to the DOM
-        //   document.body.appendChild(popupEl);
-        //   return popupEl;
-        // });
-      }
-    });
-
-    return features;
-  } */
-
-  public changeCursor(cursorType) {
-    //L.DomUtil.addClass(._container,'crosshair-cursor-enabled');
   }
 }

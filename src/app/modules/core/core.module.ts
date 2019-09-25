@@ -12,12 +12,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 import {MapService} from './services/map.services';
+import { NavigationService } from './services/navigationservices.service';
 
 
 @NgModule({
   declarations: [SidebarComponent, MapComponent, CoreComponent],
   imports: [LeafletModule.forRoot(), MatExpansionModule, MatInputModule, CommonModule, BrowserModule, MatProgressButtonsModule, BrowserAnimationsModule, FormsModule],
-  providers: [MapService],
+  providers: [MapService,NavigationService],
   exports:[SidebarComponent, MapComponent, CoreComponent]
 })
 export class CoreModule { }
