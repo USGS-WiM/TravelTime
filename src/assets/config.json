@@ -3,6 +3,12 @@
   "mapLayers": {
     "baseLayers": [
       {
+        "name": "National Geographic",
+        "layer": "NationalGeographic",
+        "type": "agsbase",
+        "visible": true
+      },
+      {
         "name": "Open Street Map",
         "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         "layerOptions": {
@@ -10,56 +16,45 @@
           "attribution": "..."
         },
         "type": "tile",
-        "visible": true
-      },
-      {
-        "name": "National Geographic",
-        "layer": "NationalGeographic",
-        "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
-        "type": "agsbase",
         "visible": false
       },
       {
         "name": "Streets",
         "layer": "Streets",
-        "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
         "visible": false
       },
       {
         "name": "Topographic",
         "layer": "Topographic",
-        "url": "http://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
         "type": "agsbase",
         "visible": false
       }
     ],
-    "overlays": [
+    "overlayLayers": [
       {
         "name": "Texas",
-        "layer": "TexasHydro",
-        "url": "https://txgeo.usgs.gov/arcgis/rest/services/Mapping/HydroBaseMapForTerrain/MapServer/tile/{z}/{y}/{x}",
-        "type": "overlay",
+        "url": "https://txgeo.usgs.gov/arcgis/rest/services/Mapping/HydroBaseMapForTerrain/MapServer",
+        "type": "agsTile",
         "layerOptions": {
-          "maxZoom": 11,
-          "minZoom": 5,
-          "attribution": "Texas Streamer Esri product",
-          "zIndex": 1
+          "opacity": 0.6,
+          "maxZoom": 10,
+          "zIndex": 9999,
+          "useCors": false
         },
         "visible": true
       },
       {
         "name": "Regulation Points",
-        "layer": "RegulationPoints",
         "url": "https://gis.streamstats.usgs.gov/arcgis/rest/services/regulations/co/MapServer",
         "type": "agsDynamic",
+        "visible": true,
         "layerOptions": {
           "zIndex": 1,
           "format": "png8",
           "layers": [ 0 ],
           "f": "image"
-        },
-        "visible": true
+        }
       }
     ]
   }

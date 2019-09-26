@@ -48,8 +48,8 @@ export class SidebarComponent {
   public maplayerButton_texas : MatProgressButtonOptions;
   public maplayerButton_topo: MatProgressButtonOptions;
   public maplayerButton_osm: MatProgressButtonOptions;
-  public baselayers;
-  public overlays;
+  public baselayers = [];
+  public overlays = [];
   public model;
 
   constructor(mapservice:MapService, toastr: ToastrService) {
@@ -85,22 +85,24 @@ export class SidebarComponent {
       mode: 'indeterminate'
     }
 
-    this.baselayers = this.MapService.baselayernames;
-    this.overlays = this.MapService.overlaynames;
+    this.MapService.LayersControl.subscribe(data => {
+      if (this.overlays.length > 0 || this.baselayers.length > 0) {
+        this.overlays = []
+        this.baselayers = []
+      }
+      this.overlays = data.overlays;
+      this.baselayers = data.baseLayers;
+    })
 
     this.model = {
       baselayers: {},
       overlays: {}
     };
+
    }
 
-  //#maplayer "basemaps"
-  private SetLayer(LayerName: string) {
-    this.MapService.interactwBaselayer(LayerName);
-  }
-
-  private SetOverlay(LayerName: string) {
-    this.MapService.interactwOverlayer(LayerName);
+  private SetAll(LayerName: string, kind:string) {
+    this.MapService.ToggleLayerVisibility(LayerName, kind)
   }
 
   //#region "Methods"
