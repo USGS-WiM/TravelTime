@@ -21,21 +21,23 @@ export class MapService {
   constructor(http: HttpClient) {
 
     this.Options = {
-      zoom: 10,
-      center: L.latLng(46.95, -122)
+      zoom: 4,
+      center: L.latLng(39, -100)
     };
 
     http.get("../../../.././assets/config.json").subscribe(data => {
       //load baselayers
       var conf: any = data;
+
       conf.mapLayers.baseLayers.forEach(ml => {
-        if (ml.visible) {
+        if (ml.visible)
           this.CurrentLayer = ml.name;
-        } else { }
+        else {}
         ml.layer = this.loadLayer(ml);
         if (ml.layer != null)
           this._layersControl.baseLayers.push(ml);
       });
+
       conf.mapLayers.overlayLayers.forEach(ml => {
         ml.layer = this.loadLayer(ml);
         if (ml.layer != null)
@@ -62,28 +64,36 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-  public ToggleLayerVisibility(layername: string, kind: string) {
+  public SetOverlay (layername: string) {
 
-    if (kind === 'o') {
-      var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
-    } else {
-      if (this.CurrentLayer != layername) {
-        var ml = this._layersControl.baseLayers.find((l: any) => (l.name === this.CurrentLayer))
-        if (!ml) return; //if ml does not exist, just return
-        ml.visible = false;//set visibility of default layer to false - continue
-      }
-      var ml = this._layersControl.baseLayers.find((l: any) => (l.name === layername))
-    }
-    if (!ml) return; //if ml does not exist, just return
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
 
-    if (ml.visible) { ml.visible = false; } //if ml visible, set to false, else set to true
+    if (!ml) return;
+
+    if (ml.visible) { ml.visible = false; }
     else {
       ml.visible = true;
-      if (kind != 'o') {
-        this.CurrentLayer = ml.name
-      }
     }
       //notify layercontrol change
+    this.LayersControl.next(this._layersControl);
+  }
+
+
+  public SetBaselayer(layername: string) {
+
+    if (this.CurrentLayer != layername) {
+      var ml = this._layersControl.baseLayers.find((l: any) => (l.name === this.CurrentLayer))
+      if (!ml) return; 
+      ml.visible = false;
+    }
+
+    var ml = this._layersControl.baseLayers.find((l: any) => (l.name === layername))
+
+    if (ml.visible) { ml.visible = false; }
+    else {
+      ml.visible = true;
+    }
+    this.CurrentLayer = ml.name
     this.LayersControl.next(this._layersControl);
   }
 

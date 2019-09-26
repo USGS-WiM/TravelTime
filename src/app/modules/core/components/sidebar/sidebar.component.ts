@@ -98,11 +98,14 @@ export class SidebarComponent {
       baselayers: {},
       overlays: {}
     };
+  }
 
-   }
+  public SetBaselayer(LayerName: string) {
+    this.MapService.SetBaselayer(LayerName)
+  }
 
-  private SetAll(LayerName: string, kind:string) {
-    this.MapService.ToggleLayerVisibility(LayerName, kind)
+  public SetOverlay(LayerName: string) {
+    this.MapService.SetOverlay(LayerName)
   }
 
   //#region "Methods"
