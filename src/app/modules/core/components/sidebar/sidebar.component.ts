@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { StudyAreaService } from '../../services/studyArea.service';
+import { StudyService } from '../../services/study.service';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import {MapService} from '../../services/map.services';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
+import { Study } from '../../models/study';
 // import {MatExpansionModule} from '@angular/material/expansion';
 
 @Component({
@@ -17,7 +18,7 @@ import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 
 export class SidebarComponent {
   private MapService:MapService;
-  private StudyAreaService:StudyAreaService;
+  private StudyService:StudyService;
   public AvailableScenarioTypes
   public dialog: MatDialog;
   public Collapsed:boolean;
@@ -28,7 +29,7 @@ export class SidebarComponent {
     {id:2, header:'SCENARIOS', content: '', expanded: false, disabled: true},
     {id:3, header:'BUILD REPORT', content: '', expanded: false, disabled: true}
   ];
-  public get SelectedStudyArea() {return ""}
+  public get SelectedStudy() {return ""}
   public get SelectedScenarioType() {return ""}
   public get ZoomLevel():number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
@@ -44,9 +45,10 @@ export class SidebarComponent {
   public barButtonOptions_downstream: MatProgressButtonOptions;
   public barButtonOptions_upstream: MatProgressButtonOptions;
   
-  constructor(mapservice:MapService, toastr: ToastrService) {
+  constructor(mapservice:MapService, toastr: ToastrService, studyservice:StudyService) {
     this.messager = toastr;
     this.MapService = mapservice;
+    this.StudyService = studyservice;
    }
 
    ngOnInit() {
@@ -80,7 +82,7 @@ export class SidebarComponent {
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
     if (ScenarioType = "response") {
-      this.StudyAreaService.selectedStudyArea.MethodType = ScenarioType;
+      this.StudyService.selectedStudy = new Study(ScenarioType);
       this.barButtonOptions_downstream.buttonColor = 'accent';
     } else if (ScenarioType = "planning") {
 
@@ -134,14 +136,14 @@ export class SidebarComponent {
             case ProcedureType.IDENTIFY:
                 return true;
             case ProcedureType.SCENARIO:
-                //proceed only if StudyArea Selected
-                if(!this.SelectedStudyArea) {
+                //proceed only if Study Selected
+                if(!this.SelectedStudy) {
                   this.PanelData[pType].expanded = false;
                   throw new Error("Can not proceed until study area options are selected.");
                 }
                 return true;
             case ProcedureType.REPORT:
-                if(!this.SelectedStudyArea) {
+                if(!this.SelectedStudy) {
                   this.PanelData[pType].expanded = false;
                   throw new Error("Can not proceed until study area options are selected.")
                 }

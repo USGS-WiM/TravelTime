@@ -1,73 +1,103 @@
 import { Injectable, ElementRef, EventEmitter, Injector } from '@angular/core';
 import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+export interface layerControl{
+  baseLayers:Array<any>;
+  overlays: Array<any>
+}
 @Injectable()
 export class MapService {
 
-  public options: L.MapOptions;
+  public Options: L.MapOptions;
   // for layers that will show up in the leaflet control
-  public layersControl: any;
-  // for layers not shown in the leaflet control
-  public ActiveLayers: Array<any> = [];
+  public LayersControl:Subject<layerControl> = new Subject<any>();
+  private _layersControl: layerControl={baseLayers:[],overlays:[]};
+  public CurrentZoomLevel;
 
-  public CurrentZoomLevel = undefined;
+  constructor(http: HttpClient) {
 
-  constructor() {
-    this.options = {     
+    this.Options = {
       zoom: 4,
-      center: L.latLng(40, -100),
-      //cursor: 
-    };
-    this.CurrentZoomLevel = this.options.zoom;
-
-    this.layersControl = {
-      baseLayers: {        
-        'National Geographic': esri.basemapLayer('NationalGeographic'),
-        'Open Street Map': L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
-        'Streets': esri.basemapLayer('Streets'),
-        'Topographic': esri.basemapLayer('Topographic')
-      },
-      //You can add any kind of Leaflet layer you want to the overlays map. This includes markers, shapes, geojson, custom layers from other libraries, etc.
-      overlays: { 
-        'State Cities': this.addFeatureLayer(),       
-        'Big Circle': L.circle([ 46.95, -122 ], { radius: 5000 }),
-        'Big Square': L.polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]])
-      }
+      center: L.latLng(37.09, -95.712)
     };
 
-    this.ActiveLayers.push(this.layersControl['baseLayers']['National Geographic']);
-    this.ActiveLayers.push(this.layersControl['overlays']['State Cities']);
-    this.ActiveLayers.push(this.layersControl['overlays']['Big Circle']);
-    this.ActiveLayers.push(this.layersControl['overlays']['Big Square']);    
-  }
-
-  public addFeatureLayer() {
-    const features = esri.featureLayer({
-      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/0',
-      pointToLayer: function (geojson, latlng) {
-        return new L.CircleMarker(latlng, {
-          color: 'green',
-          radius: 1
-        });
-      },
-      onEachFeature: function (feature, layer) {
-        // layer.bindPopup( fl => {
-        //   const popupEl: NgElement & WithProperties<PopupComponent> = document.createElement('popup-element') as any;
-        //   // Listen to the close event
-        //   popupEl.addEventListener('closed', () => document.body.removeChild(popupEl));
-        //   popupEl.message = `${feature.properties.areaname}, ${feature.properties.st}`;
-        //   // Add to the DOM
-        //   document.body.appendChild(popupEl);
-        //   return popupEl;
-        // });
-      }
+    http.get("../../../../../assets/config.json").subscribe(data => {
+     
+      //load baselayers
+      var conf:any = data;
+      conf.mapLayers.baseLayers.forEach(ml => {
+        ml.layer =this.loadLayer(ml);
+        if(ml.layer != null)
+          this._layersControl.baseLayers.push(ml);
+      });
+      conf.mapLayers.overlayLayers.forEach(ml => {
+        ml.layer =this.loadLayer(ml);
+        if(ml.layer != null)
+          this._layersControl.overlays.push(ml);
+      });
+      this.LayersControl.next(this._layersControl);
     });
 
-    return features;
+    
+    this.CurrentZoomLevel = this.Options.zoom;
+  }
+  
+  public AddLayer(point:any){
+    //this is just and example of how to add layers
+    var newlayer = {
+      name:'Big Circle',
+      layer:L.circle(point, { radius: 5000 }), 
+      visible:true
+    };
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === newlayer.name ));
+    if(ml != null) ml.layer = newlayer.layer;
+    else this._layersControl.overlays.push(newlayer); 
+
+    //Notify subscribers
+    this.LayersControl.next(this._layersControl);
   }
 
-  public changeCursor(cursorType) {
-    //L.DomUtil.addClass(._container,'crosshair-cursor-enabled');
+  public ToggleLayerVisibility(layername:string){
+    var ml = this._layersControl.overlays.find((l:any)=> (l.name === layername))
+    if (!ml) return;
+
+    if(ml.visible) ml.visible= false;
+    else ml.visible = true;
+    console.log("visibility toggled");
+    this.LayersControl.next(this._layersControl);
+  }
+
+  private loadLayer(ml):L.Layer{
+    try { 
+      switch (ml.type) {
+        case 'agsbase':
+          return esri.basemapLayer(ml.layer);
+        
+        case 'tile':
+          //https://leafletjs.com/reference-1.5.0.html#tilelayer
+          return L.tileLayer(ml.url, ml.layerOptions);
+          
+        case 'agsDynamic':
+          //https://esri.github.io/esri-leaflet/api-reference/layers/dynamic-map-layer.html
+          var options = ml.layerOptions;
+          options.url = ml.url;
+          return esri.dynamicMapLayer(options);  
+        case 'agsTile':
+            var options = ml.layerOptions;
+            options.url = ml.url;
+            return esri.tiledMapLayer(options); 
+        default:
+          console.warn ("No condition exists for maplayers of type ", ml.type, "see config maplayer for: "+ml.name)
+
+            
+      }//end switch
+  } catch (error) {
+      console.error(ml.name + " failed to load mapllayer", error)
+      return null;
+  }
+
   }
 }

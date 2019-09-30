@@ -7,11 +7,11 @@ import * as messageType from '../../../shared/messageType'
 
 @Injectable()
 export class NavigationService {
-public get baseURL() {return "https://test.streamstats.usgs.gov/NavigationServices";}
-private messanger:ToastrService;
+  public get baseURL() {return "https://test.streamstats.usgs.gov/NavigationServices";}
+  private messager:ToastrService;
   constructor(private http: HttpClient,toastr: ToastrService) {
-    this.messanger = toastr;
-   }
+    this.messager = toastr;
+  }
 
   public getAvailableNavigationResources(): Observable <any>{
     let url = this.baseURL+"/NavigationServices/navigation";
@@ -43,7 +43,7 @@ private messanger:ToastrService;
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
 
-      this.messanger.show(msg,title,options, mType)
+      this.messager.show(msg,title,options, mType)
     }
     catch (e) {
     }

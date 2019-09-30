@@ -4,11 +4,15 @@ on:
     - staging 
 name: Deploy to Test
 jobs:
-  filtersForGitHubActions:
-    name: Filters for GitHub Actions
+  pushToTest:
+    name: Push to Test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: GitHub Action for npm
+      uses: actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680
+      with:
+        args: run-script build
     - name: GitHub Action for AWS
       uses: actions/aws/cli@efb074ae4510f2d12c7801e4461b65bf5e8317e6
       env:

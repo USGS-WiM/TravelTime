@@ -8,9 +8,9 @@ import * as messageType from '../../../shared/messageType'
 @Injectable()
 export class TravelTimeService {
 public get baseURL() {return "https://test.streamstats.usgs.gov/timeoftravelservices/";}
-private messanger:ToastrService;
+private messager:ToastrService;
   constructor(private http: HttpClient,toastr: ToastrService) {
-    this.messanger = toastr;
+    this.messager = toastr;
    }
 
   public getJobsonConfigurationObject(): Observable <any>{
@@ -53,7 +53,7 @@ private messanger:ToastrService;
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
 
-      this.messanger.show(msg,title,options, mType)
+      this.messager.show(msg,title,options, mType)
     }
     catch (e) {
     }
