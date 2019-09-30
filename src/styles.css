@@ -1,5 +1,4 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-
 @charset "UTF-8";
 
 body {
@@ -5227,6 +5226,6 @@ ul {
     flex-grow: 3;
   }
 
-/*.leaflet-control-layers {
+.leaflet-control-layers {
   visibility: hidden !important;
-}*/
+}

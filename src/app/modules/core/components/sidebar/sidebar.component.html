@@ -5,7 +5,35 @@
         <mat-expansion-panel-header>
           MAP LAYERS
         </mat-expansion-panel-header>
-        Map Layers go here 
+
+
+        <label *ngFor="let item of overlays" class="map-layer">
+          <div *ngIf="item.visible; else disabled" class="map-layer-check">
+            <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
+                   [checked]="item.name">
+          </div>
+          <ng-template #disabled>
+            <div class="map-layer-check">
+              <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
+                     [checked]="item.name === model.overlays">
+            </div>
+          </ng-template>
+          <span class="map-layer-title">{{item.name}}</span>
+        </label>
+
+        <label *ngFor="let item of baselayers" class="map-layer">
+          <div *ngIf="item.visible; else disabled" class="map-layer-check">
+            <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
+                   [checked]="item.name" >
+          </div>
+          <ng-template #disabled>
+            <div class="map-layer-check">
+              <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
+            </div>
+          </ng-template>
+          <span class="map-layer-title">{{item.name}}</span>
+        </label>
+
       </mat-expansion-panel>
 
       <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  

@@ -1,21 +1,60 @@
-.sidebar {  
-  height: 100%;
-  width: 360px;
-  position: fixed;
-  /*z-index: 100;*/
-  left: 0;
-  background-color: white; 
-  overflow-x: hidden;
+.sidebar {
+	height: 100%;
+	width: 360px;
+	position: fixed;
+	/*z-index: 100;*/
+	left: 0;
+	background-color: white;
+	overflow-x: hidden;
 }
 
 .shadowtext {
-    color: black;
-    width: 100%;
-    padding: 12px 12px;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 1em;
-    font-family: 'Roboto';
-    font-size: 13px;
-    background-color: #DDDDDD;
-  }
+	color: black;
+	width: 100%;
+	padding: 12px 12px;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 1em;
+	font-family: 'Roboto';
+	font-size: 13px;
+	background-color: #DDDDDD;
+}
+
+
+/* Map Layers in Sidebar */
+.map-layer{
+	display: flex;
+}
+.map-layer-check{
+	display: flex;
+	width: 24px;
+	max-width: 24px;
+	height: 24px;
+	text-align: center;
+	flex-direction: column;
+	justify-content: center;
+	box-sizing: border-box;
+}
+.map-layer-check input[type=checkbox]{
+	appearance: checkbox;
+	-webkit-appearance: checkbox;
+	position: relative;
+	top: -3px;
+}
+.map-layer-check input[type=radio]{
+	appearance: radio;
+	-webkit-appearance: radio;
+	position: relative;
+	top: -3px;
+}
+.map-layer-check input,
+.map-layer-check input:focus,
+.map-layer-check input:active,
+.map-layer-check input:hover{
+	border: none !important;
+	outline: none !important;
+	margin: 0 !important;
+}
+.map-layer-label{
+	flex-grow: 3;
+}

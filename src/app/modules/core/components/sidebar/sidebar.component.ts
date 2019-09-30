@@ -32,7 +32,7 @@ export class SidebarComponent {
   public get SelectedScenarioType() {return ""}
   public get ZoomLevel():number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      this.barButtonOptions_downstream.disabled = false;
+      //this.barButtonOptions_downstream.disabled = false;
       this.toggleButton = false;
     }
     return this.MapService.CurrentZoomLevel;
@@ -43,13 +43,22 @@ export class SidebarComponent {
 
   public barButtonOptions_downstream: MatProgressButtonOptions;
   public barButtonOptions_upstream: MatProgressButtonOptions;
-  
+  public maplayerButton_points: MatProgressButtonOptions;
+  public maplayerButton_natgeo: MatProgressButtonOptions;
+  public maplayerButton_texas : MatProgressButtonOptions;
+  public maplayerButton_topo: MatProgressButtonOptions;
+  public maplayerButton_osm: MatProgressButtonOptions;
+  public baselayers = [];
+  public overlays = [];
+  public model;
+
   constructor(mapservice:MapService, toastr: ToastrService) {
     this.messanger = toastr;
     this.MapService = mapservice;
    }
 
-   ngOnInit() {
+  ngOnInit() {
+
      this.barButtonOptions_downstream = {
       active: false,
       text: 'Spill Response',
@@ -75,12 +84,34 @@ export class SidebarComponent {
       disabled: true,
       mode: 'indeterminate'
     }
-   }
+
+    this.MapService.LayersControl.subscribe(data => {
+      if (this.overlays.length > 0 || this.baselayers.length > 0) {
+        this.overlays = []
+        this.baselayers = []
+      }
+      this.overlays = data.overlays;
+      this.baselayers = data.baseLayers;
+    })
+
+    this.model = {
+      baselayers: {},
+      overlays: {}
+    };
+  }
+
+  public SetBaselayer(LayerName: string) {
+    this.MapService.SetBaselayer(LayerName)
+  }
+
+  public SetOverlay(LayerName: string) {
+    this.MapService.SetOverlay(LayerName)
+  }
 
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
     if (ScenarioType = "Response") {
-      this.StudyAreaService.selectedStudyArea.MethodType = ScenarioType;
+      this.StudyAreaService.selectedStudyArea.methodType = ScenarioType;
       //this.MapService.changeCursor("crosshair-cursor-enabled");
       this.barButtonOptions_downstream.buttonColor = 'accent';
     } else if (ScenarioType = "Spill Planning") {
