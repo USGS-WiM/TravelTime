@@ -25,7 +25,7 @@ export class MapService {
       center: L.latLng(39, -100)
     };
 
-    http.get("../../../.././assets/config.json").subscribe(data => {
+    http.get("assets/data/config.json").subscribe(data => {
       //load baselayers
       var conf: any = data;
 
