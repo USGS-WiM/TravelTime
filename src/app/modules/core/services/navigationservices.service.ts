@@ -14,19 +14,19 @@ export class NavigationService {
   }
 
   public getAvailableNavigationResources(): Observable <any>{
-    let url = this.baseURL+"/NavigationServices/navigation";
+    let url = this.baseURL+"/navigation";
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getAvailableNavigationResources',[])));
   }
 
   public getNavigationResource(identifier:string): Observable <any>{
-    let url = this.baseURL+"/NavigationServices/navigation/"+identifier;
+    let url = this.baseURL+"/navigation/"+identifier;
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getNavigationResource',[])));
   }
   
   public getRoute(identifier:string, configuredResource, includeproperties:boolean = true): Observable <any>{
-    let url = this.baseURL+"/NavigationServices/navigation/"+identifier+"/route?properties="+includeproperties;
+    let url = this.baseURL+"/navigation/"+identifier+"/route?properties="+includeproperties;
     return this.http.post<any>(url, configuredResource)
         .pipe(catchError(this.handleError('getRoute',[])));
   }

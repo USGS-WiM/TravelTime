@@ -44,14 +44,23 @@ export class SidebarComponent {
 
   public barButtonOptions_downstream: MatProgressButtonOptions;
   public barButtonOptions_upstream: MatProgressButtonOptions;
-  
-  constructor(mapservice:MapService, toastr: ToastrService, studyservice:StudyService) {
+  public maplayerButton_points: MatProgressButtonOptions;
+  public maplayerButton_natgeo: MatProgressButtonOptions;
+  public maplayerButton_texas : MatProgressButtonOptions;
+  public maplayerButton_topo: MatProgressButtonOptions;
+  public maplayerButton_osm: MatProgressButtonOptions;
+  public baselayers = [];
+  public overlays = [];
+  public model;
+
+  constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService) {
     this.messager = toastr;
     this.MapService = mapservice;
     this.StudyService = studyservice;
    }
 
-   ngOnInit() {
+  ngOnInit() {
+
      this.barButtonOptions_downstream = {
       active: false,
       text: 'Spill Response',
@@ -77,13 +86,37 @@ export class SidebarComponent {
       disabled: true,
       mode: 'indeterminate'
     }
-   }
+
+    this.MapService.LayersControl.subscribe(data => {
+      if (this.overlays.length > 0 || this.baselayers.length > 0) {
+        this.overlays = []
+        this.baselayers = []
+      }
+      this.overlays = data.overlays;
+      this.baselayers = data.baseLayers;
+    })
+
+    this.model = {
+      baselayers: {},
+      overlays: {}
+    };
+  }
+
+  public SetBaselayer(LayerName: string) {
+    this.MapService.SetBaselayer(LayerName)
+  }
+
+  public SetOverlay(LayerName: string) {
+    this.MapService.SetOverlay(LayerName)
+  }
 
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
     if (ScenarioType = "response") {
       this.StudyService.selectedStudy = new Study(ScenarioType);
       this.barButtonOptions_downstream.buttonColor = 'accent';
+      this.MapService.isClickable = true;
+      //this.MapService.Options.
     } else if (ScenarioType = "planning") {
 
     }

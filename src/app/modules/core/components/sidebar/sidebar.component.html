@@ -5,18 +5,35 @@
         <mat-expansion-panel-header>
           MAP LAYERS
         </mat-expansion-panel-header>
-        <!-- Basemaps content -->
-        <div class="sidebar-content" [ngClass]="{ expanded: showBasemaps }">
-          <div id="sidebarBasemaps">
-            <div class="basemap" id="basemap1" (click)="toggleLayer('OpenStreetMap')" [ngClass]="{ active: chosenBaseLayer == 'OpenStreetMap' }">Streets</div>
-            <div class="basemap" id="basemap2" (click)="toggleLayer('Topo')" [ngClass]="{ active: chosenBaseLayer == 'Topo' }">Topographic</div>
-            <div class="basemap" id="basemap3" (click)="toggleLayer('CartoDB')" [ngClass]="{ active: chosenBaseLayer == 'CartoDB' }">CartoDB</div>
-            <div class="basemap" id="basemap4" (click)="toggleLayer('Terrain')" [ngClass]="{ active: chosenBaseLayer == 'Terrain' }">Terrain</div>
-            <div class="basemap" id="basemap5" (click)="toggleLayer('Satellite')" [ngClass]="{ active: chosenBaseLayer == 'Satellite' }">Satellite</div>
-            <div class="basemap" id="basemap5" (click)="toggleLayer('Gray')" [ngClass]="{ active: chosenBaseLayer == 'Gray' }">Gray</div>
-            <div class="basemap" id="basemap6" (click)="toggleLayer('Nautical')" [ngClass]="{ active: chosenBaseLayer == 'Nautical' }">Nautical</div>
+
+
+        <label *ngFor="let item of overlays" class="map-layer">
+          <div *ngIf="item.visible; else disabled" class="map-layer-check">
+            <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
+                   [checked]="item.name">
           </div>
-        </div>
+          <ng-template #disabled>
+            <div class="map-layer-check">
+              <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
+                     [checked]="item.name === model.overlays">
+            </div>
+          </ng-template>
+          <span class="map-layer-title">{{item.name}}</span>
+        </label>
+
+        <label *ngFor="let item of baselayers" class="map-layer">
+          <div *ngIf="item.visible; else disabled" class="map-layer-check">
+            <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
+                   [checked]="item.name" >
+          </div>
+          <ng-template #disabled>
+            <div class="map-layer-check">
+              <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
+            </div>
+          </ng-template>
+          <span class="map-layer-title">{{item.name}}</span>
+        </label>
+
       </mat-expansion-panel>
 
       <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  

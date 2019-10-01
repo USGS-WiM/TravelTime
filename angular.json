@@ -29,8 +29,8 @@
             "scripts": [
             ],
             "assets": [
-              "src/assets/favicon.png",
-              "src/assets"
+              "src/assets/data",
+              "src/assets/images"
             ],
             "es5BrowserSupport": true
           },
@@ -94,8 +94,8 @@
             "scripts": [ 
             ],
             "assets": [
-              "src/assets/favicon.png",
-              "src/assets"
+              "src/assets/data",
+              "src/assets/images"
             ]
           }
         },
