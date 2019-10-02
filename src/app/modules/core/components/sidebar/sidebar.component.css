@@ -121,9 +121,10 @@
   top: 3px;
 }
 
-.list-group-item-active:hover {
-  text-decoration: none !important;
-}
+  .list-group-item-active:hover {
+    text-decoration: none !important;
+    background-color: #0080d6;
+  }
 
 .exploration-tools {
   background-color: #99b3e6;
