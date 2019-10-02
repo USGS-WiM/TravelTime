@@ -66,3 +66,79 @@
 .pointerCursor {
   cursor: pointer;
 }
+
+.list-group-item {
+  background-color: #E2E2E2;
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 18px;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #c0c0c0 !important;
+  transition: 0.2s;
+}
+
+.list-group-item i {
+  padding-left: 5px;
+  display: inline-block;
+  text-align: right;
+  width: 50px;
+}
+
+.list-group-item:hover {
+  color: #8c8c8c !important;
+  transition: 0.2s;
+}
+
+.dropdown-menu {
+  max-height: 150px;
+  width: 90%;
+  /*overflow-y:scroll;*/
+}
+
+.list-group-item-active {
+  display: block;
+  background-color: #0071BC;
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 18px;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #fff !important;
+  transition: 0.2s;
+}
+
+.list-group-item-active i {
+  padding-left: 5px;
+  display: inline-block;
+  text-align: right;
+  width: 50px;
+  position: relative;
+  top: 3px;
+}
+
+.list-group-item-active:hover {
+  text-decoration: none !important;
+}
+
+.exploration-tools {
+  background-color: #99b3e6;
+  color: white !important;
+}
+
+.sidebar-item .well {
+  background-color: #F3F4F5 !important;
+  border: 1px solid #E0E3E6 !important;
+}
+
+.sidebar-item .well .text-btn {
+  background-color: transparent !important;
+}
+
+.sidebar-item [type=checkbox]:checked + label, [type=checkbox]:not(:checked) + label, [type=radio]:checked + label, [type=radio]:not(:checked) + label {
+  padding-left: 25px !important;
+}
