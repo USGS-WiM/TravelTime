@@ -24,14 +24,17 @@ export class SidebarComponent {
   public SelectedProcedureType: ProcedureType;
 
   ishiddenBase = true;
-  ishiddenOverlay = true;
+  ishiddenOverlay = false;
 
   public PanelData = [ 
-    {id:0, header:'MAP LAYERS', content: '', expanded: false},
-    {id:1, header:'IDENTIFY AREA', expanded: true},
-    {id:2, header:'SCENARIOS', content: '', expanded: false, disabled: true},
-    {id:3, header:'BUILD REPORT', content: '', expanded: false, disabled: true}
+    { id: 0, header:'MAP LAYERS', content: '', expanded: true},
+    { id: 1, header:'IDENTIFY AREA', expanded: false},
+    { id: 2, header:'SCENARIOS', content: '', expanded: true, disabled: true},
+    { id: 3, header: 'BUILD REPORT', content: '', expanded: false, disabled: true },
+    { id: 4, header: 'MAP BASELAYERS', expanded: true },
+    { id: 5, header: 'MAP OVERLAYS', expanded: true}
   ];
+
   public get SelectedStudyArea() {return ""}
   public get SelectedScenarioType() {return ""}
   public get ZoomLevel():number{

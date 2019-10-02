@@ -1,20 +1,19 @@
 <div class="sidebar">
     <div>Current Zoom {{ZoomLevel}}</div>
 
-    <mat-accordion>
-      <mat-expansion-panel [(ngModel)]="PanelData[0]" [expanded]="false" [disabled]="false" ngDefaultControl>
-        <mat-expansion-panel-header>
-          Map layers
-        </mat-expansion-panel-header>
+    <div class="panel panel-default"> 
+      <div class="panel-heading pointerCursor" (click)="PanelData[0].expanded = !PanelData[0].expanded">
+        <h4 class="panel-title">Map layers</h4>
+      </div>
 
-
+      <div class="panel-body" [hidden]="PanelData[0].expanded">
         <div class="panel panel-primary">
-          <div class="panel-heading pointerCursor" (click)="ishiddenBase = !ishiddenBase">
-            <h3 class="panel-title">Map baselayers </h3>
+          <div class="panel-heading pointerCursor" (click)="ishiddenBase= !ishiddenBase">
+            <h5 class="panel-title">Base maps </h5>
           </div>
         </div>
 
-        <div class="panel-body" [hidden]="ishiddenBase">
+        <div class="panel-body" [hidden]="ishiddenBase"> <!-- if selected procedure type 1 or 2 set expanded-->
           <label *ngFor="let item of baselayers" class="map-layer">
             <div *ngIf="item.visible; else disabled" class="map-layer-check">
               <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
@@ -31,8 +30,8 @@
 
 
         <div class="panel panel-primary">
-          <div class="panel-heading pointerCursor" (click)="ishiddenOverlay = !ishiddenOverlay">
-            <h3 class="panel-title">Map overlays </h3>
+          <div class="panel-heading pointerCursor">
+            <h5 class="panel-title">Overlays </h5>
           </div>
         </div>
 
@@ -51,13 +50,15 @@
             <span class="map-layer-title">{{item.name}}</span>
           </label>
         </div>
-        </mat-expansion-panel>
+      </div>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  
-        <mat-expansion-panel-header (click)="SetProcedureType(1)">
-          IDENTIFY AREA
-        </mat-expansion-panel-header>
 
+
+      <div class="panel-heading pointerCursor" (click)="PanelData[1].expanded = !PanelData[1].expanded">
+        <h4 class="panel-title">{{PanelData[1].header}}</h4>
+      </div>
+
+      <div class="panel-body" [hidden]="PanelData[1].expanded">
         <div *ngIf="SelectedProcedureType === 2">
           <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
           <br /><br />
@@ -78,23 +79,33 @@
                           (btnClick)="SetScenarioType('planning')">
           </mat-bar-button>
         </div>
-      </mat-expansion-panel>
+      </div>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[2]" [expanded]="false" [disabled]="true" ngDefaultControl>
-          <mat-expansion-panel-header (click)="SetProcedureType(2)">
-              SCENARIOS
-            </mat-expansion-panel-header>
+      <div class="panel-heading pointerCursor" (click)="PanelData[2].expanded = !PanelData[2].expanded" disabled ="true">
+        <h4 class="panel-title">{{PanelData[2].header}}</h4>
+      </div>
 
+      <div class="panel-body" [hidden]="PanelData[2].expanded" disabled ="true">
         <button mat-raised-button (click)="openDialog()">Jobsons</button>
-      </mat-expansion-panel>
+      </div>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[3]" [expanded]="false" [disabled]="true" ngDefaultControl>     
-        <mat-expansion-panel-header (click)="SetProcedureType(3)">
+
+      <mat-accordion>
+        <mat-expansion-panel [(ngModel)]="PanelData[2]" [expanded]="false" [disabled]="true" ngDefaultControl>
+          <mat-expansion-panel-header (click)="SetProcedureType(2)">
+            SCENARIOS
+          </mat-expansion-panel-header>
+
+          <button mat-raised-button (click)="openDialog()">Jobsons</button>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [(ngModel)]="PanelData[3]" [expanded]="false" [disabled]="true" ngDefaultControl>
+          <mat-expansion-panel-header (click)="SetProcedureType(3)">
             BUILD REPORT
-        </mat-expansion-panel-header>
+          </mat-expansion-panel-header>
 
-        This the expansion 2 content
-      </mat-expansion-panel>
-    </mat-accordion> 
+          This the expansion 2 content
+        </mat-expansion-panel>
+      </mat-accordion>
 
-  </div>   
+    </div>   
