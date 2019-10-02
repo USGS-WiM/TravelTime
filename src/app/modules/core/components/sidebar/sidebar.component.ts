@@ -21,7 +21,11 @@ export class SidebarComponent {
   public AvailableScenarioTypes
   public dialog: MatDialog;
   public Collapsed:boolean;
-  public SelectedProcedureType:ProcedureType;
+  public SelectedProcedureType: ProcedureType;
+
+  ishiddenBase = true;
+  ishiddenOverlay = true;
+
   public PanelData = [ 
     {id:0, header:'MAP LAYERS', content: '', expanded: false},
     {id:1, header:'IDENTIFY AREA', expanded: true},
@@ -43,11 +47,6 @@ export class SidebarComponent {
 
   public barButtonOptions_downstream: MatProgressButtonOptions;
   public barButtonOptions_upstream: MatProgressButtonOptions;
-  public maplayerButton_points: MatProgressButtonOptions;
-  public maplayerButton_natgeo: MatProgressButtonOptions;
-  public maplayerButton_texas : MatProgressButtonOptions;
-  public maplayerButton_topo: MatProgressButtonOptions;
-  public maplayerButton_osm: MatProgressButtonOptions;
   public baselayers = [];
   public overlays = [];
   public model;

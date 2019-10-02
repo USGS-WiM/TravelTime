@@ -1,40 +1,57 @@
 <div class="sidebar">
     <div>Current Zoom {{ZoomLevel}}</div>
+
     <mat-accordion>
       <mat-expansion-panel [(ngModel)]="PanelData[0]" [expanded]="false" [disabled]="false" ngDefaultControl>
         <mat-expansion-panel-header>
-          MAP LAYERS
+          Map layers
         </mat-expansion-panel-header>
 
 
-        <label *ngFor="let item of overlays" class="map-layer">
-          <div *ngIf="item.visible; else disabled" class="map-layer-check">
-            <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
-                   [checked]="item.name">
+        <div class="panel panel-primary">
+          <div class="panel-heading pointerCursor" (click)="ishiddenBase = !ishiddenBase">
+            <h3 class="panel-title">Map baselayers </h3>
           </div>
-          <ng-template #disabled>
-            <div class="map-layer-check">
+        </div>
+
+        <div class="panel-body" [hidden]="ishiddenBase">
+          <label *ngFor="let item of baselayers" class="map-layer">
+            <div *ngIf="item.visible; else disabled" class="map-layer-check">
+              <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
+                     [checked]="item.name">
+            </div>
+            <ng-template #disabled>
+              <div class="map-layer-check">
+                <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
+              </div>
+            </ng-template>
+            <span class="map-layer-title">{{item.name}}</span>
+          </label>
+        </div>
+
+
+        <div class="panel panel-primary">
+          <div class="panel-heading pointerCursor" (click)="ishiddenOverlay = !ishiddenOverlay">
+            <h3 class="panel-title">Map overlays </h3>
+          </div>
+        </div>
+
+        <div class="panel-body" [hidden]="ishiddenOverlay">
+          <label *ngFor="let item of overlays" class="map-layer">
+            <div *ngIf="item.visible; else disabled" class="map-layer-check">
               <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
-                     [checked]="item.name === model.overlays">
+                     [checked]="item.name">
             </div>
-          </ng-template>
-          <span class="map-layer-title">{{item.name}}</span>
-        </label>
-
-        <label *ngFor="let item of baselayers" class="map-layer">
-          <div *ngIf="item.visible; else disabled" class="map-layer-check">
-            <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
-                   [checked]="item.name" >
-          </div>
-          <ng-template #disabled>
-            <div class="map-layer-check">
-              <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
-            </div>
-          </ng-template>
-          <span class="map-layer-title">{{item.name}}</span>
-        </label>
-
-      </mat-expansion-panel>
+            <ng-template #disabled>
+              <div class="map-layer-check">
+                <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
+                       [checked]="item.name === model.overlays">
+              </div>
+            </ng-template>
+            <span class="map-layer-title">{{item.name}}</span>
+          </label>
+        </div>
+        </mat-expansion-panel>
 
       <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  
         <mat-expansion-panel-header (click)="SetProcedureType(1)">

@@ -8,6 +8,10 @@
 	overflow-x: hidden;
 }
 
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
 .shadowtext {
 	color: black;
 	width: 100%;
@@ -57,4 +61,8 @@
 }
 .map-layer-label{
 	flex-grow: 3;
+}
+
+.pointerCursor {
+  cursor: pointer;
 }
