@@ -172,17 +172,14 @@ export class SidebarComponent {
                 return true;
             case ProcedureType.SCENARIO:
                 if (!this.SelectScenario) {
-                  this.SelectScenario = false;
                   throw new Error("Can not proceed until study area options are selected.");
                 }
                 return true;
             case ProcedureType.REPORT:
                 if(!this.SelectScenario) {
-                  this.SelectScenario = false;
                   throw new Error("Can not proceed until study area options are selected.")
-                } else if(!this.SelectedScenarioType) {
-                  this.ReportIsActive = false;
-                  throw new Error("Can not proceed until Scenario options are selected.")
+                } else if (!this.ReportIsActive) {
+                   throw new Error("Can not proceed until Scenario options are selected.")
                 }
                 return true;
             default:
