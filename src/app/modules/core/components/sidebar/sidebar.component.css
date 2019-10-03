@@ -71,7 +71,9 @@
 #methods button {
 	width: 100%;
 	background-color: #0F8AFF;
-	color: #FFF;
+  color: #FFF;
+  margin: 1px 0px 1px 0px; 
+  cursor: pointer;
 }
 
 #methods button:focus {
@@ -83,15 +85,29 @@
 #methods button:disabled {
 	width: 100%;
 	background-color: #CCCCCC;
-	color: #666666;
+  color: #666666;
+  cursor: default;
 }
 
-.pointerCursor {
+#equations button {
+	width: 100%;
+	background-color: #0F8AFF;
+  color: #FFF;
+  margin: 1em 0px 1px 0px; 
   cursor: pointer;
 }
 
+.button-wrapper {
+  width:90%;
+  margin:0em 1em 1em 1em;
+}
+
+/* .pointerCursor {
+  cursor: pointer;
+} */
+
 .list-group-item {
-  background-color: #E2E2E2;
+  background-color: #bbbbbb88;
   text-align: right;
   text-transform: uppercase;
   font-size: 10pt;
@@ -99,8 +115,9 @@
   padding: 18px;
   letter-spacing: 2px;
   font-weight: 400;
-  color: #c0c0c0 !important;
+  color: #FFF !important;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .list-group-item i {
@@ -133,6 +150,7 @@
   font-weight: 400;
   color: #fff !important;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .list-group-item-active i {
@@ -148,6 +166,32 @@
   text-decoration: none !important;
   background-color: #0080d6;
 }
+
+/* .list-group-item-unavailable {
+  background-color: #E2E2E2;
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 18px;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #c0c0c079 !important;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.list-group-item-unavailable i {
+  padding-left: 5px;
+  display: inline-block;
+  text-align: right;
+  width: 50px;
+}
+
+.list-group-item-unavailable:hover {
+  color: #8c8c8c !important;
+  transition: 0.2s;
+} */
 
 .exploration-tools {
   background-color: #99b3e6;

@@ -7,11 +7,14 @@ import {NgbTabsetModule,NgbModule,NgbActiveModal} from '@ng-bootstrap/ng-bootstr
 import {ToastrModule, ToastNoAnimation, ToastNoAnimationModule} from 'ngx-toastr';
 import { CoreModule } from './modules/core/core.module';
 import { HttpClientModule } from '@angular/common/http';
+import { JobsonsModalComponent } from './modules/core/components/jobsons/jobsons.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     AboutModalComponent,
+    JobsonsModalComponent,
     NavbarComponent
     
   ],
@@ -31,6 +34,6 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent]
 })
 export class AppModule {}

@@ -2,11 +2,11 @@
   <div class="panel panel-default">
 
     <!--MAP LAYERS PANEL-->
-    <div class="sidebar-item pointerCursor" (click)="ishiddenMapLayer = !ishiddenMapLayer">
+    <div class="sidebar-item" (click)="SetProcedureType(0)">
       <a ngClass="list-group-item-active">Map layers</a>
     </div>
 
-    <div class="panel-body" [hidden]="ishiddenMapLayer">
+    <div class="panel-body" [hidden]="SelectedProcedureType !== 0">
       <!--BASE MAPS-->
       <div class="panel panel-primary">
         <div class="panel-heading pointerCursor" (click)="ishiddenBasemaps= !ishiddenBasemaps">
@@ -58,11 +58,13 @@
     <!--END MAP LAYERS PANEL-->
 
     <!--IDENTIFY AREA PANEL-->
-    <div class="sidebar-item pointerCursor" (click)="ishiddenIdentifyArea = !ishiddenIdentifyArea">
-      <a class="list-group-item-active">IDENTIFY AREA</a>
+    <div class="sidebar-item" (click)="SetProcedureType(1)">
+      <a [ngClass]="{
+        'list-group-item-active' : SelectedProcedureType === 1,
+        'list-group-item' : SelectedProcedureType !== 1}">IDENTIFY AREA</a>
     </div>
 
-    <div class="panel-body" [hidden]="ishiddenIdentifyArea">
+    <div class="panel-body" [hidden]="SelectedProcedureType !== 1">
       <div *ngIf="SelectedProcedureType === 2">
         <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
         <br /><br />
@@ -75,32 +77,33 @@
       <div *ngIf="ZoomLevel > 9">
         <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
       </div>
-      <div id="methods" style="text-align: left">
-        <button id="response" [disabled]="ZoomLevel < 10 && StudyService.step < 1" (click)="SetScenarioType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
+      <div id="methods" class="button-wrapper">
+        <button id="response" [disabled]="ZoomLevel < 10 && Step < 1" (click)="SetScenarioType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
         <button id="planning" [disabled]="true" (click)="SetScenarioType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
       </div>
     </div>   
     <!--END IDENTIFY AREA PANEL--> 
 
     <!--SCENARIOS PANEL-->
-    <div class="sidebar-item pointerCursor">
+    <div class="sidebar-item">
       <a [ngClass]="{
-         'list-group-item-active': SelectScenario,
-         'list-group-item' : !SelectScenario
+         'list-group-item-active': SelectedProcedureType === 2,
+         'list-group-item' : SelectedProcedureType !== 2
          }" (click)="SetProcedureType(2)">SCENARIOS</a>
     </div>
 
-    <div class="panel-body" [hidden]="ishiddenScenarios">
-      <button (click)="open()">Jobsons</button>
+    <div class="panel-body" [hidden]="SelectedProcedureType !== 2">
+      <div id="equations" class="button-wrapper">
+        <button (click)="open()">Jobsons</button>
+      </div>
     </div>
     <!--END SCENARIOS PANEL-->
 
     <!--BUILD REPORT PANEL-->
-    <div class="sidebar-item pointerCursor">
+    <div class="sidebar-item">
       <a [ngClass]="{
-         'list-group-item-active': ReportIsActive,
-         'list-group-item' : !ReportIsActive
-         }" (click)="SetProcedureType(3)">BUILD REPORT</a>
+         'list-group-item-active': SelectedProcedureType === 3,
+         'list-group-item' : SelectedProcedureType !== 3}" (click)="SetProcedureType(3)">BUILD REPORT</a>
     </div>
     <!--END BUILD REPORT PANEL-->
   </div>

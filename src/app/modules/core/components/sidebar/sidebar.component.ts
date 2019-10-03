@@ -34,32 +34,23 @@ export class SidebarComponent {
   }
   public get ZoomLevel(): number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      //what was I doing here??
+      //this.StudyService.SetStep(1);
     }
     return this.MapService.CurrentZoomLevel;
   }
 
-  public ishiddenMapLayer = true;
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
-  public ishiddenIdentifyArea = false;
-  public ishiddenScenarios = true;
 
-  public SelectScenario = false;
-  public ReportIsActive = false;
+  public get Step() {return this._step}
 
-  public get canContinue() : boolean {
-    if (this.StudyService && this.StudyService.selectedStudy && this.StudyService.selectedStudy.Reaches && this.StudyService.selectedStudy.Reaches.length > 0 && this.StudyService.step === 3) {
-      this.SetScenarioType("Scenarios");
-      return true;
-    } else false;
-  } 
-
-  private messager:ToastrService;
-  private toggleButton = true;
   public baselayers = [];
   public overlays = [];
   public model;
+
+  private messager:ToastrService;
+  private toggleButton = true;
+  private _step: Number = 0;
 
   constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
     this.messager = toastr;
@@ -84,6 +75,17 @@ export class SidebarComponent {
       baselayers: {},
       overlays: {}
     };
+
+    this.SetProcedureType(1);
+
+    this.StudyService.Step.subscribe(data => {
+      this._step = data;
+      if(data === 3 && this.SelectedProcedureType !== 2) {
+        this.SetProcedureType(2)
+      } else if(data === 4 && this.SelectedProcedureType !== 3) {
+        this.SetProcedureType(3)
+      }
+    });
   }
 
   public SetBaselayer(LayerName: string) {
@@ -96,14 +98,13 @@ export class SidebarComponent {
 
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
-    this.StudyService.step = 1; //map click will result in POI selection
+    this.StudyService.SetStep(1); //map click will result in POI selection
     if (ScenarioType = "response") {
       this.StudyService.selectedStudy = new Study(ScenarioType);
       this.MapService.isClickable = true;
     } else if (ScenarioType = "planning") {
 
     }
-    this.SelectScenario = true; //activate scenario
   }
   
   public SetProcedureType(pType:ProcedureType){
@@ -133,24 +134,35 @@ export class SidebarComponent {
     try {               
         switch (pType) {
             case ProcedureType.MAPLAYERS:
+              if(this.SelectedProcedureType === 0) {
+                this.SetProcedureType(4);
+                return false;
+              }
                  return true;
             case ProcedureType.IDENTIFY:
+                if(this.SelectedProcedureType === 1) {
+                  this.SetProcedureType(4);
+                  return false;
+                }
                 return true;
             case ProcedureType.SCENARIO:
                 //proceed only if Study Selected
-                if(!this.StudyService.selectedStudy || this.StudyService.step !== 3) {
-                  throw new Error(this.StudyService.step + "Can not proceed until study area options are selected.");
+                if(this._step < 3) {
+                  throw new Error(this._step + " Can not proceed until study area options are selected.");
                 } 
-                if (!this.SelectScenario) {
-                  throw new Error("Can not proceed until study area options are selected.");
+                if(this.SelectedProcedureType === 2) {
+                  this.SetProcedureType(4);
+                  return false;
                 }
                 return true;
             case ProcedureType.REPORT:
-                if(!this.SelectScenario) {
-                  throw new Error("Can not proceed until study area options are selected.")
-                } else if (!this.ReportIsActive) {
-                   throw new Error("Can not proceed until Scenario options are selected.")
+                if(!this.StudyService.selectedStudy || this._step !== 4) return;
+                if(this.SelectedProcedureType === 3) {
+                  this.SetProcedureType(4);
+                  return false;
                 }
+                return true;
+            case ProcedureType.COLLAPSEALL:
                 return true;
             default:
                 return false;
@@ -178,5 +190,6 @@ enum ProcedureType{
   MAPLAYERS = 0,
   IDENTIFY = 1,
   SCENARIO = 2,
-  REPORT = 3
+  REPORT = 3,
+  COLLAPSEALL = 4
 }

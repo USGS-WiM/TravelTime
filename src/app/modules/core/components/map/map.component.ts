@@ -23,6 +23,7 @@ export class MapComponent extends deepCopy implements OnInit {
 	private StudyService: StudyService;
   private _layersControl;
   private _layers = [];
+  private _step: Number;
 
   public get LayersControl() {
     return this._layersControl;
@@ -63,6 +64,10 @@ export class MapComponent extends deepCopy implements OnInit {
       activelayers.unshift(data.baseLayers.find((l: any) => (l.visible)).layer);
       this._layers = activelayers;
     });
+
+    this.StudyService.Step.subscribe(data => {
+      this._step = data;
+    })
   }
 
   public onZoomChange(zoom: number) {
@@ -72,7 +77,7 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   public onMouseClick(evnt: any) {
-    if(this.StudyService.step === 1) {
+    if(this._step === 1) {
       (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
@@ -82,7 +87,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
-    this.StudyService.step = 2;
+    this.StudyService.SetStep(2);
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
     let marker = L.marker(latlng);
     //add marker to map
@@ -109,8 +114,7 @@ export class MapComponent extends deepCopy implements OnInit {
         console.log (this.StudyService.selectedStudy.Reaches);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         console.log (this.StudyService.selectedStudy.LocationOfInterest);
-        this.StudyService.step = 3;
-        console.log (this.StudyService.step);
+        this.StudyService.SetStep(3);
       });
     }) //get service {description: Initial description}
     //this.newFunc(); moving layers control to the sidebar
