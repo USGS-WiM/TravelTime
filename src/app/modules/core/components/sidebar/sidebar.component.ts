@@ -6,7 +6,9 @@ import * as messageType from "../../../../shared/messageType";
 import {MapService} from '../../services/map.services';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
-// import {MatExpansionModule} from '@angular/material/expansion';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
+import { JobsonsModalComponent } from '../jobsons/jobsons.component';
 
 @Component({
   selector: 'tot-sidebar',
@@ -17,27 +19,35 @@ import { Study } from '../../models/study';
 
 
 export class SidebarComponent {
-  private MapService:MapService;
-  private StudyService:StudyService;
+  private MapService: MapService;
+  private StudyService: StudyService;
   public AvailableScenarioTypes
   public dialog: MatDialog;
-  public Collapsed:boolean;
-  public SelectedProcedureType:ProcedureType;
+  public Collapsed: boolean;
+  public SelectedProcedureType: ProcedureType;
   public PanelData = [ 
     {id:0, header:'MAP LAYERS', content: '', expanded: false},
     {id:1, header:'IDENTIFY AREA', expanded: true},
     {id:2, header:'SCENARIOS', content: '', expanded: false, disabled: true},
     {id:3, header:'BUILD REPORT', content: '', expanded: false, disabled: true}
   ];
-  public get SelectedStudy() {return ""}
-  public get SelectedScenarioType() {return ""}
-  public get ZoomLevel():number{
+  public get SelectedStudy() {return this.StudyService.selectedStudy}
+  public get SelectedScenarioType() {
+    return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
+  }
+  public get ZoomLevel(): number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      this.barButtonOptions_downstream.disabled = false;
       this.toggleButton = false;
     }
     return this.MapService.CurrentZoomLevel;
   }
+
+  public get canContinue() : boolean {
+    if (this.StudyService && this.StudyService.selectedStudy && this.StudyService.selectedStudy.Reaches && this.StudyService.selectedStudy.Reaches.length > 0 && this.StudyService.step === 3) {
+      this.SetScenarioType("Scenarios");
+      return true;
+    } else false;
+  } 
 
   private messager:ToastrService;
   private toggleButton = true;
@@ -53,39 +63,15 @@ export class SidebarComponent {
   public overlays = [];
   public model;
 
-  constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
     this.messager = toastr;
     this.MapService = mapservice;
     this.StudyService = studyservice;
+    config.backdrop = 'static';
+    config.keyboard = false;
    }
 
   ngOnInit() {
-
-     this.barButtonOptions_downstream = {
-      active: false,
-      text: 'Spill Response',
-      spinnerSize: 18,
-      raised: true,
-      stroked: false,
-      buttonColor: 'primary',
-      spinnerColor: 'accent',
-      fullWidth: true,
-      disabled: this.ZoomLevel < 10,
-      mode: 'indeterminate'
-    }
-
-    this.barButtonOptions_upstream = {
-      active: false,
-      text: 'Spill Planning',
-      spinnerSize: 18,
-      raised: true,
-      stroked: false,
-      buttonColor: 'primary',
-      spinnerColor: 'accent',
-      fullWidth: true,
-      disabled: true,
-      mode: 'indeterminate'
-    }
 
     this.MapService.LayersControl.subscribe(data => {
       if (this.overlays.length > 0 || this.baselayers.length > 0) {
@@ -112,11 +98,10 @@ export class SidebarComponent {
 
   //#region "Methods"
   public SetScenarioType(ScenarioType:string) {
+    this.StudyService.step = 1; //map click will result in POI selection
     if (ScenarioType = "response") {
       this.StudyService.selectedStudy = new Study(ScenarioType);
-      this.barButtonOptions_downstream.buttonColor = 'accent';
       this.MapService.isClickable = true;
-      //this.MapService.Options.
     } else if (ScenarioType = "planning") {
 
     }
@@ -134,27 +119,13 @@ export class SidebarComponent {
             else this.Collapsed = true; 
   }
 
-  /* public openDialog() {
-    let dialog = this.dialog.open(ModalComponent, {
-      width: '40%',
-      height: '90%',
-      disableClose: true
-    });
-    dialog.afterClosed().subscribe(result => {
-      this.mapReady = true;
-    });
-  } */
-
   public toggleLayer(newVal: string) {
-    /* this.MapService.chosenBaseLayer = newVal;
-    this.MapService.map.removeLayer(this.MapService.baseMaps['OpenStreetMap']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Topo']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Terrain']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Satellite']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Gray']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Nautical']);
-    this.MapService.map.addLayer(this.MapService.baseMaps[newVal]); */
-}
+  }
+
+  public open(){
+    const modalRef = this.modalService.open(JobsonsModalComponent);
+    modalRef.componentInstance.title = 'Jobsons';
+  }
   //#endregion
 
   //#region "Private methods"
@@ -170,10 +141,9 @@ export class SidebarComponent {
                 return true;
             case ProcedureType.SCENARIO:
                 //proceed only if Study Selected
-                if(!this.SelectedStudy) {
-                  this.PanelData[pType].expanded = false;
-                  throw new Error("Can not proceed until study area options are selected.");
-                }
+                if(!this.StudyService.selectedStudy || this.StudyService.step !== 3) {
+                  throw new Error(this.StudyService.step + "Can not proceed until study area options are selected.");
+                } 
                 return true;
             case ProcedureType.REPORT:
                 if(!this.SelectedStudy) {

@@ -94,7 +94,7 @@ export class MapService {
   }
 
   public setCursor(cursortype: string) {
-    this.cursor = cursortype;
+    //this.cursor = cursortype;
   }
 
   private loadLayer(ml): L.Layer {

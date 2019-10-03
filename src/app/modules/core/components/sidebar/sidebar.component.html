@@ -53,22 +53,18 @@
         <div *ngIf="ZoomLevel >=10">
           <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
         </div>
-        <div style="text-align: left">
-          <mat-bar-button [options]="barButtonOptions_downstream"
-                          (btnClick)="SetScenarioType('response')">
-          </mat-bar-button>
-          <mat-bar-button [options]="barButtonOptions_upstream"
-                          (btnClick)="SetScenarioType('planning')">
-          </mat-bar-button>
+        <div id="methods" style="text-align: left">
+          <button id="response" [disabled]="ZoomLevel < 10 && StudyService.step < 1" (click)="SetScenarioType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
+          <button id="planning" [disabled]="true" (click)="SetScenarioType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[2]" [expanded]="false" [disabled]="true" ngDefaultControl>
+      <mat-expansion-panel [expanded]="canContinue" [disabled]="true" ngDefaultControl>
           <mat-expansion-panel-header (click)="SetProcedureType(2)">
               SCENARIOS
             </mat-expansion-panel-header>
 
-        <button mat-raised-button (click)="openDialog()">Jobsons</button>
+        <button (click)="open()">Jobsons</button>
       </mat-expansion-panel>
 
       <mat-expansion-panel [(ngModel)]="PanelData[3]" [expanded]="false" [disabled]="true" ngDefaultControl>     

@@ -58,3 +58,21 @@
 .map-layer-label{
 	flex-grow: 3;
 }
+
+#methods button {
+	width: 100%;
+	background-color: #0F8AFF;
+	color: #FFF;
+}
+
+#methods button:focus {
+	width: 100%;
+	background-color: #F46652;
+	color: #FFF;
+}
+
+#methods button:disabled {
+	width: 100%;
+	background-color: #CCCCCC;
+	color: #666666;
+}

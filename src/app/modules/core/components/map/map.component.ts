@@ -6,6 +6,7 @@ import { deepCopy } from '../../../../shared/extensions/object.DeepCopy';
 import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
 import * as L from 'leaflet';
+import { Study } from '../../models/study';
 
 
 @Component({
@@ -33,11 +34,12 @@ export class MapComponent extends deepCopy implements OnInit {
     return this._layers;
   }
 
-  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService) {
+  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
     this.NavigationService = navigationservice;
+    this.StudyService = studyservice;
   }
 
   ngOnInit() {
@@ -70,12 +72,17 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   public onMouseClick(evnt: any) {
-    this.setPOI(evnt.latlng);
-    this.sm("Layer added to map!!!");
+    if(this.StudyService.step === 1) {
+      (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
+      this.setPOI(evnt.latlng);
+      this.sm("Layer added to map!!!");
+    }
+    
   }
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
+    this.StudyService.step = 2;
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
     let marker = L.marker(latlng);
     //add marker to map
@@ -98,9 +105,14 @@ export class MapComponent extends deepCopy implements OnInit {
       return config;
     }).then(config =>{
       this.NavigationService.getRoute("3",config,true).subscribe(response => {
-        console.log(response);
+        this.StudyService.selectedStudy.Reaches = response;
+        console.log (this.StudyService.selectedStudy.Reaches);
+        this.StudyService.selectedStudy.LocationOfInterest = latlng;
+        console.log (this.StudyService.selectedStudy.LocationOfInterest);
+        this.StudyService.step = 3;
+        console.log (this.StudyService.step);
       });
-    }); //get service {description: Initial description}
+    }) //get service {description: Initial description}
     //this.newFunc(); moving layers control to the sidebar
   }
   
