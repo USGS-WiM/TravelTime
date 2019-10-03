@@ -51,6 +51,7 @@ export class SidebarComponent {
   private messager:ToastrService;
   private toggleButton = true;
   private _step: Number = 0;
+  private previousProcedureType: ProcedureType = 1;
 
   constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
     this.messager = toastr;
@@ -109,7 +110,9 @@ export class SidebarComponent {
   
   public SetProcedureType(pType:ProcedureType){
     if(!this.canUpdateProcedure(pType)) return;
+    this.previousProcedureType = this.SelectedProcedureType;
     this.SelectedProcedureType = pType;
+
   }
   
   public ToggleSideBar(){
@@ -135,13 +138,13 @@ export class SidebarComponent {
         switch (pType) {
             case ProcedureType.MAPLAYERS:
               if(this.SelectedProcedureType === 0) {
-                this.SetProcedureType(4);
+                this.SetProcedureType(this.previousProcedureType);
                 return false;
               }
                  return true;
             case ProcedureType.IDENTIFY:
-                if(this.SelectedProcedureType === 1) {
-                  this.SetProcedureType(4);
+                if(this.SelectedProcedureType === 1 && this.previousProcedureType !== 0) {
+                  this.SetProcedureType(this.previousProcedureType);
                   return false;
                 }
                 return true;
@@ -151,18 +154,16 @@ export class SidebarComponent {
                   throw new Error(this._step + " Can not proceed until study area options are selected.");
                 } 
                 if(this.SelectedProcedureType === 2) {
-                  this.SetProcedureType(4);
+                  this.SetProcedureType(this.previousProcedureType);
                   return false;
                 }
                 return true;
             case ProcedureType.REPORT:
                 if(!this.StudyService.selectedStudy || this._step !== 4) return;
                 if(this.SelectedProcedureType === 3) {
-                  this.SetProcedureType(4);
+                  this.SetProcedureType(this.previousProcedureType);
                   return false;
                 }
-                return true;
-            case ProcedureType.COLLAPSEALL:
                 return true;
             default:
                 return false;
@@ -190,6 +191,5 @@ enum ProcedureType{
   MAPLAYERS = 0,
   IDENTIFY = 1,
   SCENARIO = 2,
-  REPORT = 3,
-  COLLAPSEALL = 4
+  REPORT = 3
 }
