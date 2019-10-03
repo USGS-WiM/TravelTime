@@ -1,12 +1,41 @@
 <div class="sidebar">
-    <div>Current Zoom {{ZoomLevel}}</div>
-    <mat-accordion>
-      <mat-expansion-panel [(ngModel)]="PanelData[0]" [expanded]="false" [disabled]="false" ngDefaultControl>
-        <mat-expansion-panel-header>
-          MAP LAYERS
-        </mat-expansion-panel-header>
+  <div class="panel panel-default">
 
+    <div class="sidebar-item pointerCursor" (click)="ishiddenMapLayer = !ishiddenMapLayer">
+      <a ngClass="list-group-item-active">Map layers</a>
+    </div>
 
+    <div class="panel-body" [hidden]="ishiddenMapLayer">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading pointerCursor" (click)="ishiddenBasemaps= !ishiddenBasemaps">
+          <h5 class="panel-title">Base maps </h5>
+        </div>
+      </div>
+
+      <div class="panel-body" [hidden]="ishiddenBasemaps">
+        <!-- if selected procedure type 1 or 2 set expanded-->
+        <label *ngFor="let item of baselayers" class="map-layer">
+          <div *ngIf="item.visible; else disabled" class="map-layer-check">
+            <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
+                   [checked]="item.name">
+          </div>
+          <ng-template #disabled>
+            <div class="map-layer-check">
+              <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
+            </div>
+          </ng-template>
+          <span class="map-layer-title">{{item.name}}</span>
+        </label>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading pointerCursor">
+          <h5 class="panel-title">Overlays </h5>
+        </div>
+      </div>
+
+      <div class="panel-body" [hidden]="ishiddenOverlay">
         <label *ngFor="let item of overlays" class="map-layer">
           <div *ngIf="item.visible; else disabled" class="map-layer-check">
             <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
@@ -20,64 +49,53 @@
           </ng-template>
           <span class="map-layer-title">{{item.name}}</span>
         </label>
+      </div>
+    </div>
 
-        <label *ngFor="let item of baselayers" class="map-layer">
-          <div *ngIf="item.visible; else disabled" class="map-layer-check">
-            <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
-                   [checked]="item.name" >
-          </div>
-          <ng-template #disabled>
-            <div class="map-layer-check">
-              <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
-            </div>
-          </ng-template>
-          <span class="map-layer-title">{{item.name}}</span>
-        </label>
 
-      </mat-expansion-panel>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[1]" [expanded]="true" [disabled]="false" ngDefaultControl> <!--*ngFor="let p of PanelData"-->  
-        <mat-expansion-panel-header (click)="SetProcedureType(1)">
-          IDENTIFY AREA
-        </mat-expansion-panel-header>
+    <div class="sidebar-item pointerCursor" (click)="ishiddenIdentifyArea = !ishiddenIdentifyArea">
+      <a class="list-group-item-active">IDENTIFY AREA</a>
+    </div>
 
-        <div *ngIf="SelectedProcedureType === 2">
-          <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
-          <br /><br />
+    <div class="panel-body" [hidden]="ishiddenIdentifyArea">
+      <div *ngIf="SelectedProcedureType === 2">
+        <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
+        <br /><br />
+      </div>
+      <div *ngIf="ZoomLevel <= 9">
+        <div class="shadowtext">
+          <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
         </div>
-        <div *ngIf="ZoomLevel <= 9">
-          <div class="shadowtext">
-            <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
-          </div>
-        </div>
-        <div *ngIf="ZoomLevel >=10">
-          <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
-        </div>
-        <div style="text-align: left">
-          <mat-bar-button [options]="barButtonOptions_downstream"
-                          (btnClick)="SetScenarioType('response')">
-          </mat-bar-button>
-          <mat-bar-button [options]="barButtonOptions_upstream"
-                          (btnClick)="SetScenarioType('planning')">
-          </mat-bar-button>
-        </div>
-      </mat-expansion-panel>
+      </div>
+      <div *ngIf="ZoomLevel >=10">
+        <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
+      </div>
+      <div style="text-align: left">
+        <mat-bar-button [options]="barButtonOptions_downstream"
+                        (btnClick)="SetScenarioType('response')">
+        </mat-bar-button>
+        <mat-bar-button [options]="barButtonOptions_upstream"
+                        (btnClick)="SetScenarioType('planning')">
+        </mat-bar-button>
+      </div>
+    </div>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[2]" [expanded]="false" [disabled]="true" ngDefaultControl>
-          <mat-expansion-panel-header (click)="SetProcedureType(2)">
-              SCENARIOS
-            </mat-expansion-panel-header>
 
-        <button mat-raised-button (click)="openDialog()">Jobsons</button>
-      </mat-expansion-panel>
+    <div class="sidebar-item pointerCursor">
+      <a [ngClass]="{
+         'list-group-item-active': SelectScenario,
+         'list-group-item' : !SelectScenario
+         }" (click)="SetProcedureType(2)">SCENARIOS</a>
+    </div>
 
-      <mat-expansion-panel [(ngModel)]="PanelData[3]" [expanded]="false" [disabled]="true" ngDefaultControl>     
-        <mat-expansion-panel-header (click)="SetProcedureType(3)">
-            BUILD REPORT
-        </mat-expansion-panel-header>
+    <div class="sidebar-item pointerCursor">
+      <a [ngClass]="{
+         'list-group-item-active': ReportIsActive,
+         'list-group-item' : !ReportIsActive
+         }" (click)="SetProcedureType(3)">BUILD REPORT</a>
+    </div>
 
-        This the expansion 2 content
-      </mat-expansion-panel>
-    </mat-accordion> 
+  </div>
 
-  </div>   
+</div>
