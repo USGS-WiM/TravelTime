@@ -9,6 +9,8 @@ import { Study } from '../../models/study';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
+import { CommonModule } from "@angular/common"
+// import {MatExpansionModule} from '@angular/material/expansion';
 
 @Component({
   selector: 'tot-sidebar',
@@ -25,22 +27,26 @@ export class SidebarComponent {
   public dialog: MatDialog;
   public Collapsed: boolean;
   public SelectedProcedureType: ProcedureType;
-  public PanelData = [ 
-    {id:0, header:'MAP LAYERS', content: '', expanded: false},
-    {id:1, header:'IDENTIFY AREA', expanded: true},
-    {id:2, header:'SCENARIOS', content: '', expanded: false, disabled: true},
-    {id:3, header:'BUILD REPORT', content: '', expanded: false, disabled: true}
-  ];
+
   public get SelectedStudy() {return this.StudyService.selectedStudy}
   public get SelectedScenarioType() {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
   }
   public get ZoomLevel(): number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      this.toggleButton = false;
+      //what was I doing here??
     }
     return this.MapService.CurrentZoomLevel;
   }
+
+  public ishiddenMapLayer = true;
+  public ishiddenBasemaps = true;
+  public ishiddenOverlay = false;
+  public ishiddenIdentifyArea = false;
+  public ishiddenScenarios = true;
+
+  public SelectScenario = false;
+  public ReportIsActive = false;
 
   public get canContinue() : boolean {
     if (this.StudyService && this.StudyService.selectedStudy && this.StudyService.selectedStudy.Reaches && this.StudyService.selectedStudy.Reaches.length > 0 && this.StudyService.step === 3) {
@@ -51,14 +57,6 @@ export class SidebarComponent {
 
   private messager:ToastrService;
   private toggleButton = true;
-
-  public barButtonOptions_downstream: MatProgressButtonOptions;
-  public barButtonOptions_upstream: MatProgressButtonOptions;
-  public maplayerButton_points: MatProgressButtonOptions;
-  public maplayerButton_natgeo: MatProgressButtonOptions;
-  public maplayerButton_texas : MatProgressButtonOptions;
-  public maplayerButton_topo: MatProgressButtonOptions;
-  public maplayerButton_osm: MatProgressButtonOptions;
   public baselayers = [];
   public overlays = [];
   public model;
@@ -105,12 +103,11 @@ export class SidebarComponent {
     } else if (ScenarioType = "planning") {
 
     }
-    console.log(ScenarioType)
+    this.SelectScenario = true; //activate scenario
   }
   
   public SetProcedureType(pType:ProcedureType){
     if(!this.canUpdateProcedure(pType)) return;
-  
     this.SelectedProcedureType = pType;
   }
   
@@ -135,8 +132,8 @@ export class SidebarComponent {
   private canUpdateProcedure(pType: ProcedureType): boolean {
     try {               
         switch (pType) {
-          case ProcedureType.MAPLAYERS:
-            return true;
+            case ProcedureType.MAPLAYERS:
+                 return true;
             case ProcedureType.IDENTIFY:
                 return true;
             case ProcedureType.SCENARIO:
@@ -144,15 +141,15 @@ export class SidebarComponent {
                 if(!this.StudyService.selectedStudy || this.StudyService.step !== 3) {
                   throw new Error(this.StudyService.step + "Can not proceed until study area options are selected.");
                 } 
+                if (!this.SelectScenario) {
+                  throw new Error("Can not proceed until study area options are selected.");
+                }
                 return true;
             case ProcedureType.REPORT:
-                if(!this.SelectedStudy) {
-                  this.PanelData[pType].expanded = false;
+                if(!this.SelectScenario) {
                   throw new Error("Can not proceed until study area options are selected.")
-                }
-                if(!this.SelectedScenarioType) {
-                  this.PanelData[pType].expanded = false;
-                  throw new Error("Can not proceed until Scenario options are selected.")
+                } else if (!this.ReportIsActive) {
+                   throw new Error("Can not proceed until Scenario options are selected.")
                 }
                 return true;
             default:
@@ -178,8 +175,8 @@ export class SidebarComponent {
 }
 
 enum ProcedureType{
-  MAPLAYERS=0,
-  IDENTIFY =1,
-  SCENARIO =2,
-  REPORT =3
+  MAPLAYERS = 0,
+  IDENTIFY = 1,
+  SCENARIO = 2,
+  REPORT = 3
 }
