@@ -21,6 +21,7 @@ export class MapService {
   public isClickable: boolean = false;
   public Cursor: String;
   public markerOptions;
+  //private searchService: WiM.Services.ISearchAPIService;
 
   constructor(http: HttpClient) {
 

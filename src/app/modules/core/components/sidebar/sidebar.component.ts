@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { StudyService } from '../../services/study.service';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
@@ -27,7 +27,8 @@ export class SidebarComponent {
   public dialog: MatDialog;
   public Collapsed: boolean;
   public SelectedProcedureType: ProcedureType;
-
+  public showSearchHelp: boolean;
+  public CurrentSearch: String;
   public get SelectedStudy() {return this.StudyService.selectedStudy}
   public get SelectedScenarioType() {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
@@ -61,8 +62,10 @@ export class SidebarComponent {
     config.keyboard = false;
    }
 
+
   ngOnInit() {
 
+    this.showSearchHelp = true;
     this.MapService.LayersControl.subscribe(data => {
       if (this.overlays.length > 0 || this.baselayers.length > 0) {
         this.overlays = []
@@ -95,6 +98,10 @@ export class SidebarComponent {
 
   public SetOverlay(LayerName: string) {
     this.MapService.SetOverlay(LayerName)
+  }
+
+  public SearchLocation(evnt) { //move it to map service (call with API)
+    console.log(evnt);
   }
 
   //#region "Methods"
