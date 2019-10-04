@@ -25,6 +25,7 @@ export class MapComponent extends deepCopy implements OnInit {
   private _layers = [];
   private _step: Number;
 
+
   public get LayersControl() {
     return this._layersControl;
   }
@@ -89,7 +90,10 @@ export class MapComponent extends deepCopy implements OnInit {
   private setPOI(latlng: L.LatLng) {
     this.StudyService.SetStep(2);
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
-    let marker = L.marker(latlng);
+    var markerOptions = this.MapService.markerOptions;
+    let marker = L.marker(latlng, {
+      icon: L.icon(this.MapService.markerOptions.Spill.markerOptions)
+    });
     //add marker to map
 		this.MapService.AddMapLayer({name: "POI", layer: marker, visible: true});
     this.NavigationService.getNavigationResource("3")

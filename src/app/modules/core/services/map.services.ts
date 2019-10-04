@@ -20,6 +20,7 @@ export class MapService {
   public CurrentLayer: String;
   public isClickable: boolean = false;
   public Cursor: String;
+  public markerOptions;
 
   constructor(http: HttpClient) {
 
@@ -47,6 +48,9 @@ export class MapService {
           this._layersControl.overlays.push(ml);
       });
       this.LayersControl.next(this._layersControl);
+
+      this.markerOptions = conf.mapLayers.markerOptions;
+
     });
 
     this.CurrentZoomLevel = this.Options.zoom;
