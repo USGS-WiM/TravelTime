@@ -228,6 +228,7 @@
   text-align: center;
 }
 
+
 .search-api-container {
   display: flex;
   width: 100% !important;
@@ -241,11 +242,20 @@
   width: 100% !important;
 }
 
-  .search-api-container input {
-    display: block;
-    width: 100% !important;
-    margin: 0 !important;
-  }
+:host /deep/ .search-api-container, .search-api-container * {
+  box-sizing: border-box;
+  padding: 5px;
+  margin: 10px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+  width: 90% !important;
+}
+
+.search-api-container input {
+  display: block;
+  width: auto !important;
+  margin: 0 !important;
+}
 
 .search-api-icon {
   background-color: transparent !important;
@@ -254,7 +264,6 @@
   padding-right: 10px !important;
   width: 40px;
 }
-
 .search-api-spinner {
   padding: 2px 0 0 0 !important;
   text-align: right;

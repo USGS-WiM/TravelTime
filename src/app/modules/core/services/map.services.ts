@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MapLayer } from '../models/maplayer';
+
+
 export interface layerControl {
   baseLayers: Array<any>;
   overlays: Array<any>
@@ -21,7 +23,9 @@ export class MapService {
   public isClickable: boolean = false;
   public Cursor: String;
   public markerOptions;
-  //private searchService: WiM.Services.ISearchAPIService;
+  public fitBounds: Subject<any> = new Subject<any>();
+  public _bound;
+
 
   constructor(http: HttpClient) {
 
@@ -98,8 +102,13 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-  public setCursor(cursortype: string) {
+  public setCursor() {
     //this.cursor = cursortype;
+  }
+
+  public setBounds(loc) {
+    this._bound = loc;
+    this.fitBounds.next(this._bound);
   }
 
   private loadLayer(ml): L.Layer {

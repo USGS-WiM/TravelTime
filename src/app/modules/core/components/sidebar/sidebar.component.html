@@ -57,39 +57,33 @@
 
       <div id="searchWrapper">
 
-          <div id="searchBox">
-            <div class="search-api-container search-api-md">
-              <span class="search-api-icon"><svg focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></span><span>
-                <input [ngModel]="CurrentSearch" (ngModelChange)="SearchLocation($event)" placeholder="Search for a place" title="">
-              </span><span class="search-api-spinner search-api-spinner-hidden"></span>
-            </div>
+        <div id="searchBox"></div>
+
+        <button class="btn-link fullwidth" (click)="showSearchHelp = !showSearchHelp">
+          <span [hidden]="!showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
+          <span [hidden]="showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
+        </button>
+
+        <!-- supported search strings -->
+        <div class="banner info banner-no-icon" [hidden]="showSearchHelp" style="margin-top: 0px;">
+          <div class="banner-body">
+            <h5>Supported search strings:</h5>
+            <p>
+              <br />
+              GNIS locations<br />
+              USGS Sites<br />
+              Zip Codes<br />
+              Area Codes<br />
+              States<br />
+              Lat/Long ('43.9,-72.1' or '43.9N,72.1W')<br />
+              Street Address<br />
+              Hydrologic Unit<br />
+              <br />
+              Search provided by<br /><a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank" style="text-decoration:underline !important; padding: 0 !important;">USGS Search JavaScript API</a>
+            </p>
           </div>
-
-          <button class="btn-link fullwidth" (click)="showSearchHelp = !showSearchHelp">
-            <span [hidden]="!showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
-            <span [hidden]="showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
-          </button>
-
-          <!-- supported search strings -->
-          <div class="banner info banner-no-icon" [hidden]="showSearchHelp" style="margin-top: 0px;">
-            <div class="banner-body">
-              <h5>Supported search strings:</h5>
-              <p>
-                <br />
-                GNIS locations<br />
-                USGS Sites<br />
-                Zip Codes<br />
-                Area Codes<br />
-                States<br />
-                Lat/Long ('43.9,-72.1' or '43.9N,72.1W')<br />
-                Street Address<br />
-                Hydrologic Unit<br />
-                <br />
-                Search provided by<br /><a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank" style="text-decoration:underline !important; padding: 0 !important;">USGS Search JavaScript API</a>
-              </p>
-            </div>
-          </div><!-- End supported search strings -->
-        </div>
+        </div><!-- End supported search strings -->
+      </div>
     </div>
     <!--END MAP LAYERS PANEL-->
 

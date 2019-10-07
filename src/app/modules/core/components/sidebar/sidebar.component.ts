@@ -10,7 +10,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
 import { CommonModule } from "@angular/common"
+import { Observable, of, Subject} from 'rxjs';
 // import {MatExpansionModule} from '@angular/material/expansion';
+declare let search_api: any;
 
 @Component({
   selector: 'tot-sidebar',
@@ -21,6 +23,7 @@ import { CommonModule } from "@angular/common"
 
 
 export class SidebarComponent {
+
   private MapService: MapService;
   private StudyService: StudyService;
   public AvailableScenarioTypes
@@ -28,7 +31,8 @@ export class SidebarComponent {
   public Collapsed: boolean;
   public SelectedProcedureType: ProcedureType;
   public showSearchHelp: boolean;
-  public CurrentSearch: String;
+  // set an api property value
+
   public get SelectedStudy() {return this.StudyService.selectedStudy}
   public get SelectedScenarioType() {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
@@ -48,7 +52,6 @@ export class SidebarComponent {
   public baselayers = [];
   public overlays = [];
   public model;
-
   private messager:ToastrService;
   private toggleButton = true;
   private _step: Number = 0;
@@ -60,8 +63,11 @@ export class SidebarComponent {
     this.StudyService = studyservice;
     config.backdrop = 'static';
     config.keyboard = false;
-   }
+  }
 
+  public on_result() {
+    console.log ('triggered')
+  }
 
   ngOnInit() {
 
@@ -73,6 +79,15 @@ export class SidebarComponent {
       }
       this.overlays = data.overlays;
       this.baselayers = data.baseLayers;
+    })
+
+    search_api.create("searchBox", {
+      "on_result": (o) => { //changed from function(o) to (o) =>
+        this.MapService.setBounds([ // zoom to location
+          [o.result.properties.LatMin, o.result.properties.LonMin],
+          [o.result.properties.LatMax, o.result.properties.LonMax]
+        ]);
+      }
     })
 
     this.model = {
@@ -98,10 +113,6 @@ export class SidebarComponent {
 
   public SetOverlay(LayerName: string) {
     this.MapService.SetOverlay(LayerName)
-  }
-
-  public SearchLocation(evnt) { //move it to map service (call with API)
-    console.log(evnt);
   }
 
   //#region "Methods"

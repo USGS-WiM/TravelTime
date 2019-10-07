@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import { MapService } from '../../services/map.services';
@@ -7,7 +7,6 @@ import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
 import * as L from 'leaflet';
 import { Study } from '../../models/study';
-
 
 @Component({
   selector: "tot-map",
@@ -20,22 +19,27 @@ export class MapComponent extends deepCopy implements OnInit {
 	private messager: ToastrService;
 	private MapService: MapService;
 	private NavigationService: NavigationService;
-	private StudyService: StudyService;
+  private StudyService: StudyService;
   private _layersControl;
+  private _bounds;
   private _layers = [];
   private _step: Number;
+  public fitBounds;
 
   public get LayersControl() {
     return this._layersControl;
   }
+
   public get MapOptions() {
     return this.MapService.Options;
   }
+
   public get Layers() {
     return this._layers;
   }
 
-  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+
+  constructor(private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -67,6 +71,10 @@ export class MapComponent extends deepCopy implements OnInit {
 
     this.StudyService.Step.subscribe(data => {
       this._step = data;
+    })
+
+    this.MapService.fitBounds.subscribe(data => {
+      this.fitBounds = data;
     })
   }
 
