@@ -33,10 +33,12 @@ export class SidebarComponent {
   public showSearchHelp: boolean;
   // set an api property value
 
-  public get SelectedStudy() {return this.StudyService.selectedStudy}
+  public get SelectedStudy() { return this.StudyService.selectedStudy }
+
   public get SelectedScenarioType() {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
   }
+
   public get ZoomLevel(): number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
       //this.StudyService.SetStep(1);
@@ -46,9 +48,7 @@ export class SidebarComponent {
 
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
-
   public get Step() {return this._step}
-
   public baselayers = [];
   public overlays = [];
   public model;
@@ -63,10 +63,6 @@ export class SidebarComponent {
     this.StudyService = studyservice;
     config.backdrop = 'static';
     config.keyboard = false;
-  }
-
-  public on_result() {
-    console.log ('triggered')
   }
 
   ngOnInit() {

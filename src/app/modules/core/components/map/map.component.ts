@@ -79,16 +79,18 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   public onZoomChange(zoom: number) {
-    this.MapService.CurrentZoomLevel = zoom;
+    //this.MapService.CurrentZoomLevel = zoom;
     //this.MapService.SetOverlay("Big Circle")
-    this.sm("Zoom changed to " + zoom);
+    setTimeout(() =>
+    this.sm("Zoom changed to " + zoom));
   }
 
   public onMouseClick(evnt: any) {
     if(this._step === 1) {
       (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
-      this.sm("Layer added to map!!!");
+      setTimeout(() =>
+      this.sm("Layer added to map!!!"));
     }
 
   }
@@ -134,8 +136,8 @@ export class MapComponent extends deepCopy implements OnInit {
     try {
       let options: Partial<IndividualConfig> = null;
       if (timeout) options = { timeOut: timeout };
-
-      this.messager.show(msg, title, options, mType)
+      setTimeout(() =>
+      this.messager.show(msg, title, options, mType))
     }
     catch (e) {
     }
