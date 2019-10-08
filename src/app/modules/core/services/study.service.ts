@@ -2,28 +2,38 @@ import { Injectable } from '@angular/core';
 import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
+export interface workflowControl {
+    reachedZoom: boolean;
+    hasMethod: boolean;
+    hasPOI: boolean;
+    hasReaches: boolean;
+    hasDischarge: boolean;
+    totResults: boolean;
+  }
  
 @Injectable()
 export class StudyService {
     public selectedStudy: Study;
     private messager: ToastrService;
-    public Step: Subject<Number> = new Subject<Number>();
-    private _step: Number = 0;
+    public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
+    private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false};
 
     constructor(toastr: ToastrService) {
         this.messager = toastr;
+
+        this.WorkFlowControl.next(this._workflow);
     }
 
     public get checkingDelineatedPoint(): boolean {
-        return (this._step === 2);
-    }
-    
-    public SetStep(number) {
-        this._step = number;
-        this.Step.next(this._step);
+        return (this._workflow.hasPOI && !this._workflow.hasReaches);
     }
 
-    public GetStep(): Number {
-        return this._step;
+    public SetWorkFlow(step, tf){
+        this._workflow[step] = tf;
+        this.WorkFlowControl.next(this._workflow);
+    }
+
+    public GetWorkFlow(step) {
+        return this._workflow[step];
     }
 }

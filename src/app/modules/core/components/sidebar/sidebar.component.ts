@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { StudyService } from '../../services/study.service';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
@@ -26,7 +26,7 @@ export class SidebarComponent {
   public AvailableScenarioTypes
   public dialog: MatDialog;
   public Collapsed: boolean;
-  public SelectedProcedureType: ProcedureType;
+  @Output() public SelectedProcedureType: ProcedureType;
 
   public get SelectedStudy() {return this.StudyService.selectedStudy}
   public get SelectedScenarioType() {
@@ -34,7 +34,7 @@ export class SidebarComponent {
   }
   public get ZoomLevel(): number{
     if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      //this.StudyService.SetStep(1);
+      this.StudyService.SetWorkFlow("reachedZoom", true);
     }
     return this.MapService.CurrentZoomLevel;
   }
@@ -42,15 +42,13 @@ export class SidebarComponent {
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
 
-  public get Step() {return this._step}
-
   public baselayers = [];
   public overlays = [];
   public model;
 
   private messager:ToastrService;
   private toggleButton = true;
-  private _step: Number = 0;
+  //private _step: Number = 0;
   private previousProcedureType: ProcedureType = 1;
 
   constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
@@ -61,8 +59,8 @@ export class SidebarComponent {
     config.keyboard = false;
    }
 
-  ngOnInit() {
-
+  ngAfterViewInit(): void {
+    setTimeout(() => {
     this.MapService.LayersControl.subscribe(data => {
       if (this.overlays.length > 0 || this.baselayers.length > 0) {
         this.overlays = []
@@ -77,16 +75,16 @@ export class SidebarComponent {
       overlays: {}
     };
 
-    this.SetProcedureType(1);
-
-    this.StudyService.Step.subscribe(data => {
-      this._step = data;
-      if(data === 3 && this.SelectedProcedureType !== 2) {
-        this.SetProcedureType(2)
-      } else if(data === 4 && this.SelectedProcedureType !== 3) {
-        this.SetProcedureType(3)
-      }
-    });
+    this.SetProcedureType(1);    
+    
+      this.StudyService.WorkFlowControl.subscribe(data => {
+        if(data.hasReaches && this.SelectedProcedureType !== 2) {
+          this.SetProcedureType(2)
+        } else if(data.totResults && this.SelectedProcedureType !== 3) {
+          this.SetProcedureType(3)
+        }
+      });
+    },500);
   }
 
   public SetBaselayer(LayerName: string) {
@@ -98,19 +96,28 @@ export class SidebarComponent {
   }
 
   //#region "Methods"
-  public SetScenarioType(ScenarioType:string) {
-    this.StudyService.SetStep(1); //map click will result in POI selection
-    if (ScenarioType = "response") {
-      this.StudyService.selectedStudy = new Study(ScenarioType);
-      this.MapService.isClickable = true;
-    } else if (ScenarioType = "planning") {
+public GetClass(pType: ProcedureType) {
+  if(this.SelectedProcedureType === pType) {
+    return "list-group-item-active";
+  } else return "list-group-item";
+}
 
-    }
+  public SetScenarioType(ScenarioType:string) {
+    this.StudyService.SetWorkFlow("hasMethod", true); //map click will result in POI selection
+    this.StudyService.selectedStudy = new Study(ScenarioType);
+    this.MapService.isClickable = true;
   }
   
   public SetProcedureType(pType:ProcedureType){
-    if(!this.canUpdateProcedure(pType)) return;
-    this.previousProcedureType = this.SelectedProcedureType;
+    if(!this.canUpdateProcedure(pType)) {
+      if(this.StudyService.GetWorkFlow("hasReaches") || this.StudyService.GetWorkFlow("totResults")) {
+        this.SetProcedureType(this.previousProcedureType);
+      }
+      return;
+    }
+    if(this.SelectedProcedureType !== 0) {
+      this.previousProcedureType = this.SelectedProcedureType;
+    }    
     this.SelectedProcedureType = pType;
 
   }
@@ -124,8 +131,9 @@ export class SidebarComponent {
   }
 
   public open(){
-    const modalRef = this.modalService.open(JobsonsModalComponent);
-    modalRef.componentInstance.title = 'Jobsons';
+    // const modalRef = this.modalService.open(JobsonsModalComponent);
+    // modalRef.componentInstance.title = 'Jobsons';
+    this.SelectedProcedureType = 1;
   }
   //#endregion
 
@@ -143,23 +151,18 @@ export class SidebarComponent {
               }
                  return true;
             case ProcedureType.IDENTIFY:
-                if(this.SelectedProcedureType === 1 && this.previousProcedureType !== 0) {
+                if(this.SelectedProcedureType === 1) {
                   this.SetProcedureType(this.previousProcedureType);
                   return false;
                 }
                 return true;
             case ProcedureType.SCENARIO:
                 //proceed only if Study Selected
-                if(this._step < 3) {
-                  throw new Error(this._step + " Can not proceed until study area options are selected.");
-                } 
-                if(this.SelectedProcedureType === 2) {
-                  this.SetProcedureType(this.previousProcedureType);
-                  return false;
-                }
+                if(!this.StudyService.GetWorkFlow("hasReaches")) {throw new Error("Can not proceed until study area options are selected.");} 
+                if(this.SelectedProcedureType === 2) { return false; }
                 return true;
             case ProcedureType.REPORT:
-                if(!this.StudyService.selectedStudy || this._step !== 4) return;
+                if(!this.StudyService.selectedStudy || !this.StudyService.GetWorkFlow("totResults")) return;
                 if(this.SelectedProcedureType === 3) {
                   this.SetProcedureType(this.previousProcedureType);
                   return false;

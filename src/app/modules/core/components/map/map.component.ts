@@ -23,7 +23,7 @@ export class MapComponent extends deepCopy implements OnInit {
 	private StudyService: StudyService;
   private _layersControl;
   private _layers = [];
-  private _step: Number;
+  private _workflow: Array<any>;
 
   public get LayersControl() {
     return this._layersControl;
@@ -65,9 +65,9 @@ export class MapComponent extends deepCopy implements OnInit {
       this._layers = activelayers;
     });
 
-    this.StudyService.Step.subscribe(data => {
-      this._step = data;
-    })
+    // this.StudyService.WorkFlowControl.subscribe(data => {
+    //   this._workflow = data;
+    // })
   }
 
   public onZoomChange(zoom: number) {
@@ -76,8 +76,8 @@ export class MapComponent extends deepCopy implements OnInit {
     this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) {
-    if(this._step === 1) {
+  public onMouseClick(evnt: any) { 
+    if(this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
@@ -87,7 +87,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
-    this.StudyService.SetStep(2);
+    this.StudyService.SetWorkFlow("hasPOI", true);
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
     let marker = L.marker(latlng);
     //add marker to map
@@ -111,10 +111,8 @@ export class MapComponent extends deepCopy implements OnInit {
     }).then(config =>{
       this.NavigationService.getRoute("3",config,true).subscribe(response => {
         this.StudyService.selectedStudy.Reaches = response;
-        console.log (this.StudyService.selectedStudy.Reaches);
+        this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
-        console.log (this.StudyService.selectedStudy.LocationOfInterest);
-        this.StudyService.SetStep(3);
       });
     }) //get service {description: Initial description}
     //this.newFunc(); moving layers control to the sidebar
