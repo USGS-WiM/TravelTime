@@ -83,6 +83,10 @@ export class SidebarComponent {
           [o.result.properties.LatMin, o.result.properties.LonMin],
           [o.result.properties.LatMax, o.result.properties.LonMax]
         ]);
+      },
+      "on_failure": (o) => {
+        // alert user when the secondary geocoding service fails to return a result
+        alert("Sorry, a location could not be found for '" + o.val() + "'");
       }
     })
 
