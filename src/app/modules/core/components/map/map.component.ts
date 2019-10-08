@@ -79,18 +79,17 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   public onZoomChange(zoom: number) {
-    //this.MapService.CurrentZoomLevel = zoom;
-    //this.MapService.SetOverlay("Big Circle")
     setTimeout(() =>
-    this.sm("Zoom changed to " + zoom));
+      this.MapService.CurrentZoomLevel = zoom);
+    //this.MapService.SetOverlay("Big Circle")
+    this.sm("Zoom changed to " + zoom);
   }
 
   public onMouseClick(evnt: any) {
     if(this._step === 1) {
       (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
-      setTimeout(() =>
-      this.sm("Layer added to map!!!"));
+      this.sm("Layer added to map!!!");
     }
 
   }
