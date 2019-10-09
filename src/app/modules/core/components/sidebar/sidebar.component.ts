@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, Output, AfterViewInit } from '@angular/core';
 import { StudyService } from '../../services/study.service';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
@@ -26,8 +26,18 @@ export class SidebarComponent {
   public AvailableScenarioTypes
   public dialog: MatDialog;
   public Collapsed: boolean;
-  @Output() public SelectedProcedureType: ProcedureType;
-
+  
+  private _selectedproceduretype : ProcedureType;
+  public get SelectedProcedureType() : ProcedureType {
+    return this._selectedproceduretype;
+  }
+  
+  public set SelectedProcedureType(v : ProcedureType) {
+    setTimeout(() => {
+      this._selectedproceduretype = v;
+    },1000);
+  }
+  
   public get SelectedStudy() {return this.StudyService.selectedStudy}
   public get SelectedScenarioType() {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
@@ -59,24 +69,23 @@ export class SidebarComponent {
     config.keyboard = false;
    }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-    this.MapService.LayersControl.subscribe(data => {
-      if (this.overlays.length > 0 || this.baselayers.length > 0) {
-        this.overlays = []
-        this.baselayers = []
-      }
-      this.overlays = data.overlays;
-      this.baselayers = data.baseLayers;
-    })
+  ngOnInit() {
+      this.MapService.LayersControl.subscribe(data => {
+        if (this.overlays.length > 0 || this.baselayers.length > 0) {
+          this.overlays = []
+          this.baselayers = []
+        }
+        this.overlays = data.overlays;
+        this.baselayers = data.baseLayers;
+      })
 
-    this.model = {
-      baselayers: {},
-      overlays: {}
-    };
+      this.model = {
+        baselayers: {},
+        overlays: {}
+      };
 
-    this.SetProcedureType(1);    
-    
+      this.SetProcedureType(1);
+
       this.StudyService.WorkFlowControl.subscribe(data => {
         if(data.hasReaches && this.SelectedProcedureType !== 2) {
           this.SetProcedureType(2)
@@ -84,7 +93,6 @@ export class SidebarComponent {
           this.SetProcedureType(3)
         }
       });
-    },500);
   }
 
   public SetBaselayer(LayerName: string) {
@@ -96,11 +104,11 @@ export class SidebarComponent {
   }
 
   //#region "Methods"
-public GetClass(pType: ProcedureType) {
-  if(this.SelectedProcedureType === pType) {
-    return "list-group-item-active";
-  } else return "list-group-item";
-}
+  public GetClass(pType: ProcedureType) {
+    if(this.SelectedProcedureType === pType) {
+      return "list-group-item-active";
+    } else return "list-group-item";
+  }
 
   public SetScenarioType(ScenarioType:string) {
     this.StudyService.SetWorkFlow("hasMethod", true); //map click will result in POI selection
@@ -111,7 +119,8 @@ public GetClass(pType: ProcedureType) {
   public SetProcedureType(pType:ProcedureType){
     if(!this.canUpdateProcedure(pType)) {
       if(this.StudyService.GetWorkFlow("hasReaches") || this.StudyService.GetWorkFlow("totResults")) {
-        this.SetProcedureType(this.previousProcedureType);
+        this.SelectedProcedureType = this.previousProcedureType;
+        console.log ("Selected = " + this.SelectedProcedureType + " Previous = " + this.previousProcedureType);
       }
       return;
     }
@@ -131,9 +140,8 @@ public GetClass(pType: ProcedureType) {
   }
 
   public open(){
-    // const modalRef = this.modalService.open(JobsonsModalComponent);
-    // modalRef.componentInstance.title = 'Jobsons';
-    this.SelectedProcedureType = 1;
+    const modalRef = this.modalService.open(JobsonsModalComponent);
+    modalRef.componentInstance.title = 'Jobsons';
   }
   //#endregion
 
@@ -181,8 +189,8 @@ public GetClass(pType: ProcedureType) {
     try {
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
-
-      this.messager.show(msg,title,options, mType)
+      setTimeout(() =>
+        this.messager.show(msg,title,options, mType))
     }
     catch (e) {
     }
