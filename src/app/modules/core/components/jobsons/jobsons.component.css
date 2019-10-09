@@ -1,0 +1,5 @@
+.modal-content {
+   margin-top:25px; 
+   z-index:2000; 
+   position: absolute;
+}
