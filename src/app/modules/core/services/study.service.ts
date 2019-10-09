@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
- 
+
+
 @Injectable()
-export class StudyService {
+export class StudyService  {
     public selectedStudy: Study;
     private messager: ToastrService;
     public Step: Subject<Number> = new Subject<Number>();
@@ -23,7 +24,7 @@ export class StudyService {
         this.Step.next(this._step);
     }
 
-    public GetStep(): Number {
-        return this._step;
-    }
+  public GetStep(): Number {
+    return this._step;
+  }
 }

@@ -91,7 +91,6 @@ export class MapComponent extends deepCopy implements OnInit {
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
     }
-
   }
 
   //#region "Helper methods"
@@ -120,11 +119,12 @@ export class MapComponent extends deepCopy implements OnInit {
       });//next item
       return config;
     }).then(config =>{
-      this.NavigationService.getRoute("3",config,true).subscribe(response => {
-        this.StudyService.selectedStudy.Reaches = response;
-        console.log (this.StudyService.selectedStudy.Reaches);
+      this.NavigationService.getRoute("3", config, true).subscribe(response => {
+        let streamLayer: L.Layer;
+        response.features.shift();
+        streamLayer = L.geoJSON(response, this.MapService.markerOptions.Polyline.markerOptions);
+        this.MapService.AddMapLayer({ name: "Flowlines", layer: streamLayer, visible: true });
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
-        console.log (this.StudyService.selectedStudy.LocationOfInterest);
         this.StudyService.SetStep(3);
       });
     }) //get service {description: Initial description}
