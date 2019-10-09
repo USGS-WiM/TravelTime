@@ -58,7 +58,6 @@ export class SidebarComponent {
 
   private messager:ToastrService;
   private toggleButton = true;
-  //private _step: Number = 0;
   private previousProcedureType: ProcedureType = 1;
 
   constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {

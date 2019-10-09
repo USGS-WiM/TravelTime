@@ -3,6 +3,9 @@ import { LatLng } from 'leaflet'
 export class Study {
     public LocationOfInterest: LatLng;
     public Reaches: Array<any> = [];
+    public SpillMass: Number;
+    public Discharge: Number;
+    public SpillDate: String;
     
     private _methodType : string;
     public get MethodType() : string {
