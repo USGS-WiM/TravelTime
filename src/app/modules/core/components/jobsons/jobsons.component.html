@@ -33,15 +33,15 @@
         <div id="panel-group">
           <!-- Accordion starts here -->
           <ngb-accordion #reaches="ngbAccordion" (panelChange)="showhideReaches($event)">
-            <ngb-panel title="{{showreaches}}">
+            <ngb-panel title="{{showhidetitle}}">
               <ng-template ngbPanelContent>
                 <ngb-accordion #acc="ngbAccordion" (panelChange)="beforeChange($event)" [closeOthers]="true">
-                  <ngb-panel *ngFor="let item of mylist; let i = index" id="{{i}}">
+                  <ngb-panel *ngFor="let item of reachList; let i = index" id="{{i}}">
                     <ng-template ngbPanelHeader>
                       <div class="d-flex align-items-center justify-content-between">
                         <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
                         <div>
-                          <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="onClick_removeReach(i)">Remove</button>
+                          <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="removeReach(i)">Remove</button>
                         </div>
                       </div>
                     </ng-template>

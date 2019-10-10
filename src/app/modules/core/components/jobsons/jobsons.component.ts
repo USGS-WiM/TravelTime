@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal,NgbActiveModal,NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal,NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { MapService } from '../../services/map.services';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { reach } from '../../models/reach';
 import { StudyService } from '../../services/study.service';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -40,7 +40,7 @@ export class JobsonsModalComponent implements OnInit {
   @ViewChild('acc') accordion: NgbAccordion;
   public model = {};
   private currentStep = 0;
-  public showreaches = "Show Reaches";
+  public showhidetitle = "Show Reaches";
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService){
     // customize default values of modals used by this component tree
@@ -57,6 +57,7 @@ export class JobsonsModalComponent implements OnInit {
     this.discharge = this.StudyService.selectedStudy.Discharge;
     this.TravelTimeService.getJobsonConfigurationObject() // get reach
       .toPromise().then(data => {
+        console.log (data);
         this.reach_reference = data;
         this.populateReachArray()
       }); //get service {description: Initial description}
@@ -105,13 +106,13 @@ export class JobsonsModalComponent implements OnInit {
 
   public showhideReaches($event: NgbPanelChangeEvent): void {
     if ($event.nextState === false) {
-      this.showreaches = 'Show Reaches';
+      this.showhidetitle = 'Show Reaches';
     } else {
-      this.showreaches = 'Hide Reaches';
+      this.showhidetitle = 'Hide Reaches';
     }
   }
 
-  public onClick_removeReach(index): void {   //remove reach by id
+  public removeReach(index): void {   //remove reach by id
     if (index >= 0) {
       this.reachList.splice(index, this.reachList.length);
       this.reachIDs.splice(index, this.reachList.length);
@@ -121,15 +122,18 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
+    console.log (this.StudyService.selectedStudy.Reaches.length);
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length-2; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
+        console.log (newreach);
         newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//.toUSGSvalue()
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
         newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea*1000000)//.toUSGSvalue()
         newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000)//.toUSGSvalue()
         this.reachList.push(newreach);
+        console.log (newreach);
       } else {
       }
     }
