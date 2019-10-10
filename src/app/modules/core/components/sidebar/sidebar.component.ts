@@ -33,9 +33,7 @@ export class SidebarComponent {
   }
   
   public set SelectedProcedureType(v : ProcedureType) {
-    setTimeout(() => {
       this._selectedproceduretype = v;
-    },1000);
   }
   
   public get SelectedStudy() {return this.StudyService.selectedStudy}
@@ -85,9 +83,10 @@ export class SidebarComponent {
 
       this.SetProcedureType(1);
 
-      this.StudyService.WorkFlowControl.subscribe(data => {
-        if(data.hasReaches && this.SelectedProcedureType !== 2) {
+    this.StudyService.WorkFlowControl.subscribe(data => {
+        if (data.hasReaches && this.SelectedProcedureType !== 2 && data.onInit) {
           this.SetProcedureType(2)
+          this.StudyService.SetWorkFlow("onInit", false);
         } else if(data.totResults && this.SelectedProcedureType !== 3) {
           this.SetProcedureType(3)
         }
@@ -127,7 +126,6 @@ export class SidebarComponent {
       this.previousProcedureType = this.SelectedProcedureType;
     }    
     this.SelectedProcedureType = pType;
-
   }
   
   public ToggleSideBar(){
