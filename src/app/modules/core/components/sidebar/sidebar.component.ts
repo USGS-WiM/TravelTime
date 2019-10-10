@@ -56,7 +56,6 @@ export class SidebarComponent {
 
   private messager:ToastrService;
   private toggleButton = true;
-  private previousProcedureType: ProcedureType = 1;
 
   constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
     this.messager = toastr;
@@ -116,15 +115,8 @@ export class SidebarComponent {
   
   public SetProcedureType(pType:ProcedureType){
     if(!this.canUpdateProcedure(pType)) {
-      if(this.StudyService.GetWorkFlow("hasReaches") || this.StudyService.GetWorkFlow("totResults")) {
-        this.SelectedProcedureType = this.previousProcedureType;
-        console.log ("Selected = " + this.SelectedProcedureType + " Previous = " + this.previousProcedureType);
-      }
       return;
-    }
-    if(this.SelectedProcedureType !== 0) {
-      this.previousProcedureType = this.SelectedProcedureType;
-    }    
+    }   
     this.SelectedProcedureType = pType;
   }
   
@@ -151,13 +143,11 @@ export class SidebarComponent {
         switch (pType) {
             case ProcedureType.MAPLAYERS:
               if(this.SelectedProcedureType === 0) {
-                this.SetProcedureType(this.previousProcedureType);
                 return false;
               }
                  return true;
             case ProcedureType.IDENTIFY:
                 if(this.SelectedProcedureType === 1) {
-                  this.SetProcedureType(this.previousProcedureType);
                   return false;
                 }
                 return true;
@@ -169,7 +159,6 @@ export class SidebarComponent {
             case ProcedureType.REPORT:
                 if(!this.StudyService.selectedStudy || !this.StudyService.GetWorkFlow("totResults")) return;
                 if(this.SelectedProcedureType === 3) {
-                  this.SetProcedureType(this.previousProcedureType);
                   return false;
                 }
                 return true;

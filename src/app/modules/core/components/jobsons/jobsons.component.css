@@ -43,3 +43,19 @@
    clear:both;
    margin-bottom:1em;
  }
+
+ .btn-wrapper {
+   margin-left: auto;
+   margin-right: auto;
+   width: auto;
+   display: inline-block;
+ }
+
+ .btn-main {
+   margin-left: 5px;
+   width:140px;
+ }
+ 
+ .center {
+   text-align: center;
+ }

@@ -23,7 +23,6 @@ export class MapComponent extends deepCopy implements OnInit {
 	private StudyService: StudyService;
   private _layersControl;
   private _layers = [];
-  private _workflow: Array<any>;
 
   public get LayersControl() {
     return this._layersControl;
@@ -110,7 +109,7 @@ export class MapComponent extends deepCopy implements OnInit {
       return config;
     }).then(config =>{
       this.NavigationService.getRoute("3",config,true).subscribe(response => {
-        this.StudyService.selectedStudy.Reaches = response;
+        this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
       });
@@ -129,6 +128,19 @@ export class MapComponent extends deepCopy implements OnInit {
     }
   }
 
+  private formatReaches(data) {
+    let streamArray = [];
+    while (streamArray.length != 0) {
+      streamArray.splice(0, 1)
+    }
+    for (var i = 1; i < data['features'].length; i++) {
+      if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
+        var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?
+        streamArray.push(polylinePoints);
+      }
+    }
+    return (streamArray);
+  }
   //#endregion
 
 }

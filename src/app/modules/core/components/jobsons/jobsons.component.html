@@ -15,7 +15,7 @@
           </div>
           <div class="input-with-icon initial-input">
             <label>Discharge (cubic meters per second):</label>
-            <input [(ngModel)]="discharge" (ngModelChange)="setDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control">
+            <input [(ngModel)]="Discharge" (ngModelChange)="setDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control">
             <div class="icon">
               <span class="fa fa-map-marker" (click)="activeModal.dismiss('Cross click')"></span>
             </div>
@@ -23,7 +23,7 @@
           </div><br />
           <div class="initial-input">
             <label>Spill Concentration (kilograms):</label>
-            <input [(ngModel)]="spill_mass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
+            <input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
             <!-- <app-contents [spill_mass]="spill_mass"></app-contents> -->
           </div>
         </div>
@@ -114,8 +114,8 @@
         <div class="center" style="margin-bottom:3em;">
           <div class="btn-wrapper">
             <button *ngIf="mylist !== null" class="btn-red btn-main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear</button>
-            <button [disabled]="!myForm.form.valid" class="btn-blue btn-main" (click)="onClick_uiResult()"><i class="fa fa-check"></i>&nbsp;&nbsp;Continue</button>
-            <button class="btn-gray btn-main" (click)="dialogRef.close()"><i class="fa fa-window-close"></i>&nbsp;&nbsp;Close</button>
+            <button [disabled]="!myForm.form.valid" class="btn-blue btn-main" (click)="getResults()"><span [ngClass]="gettingResults ? 'fa fa-refresh fa-spin' : 'fa fa-check'"></span>{{ gettingResults ? '&nbsp;&nbsp;Calculating' : '&nbsp;&nbsp;Get Results' }}</button>
+            <button class="btn-gray btn-main" (click)="dialogRef.close()"><i class="fa fa-window-close"></i>{{ StudyService.selectedStudy.totResults ? '&nbsp;&nbsp;View Results' : '&nbsp;&nbsp;Close' }}</button>
           </div>
         </div>
       </form>
