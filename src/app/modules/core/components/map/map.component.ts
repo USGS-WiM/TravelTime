@@ -114,16 +114,25 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 10, valueType: "numeric"};
+          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 100, valueType: "numeric"};
         }//end switch
       });//next item
       return config;
     }).then(config =>{
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
-        let streamLayer: L.Layer;
+
         response.features.shift();
-        streamLayer = L.geoJSON(response, this.MapService.markerOptions.Polyline.markerOptions);
-        this.MapService.AddMapLayer({ name: "Flowlines", layer: streamLayer, visible: true });
+        var streamLayer = L.geoJSON(response, this.MapService.markerOptions.Polyline.markerOptions);
+        var layerGroup = new L.LayerGroup([streamLayer]);
+
+        response.features.forEach(i => {
+          if (i.geometry.type === 'Point') { } else {
+            var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode.markerOptions).bindPopup(i.properties.nhdplus_comid);
+            layerGroup.addLayer(marker);
+          }
+        });
+        this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         this.StudyService.SetStep(3);
       });
