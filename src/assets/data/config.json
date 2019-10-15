@@ -59,88 +59,53 @@
     ],
     "markerOptions": {
       "Spill": {
-        "name": "Spill",
-        "type": "marker",
-        "description": "spill location",
-        "markerOptions": {
           "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
           "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
           "iconSize": [ 25, 41 ],
           "iconAnchor": [ 12, 41 ],
           "popupAnchor": [ 1, -34 ],
           "shadowSize": [ 41, 41 ]
-        }
       },
       "Uptake": {
-        "name": "Uptake",
-        "type": "marker",
-        "description": "uptake location",
-        "markerOptions": {
           "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
           "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
           "iconSize": [ 25, 41 ],
           "iconAnchor": [ 12, 41 ],
           "popupAnchor": [ 1, -34 ],
           "shadowSize": [ 41, 41 ]
-        }
       },
       "EndNode": {
-        "name": "End Node",
-        "type": "marker",
-        "description": "terminal node network trace",
-        "markerOptions": {
           "color": "orange",
           "fillColor": "#f03",
           "fillOpacity": 0.5,
           "radius": 100
-        }
       },
       "Reach": {
-        "name": "Reach",
-        "type": "circle",
-        "description": "terminal node of a reach",
-        "markerOptions": {
           "color": "orange",
           "fillColor": "#f03",
           "fillOpacity": 0.5,
           "radius": 100
-        }
       },
       "Polyline": {
-        "name": "Polyline",
-        "type": "polyline",
-        "description": "flow polyline",
-        "markerOptions": {
           "color": "#FF3333",
           "weight": 3,
           "opacity": 0.60
-        }
       },
       "GagesUpstream": {
-        "name": "Gages Upstream",
-        "type": "marker",
-        "description": "Upstream gages from spill",
-        "markerOptions": {
           "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
           "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
           "iconSize": [ 25, 41 ],
           "iconAnchor": [ 12, 41 ],
           "popupAnchor": [ 1, -34 ],
           "shadowSize": [ 41, 41 ]
-        }
       },
       "GagesDownstream": {
-        "name": "Gages Downstream",
-        "type": "marker",
-        "description": "Downstream gages from spill",
-        "markerOptions": {
           "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
           "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
           "iconSize": [ 25, 41 ],
           "iconAnchor": [ 12, 41 ],
           "popupAnchor": [ 1, -34 ],
           "shadowSize": [ 41, 41 ]
-        }
       }
     }
   }

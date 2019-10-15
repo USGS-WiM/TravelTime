@@ -99,7 +99,7 @@ export class MapComponent extends deepCopy implements OnInit {
     this.StudyService.SetStep(2);
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
     let marker = L.marker(latlng, {
-      icon: L.icon(this.MapService.markerOptions.Spill.markerOptions)
+      icon: L.icon(this.MapService.markerOptions.Spill)
     });
     //add marker to map
 		this.MapService.AddMapLayer({name: "POI", layer: marker, visible: true});
@@ -127,15 +127,15 @@ export class MapComponent extends deepCopy implements OnInit {
 
         response.features.forEach(i => {
           if (i.geometry.type === 'Point') {
-            var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream.markerOptions) })
+            var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
             layerGroup.addLayer(gage);
           } else if (typeof i.properties.nhdplus_comid === "undefined") {
           } else {
             var nhdcomid = String(i.properties.nhdplus_comid);
             var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode.markerOptions).bindPopup(nhdcomid);
+            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
             layerGroup.addLayer(marker);
-            layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline.markerOptions));
+            layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
           }
         });
         
