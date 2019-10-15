@@ -7,6 +7,7 @@ import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
 import * as L from 'leaflet';
 import { Study } from '../../models/study';
+import { NumberSymbol } from '@angular/common';
 
 @Component({
   selector: "tot-map",
@@ -122,16 +123,22 @@ export class MapComponent extends deepCopy implements OnInit {
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
 
         response.features.shift();
-        var streamLayer = L.geoJSON(response, this.MapService.markerOptions.Polyline.markerOptions);
-        var layerGroup = new L.LayerGroup([streamLayer]);
+        var layerGroup = new L.LayerGroup([]);//streamLayer
 
         response.features.forEach(i => {
-          if (i.geometry.type === 'Point') { } else {
+          if (i.geometry.type === 'Point') {
+            var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream.markerOptions) })
+            layerGroup.addLayer(gage);
+          } else if (typeof i.properties.nhdplus_comid === "undefined") {
+          } else {
+            var nhdcomid = String(i.properties.nhdplus_comid);
             var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode.markerOptions).bindPopup(i.properties.nhdplus_comid);
+            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode.markerOptions).bindPopup(nhdcomid);
             layerGroup.addLayer(marker);
+            layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline.markerOptions));
           }
         });
+        
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         this.StudyService.SetStep(3);
