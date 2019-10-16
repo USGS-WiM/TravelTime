@@ -154,7 +154,7 @@ export class SidebarComponent {
             case ProcedureType.SCENARIO:
                 //proceed only if Study Selected
                 if(!this.StudyService.GetWorkFlow("hasReaches")) {throw new Error("Can not proceed until study area options are selected.");} 
-                if(this.SelectedProcedureType === 2) { return false; }
+                if(this.SelectedProcedureType === 2) return false;
                 return true;
             case ProcedureType.REPORT:
                 if(!this.StudyService.selectedStudy || !this.StudyService.GetWorkFlow("totResults")) return;

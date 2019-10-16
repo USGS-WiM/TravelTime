@@ -11,7 +11,7 @@
         <div class="form-group" style="width:100%;">
           <div class="initial-input">
             <label>Time of Spill:</label>
-            <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
+            <app-date-time-picker [(ngModel)]="DateTime" name="activeEndDate"></app-date-time-picker>
           </div>
           <div class="input-with-icon initial-input">
             <label>Discharge (cubic meters per second):</label>
@@ -115,7 +115,7 @@
           <div class="btn-wrapper">
             <button *ngIf="mylist !== null" class="btn-red btn-main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear</button>
             <button [disabled]="!myForm.form.valid" class="btn-blue btn-main" (click)="getResults()"><span [ngClass]="gettingResults ? 'fa fa-refresh fa-spin' : 'fa fa-check'"></span>{{ gettingResults ? '&nbsp;&nbsp;Calculating' : '&nbsp;&nbsp;Get Results' }}</button>
-            <button class="btn-gray btn-main" (click)="dialogRef.close()"><i class="fa fa-window-close"></i>{{ StudyService.selectedStudy.totResults ? '&nbsp;&nbsp;View Results' : '&nbsp;&nbsp;Close' }}</button>
+            <button class="btn-gray btn-main" (click)="activeModal.dismiss()"><i class="fa fa-window-close"></i>{{ StudyService.selectedStudy.totResults ? '&nbsp;&nbsp;View Results' : '&nbsp;&nbsp;Close' }}</button>
           </div>
         </div>
       </form>
