@@ -79,11 +79,10 @@ export class JobsonsModalComponent implements OnInit {
       .toPromise().then(data => {
         this.reach_reference = data;
         this.populateReachArray()
-        this.formGroup = new FormGroup({
-          activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
-        }, { updateOn: 'change' });
       }); //get service {description: Initial description}
-
+    this.formGroup = new FormGroup({
+      activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
+    }, { updateOn: 'change' });
 
     console.log (this.reachList);
   }
@@ -195,7 +194,6 @@ export class JobsonsModalComponent implements OnInit {
         newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea*1000000)//.toUSGSvalue()
         newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000)//.toUSGSvalue()
         this.reachList.push(newreach);
-        console.log(this.reachList);
       } else {
       }
     }
