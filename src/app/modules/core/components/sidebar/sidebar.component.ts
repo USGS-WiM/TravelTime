@@ -86,7 +86,7 @@ export class SidebarComponent {
       },
       "on_failure": (o) => {
         // alert user when the secondary geocoding service fails to return a result
-        alert("Sorry, a location could not be found for '" + o.val() + "'");
+        //alert("Sorry, a location could not be found for '" + o.val() + "'");
       }
     })
 
