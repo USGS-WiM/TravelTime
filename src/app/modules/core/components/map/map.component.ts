@@ -23,7 +23,6 @@ export class MapComponent extends deepCopy implements OnInit {
   private _layersControl;
   private _bounds;
   private _layers = [];
-  private _step: Number;
   public fitBounds;
 
   public get LayersControl() {
@@ -68,10 +67,6 @@ export class MapComponent extends deepCopy implements OnInit {
       activelayers.unshift(data.baseLayers.find((l: any) => (l.visible)).layer);
       this._layers = activelayers;
     });
-
-    this.StudyService.Step.subscribe(data => {
-      this._step = data;
-    })
 
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
