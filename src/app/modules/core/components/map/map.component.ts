@@ -7,7 +7,6 @@ import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
 import * as L from 'leaflet';
 import { Study } from '../../models/study';
-import { NumberSymbol } from '@angular/common';
 
 @Component({
   selector: "tot-map",
@@ -20,7 +19,7 @@ export class MapComponent extends deepCopy implements OnInit {
 	private messager: ToastrService;
 	private MapService: MapService;
 	private NavigationService: NavigationService;
-  private StudyService: StudyService;
+	private StudyService: StudyService;
   private _layersControl;
   private _bounds;
   private _layers = [];
@@ -86,8 +85,8 @@ export class MapComponent extends deepCopy implements OnInit {
     this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) {
-    if(this._step === 1) {
+  public onMouseClick(evnt: any) { 
+    if(this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
@@ -96,7 +95,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
-    this.StudyService.SetStep(2);
+    this.StudyService.SetWorkFlow("hasPOI", true);
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
     let marker = L.marker(latlng, {
       icon: L.icon(this.MapService.markerOptions.Spill)
@@ -141,7 +140,6 @@ export class MapComponent extends deepCopy implements OnInit {
         
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
-        this.StudyService.SetStep(3);
       });
     }) //get service {description: Initial description}
     //this.newFunc(); moving layers control to the sidebar

@@ -1,3 +1,124 @@
-<p>
-  jobsons works!
-</p>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+        <div class="col-xs-12">
+            <h4 class="modal-title pull-left">Jobsons Results</h4>  
+            <button class="close pull-right" (click)="activeModal.dismiss('Cross click')">x</button>                
+        </div>  
+    </div>
+    <div class="modal-body">
+      <form form #myForm="ngForm">
+        <div class="form-group" style="width:100%;">
+          <div class="initial-input">
+            <label>Time of Spill:</label>
+            <app-date-time-picker [(ngModel)]="DateTime" name="activeEndDate"></app-date-time-picker>
+          </div>
+          <div class="input-with-icon initial-input">
+            <label>Discharge (cubic meters per second):</label>
+            <input [(ngModel)]="Discharge" (ngModelChange)="setDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control">
+            <div class="icon">
+              <span class="fa fa-map-marker" (click)="activeModal.dismiss('Cross click')"></span>
+            </div>
+            <!-- <app-contents [discharge]="discharge"></app-contents> -->
+          </div><br />
+          <div class="initial-input">
+            <label>Spill Concentration (kilograms):</label>
+            <input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
+            <!-- <app-contents [spill_mass]="spill_mass"></app-contents> -->
+          </div>
+        </div>
+  
+        <!--<button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>-->
+        <!--<br style="clear:both;" />-->
+        <div id="panel-group">
+          <!-- Accordion starts here -->
+          <ngb-accordion #reaches="ngbAccordion" (panelChange)="showhideReaches($event)">
+            <ngb-panel title="{{showhidetitle}}">
+              <ng-template ngbPanelContent>
+                <ngb-accordion #acc="ngbAccordion" (panelChange)="beforeChange($event)" [closeOthers]="true">
+                  <ngb-panel *ngFor="let item of reachList; let i = index" id="{{i}}">
+                    <ng-template ngbPanelHeader>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 title">{{item.name}}</button>
+                        <div>
+                          <button type="button" class="btn btn-sm btn-outline-danger ml-2" (click)="removeReach(i)">Remove</button>
+                        </div>
+                      </div>
+                    </ng-template>
+  
+                    <!--Name input-->
+                    <ng-template ngbPanelContent>
+                      <div *ngFor="let k of item | keyvalue;  let it1 = index; trackBy:customTrackBy">
+                        <div *ngIf="k.key === 'name'">
+                          <!-- don't do anything with input condition-->
+                          <label>{{getLabel(k.key)}}</label>
+                          <div *ngIf="i === currentStep; else disable">
+                            <input [(ngModel)]='item.name' placeholder="Name" name="name"
+                                    type="text" ngControl="value" ngMaxlength="25" autocomplete="off">
+                          </div>
+                          <ng-template #disable>
+                            <input [value]="item.name" placeholder="Name"
+                                    type="text">
+                          </ng-template>
+                        </div>
+                      </div>
+  
+                      <!--Description input-->
+                      <div *ngFor="let k of item | keyvalue; let it2 = index; trackBy:customTrackBy">
+                        <div *ngIf="k.key === 'description'">
+                          <label>{{getLabel(k.key)}}</label>
+                          <div *ngIf="i === currentStep; else disable">
+                            <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}"
+                                    type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
+                          </div>
+                          <ng-template #disable>
+                            <input [value]="k.value" placeholder="Name"
+                                    type="text">
+                          </ng-template>
+                        </div>
+                      </div>
+  
+                      <!--Parameters input-->
+                      <div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy">
+                        <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+                        <div *ngIf="i === currentStep; else disable">
+                          <div *ngIf="pars.required === true">
+                            <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
+                                    type=number ngControl="value" required autocomplete="off">
+                          </div>
+                          <div *ngIf="pars.required === false">
+                            <input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                                    type=number ngControl="value" autocomplete="off">
+                          </div>
+                        </div>
+                        <ng-template #disable>
+                          <div *ngIf="pars.required === true">
+                            <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                                    type=number ngControl="value" required autocomplete="off">
+                          </div>
+                          <div *ngIf="pars.required === false">
+                            <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                                    type=number ngControl="value" autocomplete="off">
+                          </div>
+                        </ng-template>
+                      </div>
+                    </ng-template>
+                  </ngb-panel>
+                </ngb-accordion>
+              </ng-template>
+            </ngb-panel>
+          </ngb-accordion>
+  
+        </div>
+        <br />
+        <div class="center" style="margin-bottom:3em;">
+          <div class="btn-wrapper">
+            <button *ngIf="mylist !== null" class="btn-red btn-main" (click)="onClick_clear()"><i class="fa fa-trash"></i>&nbsp;&nbsp;Clear</button>
+            <button [disabled]="!myForm.form.valid" class="btn-blue btn-main" (click)="getResults()"><span [ngClass]="gettingResults ? 'fa fa-refresh fa-spin' : 'fa fa-check'"></span>{{ gettingResults ? '&nbsp;&nbsp;Calculating' : '&nbsp;&nbsp;Get Results' }}</button>
+            <button class="btn-gray btn-main" (click)="activeModal.dismiss()"><i class="fa fa-window-close"></i>{{ StudyService.selectedStudy.totResults ? '&nbsp;&nbsp;View Results' : '&nbsp;&nbsp;Close' }}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

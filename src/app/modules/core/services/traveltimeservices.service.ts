@@ -4,6 +4,7 @@ import { Observable, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType'
+import { reach } from '../models/reach';
 
 @Injectable()
 export class TravelTimeService {
@@ -14,19 +15,19 @@ private messager:ToastrService;
    }
 
   public getJobsonConfigurationObject(): Observable <any>{
-    let url = this.baseURL+"/jobsons";
+    let url = this.baseURL+"jobsons";
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getJobsonConfigurationObject',[])));
   }
-  public ExecuteJobson(massconcentration:string, starttime, reaches): Observable <any>{
-    let url = this.baseURL+"/jobsons?initialmassconcentration="+massconcentration+"&starttime="+starttime
+  public ExecuteJobson(massconcentration:Number, starttime, reaches): Observable <any>{
+    let url = this.baseURL+"jobsons?initialmassconcentration="+massconcentration+"&starttime="+starttime;
 
     // I'm thinking this should occure before here (in a validation method or something)
     
-    // //deep copy of the list before call, and check for inputs
-    // for (var i= 0; i<mylist.length; i++){
-    //   var myreach = <reach>mylist[i];
-    //   reaches[i] = myreach;
+    let reachdictionary = {};
+    for (let index = 0; index < reaches.length; index++) {
+      reachdictionary[index] = reaches[index];      
+    }
 
     //   //Maps the object and removes parameters that were not used
     //   reaches[i]['parameters'].map((parObj, iter) => {
@@ -37,7 +38,7 @@ private messager:ToastrService;
     //   })
     // }
 
-    return this.http.post(url, {reaches})
+    return this.http.post<reach>(url, {reaches: reachdictionary})
         .pipe(catchError(this.handleError('Execute',[])));
   }
   
