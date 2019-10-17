@@ -79,11 +79,10 @@ export class JobsonsModalComponent implements OnInit {
       .toPromise().then(data => {
         this.reach_reference = data;
         this.populateReachArray()
+        this.formGroup = new FormGroup({
+          activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
+        }, { updateOn: 'change' });
       }); //get service {description: Initial description}
-    this.formGroup = new FormGroup({
-      activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
-    }, { updateOn: 'change' });
-
     console.log (this.reachList);
   }
 

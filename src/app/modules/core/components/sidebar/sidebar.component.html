@@ -83,12 +83,12 @@
         <div id="searchBox"></div>
 
         <button class="btn-link fullwidth" (click)="showSearchHelp = !showSearchHelp">
-          <span [hidden]="!showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
-          <span [hidden]="showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
+          <span [hidden]="showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
+          <span [hidden]="!showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
         </button>
 
         <!-- supported search strings -->
-        <div class="banner info banner-no-icon" [hidden]="showSearchHelp" style="margin-top: 0px;">
+        <div class="banner info banner-no-icon" [hidden]="!showSearchHelp" style="margin-top: 0px;">
           <div class="banner-body">
             <h5>Supported search strings:</h5>
             <p>
