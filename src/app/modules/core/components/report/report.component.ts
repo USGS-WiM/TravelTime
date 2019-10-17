@@ -1,13 +1,11 @@
 // import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-// import { GetTimeoftravelService } from '../services/get-timeoftravel.service';
+// import { TravelTimeService } from '../../services/traveltimeservices.service';
 // import { MatDialogRef, MAT_DIALOG_DATA, MatProgressSpinnerModule } from '@angular/material';
-// import { reach } from '../reach';
+// import { reach } from '../../models/reach';
 // import { MatDialog } from '@angular/material';
-// import { PrintService } from '../services/print.service';
 // import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-// import { MapService } from '../services/map.service';
+// import { MapService } from '../../services/map.services';
 // import { NgbPanelChangeEvent, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
-// import { ErrorDialogService } from '../services/error-dialog.service';
 // import '../shared/extension-method';
 // //import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'; Object rearrangement
 

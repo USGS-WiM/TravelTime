@@ -7,25 +7,26 @@ import * as messageType from '../../../shared/messageType'
 
 @Injectable()
 export class NavigationService {
-public get baseURL() {return "https://test.streamstats.usgs.gov/NavigationServices";}
-private messanger:ToastrService;
+  public get baseURL() {return "https://test.streamstats.usgs.gov/NavigationServices";}
+  private messager:ToastrService;
   constructor(private http: HttpClient,toastr: ToastrService) {
-    this.messanger = toastr;
-   }
+    this.messager = toastr;
+  }
 
   public getAvailableNavigationResources(): Observable <any>{
-    let url = this.baseURL+"/NavigationServices/navigation";
+    let url = this.baseURL+"/navigation";
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getAvailableNavigationResources',[])));
   }
+
   public getNavigationResource(identifier:string): Observable <any>{
-    let url = this.baseURL+"/NavigationServices/navigation/"+identifier;
+    let url = this.baseURL+"/navigation/"+identifier;
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getNavigationResource',[])));
   }
   
   public getRoute(identifier:string, configuredResource, includeproperties:boolean = true): Observable <any>{
-    let url = this.baseURL+"/NavigationServices/navigation/"+identifier+"/route?properties="+includeproperties;
+    let url = this.baseURL+"/navigation/"+identifier+"/route?properties="+includeproperties;
     return this.http.post<any>(url, configuredResource)
         .pipe(catchError(this.handleError('getRoute',[])));
   }
@@ -42,7 +43,7 @@ private messanger:ToastrService;
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
 
-      this.messanger.show(msg,title,options, mType)
+      this.messager.show(msg,title,options, mType)
     }
     catch (e) {
     }

@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
-import { StudyAreaService } from '../../services/studyArea.service';
+import { Component, Output, AfterViewInit } from '@angular/core';
+import { StudyService } from '../../services/study.service';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import {MapService} from '../../services/map.services';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
+import { Study } from '../../models/study';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
+import { JobsonsModalComponent } from '../jobsons/jobsons.component';
 import { CommonModule } from "@angular/common"
 // import {MatExpansionModule} from '@angular/material/expansion';
 
@@ -17,93 +21,75 @@ import { CommonModule } from "@angular/common"
 
 
 export class SidebarComponent {
-  private MapService:MapService;
-  private StudyAreaService:StudyAreaService;
+  private MapService: MapService;
+  private StudyService: StudyService;
   public AvailableScenarioTypes
   public dialog: MatDialog;
-  public Collapsed:boolean;
-  public SelectedProcedureType: ProcedureType;
-
-  ishiddenMapLayer = true;
-  ishiddenBasemaps = true;
-  ishiddenOverlay = false;
-  ishiddenIdentifyArea = false;
-
-  public SelectScenario = false;
-  public ReportIsActive = false;
-
-
-  public get SelectedStudyArea() {return ""}
-  public get SelectedScenarioType() { return "" }
-
-  public get ZoomLevel():number{
-    if (this.MapService.CurrentZoomLevel > 9) {
-      //this.barButtonOptions_downstream.disabled = false;
-      this.toggleButton = false;
-      //this.SelectScenario = true;
-      //this.ReportIsActive = true;
-    } else {
-      //this.SelectScenario = false;
-      //this.ReportIsActive = false;
+  public Collapsed: boolean;
+  
+  private _selectedproceduretype : ProcedureType;
+  public get SelectedProcedureType() : ProcedureType {
+    return this._selectedproceduretype;
+  }
+  
+  public set SelectedProcedureType(v : ProcedureType) {
+      this._selectedproceduretype = v;
+  }
+  
+  public get SelectedStudy() {return this.StudyService.selectedStudy}
+  public get SelectedScenarioType() {
+    return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
+  }
+  public get ZoomLevel(): number{
+    if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
+      this.StudyService.SetWorkFlow("reachedZoom", true);
     }
     return this.MapService.CurrentZoomLevel;
   }
 
-  private messanger:ToastrService;
-  private toggleButton = true;
+  public ishiddenBasemaps = true;
+  public ishiddenOverlay = false;
 
-  public barButtonOptions_downstream: MatProgressButtonOptions;
-  public barButtonOptions_upstream: MatProgressButtonOptions;
   public baselayers = [];
   public overlays = [];
   public model;
 
-  constructor(mapservice:MapService, toastr: ToastrService) {
-    this.messanger = toastr;
+  private messager:ToastrService;
+  private toggleButton = true;
+
+  constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
+    this.messager = toastr;
     this.MapService = mapservice;
+    this.StudyService = studyservice;
+    config.backdrop = 'static';
+    config.keyboard = false;
    }
 
   ngOnInit() {
+      this.MapService.LayersControl.subscribe(data => {
+        if (this.overlays.length > 0 || this.baselayers.length > 0) {
+          this.overlays = []
+          this.baselayers = []
+        }
+        this.overlays = data.overlays;
+        this.baselayers = data.baseLayers;
+      })
 
-     this.barButtonOptions_downstream = {
-      active: false,
-      text: 'Spill Response',
-      spinnerSize: 18,
-      raised: true,
-      stroked: false,
-      buttonColor: 'primary',
-      spinnerColor: 'accent',
-      fullWidth: true,
-      disabled: this.ZoomLevel < 10,
-      mode: 'indeterminate'
-    }
+      this.model = {
+        baselayers: {},
+        overlays: {}
+      };
 
-    this.barButtonOptions_upstream = {
-      active: false,
-      text: 'Spill Planning',
-      spinnerSize: 18,
-      raised: true,
-      stroked: false,
-      buttonColor: 'primary',
-      spinnerColor: 'accent',
-      fullWidth: true,
-      disabled: true,
-      mode: 'indeterminate'
-    }
+      this.SetProcedureType(1);
 
-    this.MapService.LayersControl.subscribe(data => {
-      if (this.overlays.length > 0 || this.baselayers.length > 0) {
-        this.overlays = []
-        this.baselayers = []
-      }
-      this.overlays = data.overlays;
-      this.baselayers = data.baseLayers;
-    })
-
-    this.model = {
-      baselayers: {},
-      overlays: {}
-    };
+    this.StudyService.WorkFlowControl.subscribe(data => {
+        if (data.hasReaches && this.SelectedProcedureType !== 2 && data.onInit) {
+          this.SetProcedureType(2)
+          this.StudyService.SetWorkFlow("onInit", false);
+        } else if(data.totResults && this.SelectedProcedureType !== 3) {
+          this.SetProcedureType(3)
+        }
+      });
   }
 
   public SetBaselayer(LayerName: string) {
@@ -115,19 +101,22 @@ export class SidebarComponent {
   }
 
   //#region "Methods"
+  public GetClass(pType: ProcedureType) {
+    if(this.SelectedProcedureType === pType) {
+      return "list-group-item-active";
+    } else return "list-group-item";
+  }
+
   public SetScenarioType(ScenarioType:string) {
-    if (ScenarioType = "Response") {
-      this.StudyAreaService.selectedStudyArea.methodType = ScenarioType;
-      //this.MapService.changeCursor("crosshair-cursor-enabled");
-      this.barButtonOptions_downstream.buttonColor = 'accent';
-    } else if (ScenarioType = "Spill Planning") {
-      
-    }
-    this.SelectScenario = true; //activate scenario
+    this.StudyService.SetWorkFlow("hasMethod", true); //map click will result in POI selection
+    this.StudyService.selectedStudy = new Study(ScenarioType);
+    this.MapService.isClickable = true;
   }
   
   public SetProcedureType(pType:ProcedureType){
-    if(!this.canUpdateProcedure(pType)) return;
+    if(!this.canUpdateProcedure(pType)) {
+      return;
+    }   
     this.SelectedProcedureType = pType;
   }
   
@@ -136,27 +125,13 @@ export class SidebarComponent {
             else this.Collapsed = true; 
   }
 
-  /* public openDialog() {
-    let dialog = this.dialog.open(ModalComponent, {
-      width: '40%',
-      height: '90%',
-      disableClose: true
-    });
-    dialog.afterClosed().subscribe(result => {
-      this.mapReady = true;
-    });
-  } */
-
   public toggleLayer(newVal: string) {
-    /* this.MapService.chosenBaseLayer = newVal;
-    this.MapService.map.removeLayer(this.MapService.baseMaps['OpenStreetMap']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Topo']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Terrain']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Satellite']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Gray']);
-    this.MapService.map.removeLayer(this.MapService.baseMaps['Nautical']);
-    this.MapService.map.addLayer(this.MapService.baseMaps[newVal]); */
-}
+  }
+
+  public open(){
+    const modalRef = this.modalService.open(JobsonsModalComponent);
+    modalRef.componentInstance.title = 'Jobsons';
+  }
   //#endregion
 
   //#region "Private methods"
@@ -167,19 +142,24 @@ export class SidebarComponent {
     try {               
         switch (pType) {
             case ProcedureType.MAPLAYERS:
+              if(this.SelectedProcedureType === 0) {
+                return false;
+              }
                  return true;
             case ProcedureType.IDENTIFY:
-                return true;
-            case ProcedureType.SCENARIO:
-                if (!this.SelectScenario) {
-                  throw new Error("Can not proceed until study area options are selected.");
+                if(this.SelectedProcedureType === 1) {
+                  return false;
                 }
                 return true;
+            case ProcedureType.SCENARIO:
+                //proceed only if Study Selected
+                if(!this.StudyService.GetWorkFlow("hasReaches")) {throw new Error("Can not proceed until study area options are selected.");} 
+                if(this.SelectedProcedureType === 2) return false;
+                return true;
             case ProcedureType.REPORT:
-                if(!this.SelectScenario) {
-                  throw new Error("Can not proceed until study area options are selected.")
-                } else if (!this.ReportIsActive) {
-                   throw new Error("Can not proceed until Scenario options are selected.")
+                if(!this.StudyService.selectedStudy || !this.StudyService.GetWorkFlow("totResults")) return;
+                if(this.SelectedProcedureType === 3) {
+                  return false;
                 }
                 return true;
             default:
@@ -195,8 +175,8 @@ export class SidebarComponent {
     try {
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
-
-      this.messanger.show(msg,title,options, mType)
+      setTimeout(() =>
+        this.messager.show(msg,title,options, mType))
     }
     catch (e) {
     }

@@ -29,6 +29,7 @@
 .map-layer{
 	display: flex;
 }
+
 .map-layer-check{
 	display: flex;
 	width: 24px;
@@ -39,18 +40,21 @@
 	justify-content: center;
 	box-sizing: border-box;
 }
+
 .map-layer-check input[type=checkbox]{
 	appearance: checkbox;
 	-webkit-appearance: checkbox;
 	position: relative;
 	top: -3px;
 }
+
 .map-layer-check input[type=radio]{
 	appearance: radio;
 	-webkit-appearance: radio;
 	position: relative;
 	top: -3px;
 }
+
 .map-layer-check input,
 .map-layer-check input:focus,
 .map-layer-check input:active,
@@ -59,16 +63,51 @@
 	outline: none !important;
 	margin: 0 !important;
 }
+
 .map-layer-label{
 	flex-grow: 3;
 }
 
-.pointerCursor {
+#methods button {
+	width: 100%;
+	background-color: #0F8AFF;
+  color: #FFF;
+  margin: 1px 0px 1px 0px; 
   cursor: pointer;
 }
 
+#methods button:focus {
+	width: 100%;
+	background-color: #F46652;
+	color: #FFF;
+}
+
+#methods button:disabled {
+	width: 100%;
+	background-color: #CCCCCC;
+  color: #666666;
+  cursor: default;
+}
+
+#equations button {
+	width: 100%;
+	background-color: #0F8AFF;
+  color: #FFF;
+  margin: 1em 0px 1px 0px; 
+  cursor: pointer;
+}
+
+.button-wrapper {
+  width:90%;
+  margin:0em 1em 1em 1em;
+}
+
+/* .pointerCursor {
+  cursor: pointer;
+} */
+
 .list-group-item {
-  background-color: #E2E2E2;
+  background-color: #bbbbbb88;
   text-align: right;
   text-transform: uppercase;
   font-size: 10pt;
@@ -76,8 +115,9 @@
   padding: 18px;
   letter-spacing: 2px;
   font-weight: 400;
-  color: #c0c0c0 !important;
+  color: #FFF !important;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .list-group-item i {
@@ -110,6 +150,7 @@
   font-weight: 400;
   color: #fff !important;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .list-group-item-active i {
@@ -121,10 +162,36 @@
   top: 3px;
 }
 
-  .list-group-item-active:hover {
-    text-decoration: none !important;
-    background-color: #0080d6;
-  }
+.list-group-item-active:hover {
+  text-decoration: none !important;
+  background-color: #0080d6;
+}
+
+/* .list-group-item-unavailable {
+  background-color: #E2E2E2;
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 18px;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #c0c0c079 !important;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.list-group-item-unavailable i {
+  padding-left: 5px;
+  display: inline-block;
+  text-align: right;
+  width: 50px;
+}
+
+.list-group-item-unavailable:hover {
+  color: #8c8c8c !important;
+  transition: 0.2s;
+} */
 
 .exploration-tools {
   background-color: #99b3e6;

@@ -4,6 +4,7 @@ import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MapLayer } from '../models/maplayer';
 export interface layerControl {
   baseLayers: Array<any>;
   overlays: Array<any>
@@ -17,6 +18,8 @@ export class MapService {
   private _layersControl: layerControl = { baseLayers: [], overlays: [] };
   public CurrentZoomLevel;
   public CurrentLayer: String;
+  public isClickable: boolean = false;
+  public Cursor: String;
 
   constructor(http: HttpClient) {
 
@@ -49,16 +52,10 @@ export class MapService {
     this.CurrentZoomLevel = this.Options.zoom;
   }
 
-  public AddLayer(point: any) {
-    //this is just and example of how to add layers
-    var newlayer = {
-      name: 'Big Circle',
-      layer: L.circle(point, { radius: 5000 }),
-      visible: true
-    };
-    var ml = this._layersControl.overlays.find((l: any) => (l.name === newlayer.name));
-    if (ml != null) ml.layer = newlayer.layer;
-    else this._layersControl.overlays.push(newlayer);
+  public AddMapLayer(mlayer: MapLayer) {
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === mlayer.name));
+    if (ml != null) ml.layer = mlayer.layer;
+    else this._layersControl.overlays.push(mlayer);
 
     //Notify subscribers
     this.LayersControl.next(this._layersControl);
@@ -78,7 +75,6 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-
   public SetBaselayer(layername: string) {
 
     if (this.CurrentLayer != layername) {
@@ -95,6 +91,10 @@ export class MapService {
     }
     this.CurrentLayer = ml.name
     this.LayersControl.next(this._layersControl);
+  }
+
+  public setCursor(cursortype: string) {
+    //this.cursor = cursortype;
   }
 
   private loadLayer(ml): L.Layer {

@@ -7,13 +7,18 @@ import {NgbTabsetModule,NgbModule,NgbActiveModal} from '@ng-bootstrap/ng-bootstr
 import {ToastrModule, ToastNoAnimation, ToastNoAnimationModule} from 'ngx-toastr';
 import { CoreModule } from './modules/core/core.module';
 import { HttpClientModule } from '@angular/common/http';
+import { JobsonsModalComponent } from './modules/core/components/jobsons/jobsons.component';
+import { DateTimePickerComponent } from './modules/core/components/date-time-picker/date-time-picker.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     AboutModalComponent,
-    NavbarComponent
-    
+    JobsonsModalComponent,
+    NavbarComponent,
+    DateTimePickerComponent    
   ],
   imports: [
     BrowserModule,
@@ -27,10 +32,12 @@ import { HttpClientModule } from '@angular/common/http';
       preventDuplicates: true,
       countDuplicates:true
     }),
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    FormsModule, 
+    ReactiveFormsModule
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent]
 })
 export class AppModule {}
