@@ -109,7 +109,7 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 100, valueType: "numeric"};
+          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 10, valueType: "numeric"};
         }//end switch
       });//next item
       return config;
@@ -132,7 +132,7 @@ export class MapComponent extends deepCopy implements OnInit {
             layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
           }
         });
-        
+        this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
@@ -150,6 +150,20 @@ export class MapComponent extends deepCopy implements OnInit {
     }
     catch (e) {
     }
+  }
+
+  private formatReaches(data) {
+    let streamArray = [];
+    while (streamArray.length != 0) {
+      streamArray.splice(0, 1)
+    }
+    for (var i = 1; i < data['features'].length; i++) {
+      if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
+        var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?
+        streamArray.push(polylinePoints);
+      }
+    }
+    return (streamArray);
   }
 
   //#endregion
