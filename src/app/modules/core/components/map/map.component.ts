@@ -118,7 +118,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
-
+        console.log(response);
         response.features.forEach(i => {
           if (i.geometry.type === 'Point') {
             var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
@@ -137,8 +137,7 @@ export class MapComponent extends deepCopy implements OnInit {
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
       });
-    }) //get service {description: Initial description}
-    //this.newFunc(); moving layers control to the sidebar
+    })
   }
   
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
@@ -154,10 +153,8 @@ export class MapComponent extends deepCopy implements OnInit {
 
   private formatReaches(data) {
     let streamArray = [];
-    while (streamArray.length != 0) {
-      streamArray.splice(0, 1)
-    }
-    for (var i = 1; i < data['features'].length; i++) {
+    console.log(data['features'].length);
+    for (var i = 0; i < data['features'].length; i++) {
       if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
         var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?
         streamArray.push(polylinePoints);

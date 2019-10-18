@@ -3,7 +3,6 @@ import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { MapLayer } from '../models/maplayer';
 
 

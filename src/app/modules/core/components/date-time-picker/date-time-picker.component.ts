@@ -136,17 +136,14 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     this.datetime.month = date.month;
     this.datetime.day = date.day;
 
-    this.dp.navigateTo({ year: this.datetime.year, month: this.datetime.month });
+    if (this.dp) { this.dp.navigateTo({ year: this.datetime.year, month: this.datetime.month }) };
+
     if (this.datetime.day < 10) {
       var day = '0' + this.datetime.day;
     } else {
       var day = String (this.datetime.day);
     }
     this.StudyService.selectedStudy.SpillDate =  (this.datetime.year + '-' + this.datetime.month + '-' + day)
-    // = this.nwisdate;
-    //this._MapService.spill_date = this._MapService.spill_date.toString();
-    //to filter out hour and minute when the spill occured
-    // + '-' + this.datetime.hour + '-' + this.datetime.minute
     this.setDateStringModel();
   }
 

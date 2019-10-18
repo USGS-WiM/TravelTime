@@ -79,11 +79,10 @@ export class JobsonsModalComponent implements OnInit {
       .toPromise().then(data => {
         this.reach_reference = data;
         this.populateReachArray()
-        this.formGroup = new FormGroup({
-          activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
-        }, { updateOn: 'change' });
       }); //get service {description: Initial description}
-    console.log (this.reachList);
+    this.formGroup = new FormGroup({
+      activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
+    }, { updateOn: 'change' });
   }
 
    //#region "Methods"
@@ -170,7 +169,7 @@ export class JobsonsModalComponent implements OnInit {
     }
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), this.reachList)
       .toPromise().then(data => {
-        console.log (data);
+        console.log(data);
         this.StudyService.selectedStudy.Results = data;
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
@@ -185,7 +184,7 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
-    for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length-2; i++) { //remove last traversing lines
+    for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
@@ -197,7 +196,7 @@ export class JobsonsModalComponent implements OnInit {
       } else {
       }
     }
-    console.log (this.reachList);
+    console.log(this.reachList);
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

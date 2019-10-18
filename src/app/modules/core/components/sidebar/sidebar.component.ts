@@ -1,4 +1,4 @@
-import { Component, Output, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { StudyService } from '../../services/study.service';
 import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
@@ -6,12 +6,10 @@ import * as messageType from "../../../../shared/messageType";
 import {MapService} from '../../services/map.services';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
-import { CommonModule } from "@angular/common"
-import { Observable, of, Subject} from 'rxjs';
-// import {MatExpansionModule} from '@angular/material/expansion';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 declare let search_api: any;
 
 @Component({
@@ -53,7 +51,6 @@ export class SidebarComponent {
 
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
-
   public baselayers = [];
   public overlays = [];
   public model;
@@ -86,7 +83,7 @@ export class SidebarComponent {
         ]);
       },
       "on_failure": (o) => {
-        // alert user when the secondary geocoding service fails to return a result
+        //Should we alert the user ? this can be used if (for example length of the array is not sufficient for search)
         //alert("Sorry, a location could not be found for '" + o.val() + "'");
       }
     })
@@ -96,7 +93,7 @@ export class SidebarComponent {
       overlays: {}
     };
 
-      this.SetProcedureType(1);
+    this.SetProcedureType(1);
 
     this.StudyService.WorkFlowControl.subscribe(data => {
         if (data.hasReaches && this.SelectedProcedureType !== 2 && data.onInit) {
@@ -139,9 +136,6 @@ export class SidebarComponent {
   public ToggleSideBar(){
     if (this.Collapsed) this.Collapsed = false;
             else this.Collapsed = true; 
-  }
-
-  public toggleLayer(newVal: string) {
   }
 
   public open(){
