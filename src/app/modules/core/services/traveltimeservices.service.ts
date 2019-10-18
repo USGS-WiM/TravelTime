@@ -29,15 +29,6 @@ private messager:ToastrService;
       reachdictionary[index] = reaches[index];      
     }
 
-    //   //Maps the object and removes parameters that were not used
-    //   reaches[i]['parameters'].map((parObj, iter) => {
-    //     if (parObj['required'] == false && parObj['value'] == undefined)
-    //     {
-    //       reaches[i]['parameters'].splice(iter, 1);
-    //     }
-    //   })
-    // }
-
     return this.http.post<reach>(url, {reaches: reachdictionary})
         .pipe(catchError(this.handleError('Execute',[])));
   }

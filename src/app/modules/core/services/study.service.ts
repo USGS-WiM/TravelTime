@@ -13,7 +13,7 @@ export interface workflowControl {
   }
  
 @Injectable()
-export class StudyService {
+export class StudyService  {
     public selectedStudy: Study;
     private messager: ToastrService;
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();

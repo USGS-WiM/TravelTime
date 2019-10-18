@@ -44,7 +44,8 @@
     "toastr": "^2.1.4",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.1",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "usgs-search-api": "github:usgs/search_api"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",

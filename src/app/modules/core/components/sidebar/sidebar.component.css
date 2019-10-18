@@ -210,3 +210,67 @@
 .sidebar-item [type=checkbox]:checked + label, [type=checkbox]:not(:checked) + label, [type=radio]:checked + label, [type=radio]:not(:checked) + label {
   padding-left: 25px !important;
 }
+
+
+/*
+    Search Box
+    Search Box
+    Search Box
+*/
+#searchWrapper {
+  box-sizing: border-box;
+  padding: 5px 0px 0 0px;
+}
+
+#searchWrapper .btn-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+
+.search-api-container {
+  display: flex;
+  width: 100% !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.search-api-container span:nth-child(2) {
+  display: block;
+  flex-grow: 3 !important;
+  width: 100% !important;
+}
+
+:host /deep/ .search-api-container, .search-api-container * {
+  box-sizing: border-box;
+  padding: 5px;
+  margin: 10px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+  width: 90% !important;
+}
+
+.search-api-container input {
+  display: block;
+  width: auto !important;
+  margin: 0 !important;
+}
+
+.search-api-icon {
+  background-color: transparent !important;
+  border-right: none !important;
+  padding-top: 6px;
+  padding-right: 10px !important;
+  width: 40px;
+}
+.search-api-spinner {
+  padding: 2px 0 0 0 !important;
+  text-align: right;
+  margin-left: 10px;
+  background-image: url("/assets/images/spinner_16x16.gif");
+}
+
+.search-api-spinner-hidden {
+  background-image: none;
+}

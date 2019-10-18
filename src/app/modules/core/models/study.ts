@@ -1,4 +1,5 @@
 import { LatLng } from 'leaflet'
+import { Observable, of, Subject } from 'rxjs';
 
 export class Study {
     public LocationOfInterest: LatLng;

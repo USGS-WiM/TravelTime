@@ -12,8 +12,8 @@
         <div class="panel-heading pointerCursor" (click)="ishiddenBasemaps= !ishiddenBasemaps">
           <h5 class="panel-title">Base maps </h5>
         </div>
-      </div>      
-      
+      </div>
+
       <div class="panel-body" [hidden]="ishiddenBasemaps">
         <!-- if selected procedure type 1 or 2 set expanded-->
         <label *ngFor="let item of baselayers" class="map-layer">
@@ -30,7 +30,6 @@
         </label>
       </div>
       <!--END BASE MAPS-->
-
       <!--OVERLAYS-->
       <div class="panel panel-primary">
         <div class="panel-heading pointerCursor">
@@ -54,6 +53,7 @@
         </label>
       </div>
       <!--END OVERLAYS-->
+      
     </div>
     <!--END MAP LAYERS PANEL-->
 
@@ -75,6 +75,39 @@
       <div *ngIf="ZoomLevel > 9">
         <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
       </div>
+
+      <hr style="margin: 20px 0;" />
+
+      <div id="searchWrapper">
+
+        <div id="searchBox"></div>
+
+        <button class="btn-link fullwidth" (click)="showSearchHelp = !showSearchHelp">
+          <span [hidden]="showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
+          <span [hidden]="!showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
+        </button>
+
+        <!-- supported search strings -->
+        <div class="banner info banner-no-icon" [hidden]="!showSearchHelp" style="margin-top: 0px;">
+          <div class="banner-body">
+            <h5>Supported search strings:</h5>
+            <p>
+              <br />
+              GNIS locations<br />
+              USGS Sites<br />
+              Zip Codes<br />
+              Area Codes<br />
+              States<br />
+              Lat/Long ('43.9,-72.1' or '43.9N,72.1W')<br />
+              Street Address<br />
+              Hydrologic Unit<br />
+              <br />
+              Search provided by<br /><a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank" style="text-decoration:underline !important; padding: 0 !important;">USGS Search JavaScript API</a>
+            </p>
+          </div>
+        </div><!-- End supported search strings -->
+      </div>
+
       <div id="methods" class="button-wrapper">
         <button id="response" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetScenarioType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
         <button id="planning" [disabled]="true" (click)="SetScenarioType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>

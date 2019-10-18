@@ -19,17 +19,13 @@
             <div class="icon">
               <span class="fa fa-map-marker" (click)="activeModal.dismiss('Cross click')"></span>
             </div>
-            <!-- <app-contents [discharge]="discharge"></app-contents> -->
           </div><br />
           <div class="initial-input">
             <label>Spill Concentration (kilograms):</label>
             <input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
-            <!-- <app-contents [spill_mass]="spill_mass"></app-contents> -->
           </div>
         </div>
   
-        <!--<button class="btn-blue main" (click)="onClick_addReach()"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Reach</button>-->
-        <!--<br style="clear:both;" />-->
         <div id="panel-group">
           <!-- Accordion starts here -->
           <ngb-accordion #reaches="ngbAccordion" (panelChange)="showhideReaches($event)">

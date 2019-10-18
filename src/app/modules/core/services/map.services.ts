@@ -3,8 +3,9 @@ import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { MapLayer } from '../models/maplayer';
+
+
 export interface layerControl {
   baseLayers: Array<any>;
   overlays: Array<any>
@@ -20,6 +21,10 @@ export class MapService {
   public CurrentLayer: String;
   public isClickable: boolean = false;
   public Cursor: String;
+  public markerOptions;
+  public fitBounds: Subject<any> = new Subject<any>();
+  public _bound;
+
 
   constructor(http: HttpClient) {
 
@@ -47,14 +52,20 @@ export class MapService {
           this._layersControl.overlays.push(ml);
       });
       this.LayersControl.next(this._layersControl);
+
+      this.markerOptions = conf.mapLayers.markerOptions;
+
     });
 
     this.CurrentZoomLevel = this.Options.zoom;
   }
 
   public AddMapLayer(mlayer: MapLayer) {
+
     var ml = this._layersControl.overlays.find((l: any) => (l.name === mlayer.name));
+
     if (ml != null) ml.layer = mlayer.layer;
+
     else this._layersControl.overlays.push(mlayer);
 
     //Notify subscribers
@@ -93,8 +104,13 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-  public setCursor(cursortype: string) {
+  public setCursor() {
     //this.cursor = cursortype;
+  }
+
+  public setBounds(loc) {
+    this._bound = loc;
+    this.fitBounds.next(this._bound);
   }
 
   private loadLayer(ml): L.Layer {
