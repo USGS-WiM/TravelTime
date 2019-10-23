@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
+import { reach } from '../models/reach';
 export interface workflowControl {
     reachedZoom: boolean;
     hasMethod: boolean;
@@ -17,11 +18,11 @@ export class StudyService  {
     public selectedStudy: Study;
     private messager: ToastrService;
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
-    private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true};
+    private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
+
 
     constructor(toastr: ToastrService) {
         this.messager = toastr;
-
         this.WorkFlowControl.next(this._workflow);
     }
 
@@ -36,5 +37,5 @@ export class StudyService  {
 
     public GetWorkFlow(step) {
         return this._workflow[step];
-    }
+    }  
 }

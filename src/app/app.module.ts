@@ -18,7 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AboutModalComponent,
     JobsonsModalComponent,
     NavbarComponent,
-    DateTimePickerComponent    
+    DateTimePickerComponent
   ],
   imports: [
     BrowserModule,

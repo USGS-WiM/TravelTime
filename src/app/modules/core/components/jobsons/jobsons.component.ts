@@ -169,8 +169,8 @@ export class JobsonsModalComponent implements OnInit {
     }
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), this.reachList)
       .toPromise().then(data => {
-        console.log(data);
         this.StudyService.selectedStudy.Results = data;
+        //this.StudyService.results = data;
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
       })
@@ -196,7 +196,6 @@ export class JobsonsModalComponent implements OnInit {
       } else {
       }
     }
-    console.log(this.reachList);
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

@@ -153,7 +153,6 @@ export class MapComponent extends deepCopy implements OnInit {
 
   private formatReaches(data) {
     let streamArray = [];
-    console.log(data['features'].length);
     for (var i = 0; i < data['features'].length; i++) {
       if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
         var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?

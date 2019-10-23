@@ -4,6 +4,7 @@ export class reach {
     public name: string
     public parameters:Array<any>
     public reaches: {} //initial input from the service
+    public result: {}
 
     constructor(arg:reach) {
         arg = arg.reaches[0]
