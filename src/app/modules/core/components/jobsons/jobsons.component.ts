@@ -7,6 +7,7 @@ import { reach } from '../../models/reach';
 import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
+import '../../../../shared/extensions/number.toUSGSValue'
 //import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const DateTimeValidator = (fc: FormControl) => {
@@ -188,10 +189,10 @@ export class JobsonsModalComponent implements OnInit {
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
-        newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//.toUSGSvalue()
+        newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
-        newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea*1000000)//.toUSGSvalue()
-        newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000)//.toUSGSvalue()
+        newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)
+        newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue()
         this.reachList.push(newreach);
       } else {
       }

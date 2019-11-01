@@ -7,6 +7,7 @@ import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
 import * as L from 'leaflet';
 import { Study } from '../../models/study';
+import * as turf from '@turf/turf';
 
 @Component({
   selector: "tot-map",
@@ -115,10 +116,9 @@ export class MapComponent extends deepCopy implements OnInit {
       return config;
     }).then(config =>{
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
-
+        console.log(response);
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
-        console.log(response);
         response.features.forEach(i => {
           if (i.geometry.type === 'Point') {
             var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
@@ -130,6 +130,7 @@ export class MapComponent extends deepCopy implements OnInit {
             var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
             layerGroup.addLayer(marker);
             layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+            i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length;
           }
         });
         this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
