@@ -18,7 +18,6 @@
 	padding: 12px 12px;
 	margin-left: 0;
 	margin-right: 0;
-	margin-bottom: 1em;
 	font-family: 'Roboto';
 	font-size: 13px;
 	background-color: #DDDDDD;
@@ -167,32 +166,6 @@
   background-color: #0080d6;
 }
 
-/* .list-group-item-unavailable {
-  background-color: #E2E2E2;
-  text-align: right;
-  text-transform: uppercase;
-  font-size: 10pt;
-  box-sizing: border-box;
-  padding: 18px;
-  letter-spacing: 2px;
-  font-weight: 400;
-  color: #c0c0c079 !important;
-  transition: 0.2s;
-  cursor: pointer;
-}
-
-.list-group-item-unavailable i {
-  padding-left: 5px;
-  display: inline-block;
-  text-align: right;
-  width: 50px;
-}
-
-.list-group-item-unavailable:hover {
-  color: #8c8c8c !important;
-  transition: 0.2s;
-} */
-
 .exploration-tools {
   background-color: #99b3e6;
   color: white !important;
@@ -219,13 +192,20 @@
 */
 #searchWrapper {
   box-sizing: border-box;
-  padding: 5px 0px 0 0px;
+  padding: 0px 0px 0 0px;
 }
 
 #searchWrapper .btn-link {
   display: block;
   width: 100%;
   text-align: center;
+  position: relative;
+}
+
+.top {
+  position:absolute;
+  top:-10px;
+  left:150px;
 }
 
 
@@ -273,4 +253,15 @@
 
 .search-api-spinner-hidden {
   background-image: none;
+}
+
+.startover {
+  background-color:red;
+  color:white;
+  width: 100%;
+  cursor: pointer;
+}
+
+.startover_wrapper {
+  margin: 4px 2px 4px 2px;
 }

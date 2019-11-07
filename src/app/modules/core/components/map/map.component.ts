@@ -109,7 +109,7 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 10, valueType: "numeric"};
+          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 100, valueType: "numeric"};
         }//end switch
       });//next item
       return config;
@@ -151,7 +151,7 @@ export class MapComponent extends deepCopy implements OnInit {
     }
   }
 
-  private formatReaches(data) {
+  private formatReaches(data): any {
     let streamArray = [];
     console.log(data['features'].length);
     for (var i = 0; i < data['features'].length; i++) {
@@ -160,7 +160,10 @@ export class MapComponent extends deepCopy implements OnInit {
         streamArray.push(polylinePoints);
       }
     }
-    return (streamArray);
+    streamArray.map((reach) => {
+      reach.properties.show = false;
+    })
+    return(streamArray);
   }
 
   //#endregion

@@ -37,4 +37,11 @@ export class StudyService  {
     public GetWorkFlow(step) {
         return this._workflow[step];
     }
+
+    public ResetWorkFlow() {
+        for(var i in this._workflow) {
+           this._workflow[i] = false;
+        }
+        this.WorkFlowControl.next(this._workflow);
+    }
 }

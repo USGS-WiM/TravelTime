@@ -142,6 +142,10 @@ export class SidebarComponent {
     const modalRef = this.modalService.open(JobsonsModalComponent);
     modalRef.componentInstance.title = 'Jobsons';
   }
+
+  public reset() {
+    window.location.reload();
+  }
   //#endregion
 
   //#region "Private methods"

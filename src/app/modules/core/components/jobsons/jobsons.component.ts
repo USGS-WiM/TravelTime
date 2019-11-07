@@ -59,9 +59,12 @@ export class JobsonsModalComponent implements OnInit {
   @ViewChild('reaches') accordion1: NgbAccordion;
   @ViewChild('acc') accordion: NgbAccordion;
   public model = {};
-  private currentStep = 0;
   public showhidetitle = "Show Reaches";
+  public showReaches: boolean = true;
   public gettingResults: boolean = false;
+  public showDetails: Array<any>;
+  private lastIndex = null;
+  private currentIndex = null;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
@@ -91,6 +94,7 @@ export class JobsonsModalComponent implements OnInit {
       this.StudyService.selectedStudy.Discharge = this._discharge;
       this.reachList.forEach((item) => {
         item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
+        this.StudyService.SetWorkFlow("hasDischarge", true);
       })
     }
   }
@@ -115,16 +119,15 @@ export class JobsonsModalComponent implements OnInit {
     return index;
   }
 
-  public beforeChange($event: NgbPanelChangeEvent): void {
-    this.currentStep = +($event.panelId);
-  };
-
-  public showhideReaches($event: NgbPanelChangeEvent): void {
-    if ($event.nextState === false) {
+  public showhideReaches(): void {
+    if (this.showReaches === false) {
       this.showhidetitle = 'Show Reaches';
+      this.showReaches = true;
     } else {
       this.showhidetitle = 'Hide Reaches';
+      this.showReaches = false;
     }
+    console.log(this.reachList);
   }
 
   public removeReach(index): void {   //remove reach by id
@@ -167,12 +170,17 @@ export class JobsonsModalComponent implements OnInit {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
-    this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), this.reachList)
+    let postReachList = [];
+    this.reachList.forEach(reach => {
+      reach.parameters.splice(6,1);
+      postReachList.push(reach);
+    })
+    this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
       .toPromise().then(data => {
-        console.log(data);
         this.StudyService.selectedStudy.Results = data;
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
+        this.activeModal.dismiss();
       })
       .catch((err) => {
         console.log("error: ", err.message);
@@ -180,20 +188,41 @@ export class JobsonsModalComponent implements OnInit {
         this.gettingResults = false;
       });
   }
+
+  public openCloseItem(index): void {
+    this.currentIndex = index;    
+    if(this.reachList[this.currentIndex].parameters.show) {
+      this.reachList[this.currentIndex].parameters.show = false;
+    } else {
+      if(this.lastIndex !== null) {
+        this.reachList[this.lastIndex].parameters.show = false;
+      }
+      this.reachList[this.currentIndex].parameters.show = true;
+    }
+    this.lastIndex = this.currentIndex;
+  }
+
+  public identify(index, item): number {
+    return item.id;
+ }
   //#endregion
 
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
-    for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
-      if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
-        let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-        newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
-        newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//.toUSGSvalue()
-        newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
-        newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea*1000000)//.toUSGSvalue()
-        newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000)//.toUSGSvalue()
-        this.reachList.push(newreach);
-      } else {
+    if(this.StudyService.selectedStudy.Reaches) {
+      for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
+        if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
+          let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
+          newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
+          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//.toUSGSvalue()
+          newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea*1000000)//.toUSGSvalue()
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000)//.toUSGSvalue()
+          newreach.parameters.push({show: this.StudyService.selectedStudy.Reaches[i].properties.show})
+          this.reachList.push(newreach);
+        } else {
+        }
+
       }
     }
     console.log(this.reachList);
