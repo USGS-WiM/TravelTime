@@ -111,6 +111,9 @@
       <div id="methods" class="button-wrapper">
         <button id="response" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetScenarioType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
         <button id="planning" [disabled]="true" (click)="SetScenarioType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
+        <div id="equations" class="button-wrapper">
+          <button (click)="open_config()">Configure</button>
+        </div>
       </div>
     </div>   
     <!--END IDENTIFY AREA PANEL--> 
@@ -127,6 +130,7 @@
       <div id="equations" class="button-wrapper">
         <button (click)="open()">Jobsons</button>
       </div>
+
     </div>
     <!--END SCENARIOS PANEL-->
 

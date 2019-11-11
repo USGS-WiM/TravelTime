@@ -1,0 +1,6 @@
+.map-layer-check input[type=radio] {
+  appearance: radio;
+  -webkit-appearance: radio;
+  position: relative;
+  top: -3px;
+}

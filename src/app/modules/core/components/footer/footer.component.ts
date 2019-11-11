@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StudyService } from '../../services/study.service';
+import { MapService } from '../../services/map.services';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
 
@@ -9,6 +10,7 @@ import { reach } from '../../models/reach';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit {
+  private MapService: MapService;
   private StudyService: StudyService;
   private messanger: ToastrService;
   selectedReach: reach;
@@ -30,18 +32,24 @@ export class FooterComponent implements OnInit {
     }
   }
 
-  constructor(toastr: ToastrService, studyservice: StudyService) {
+  constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService) {
     this.messanger = toastr;
     this.StudyService = studyservice;
+    this.MapService = mapservice;
     this.setClickedRow = function (index) {
       this.selectedRow = index; //memorise selected row
       this.selectedReach = this.reaches[index] //selected reach
-      if (this.reaches[index].ischeked) {
+      if (this.reaches[index].ischeked) { //change 
         this.reaches[index].ischeked = false;
       } else {
         this.reaches[index]['ischeked'] = true;
       }
+      //console.log(this.selectedReach);
     }
+  }
+
+  public highlightFeature() {
+    this.MapService.HighlightFeature('Flowlines', 'something');
   }
 
   ngOnInit() {

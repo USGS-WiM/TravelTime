@@ -74,6 +74,35 @@ export class MapComponent extends deepCopy implements OnInit {
     })
   }
 
+
+  public onMapReady(map: L.Map) {
+    //adjusted example provided from http://www.coffeegnome.net/control-button-leaflet/
+    var ourCustomControl =
+      L.Control.extend({
+        options: {
+          position: 'topleft'
+          //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
+        },
+        onAdd: function (map) {
+          var container = L.DomUtil.create('div', 'leaflet-bar-custom');
+          //container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
+          container.textContent = "Exploration Tool";
+          container.style.color = "black";
+          container.style.backgroundSize = "30px 30px";
+          container.style.width = '100px';
+          container.style.height = '30px';
+
+          container.onclick = function () {
+            console.log('buttonClicked'); //this can call for a modal from the service
+          }
+
+          return container;
+        },
+      });
+
+    map.addControl(new ourCustomControl());
+  }
+
   public onZoomChange(zoom: number) {
     setTimeout(() =>
       this.MapService.CurrentZoomLevel = zoom);
@@ -88,6 +117,8 @@ export class MapComponent extends deepCopy implements OnInit {
       this.sm("Layer added to map!!!");
     }
   }
+
+
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
@@ -110,15 +141,16 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 10, valueType: "numeric"};
+          case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" }; //bind the distance to the service
         }//end switch
       });//next item
       return config;
     }).then(config =>{
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
-        console.log(response);
+
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
+        var r = 0;
         response.features.forEach(i => {
           if (i.geometry.type === 'Point') {
             var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
@@ -130,7 +162,10 @@ export class MapComponent extends deepCopy implements OnInit {
             var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
             layerGroup.addLayer(marker);
             layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-            i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length;
+            r += 1;
+            if (r === 1) {
+              i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
+            }
           }
         });
         this.StudyService.selectedStudy.Reaches = this.formatReaches(response);

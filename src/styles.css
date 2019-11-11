@@ -5230,3 +5230,13 @@ ul {
 .leaflet-control-layers {
   visibility: hidden !important;
 }
+
+.leaflet-bar-custom:hover {
+  background-color: white;
+  text-decoration: underline;
+}
+
+.leaflet-bar-custom {
+  background-color: rgba(224,227,230,.6);
+}
+

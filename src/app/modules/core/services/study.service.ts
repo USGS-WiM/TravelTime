@@ -15,7 +15,8 @@ export interface workflowControl {
  
 @Injectable()
 export class StudyService  {
-    public selectedStudy: Study;
+  public selectedStudy: Study;
+  public distance: Number;
     private messager: ToastrService;
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
@@ -23,7 +24,8 @@ export class StudyService  {
 
     constructor(toastr: ToastrService) {
         this.messager = toastr;
-        this.WorkFlowControl.next(this._workflow);
+      this.WorkFlowControl.next(this._workflow);
+      this.distance = 10;
     }
 
     public get checkingDelineatedPoint(): boolean {

@@ -72,6 +72,17 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
+  public HighlightFeature(layername: string, featureid: string) {
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
+    if (!ml) return;
+    if (!ml.visible) { ml.visible = true; }
+    var mylayer = Object.values(ml.layer._layers);
+    mylayer.forEach(i => {
+      console.log(i);
+    })
+    //console.log(mylayer);
+  }
+
   public SetOverlay (layername: string) {
 
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))

@@ -9,6 +9,7 @@ import { Study } from '../../models/study';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ApptoolsComponent } from '../apptools/apptools.component';
 
 declare let search_api: any;
 
@@ -141,6 +142,11 @@ export class SidebarComponent {
   public open(){
     const modalRef = this.modalService.open(JobsonsModalComponent);
     modalRef.componentInstance.title = 'Jobsons';
+  }
+
+  public open_config() {
+    const modalConfig = this.modalService.open(ApptoolsComponent);
+    modalConfig.componentInstance.title = 'Configure';
   }
   //#endregion
 

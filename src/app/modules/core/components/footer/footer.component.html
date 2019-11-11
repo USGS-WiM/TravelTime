@@ -24,7 +24,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i)" [class.active]="i == selectedRow">
+          <tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature()" [class.active]="i == selectedRow">
             <td>{{reach.name}}</td>
 
             <ng-container *ngFor="let pars of reach.parameters">
@@ -79,7 +79,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i)" [class.active]="i == selectedRow">
+          <tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature()" [class.active]="i == selectedRow">
             <td>{{reach.name}}</td>
 
             <ng-container *ngFor="let pars of reach.parameters">

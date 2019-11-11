@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { JobsonsModalComponent } from './modules/core/components/jobsons/jobsons.component';
 import { DateTimePickerComponent } from './modules/core/components/date-time-picker/date-time-picker.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ApptoolsComponent } from './modules/core/components/apptools/apptools.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AboutModalComponent,
     JobsonsModalComponent,
     NavbarComponent,
-    DateTimePickerComponent
+    DateTimePickerComponent,
+    ApptoolsComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
 })
 export class AppModule {}

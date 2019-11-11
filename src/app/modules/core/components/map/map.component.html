@@ -4,4 +4,5 @@
      [leafletLayersControl]="LayersControl"
      (leafletZoomChange)="onZoomChange($event)"
      (leafletClick)="onMouseClick($event)"
-     [leafletFitBounds]="fitBounds"></div>
+     [leafletFitBounds]="fitBounds"
+     (leafletMapReady)="onMapReady($event)"></div>
