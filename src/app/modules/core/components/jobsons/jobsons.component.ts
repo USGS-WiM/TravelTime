@@ -167,23 +167,27 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public getResults() {
-    this.gettingResults = true;
-    if (this.dateModel instanceof Date) {
+    if (this.reachList.length > 0) {
+      this.gettingResults = true;
+      if (this.dateModel instanceof Date) {
+      } else {
+        this.dateModel = new Date(this.dateModel);
+      }
+      this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), this.reachList)
+        .toPromise().then(data => {
+          this.StudyService.selectedStudy.Results = data;
+          //this.StudyService.results = data;
+          this.StudyService.SetWorkFlow("totResults", true);
+          this.gettingResults = false;
+        })
+        .catch((err) => {
+          console.log("error: ", err.message);
+          this.sm(err, "Time of Travel Services")
+          this.gettingResults = false;
+        });
     } else {
-      this.dateModel = new Date(this.dateModel);
+      setTimeout(() => { this.getResults() }, 500);
     }
-    this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), this.reachList)
-      .toPromise().then(data => {
-        this.StudyService.selectedStudy.Results = data;
-        //this.StudyService.results = data;
-        this.StudyService.SetWorkFlow("totResults", true);
-        this.gettingResults = false;
-      })
-      .catch((err) => {
-        console.log("error: ", err.message);
-        this.sm(err, "Time of Travel Services")
-        this.gettingResults = false;
-      });
   }
   //#endregion
 
