@@ -87,12 +87,16 @@ export class JobsonsModalComponent implements OnInit {
   }
 
    //#region "Methods"
-   public setDischarge(event): void {
-    if (this.reachList) {
+  public setDischarge(): void {
+    if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
       this.reachList.forEach((item) => {
         item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
       })
+    } else {
+      setTimeout(() => {
+        this.setDischarge()
+      }, 500)
     }
   }
 

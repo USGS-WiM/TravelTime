@@ -15,7 +15,7 @@
           </div>
           <div class="input-with-icon initial-input">
             <label>Discharge (cubic meters per second):</label>
-            <input [(ngModel)]="Discharge" (ngModelChange)="setDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control">
+            <input [(ngModel)]="Discharge" (ngModelChange)="setDischarge()" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control">
             <div class="icon">
               <span class="fa fa-map-marker" (click)="activeModal.dismiss('Cross click')"></span>
             </div>
