@@ -72,15 +72,27 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-  public HighlightFeature(layername: string, featureid: string) {
+  public HighlightFeature(layername: string, indx: number) {
+    
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
     if (!ml) return;
     if (!ml.visible) { ml.visible = true; }
-    var mylayer = Object.values(ml.layer._layers);
-    mylayer.forEach(i => {
-      console.log(i);
-    })
-    //console.log(mylayer);
+
+    var j = 0;//counts only lines;
+    ml.layer.eachLayer(o => {
+      if (o.options.radius > 50) {
+      } else if (j === indx) {
+        o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
+        j += 1;
+      } else {
+        o.setStyle({
+          "color": "#FF3333",
+          "weight": 3,
+          "opacity": 0.60
+        })
+        j += 1; 
+      }
+    });
   }
 
   public SetOverlay (layername: string) {

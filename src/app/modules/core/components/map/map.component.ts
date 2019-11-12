@@ -146,9 +146,10 @@ export class MapComponent extends deepCopy implements OnInit {
         }//end switch
       });//next item
       return config;
-    }).then(config =>{
+    }).then(config => {
+      console.log(config);
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
-
+        console.log(response);
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
         var r = 0;

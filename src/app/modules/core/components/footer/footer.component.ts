@@ -48,8 +48,8 @@ export class FooterComponent implements OnInit {
     }
   }
 
-  public highlightFeature() {
-    this.MapService.HighlightFeature('Flowlines', 'something');
+  public highlightFeature(indx) {
+    this.MapService.HighlightFeature('Flowlines', indx);
   }
 
   ngOnInit() {
