@@ -3,6 +3,9 @@ import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
 import { reach } from '../models/reach';
+
+export interface UnitsArray { name: string, isactive: boolean };
+
 export interface workflowControl {
     reachedZoom: boolean;
     hasMethod: boolean;
@@ -15,17 +18,21 @@ export interface workflowControl {
  
 @Injectable()
 export class StudyService  {
-  public selectedStudy: Study;
-  public distance: Number;
+    public selectedStudy: Study;
+    public distance: number;
     private messager: ToastrService;
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
+    public units: UnitsArray[] = [
+      { name: "metric", isactive: true },
+      { name: "imperial", isactive: false }
+    ];
 
     constructor(toastr: ToastrService) {
         this.messager = toastr;
-      this.WorkFlowControl.next(this._workflow);
-      this.distance = 10;
+        this.WorkFlowControl.next(this._workflow);
+        this.distance = 10;
     }
 
     public get checkingDelineatedPoint(): boolean {

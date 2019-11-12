@@ -128,7 +128,8 @@ export class MapComponent extends deepCopy implements OnInit {
       icon: L.icon(this.MapService.markerOptions.Spill)
     });
     //add marker to map
-		this.MapService.AddMapLayer({name: "POI", layer: marker, visible: true});
+    this.MapService.AddMapLayer({ name: "POI", layer: marker, visible: true });
+
     this.NavigationService.getNavigationResource("3")
     .toPromise().then(data => {
       let config: Array<any> = data['configuration'];

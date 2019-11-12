@@ -12,15 +12,15 @@
         <div class="form-group" style="width:100%;">
           <div class="initial-input">
             <label>Select distance</label>
-            <input [(ngModel)]="this.StudyService.distance" placeholder="value" name="Select distance"
+            <input [(ngModel)]="this.distance" placeholder="value" name="Select distance"
                    type=number ngControl="distance" required autocomplete="off">
 
           </div>
           <div class="map-layer-check">
             <label>Select units</label> <!--add ngif condition-->
-            <div *ngFor="let item of units; let i=index" class="map-layer">
-                <input type="radio" name="Units" (change)="logthis(units[i]);" [checked] ="units[1]">
-                {{item}}
+            <div *ngFor="let item of units; let i = index" class="map-layer">
+                <input type="radio" name="Units" (change)="setUnits(i);" [checked] ="item.isactive">
+                {{item.name}}
             </div>
           </div>
             </div>
