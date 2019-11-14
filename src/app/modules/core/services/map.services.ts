@@ -78,9 +78,14 @@ export class MapService {
     if (!ml) return;
     if (!ml.visible) { ml.visible = true; }
 
+    console.log(ml);
+
     var j = 0;//counts only lines;
     ml.layer.eachLayer(o => {
-      if (o.options.radius > 50) {
+      //what if there also a stream gage ?
+
+      if (typeof (o._layers) === "undefined") {
+      } else if (o.options.radius > 50) {
       } else if (j === indx) {
         o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
         j += 1;
