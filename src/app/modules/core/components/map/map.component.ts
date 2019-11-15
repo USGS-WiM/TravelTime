@@ -85,6 +85,7 @@ export class MapComponent extends deepCopy implements OnInit {
       (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
+      this.MapService.setCursor("");
     }
   }
 

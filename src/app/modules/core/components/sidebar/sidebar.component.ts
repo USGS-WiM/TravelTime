@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { StudyService } from '../../services/study.service';
-import { MatProgressButtonOptions } from 'mat-progress-buttons';
+//import { MatProgressButtonOptions } from 'mat-progress-buttons';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import {MapService} from '../../services/map.services';
@@ -8,7 +8,8 @@ import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ReportModalComponent } from '../report/report.component';
 
 declare let search_api: any;
 
@@ -24,21 +25,37 @@ export class SidebarComponent {
 
   private MapService: MapService;
   private StudyService: StudyService;
-  public AvailableScenarioTypes
+  public AvailableScenarioTypes = [{ name: "Jobson's", selected: true }];
   public dialog: MatDialog;
   public Collapsed: boolean;
   
-  private _selectedproceduretype : ProcedureType;
+  private _canContinue: boolean = false;
+  public get CanContinue() : boolean {
+    if(this.StudyService.ReportOptions) {
+      for(let element of this.StudyService.ReportOptions) {
+        if(element.checked) { 
+          this._canContinue = true;
+          return this._canContinue;
+          break;
+        }
+      }
+    }
+    this._canContinue = false;
+    return this._canContinue;
+  }
+
+  public SelectedScenario: String = "Jobsons";
+
+  private _selectedproceduretype : ProcedureType; 
   public get SelectedProcedureType() : ProcedureType {
     return this._selectedproceduretype;
-  }
-  
+  }  
   public set SelectedProcedureType(v : ProcedureType) {
       this._selectedproceduretype = v;
   }
   
   public get SelectedStudy() {return this.StudyService.selectedStudy}
-  public get SelectedScenarioType() {
+  public get SelectedMethodType() {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : "")
   }
 
@@ -96,13 +113,20 @@ export class SidebarComponent {
     this.SetProcedureType(1);
 
     this.StudyService.WorkFlowControl.subscribe(data => {
-        if (data.hasReaches && this.SelectedProcedureType !== 2 && data.onInit) {
-          this.SetProcedureType(2)
-          this.StudyService.SetWorkFlow("onInit", false);
-        } else if(data.totResults && this.SelectedProcedureType !== 3) {
-          this.SetProcedureType(3)
-        }
-      });
+      if (data.hasReaches && this.SelectedProcedureType === 1 && data.onInit) {
+        this.SetProcedureType(2)
+        this.StudyService.SetWorkFlow("onInit", false);
+      } else if(data.totResults && this.SelectedProcedureType < 3) {
+        this.SetProcedureType(3)
+        console.log(this.SelectedProcedureType);
+      }
+    });
+
+    this.StudyService.ReportOptions = [
+      { name: "Table of values", checked: false }, 
+      { name: "Map of study area", checked: false }, 
+      { name: "Graph of timeline", checked: false }
+    ]
   }
 
   public SetBaselayer(LayerName: string) {
@@ -120,27 +144,67 @@ export class SidebarComponent {
     } else return "list-group-item";
   }
 
-  public SetScenarioType(ScenarioType:string) {
+  public SetMethodType(MethodType:string) {
     this.StudyService.SetWorkFlow("hasMethod", true); //map click will result in POI selection
-    this.StudyService.selectedStudy = new Study(ScenarioType);
+    this.StudyService.selectedStudy = new Study(MethodType);
     this.MapService.isClickable = true;
+    this.MapService.setCursor("crosshair");
   }
   
-  public SetProcedureType(pType:ProcedureType){
+  public SetProcedureType(pType:ProcedureType) {
     if(!this.canUpdateProcedure(pType)) {
       return;
     }   
     this.SelectedProcedureType = pType;
   }
   
-  public ToggleSideBar(){
+  public ToggleSideBar() {
     if (this.Collapsed) this.Collapsed = false;
             else this.Collapsed = true; 
   }
 
-  public open(){
-    const modalRef = this.modalService.open(JobsonsModalComponent);
-    modalRef.componentInstance.title = 'Jobsons';
+  public ToggleScenario(i) {
+    if(this.AvailableScenarioTypes && this.AvailableScenarioTypes[i]) {
+      // if(this.AvailableScenarioTypes[i].selected === false) {
+      //   this.AvailableScenarioTypes[i].selected = true;
+        this.SelectedScenario = i.name;
+      // } else {
+      // this.AvailableScenarioTypes[i].selected = false;
+      // }
+    }
+  }
+
+  public ToggleReportOptions(i) {
+    if(this.StudyService.ReportOptions && this.StudyService.ReportOptions[i]) {
+      if(!this.StudyService.ReportOptions[i].checked) {
+        this.StudyService.ReportOptions[i].checked = true;
+      } else {
+        this.StudyService.ReportOptions[i].checked = false;
+      }
+    }
+  }
+
+  public HideReportOptions() {
+    if(this.StudyService.ReportOptions) {
+      this.StudyService.ReportOptions.forEach(item => {
+        if(item.checked === true) return false;
+      })
+      return true;
+    }
+  }
+
+  public open(scenario) {
+    switch(scenario) {
+      case 'Jobsons':
+        const jobsonsModalRef = this.modalService.open(JobsonsModalComponent);
+        jobsonsModalRef.componentInstance.title = 'Jobsons';
+        return;
+      case 'Report':
+        const reportModalRef = this.modalService.open(ReportModalComponent);
+        reportModalRef.componentInstance.title = 'Report';
+        return;
+      default: return;
+    }
   }
 
   public reset() {

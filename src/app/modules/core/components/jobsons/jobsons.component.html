@@ -29,7 +29,7 @@
                    
             <!--SHOW/HIDE REACHES PANEL-->
             <div (click)="showhideReaches()">
-              <a ngClass="list-group-item-active">{{showhidetitle}}</a>
+              <a ngClass="list-heading">{{showhidetitle}}<span class="floatright" [ngClass]="showhidetitle === 'Hide Reaches' ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
             </div>        
           <div id="block2">
             <div *ngFor="let item of reachList; let i = index; trackBy:identify" id="{{i}}" [hidden]="showReaches">

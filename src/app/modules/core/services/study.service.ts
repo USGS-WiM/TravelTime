@@ -15,9 +15,18 @@ export interface workflowControl {
 @Injectable()
 export class StudyService  {
     public selectedStudy: Study;
-    private messager: ToastrService;
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
-    private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true};
+    public ReportOptions: Array<any>;
+    private messager: ToastrService;
+    private _workflow: workflowControl = { 
+        reachedZoom: false, 
+        hasMethod: false, 
+        hasPOI: false, 
+        hasReaches: false, 
+        hasDischarge: false, 
+        totResults: false, 
+        onInit: true
+    };
 
     constructor(toastr: ToastrService) {
         this.messager = toastr;
