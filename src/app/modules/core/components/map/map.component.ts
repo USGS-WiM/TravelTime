@@ -8,11 +8,36 @@ import { NavigationService } from '../../services/navigationservices.service';
 import * as L from 'leaflet';
 import { Study } from '../../models/study';
 import * as turf from '@turf/turf';
+import * as $ from 'jquery';
+import { Subscription } from 'rxjs';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  // ...
+} from '@angular/animations';
 
 @Component({
   selector: "tot-map",
   templateUrl: "./map.component.html",
   styleUrls: ['./map.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        overflow: 'hidden',
+        height: '70vh'
+      })),
+      state('out', style({
+        height: '100vh'
+      })),
+      transition('in => out', animate('400ms ease-in-out')),
+      transition('out => in', animate('400ms ease-in-out'))
+    ])
+  ]
 })
 
 export class MapComponent extends deepCopy implements OnInit {
@@ -24,7 +49,10 @@ export class MapComponent extends deepCopy implements OnInit {
   private _layersControl;
   private _bounds;
   private _layers = [];
+  private subscription: Subscription;
   public fitBounds;
+
+  scaleMap: string;
 
   public get LayersControl() {
     return this._layersControl;
@@ -47,7 +75,18 @@ export class MapComponent extends deepCopy implements OnInit {
     this.StudyService = studyservice;
   }
 
+
   ngOnInit() {
+
+    this.scaleMap = 'out';
+
+    this.StudyService.noticeAction(false);
+
+    this.subscription = this.StudyService.return$.subscribe(isWorking => {
+      if (isWorking) {
+        this.scaleMap = 'in';
+      }
+    });
 
     //method to subscribe to the layers
     this.MapService.LayersControl.subscribe(data => {
@@ -60,6 +99,7 @@ export class MapComponent extends deepCopy implements OnInit {
       }
     });
 
+
     //method to filter out layers by visibility
     this.MapService.LayersControl.subscribe(data => {
       var activelayers = data.overlays
@@ -71,8 +111,10 @@ export class MapComponent extends deepCopy implements OnInit {
 
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
+
     })
   }
+
 
 
   public onMapReady(map: L.Map) {
@@ -104,15 +146,22 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   public onZoomChange(zoom: number) {
-    setTimeout(() =>
-      this.MapService.CurrentZoomLevel = zoom);
+    setTimeout(() => {
+      this.MapService.CurrentZoomLevel = zoom;
+      this.MapService.onZoomChangeCircle('Flowlines', zoom);
+    })
+    //set circle radius to a dif;
+
     //this.MapService.SetOverlay("Big Circle")
     this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) { 
-    if(this.StudyService.GetWorkFlow("hasMethod")) {
-      (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
+  public onMouseClick(evnt: any) {
+    if (this.StudyService.GetWorkFlow("hasPOI")) {
+      console.log ("true, thereis a marker, skippind addition of another marker")
+    }
+    else if (this.StudyService.GetWorkFlow("hasMethod")) {
+      (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
     }
@@ -147,9 +196,7 @@ export class MapComponent extends deepCopy implements OnInit {
       });//next item
       return config;
     }).then(config => {
-      console.log(config);
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
-        console.log(response);
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
         var r = 0;
@@ -161,7 +208,7 @@ export class MapComponent extends deepCopy implements OnInit {
           } else {
             var nhdcomid = String(i.properties.nhdplus_comid);
             var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
+            var marker = L.circleMarker([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
             layerGroup.addLayer(marker);
             layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
             r += 1;

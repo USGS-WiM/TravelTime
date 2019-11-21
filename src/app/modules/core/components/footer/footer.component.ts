@@ -3,6 +3,7 @@ import { StudyService } from '../../services/study.service';
 import { MapService } from '../../services/map.services';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'tot-footer',
@@ -19,6 +20,9 @@ export class FooterComponent implements OnInit {
   selectedRow: Number;
 
   public get showResult$(): boolean {
+    if (this.StudyService.GetWorkFlow('totResults')) {
+      $(".footer").css("height", "30vh");
+    }
     return (this.StudyService.GetWorkFlow('totResults'));
   }
 
@@ -49,9 +53,10 @@ export class FooterComponent implements OnInit {
   }
 
   public highlightFeature(indx) {
-    this.MapService.HighlightFeature('Flowlines', indx);
+    this.MapService.HighlightFeature('Flowlines', indx+1);
   }
 
   ngOnInit() {
   }
+
 }

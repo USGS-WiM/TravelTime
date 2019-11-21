@@ -201,13 +201,13 @@ export class JobsonsModalComponent implements OnInit {
 
         this.StudyService.units.forEach(j => {
           if (j.isactive && j.name === "metric") {
-            newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()
-            newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)
-            newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue()
+            newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()//cms
+            newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square meters
+            newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue() //meters
           } else {
-            newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue()
-            newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea)
-            newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length).toUSGSvalue()
+            newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue() //cfs
+            newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
+            newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
           }
         })
 

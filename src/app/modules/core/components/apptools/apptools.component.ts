@@ -35,6 +35,7 @@ export class ApptoolsComponent implements OnInit {
 
   public setUnits(indx) {
     var j = 0;
+    this.distance = this.StudyService.distance;
     var initial_dist = this.distance; //initial distance no reference
     this.units.forEach(i => {
       if (indx === j) {

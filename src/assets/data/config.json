@@ -78,7 +78,7 @@
           "color": "orange",
           "fillColor": "#f03",
           "fillOpacity": 0.5,
-          "radius": 100
+          "radius": 20
       },
       "Reach": {
           "color": "orange",

@@ -21,6 +21,8 @@ export class StudyService  {
     public selectedStudy: Study;
     public distance: number;
     private messager: ToastrService;
+    private ResultReturn = new Subject<boolean>();
+    return$ = this.ResultReturn.asObservable();
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
@@ -44,7 +46,14 @@ export class StudyService  {
         this.WorkFlowControl.next(this._workflow);
     }
 
+    public noticeAction(action: boolean) {
+      this.ResultReturn.next(action);
+    }
+
     public GetWorkFlow(step) {
+      if (this._workflow["totResults"]) {
+        this.noticeAction(true);
+      }
         return this._workflow[step];
     }  
 }

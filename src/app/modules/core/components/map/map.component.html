@@ -1,8 +1,9 @@
-<div leaflet
+<div class="map"
+     [@slideInOut]="scaleMap"
+     leaflet
      [leafletOptions]="MapOptions"
      [leafletLayers]="Layers"
      [leafletLayersControl]="LayersControl"
      (leafletZoomChange)="onZoomChange($event)"
-     (leafletClick)="onMouseClick($event)"
      [leafletFitBounds]="fitBounds"
-     (leafletMapReady)="onMapReady($event)"></div>
+     (leafletClick)="onMouseClick($event)"></div>

@@ -72,13 +72,37 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
+
+  public onZoomChangeCircle(layername: string, zoom: number) {
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
+    if (!ml) return;
+    if (!ml.visible) { ml.visible = true; }
+    ml.layer.eachLayer(o => {
+      if (o.options.radius > 10) {
+        if (zoom > 13) {
+          //o.setStyle({
+            //radius: 20, color: "green",
+            //fillColor: "red",
+            //fillOpacity: 1
+          //})
+        } else {
+          //o.setStyle({
+            //radius: 50, color: "yellow",
+            //fillColor: "orange",
+            //fillOpacity: 0.5
+          //})
+        }
+      } else {
+      }
+    })
+  }
+
+
   public HighlightFeature(layername: string, indx: number) {
     
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
     if (!ml) return;
     if (!ml.visible) { ml.visible = true; }
-
-    console.log(ml);
 
     var j = 0;//counts only lines;
     ml.layer.eachLayer(o => {
