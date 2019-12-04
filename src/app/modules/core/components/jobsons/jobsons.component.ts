@@ -64,7 +64,7 @@ export class JobsonsModalComponent implements OnInit {
   public gettingResults: boolean = false;
   public showDetails: Array<any>;
   private lastIndex = null;
-  private currentIndex = null;
+  private selectedIndex = null;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
@@ -190,16 +190,16 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public openCloseItem(index): void {
-    this.currentIndex = index;    
-    if(this.reachList[this.currentIndex].parameters.show) {
-      this.reachList[this.currentIndex].parameters.show = false;
+    this.selectedIndex = index;    
+    if(this.reachList[this.selectedIndex].parameters.show) {
+      this.reachList[this.selectedIndex].parameters.show = false;
     } else {
       if(this.lastIndex !== null) {
         this.reachList[this.lastIndex].parameters.show = false;
       }
-      this.reachList[this.currentIndex].parameters.show = true;
+      this.reachList[this.selectedIndex].parameters.show = true;
     }
-    this.lastIndex = this.currentIndex;
+    this.lastIndex = this.selectedIndex;
   }
 
   public identify(index, item): number {
