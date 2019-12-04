@@ -8,6 +8,7 @@ import {ToastrModule, ToastNoAnimation, ToastNoAnimationModule} from 'ngx-toastr
 import { CoreModule } from './modules/core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { JobsonsModalComponent } from './modules/core/components/jobsons/jobsons.component';
+import { ReportModalComponent } from './modules/core/components/report/report.component';
 import { DateTimePickerComponent } from './modules/core/components/date-time-picker/date-time-picker.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -17,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AppComponent,
     AboutModalComponent,
     JobsonsModalComponent,
+    ReportModalComponent,
     NavbarComponent,
     DateTimePickerComponent    
   ],
@@ -38,6 +40,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, ReportModalComponent, DateTimePickerComponent]
 })
 export class AppModule {}
