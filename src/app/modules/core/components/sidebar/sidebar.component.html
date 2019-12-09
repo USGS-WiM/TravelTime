@@ -1,20 +1,19 @@
 <div class="sidebar">
   <div class="panel panel-default">
-
     <!--MAP LAYERS PANEL-->
     <div class="sidebar-item" (click)="SetProcedureType(0)">
-      <a ngClass="list-group-item-active">Map layers</a>
+      <a ngClass="list-group-item-maps">Map layers&nbsp;<span [ngClass]="SelectedProcedureType === 0 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
     </div>
 
-    <div class="panel-body" [hidden]="SelectedProcedureType !== 0">
+    <div class="panel-body boundingbox" [hidden]="SelectedProcedureType !== 0">
       <!--BASE MAPS-->
       <div class="panel panel-primary">
-        <div class="panel-heading pointerCursor" (click)="ishiddenBasemaps= !ishiddenBasemaps">
-          <h5 class="panel-title">Base maps </h5>
+        <div class="panel-heading pointerCursor">
+          <h5 class="panel-title pointerCursor">Base maps</h5>
         </div>
       </div>
 
-      <div class="panel-body" [hidden]="ishiddenBasemaps">
+      <div class="panel-body">
         <!-- if selected procedure type 1 or 2 set expanded-->
         <label *ngFor="let item of baselayers" class="map-layer">
           <div *ngIf="item.visible; else disabled" class="map-layer-check">
@@ -33,7 +32,7 @@
       <!--OVERLAYS-->
       <div class="panel panel-primary">
         <div class="panel-heading pointerCursor">
-          <h5 class="panel-title">Overlays </h5>
+          <h5 class="panel-title">Overlays</h5>
         </div>
       </div>
 
@@ -59,13 +58,13 @@
 
     <!--IDENTIFY AREA PANEL-->
     <div class="sidebar-item" (click)="SetProcedureType(1)">
-      <a [ngClass]="GetClass(1)">IDENTIFY AREA</a>
+      <a [ngClass]="GetClass(1)">IDENTIFY AREA&nbsp;<span [ngClass]="SelectedProcedureType === 1 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
     </div>
 
     <div class="panel-body" [hidden]="SelectedProcedureType !== 1">
-      <div *ngIf="SelectedProcedureType > 2">
-        <button class="startover" mat-raised-button (click)="reset()"><span class="fas fa-undo"></span>&nbsp;&nbsp;Start Over</button>
-        <br /><br />
+      <div class="startover_wrapper" *ngIf="StudyService.GetWorkFlow('hasReaches')">
+        <button class="startover" mat-raised-button (click)="reset()"><i class="fa fa-undo"></i>&nbsp;&nbsp;Start Over</button>
+        <br />
       </div>
       <div *ngIf="ZoomLevel < 10">
         <div class="shadowtext">
@@ -76,15 +75,13 @@
         <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
       </div>
 
-      <hr style="margin: 20px 0;" />
-
       <div id="searchWrapper">
 
         <div id="searchBox"></div>
 
         <button class="btn-link fullwidth" (click)="showSearchHelp = !showSearchHelp">
-          <span [hidden]="showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
-          <span [hidden]="!showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
+          <span class="top" [hidden]="showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
+          <span class="top" [hidden]="!showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
         </button>
 
         <!-- supported search strings -->
@@ -109,11 +106,8 @@
       </div>
 
       <div id="methods" class="button-wrapper">
-        <button id="response" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetScenarioType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
-        <button id="planning" [disabled]="true" (click)="SetScenarioType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedScenarioType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
-        <div id="equations" class="button-wrapper">
-          <button (click)="open_config()">Configure</button>
-        </div>
+        <button id="response" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
+        <button id="planning" [disabled]="true" (click)="SetMethodType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
       </div>
     </div>   
     <!--END IDENTIFY AREA PANEL--> 
@@ -123,12 +117,20 @@
       <a [ngClass]="{
          'list-group-item-active': SelectedProcedureType === 2,
          'list-group-item' : SelectedProcedureType !== 2
-         }" (click)="SetProcedureType(2)">SCENARIOS</a>
+         }" (click)="SetProcedureType(2)">SCENARIOS&nbsp;<span [ngClass]="SelectedProcedureType === 2 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
     </div>
 
-    <div class="panel-body" [hidden]="SelectedProcedureType !== 2">
-      <div id="equations" class="button-wrapper">
-        <button (click)="open()">Jobsons</button>
+    <div class="panel-body" [hidden]="SelectedProcedureType !== 2" *ngFor="let item of AvailableScenarioTypes">
+      <div class="boundingbox">
+        <label class="map-layer">
+          <div class="map-layer-check">
+            <input type="checkbox" name="scenario" id="scenario" [checked]="item.selected" (change)="ToggleScenario(item)" />         
+          </div>
+          <span class="map-layer-title">{{item.name}}</span>
+        </label>
+      </div>
+      <div id="continue" class="button-wrapper">
+        <button (click)="open(SelectedScenario)">Continue</button>
       </div>
 
     </div>
@@ -138,9 +140,30 @@
     <div class="sidebar-item">
       <a [ngClass]="{
          'list-group-item-active': SelectedProcedureType === 3,
-         'list-group-item' : SelectedProcedureType !== 3}" (click)="SetProcedureType(3)">BUILD REPORT</a>
+         'list-group-item' : SelectedProcedureType !== 3}" (click)="SetProcedureType(3)">BUILD REPORT&nbsp;<span [ngClass]="SelectedProcedureType === 3 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
     </div>
-    <!--END BUILD REPORT PANEL-->
+    <div class="panel-body" [hidden]="SelectedProcedureType !== 3">
+        <div *ngIf="!CanContinue">
+          <div class="shadowtext">
+            <b>Step 1:</b> Select report components below.
+          </div>
+        </div>
+        <div *ngIf="CanContinue">
+            <div class="shadowtext">
+              <b>Step 2:</b> Click "Continue" to proceed.
+            </div>
+          </div>
+      <div class="boundingbox">
+        <label class="map-layer" *ngFor="let option of StudyService.ReportOptions; let i = index; trackBy:identify">
+          <div class="map-layer-check">
+            <input type="checkbox" name="report" id="report" [checked]="option.checked" (change)="ToggleReportOptions(i)" />
+          </div>
+          <span class="map-layer-title">{{option.name}}</span>
+        </label>
+      </div>
+      <div id="continue" class="button-wrapper">
+        <button [ngClass]="!CanContinue ? 'gray' : ''" (click)="open('Report')">Continue</button>
+      </div>
+    </div>
   </div>
-
 </div>

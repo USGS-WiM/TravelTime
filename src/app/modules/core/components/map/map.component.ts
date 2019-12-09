@@ -156,14 +156,12 @@ export class MapComponent extends deepCopy implements OnInit {
     this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) {
-    if (this.StudyService.GetWorkFlow("hasPOI")) {
-      console.log ("true, thereis a marker, skippind addition of another marker")
-    }
-    else if (this.StudyService.GetWorkFlow("hasMethod")) {
-      (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
+  public onMouseClick(evnt: any) { 
+    if(this.StudyService.GetWorkFlow("hasMethod")) {
+      (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
+      this.MapService.setCursor("");
     }
   }
 
@@ -191,12 +189,13 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" }; //bind the distance to the service
+          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 10, valueType: "numeric"};
         }//end switch
       });//next item
       return config;
-    }).then(config => {
+    }).then(config =>{
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
+
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
         var r = 0;
@@ -208,7 +207,7 @@ export class MapComponent extends deepCopy implements OnInit {
           } else {
             var nhdcomid = String(i.properties.nhdplus_comid);
             var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-            var marker = L.circleMarker([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
+            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
             layerGroup.addLayer(marker);
             layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
             r += 1;
@@ -236,7 +235,7 @@ export class MapComponent extends deepCopy implements OnInit {
     }
   }
 
-  private formatReaches(data) {
+  private formatReaches(data): any {
     let streamArray = [];
     for (var i = 0; i < data['features'].length; i++) {
       if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
@@ -244,7 +243,10 @@ export class MapComponent extends deepCopy implements OnInit {
         streamArray.push(polylinePoints);
       }
     }
-    return (streamArray);
+    streamArray.map((reach) => {
+      reach.properties.show = false;
+    })
+    return(streamArray);
   }
 
   //#endregion

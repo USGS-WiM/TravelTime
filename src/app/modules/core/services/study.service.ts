@@ -19,6 +19,8 @@ export interface workflowControl {
 @Injectable()
 export class StudyService  {
     public selectedStudy: Study;
+    public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
+    public ReportOptions: Array<any>;
     public distance: number;
     private messager: ToastrService;
     private ResultReturn = new Subject<boolean>();
@@ -55,5 +57,12 @@ export class StudyService  {
         this.noticeAction(true);
       }
         return this._workflow[step];
-    }  
+    }
+
+    public ResetWorkFlow() {
+        for(var i in this._workflow) {
+           this._workflow[i] = false;
+        }
+        this.WorkFlowControl.next(this._workflow);
+    }
 }

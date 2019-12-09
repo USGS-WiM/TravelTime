@@ -156,8 +156,17 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-  public setCursor() {
-    //this.cursor = cursortype;
+  public setCursor(type) {
+    switch (type) {
+      case "crosshair":
+          document.getElementById('leaflet').style.cursor = 'crosshair';
+          break;
+      case "":
+          document.getElementById('leaflet').style.cursor = '';
+          break;
+      default:
+        break;
+    }    
   }
 
   public setBounds(loc) {

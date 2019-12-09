@@ -60,9 +60,12 @@ export class JobsonsModalComponent implements OnInit {
   @ViewChild('reaches') accordion1: NgbAccordion;
   @ViewChild('acc') accordion: NgbAccordion;
   public model = {};
-  private currentStep = 0;
   public showhidetitle = "Show Reaches";
+  public showReaches: boolean = true;
   public gettingResults: boolean = false;
+  public showDetails: Array<any>;
+  private lastIndex = null;
+  private selectedIndex = null;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
@@ -92,6 +95,7 @@ export class JobsonsModalComponent implements OnInit {
       this.StudyService.selectedStudy.Discharge = this._discharge;
       this.reachList.forEach((item) => {
         item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
+        this.StudyService.SetWorkFlow("hasDischarge", true);
       })
     } else {
       setTimeout(() => {
@@ -120,16 +124,15 @@ export class JobsonsModalComponent implements OnInit {
     return index;
   }
 
-  public beforeChange($event: NgbPanelChangeEvent): void {
-    this.currentStep = +($event.panelId);
-  };
-
-  public showhideReaches($event: NgbPanelChangeEvent): void {
-    if ($event.nextState === false) {
+  public showhideReaches(): void {
+    if (this.showReaches === false) {
       this.showhidetitle = 'Show Reaches';
+      this.showReaches = true;
     } else {
       this.showhidetitle = 'Hide Reaches';
+      this.showReaches = false;
     }
+    console.log(this.reachList);
   }
 
   public removeReach(index): void {   //remove reach by id
@@ -167,28 +170,46 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public getResults() {
-    if (this.reachList.length > 0) {
-      this.gettingResults = true;
-      if (this.dateModel instanceof Date) {
-      } else {
-        this.dateModel = new Date(this.dateModel);
-      }
-      this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), this.reachList)
-        .toPromise().then(data => {
-          this.StudyService.selectedStudy.Results = data;
-          //this.StudyService.results = data;
-          this.StudyService.SetWorkFlow("totResults", true);
-          this.gettingResults = false;
-        })
-        .catch((err) => {
-          console.log("error: ", err.message);
-          this.sm(err, "Time of Travel Services")
-          this.gettingResults = false;
-        });
+    this.gettingResults = true;
+    if (this.dateModel instanceof Date) {
     } else {
-      setTimeout(() => { this.getResults() }, 500);
+      this.dateModel = new Date(this.dateModel);
     }
+    let postReachList = [];
+    this.reachList.forEach(reach => {
+      reach.parameters.splice(6,1);
+      postReachList.push(reach);
+    })
+    this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
+      .toPromise().then(data => {
+        this.StudyService.selectedStudy.Results = data;
+        this.StudyService.SetWorkFlow("totResults", true);
+        this.gettingResults = false;
+        this.activeModal.dismiss();
+      })
+      .catch((err) => {
+        console.log("error: ", err.message);
+        this.sm(err, "Time of Travel Services")
+        this.gettingResults = false;
+      });
   }
+
+  public openCloseItem(index): void {
+    this.selectedIndex = index;    
+    if(this.reachList[this.selectedIndex].parameters.show) {
+      this.reachList[this.selectedIndex].parameters.show = false;
+    } else {
+      if(this.lastIndex !== null) {
+        this.reachList[this.lastIndex].parameters.show = false;
+      }
+      this.reachList[this.selectedIndex].parameters.show = true;
+    }
+    this.lastIndex = this.selectedIndex;
+  }
+
+  public identify(index, item): number {
+    return item.id;
+ }
   //#endregion
 
   //#region "Private methods"

@@ -29,7 +29,7 @@ export class DateTimeModel implements NgbDateTimeStruct {
         return new DateTimeModel({
             year: date.getFullYear(),
             month: date.getMonth() + 1,
-            day: date.getDate(),
+            day: date.getDate() + 1,
             hour: date.getHours(),
             minute: date.getMinutes(),
             second: date.getSeconds(),
