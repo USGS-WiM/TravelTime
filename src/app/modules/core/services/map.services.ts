@@ -10,6 +10,7 @@ export interface layerControl {
   baseLayers: Array<any>;
   overlays: Array<any>
 }
+
 @Injectable()
 export class MapService {
 
@@ -25,6 +26,8 @@ export class MapService {
   public fitBounds: Subject<any> = new Subject<any>();
   public _bound;
 
+  private selectedProcedure = new Subject<number>();
+  procedureType$ = this.selectedProcedure.asObservable();
 
   constructor(http: HttpClient) {
 
@@ -57,7 +60,12 @@ export class MapService {
 
     });
 
+    this.selectedProcedure.next(1);
     this.CurrentZoomLevel = this.Options.zoom;
+  }
+
+  public setProcedure(indx: number) {
+      this.selectedProcedure.next(indx);
   }
 
   public AddMapLayer(mlayer: MapLayer) {

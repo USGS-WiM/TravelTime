@@ -132,7 +132,6 @@ export class JobsonsModalComponent implements OnInit {
       this.showhidetitle = 'Hide Reaches';
       this.showReaches = false;
     }
-    console.log(this.reachList);
   }
 
   public removeReach(index): void {   //remove reach by id
@@ -171,6 +170,7 @@ export class JobsonsModalComponent implements OnInit {
 
   public getResults() {
     this.gettingResults = true;
+
     if (this.dateModel instanceof Date) {
     } else {
       this.dateModel = new Date(this.dateModel);
@@ -186,6 +186,7 @@ export class JobsonsModalComponent implements OnInit {
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
         this.activeModal.dismiss();
+        this.MapService.setProcedure(3); //open next panel;
       })
       .catch((err) => {
         console.log("error: ", err.message);
@@ -231,9 +232,6 @@ export class JobsonsModalComponent implements OnInit {
             newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
           }
         })
-
-
-
         this.reachList.push(newreach);
       } else {
       }

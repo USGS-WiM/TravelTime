@@ -10,6 +10,7 @@ import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ApptoolsComponent } from '../apptools/apptools.component';
+import { ReportModalComponent } from '../report/report.component';
 
 declare let search_api: any;
 
@@ -110,16 +111,13 @@ export class SidebarComponent {
       overlays: {}
     };
 
-    this.SetProcedureType(1);
+    this.SelectedProcedureType = 1; //set initial procedure type
 
-    this.StudyService.WorkFlowControl.subscribe(data => {
-      if (data.hasReaches && this.SelectedProcedureType === 1 && data.onInit) {
-        this.SetProcedureType(2)
-        this.StudyService.SetWorkFlow("onInit", false);
-      } else if(data.totResults && this.SelectedProcedureType < 3) {
-        this.SetProcedureType(3)
-        console.log(this.SelectedProcedureType);
+    this.MapService.procedureType$.subscribe(data => { //subscribe to the shared service
+      if (!this.canUpdateProcedure(data)) {
+        return;
       }
+      this.SelectedProcedureType = data;
     });
 
     this.StudyService.ReportOptions = [
@@ -150,14 +148,7 @@ export class SidebarComponent {
     this.MapService.isClickable = true;
     this.MapService.setCursor("crosshair");
   }
-  
-  public SetProcedureType(pType:ProcedureType) {
-    if(!this.canUpdateProcedure(pType)) {
-      return;
-    }   
-    this.SelectedProcedureType = pType;
-  }
-  
+   
   public ToggleSideBar() {
     if (this.Collapsed) this.Collapsed = false;
             else this.Collapsed = true; 
@@ -209,6 +200,10 @@ export class SidebarComponent {
 
   public reset() {
     window.location.reload();
+  }
+
+  public SetProcedureType(indx: number) {
+    this.MapService.setProcedure(indx);
   }
 
   public open_config() {

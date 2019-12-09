@@ -30,6 +30,7 @@ export class FooterComponent implements OnInit {
     if (this.StudyService.GetWorkFlow('totResults')) {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
       this.reaches.shift(); //remove first element (one without results)
+
       return (this.reaches);
     } else {
       return;
@@ -48,7 +49,6 @@ export class FooterComponent implements OnInit {
       } else {
         this.reaches[index]['ischeked'] = true;
       }
-      //console.log(this.selectedReach);
     }
   }
 

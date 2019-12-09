@@ -108,16 +108,16 @@
       <div id="methods" class="button-wrapper">
         <button id="response" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
         <button id="planning" [disabled]="true" (click)="SetMethodType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
+        <div id="equations" class="button-wrapper">
+          <button (click)="open_config()">Configure</button>
+        </div>
       </div>
     </div>   
     <!--END IDENTIFY AREA PANEL--> 
 
     <!--SCENARIOS PANEL-->
-    <div class="sidebar-item">
-      <a [ngClass]="{
-         'list-group-item-active': SelectedProcedureType === 2,
-         'list-group-item' : SelectedProcedureType !== 2
-         }" (click)="SetProcedureType(2)">SCENARIOS&nbsp;<span [ngClass]="SelectedProcedureType === 2 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
+    <div class="sidebar-item" (click)="SetProcedureType(2)">
+      <a [ngClass]="GetClass(2)">SCENARIOS&nbsp;<span [ngClass]="SelectedProcedureType === 2 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
     </div>
 
     <div class="panel-body" [hidden]="SelectedProcedureType !== 2" *ngFor="let item of AvailableScenarioTypes">
@@ -138,9 +138,7 @@
 
     <!--BUILD REPORT PANEL-->
     <div class="sidebar-item">
-      <a [ngClass]="{
-         'list-group-item-active': SelectedProcedureType === 3,
-         'list-group-item' : SelectedProcedureType !== 3}" (click)="SetProcedureType(3)">BUILD REPORT&nbsp;<span [ngClass]="SelectedProcedureType === 3 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
+      <a [ngClass]="GetClass(3)" (click)="SetProcedureType(3)">BUILD REPORT&nbsp;<span [ngClass]="SelectedProcedureType === 3 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
     </div>
     <div class="panel-body" [hidden]="SelectedProcedureType !== 3">
         <div *ngIf="!CanContinue">

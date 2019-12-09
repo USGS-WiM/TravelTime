@@ -12,6 +12,8 @@ import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 import {
   trigger,
   state,
@@ -67,7 +69,7 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
 
-  constructor(private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor( private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -79,7 +81,6 @@ export class MapComponent extends deepCopy implements OnInit {
   ngOnInit() {
 
     this.scaleMap = 'out';
-
     this.StudyService.noticeAction(false);
 
     this.subscription = this.StudyService.return$.subscribe(isWorking => {
@@ -111,7 +112,6 @@ export class MapComponent extends deepCopy implements OnInit {
 
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
-
     })
   }
 
@@ -137,7 +137,6 @@ export class MapComponent extends deepCopy implements OnInit {
           container.onclick = function () {
             console.log('buttonClicked'); //this can call for a modal from the service
           }
-
           return container;
         },
       });
@@ -148,17 +147,13 @@ export class MapComponent extends deepCopy implements OnInit {
   public onZoomChange(zoom: number) {
     setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
-      this.MapService.onZoomChangeCircle('Flowlines', zoom);
     })
-    //set circle radius to a dif;
-
-    //this.MapService.SetOverlay("Big Circle")
     this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) { 
-    if(this.StudyService.GetWorkFlow("hasMethod")) {
-      (<HTMLInputElement> document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
+  public onMouseClick(evnt: any) {
+    if (this.StudyService.GetWorkFlow("hasMethod")) {
+      (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
       this.MapService.setCursor("");
@@ -207,8 +202,8 @@ export class MapComponent extends deepCopy implements OnInit {
           } else {
             var nhdcomid = String(i.properties.nhdplus_comid);
             var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-            var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
-            layerGroup.addLayer(marker);
+            //var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
+            //layerGroup.addLayer(marker);
             layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
             r += 1;
             if (r === 1) {
@@ -220,6 +215,8 @@ export class MapComponent extends deepCopy implements OnInit {
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
+        this.MapService.setProcedure(2);
+
       });
     })
   }
