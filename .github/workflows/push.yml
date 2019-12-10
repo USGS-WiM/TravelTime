@@ -19,7 +19,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
-    - run: aws s3 cp /github/workspace/ s3://test.streamstats.usgs.gov/test-actions/ --recursive
+    - run: aws s3 cp GITHUB_WORKSPACE s3://test.streamstats.usgs.gov/test-actions/ --recursive
     - name: GitHub Action for Slack
       uses: Ilshidur/action-slack@9273a03
       env:
