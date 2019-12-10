@@ -12,16 +12,14 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.15'
-    - run: npm install
-    - run: npm install -g @angular/cli
-    - run: ng build
+    - run: npm run-script build
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
-    - run: aws s3 cp github/workspace/dist/ s3://test.streamstats.usgs.gov/tot/
+    - run: aws s3 cp github/workspace/dist/ s3://test.streamstats.usgs.gov/tot/ --recursive
     - name: GitHub Action for Slack
       uses: Ilshidur/action-slack@9273a03
       env:
