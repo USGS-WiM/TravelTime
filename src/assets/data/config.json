@@ -59,54 +59,70 @@
     ],
     "markerOptions": {
       "Spill": {
-          "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
-          "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-          "iconSize": [ 25, 41 ],
-          "iconAnchor": [ 12, 41 ],
-          "popupAnchor": [ 1, -34 ],
-          "shadowSize": [ 41, 41 ]
+        "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
+        "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        "iconSize": [ 25, 41 ],
+        "iconAnchor": [ 12, 41 ],
+        "popupAnchor": [ 1, -34 ],
+        "shadowSize": [ 41, 41 ]
       },
       "Uptake": {
-          "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-          "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-          "iconSize": [ 25, 41 ],
-          "iconAnchor": [ 12, 41 ],
-          "popupAnchor": [ 1, -34 ],
-          "shadowSize": [ 41, 41 ]
+        "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+        "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        "iconSize": [ 25, 41 ],
+        "iconAnchor": [ 12, 41 ],
+        "popupAnchor": [ 1, -34 ],
+        "shadowSize": [ 41, 41 ]
       },
       "EndNode": {
-          "color": "orange",
-          "fillColor": "#f03",
-          "fillOpacity": 0.5,
-          "radius": 20
+        "color": "orange",
+        "fillColor": "#f03",
+        "fillOpacity": 0.5,
+        "radius": 20
       },
       "Reach": {
-          "color": "orange",
-          "fillColor": "#f03",
-          "fillOpacity": 0.5,
-          "radius": 100
+        "color": "orange",
+        "fillColor": "#f03",
+        "fillOpacity": 0.5,
+        "radius": 100
       },
       "Polyline": {
-          "color": "#FF3333",
-          "weight": 3,
-          "opacity": 0.60
+        "color": "#FF3333",
+        "weight": 3,
+        "opacity": 0.60
       },
       "GagesUpstream": {
-          "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
-          "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-          "iconSize": [ 25, 41 ],
-          "iconAnchor": [ 12, 41 ],
-          "popupAnchor": [ 1, -34 ],
-          "shadowSize": [ 41, 41 ]
+        "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+        "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        "iconSize": [ 25, 41 ],
+        "iconAnchor": [ 12, 41 ],
+        "popupAnchor": [ 1, -34 ],
+        "shadowSize": [ 41, 41 ]
       },
       "GagesDownstream": {
-          "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-          "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-          "iconSize": [ 25, 41 ],
-          "iconAnchor": [ 12, 41 ],
-          "popupAnchor": [ 1, -34 ],
-          "shadowSize": [ 41, 41 ]
+        "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+        "shadowUrl": "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        "iconSize": [ 25, 41 ],
+        "iconAnchor": [ 12, 41 ],
+        "popupAnchor": [ 1, -34 ],
+        "shadowSize": [ 41, 41 ]
       }
+    }
+  },
+  "Units": {
+    "metric": {
+      "discharge": "cubic meters per second",
+      "drainageArea": "square meters",
+      "distance": "meters",
+      "concentration": "kilograms",
+      "slope":  "meters/meters"
+    },
+    "imperial": {
+      "discharge": "cubic feet per second",
+      "drainageArea": "square feet",
+      "distance": "feet",
+      "concentration": "pounds",
+      "slope":  "feet/feet"
     }
   }
 }

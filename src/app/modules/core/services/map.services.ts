@@ -25,6 +25,7 @@ export class MapService {
   public markerOptions;
   public fitBounds: Subject<any> = new Subject<any>();
   public _bound;
+  public unitsOptions;
 
   private selectedProcedure = new Subject<number>();
   procedureType$ = this.selectedProcedure.asObservable();
@@ -57,6 +58,7 @@ export class MapService {
       this.LayersControl.next(this._layersControl);
 
       this.markerOptions = conf.mapLayers.markerOptions;
+      this.unitsOptions = conf.Units;
 
     });
 

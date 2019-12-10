@@ -34,6 +34,8 @@ export class ApptoolsComponent implements OnInit {
   }
 
   public setUnits(indx) {
+
+    //-> should trigger change for observable
     var j = 0;
     this.distance = this.StudyService.distance;
     var initial_dist = this.distance; //initial distance no reference

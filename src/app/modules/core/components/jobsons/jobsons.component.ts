@@ -35,21 +35,30 @@ export class JobsonsModalComponent implements OnInit {
   public formGroup: FormGroup;
   public reach_reference: reach;
   public reachList: Array<any> = [];
+  public units;
+  public defaultUnits: any;
 
-  private _spillMass : Number;
-  public get SpillMass() : Number {
+  private _spillMass: number;
+  public get SpillMass(): number {
     return this._spillMass;
   }
-  public set SpillMass(v : Number) {
+
+  public set SpillMass(v: number) {
     this._spillMass = v;
-    this.StudyService.selectedStudy.SpillMass = this._spillMass;
+    this.defaultUnits.forEach(i => {
+      if (i.isactive && i.name == "imperial") {
+      } else {
+      }
+      this.StudyService.selectedStudy.SpillMass = this._spillMass;
+    })
   }
-  
-  private _discharge : Number;
-  public get Discharge() : Number {
+
+  private _discharge: number;
+
+  public get Discharge(): number {
     return this._discharge;
   }
-  public set Discharge(v : Number) {
+  public set Discharge(v: number) {
     this._discharge = v;
     this.StudyService.selectedStudy.Discharge = this._discharge;
   }
@@ -82,11 +91,15 @@ export class JobsonsModalComponent implements OnInit {
     this.TravelTimeService.getJobsonConfigurationObject() // get reach
       .toPromise().then(data => {
         this.reach_reference = data;
+        this.units = this.MapService.unitsOptions;
         this.populateReachArray()
       }); //get service {description: Initial description}
     this.formGroup = new FormGroup({
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
+
+    this.defaultUnits = this.StudyService.units;
+
   }
 
    //#region "Methods"
@@ -215,21 +228,36 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
+
+   
+
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
 
+        let selectedUnits;
         this.StudyService.units.forEach(j => {
-          if (j.isactive && j.name === "metric") {
-            newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()//cms
-            newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square meters
-            newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue() //meters
+          if (j.isactive) {
+            if (j.name === 'metric') {
+              selectedUnits = this.units.metric;
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()//cms
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square meters
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue() //meters
+
+            } else {
+              selectedUnits = this.units.imperial;
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue() //cfs
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
+            }
+            newreach.parameters[0].unit.unit = selectedUnits['discharge']
+            newreach.parameters[1].unit.unit = selectedUnits['discharge']
+            newreach.parameters[2].unit.unit = selectedUnits['slope']
+            newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
+            newreach.parameters[4].unit.unit = selectedUnits['distance']
           } else {
-            newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue() //cfs
-            newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
-            newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
           }
         })
         this.reachList.push(newreach);
