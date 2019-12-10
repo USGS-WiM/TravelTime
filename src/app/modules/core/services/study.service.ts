@@ -28,6 +28,9 @@ export class StudyService  {
     public defDischarge = "cubic meters per second";
     public defConcentration = "kilograms";
 
+    private selectedProcedure = new Subject<number>();
+    procedureType$ = this.selectedProcedure.asObservable();
+
     public unitS = {
       "metric": {
         "discharge": "cubic meters per second",
@@ -58,8 +61,9 @@ export class StudyService  {
     constructor(toastr: ToastrService) {
         this.messager = toastr;
         this.WorkFlowControl.next(this._workflow);
-      this.distance = 10;
-      this.UnitsReturn.next('metric');
+        this.distance = 10;
+        this.UnitsReturn.next('metric');
+        this.selectedProcedure.next(1);
     }
 
     public setUnits(unit: string) {
@@ -85,6 +89,11 @@ export class StudyService  {
         this.noticeAction(true);
       }
         return this._workflow[step];
+    }
+
+
+    public setProcedure(indx: number) {
+      this.selectedProcedure.next(indx);
     }
 
     public ResetWorkFlow() {

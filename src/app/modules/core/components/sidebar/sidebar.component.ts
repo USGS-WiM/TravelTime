@@ -114,7 +114,7 @@ export class SidebarComponent {
 
     this.SelectedProcedureType = 1; //set initial procedure type
 
-    this.MapService.procedureType$.subscribe(data => { //subscribe to the shared service
+    this.StudyService.procedureType$.subscribe(data => { //subscribe to the shared service
       if (!this.canUpdateProcedure(data)) {
         return;
       }
@@ -206,7 +206,7 @@ export class SidebarComponent {
   }
 
   public SetProcedureType(indx: number) {
-    this.MapService.setProcedure(indx);
+    this.StudyService.setProcedure(indx);
   }
 
   public open_config() {

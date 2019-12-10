@@ -195,7 +195,7 @@ export class JobsonsModalComponent implements OnInit {
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
         this.activeModal.dismiss();
-        this.MapService.setProcedure(3); //open next panel;
+        this.StudyService.setProcedure(3); //open next panel;
       })
       .catch((err) => {
         console.log("error: ", err.message);

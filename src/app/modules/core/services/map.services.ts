@@ -27,9 +27,6 @@ export class MapService {
   public _bound;
   public unitsOptions;
 
-  private selectedProcedure = new Subject<number>();
-  procedureType$ = this.selectedProcedure.asObservable();
-
   constructor(http: HttpClient) {
 
     this.Options = {
@@ -61,14 +58,9 @@ export class MapService {
       this.unitsOptions = conf.Units;
 
     });
-
-    this.selectedProcedure.next(1);
     this.CurrentZoomLevel = this.Options.zoom;
   }
 
-  public setProcedure(indx: number) {
-      this.selectedProcedure.next(indx);
-  }
 
   public AddMapLayer(mlayer: MapLayer) {
 

@@ -215,7 +215,7 @@ export class MapComponent extends deepCopy implements OnInit {
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
-        this.MapService.setProcedure(2);
+        this.StudyService.setProcedure(2);
 
       });
     })
