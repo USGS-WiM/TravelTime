@@ -10,6 +10,7 @@ export interface layerControl {
   baseLayers: Array<any>;
   overlays: Array<any>
 }
+
 @Injectable()
 export class MapService {
 
@@ -24,7 +25,7 @@ export class MapService {
   public markerOptions;
   public fitBounds: Subject<any> = new Subject<any>();
   public _bound;
-
+  public unitsOptions;
 
   constructor(http: HttpClient) {
 
@@ -54,11 +55,12 @@ export class MapService {
       this.LayersControl.next(this._layersControl);
 
       this.markerOptions = conf.mapLayers.markerOptions;
+      this.unitsOptions = conf.Units;
 
     });
-
     this.CurrentZoomLevel = this.Options.zoom;
   }
+
 
   public AddMapLayer(mlayer: MapLayer) {
 
@@ -70,6 +72,58 @@ export class MapService {
 
     //Notify subscribers
     this.LayersControl.next(this._layersControl);
+  }
+
+
+  public onZoomChangeCircle(layername: string, zoom: number) {
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
+    if (!ml) return;
+    if (!ml.visible) { ml.visible = true; }
+    ml.layer.eachLayer(o => {
+      if (o.options.radius > 10) {
+        if (zoom > 13) {
+          //o.setStyle({
+            //radius: 20, color: "green",
+            //fillColor: "red",
+            //fillOpacity: 1
+          //})
+        } else {
+          //o.setStyle({
+            //radius: 50, color: "yellow",
+            //fillColor: "orange",
+            //fillOpacity: 0.5
+          //})
+        }
+      } else {
+      }
+    })
+  }
+
+
+  public HighlightFeature(layername: string, indx: number) {
+    
+    var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
+    if (!ml) return;
+    if (!ml.visible) { ml.visible = true; }
+
+    var j = 0;//counts only lines;
+    ml.layer.eachLayer(o => {
+      //what if there also a stream gage ?
+
+      if (typeof (o._layers) === "undefined") {
+      } else if (o.options.radius > 50) {
+      } else if (j === indx) {
+        o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
+        j += 1;
+      } else {
+        o.setStyle({
+          "color": "#FF3333",
+          "weight": 3,
+          "opacity": 0.60
+        })
+        j += 1; 
+      }
+    });
   }
 
   public SetOverlay (layername: string) {

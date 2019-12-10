@@ -1,10 +1,6 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @charset "UTF-8";
 
-body {
-  font-family: Roboto, Arial, sans-serif;
-  margin: 0;
-}
 
 .basic-container {
   padding: 30px;
@@ -3047,10 +3043,7 @@ html {
   line-height: 1.15;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
+  height: 100%;
 }
 
 nav, section {
@@ -3148,11 +3141,10 @@ textarea {
 }
 
 html {
-  display: block;
-  margin: 0;
-  padding: 0;
-  width: 100%;
+  height: 100%;
   overflow-x: hidden;
+  min-height: 100%;
+  position: relative;
   color: #10152C;
   font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
@@ -3160,8 +3152,10 @@ html {
 body {
   display: block;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
+  position: relative;
   -webkit-font-smoothing: subpixel-antialiased;
   font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
   font-weight: 400;
@@ -3170,7 +3164,13 @@ body {
   background-position: center;
   background-color: #FFF;
   font-size: 100%;
+  margin: 0;
 }
+
+.wrap_all {
+  position: relative;
+}
+
 
 body, h1, h2, h3, h4, h5, h6 {
   font-size-adjust: .5;
@@ -5230,3 +5230,17 @@ ul {
 .leaflet-control-layers {
   visibility: hidden !important;
 }
+
+.leaflet-bar-custom:hover {
+  background-color: white;
+  text-decoration: underline;
+}
+
+.leaflet-bar-custom {
+  background-color: rgba(224,227,230,.6);
+}
+
+input[type="radio"] {
+  vertical-align: baseline;
+}
+

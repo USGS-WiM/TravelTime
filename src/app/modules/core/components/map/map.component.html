@@ -1,7 +1,9 @@
-<div id="leaflet" leaflet
+<div id="leaflet"
+     [@slideInOut]="scaleMap"
+     leaflet
      [leafletOptions]="MapOptions"
      [leafletLayers]="Layers"
      [leafletLayersControl]="LayersControl"
      (leafletZoomChange)="onZoomChange($event)"
-     (leafletClick)="onMouseClick($event)"
-     [leafletFitBounds]="fitBounds"></div>
+     [leafletFitBounds]="fitBounds"
+     (leafletClick)="onMouseClick($event)"></div>

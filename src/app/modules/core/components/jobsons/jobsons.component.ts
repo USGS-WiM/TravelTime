@@ -7,6 +7,7 @@ import { reach } from '../../models/reach';
 import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
+import '../../../../shared/extensions/number.toUSGSValue';
 //import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const DateTimeValidator = (fc: FormControl) => {
@@ -34,21 +35,24 @@ export class JobsonsModalComponent implements OnInit {
   public formGroup: FormGroup;
   public reach_reference: reach;
   public reachList: Array<any> = [];
+  public units;
 
-  private _spillMass : Number;
-  public get SpillMass() : Number {
+  private _spillMass: number;
+  public get SpillMass(): number {
     return this._spillMass;
   }
-  public set SpillMass(v : Number) {
+
+  public set SpillMass(v: number) {
     this._spillMass = v;
     this.StudyService.selectedStudy.SpillMass = this._spillMass;
   }
-  
-  private _discharge : Number;
-  public get Discharge() : Number {
+
+  private _discharge: number;
+
+  public get Discharge(): number {
     return this._discharge;
   }
-  public set Discharge(v : Number) {
+  public set Discharge(v: number) {
     this._discharge = v;
     this.StudyService.selectedStudy.Discharge = this._discharge;
   }
@@ -66,7 +70,7 @@ export class JobsonsModalComponent implements OnInit {
   private lastIndex = null;
   private selectedIndex = null;
 
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
+  constructor( config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
@@ -75,27 +79,37 @@ export class JobsonsModalComponent implements OnInit {
     this.MapService = mapservice;
     this.StudyService = studyservice;
     this.messager = tstrservice;
+
    }
 
   ngOnInit():  any {   //on init, get the services for first reach, and add them as parameters to accordion
     this.TravelTimeService.getJobsonConfigurationObject() // get reach
       .toPromise().then(data => {
         this.reach_reference = data;
+        this.units = this.MapService.unitsOptions;
         this.populateReachArray()
       }); //get service {description: Initial description}
     this.formGroup = new FormGroup({
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
+
+    //this.StudyService.units$.subscribe(data => {
+      //this.defaultUnits = data;
+    //})
   }
 
    //#region "Methods"
-   public setDischarge(event): void {
-    if (this.reachList) {
+  public setDischarge(): void {
+    if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
       this.reachList.forEach((item) => {
         item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
         this.StudyService.SetWorkFlow("hasDischarge", true);
       })
+    } else {
+      setTimeout(() => {
+        this.setDischarge()
+      }, 500)
     }
   }
 
@@ -127,7 +141,6 @@ export class JobsonsModalComponent implements OnInit {
       this.showhidetitle = 'Hide Reaches';
       this.showReaches = false;
     }
-    console.log(this.reachList);
   }
 
   public removeReach(index): void {   //remove reach by id
@@ -166,6 +179,7 @@ export class JobsonsModalComponent implements OnInit {
 
   public getResults() {
     this.gettingResults = true;
+
     if (this.dateModel instanceof Date) {
     } else {
       this.dateModel = new Date(this.dateModel);
@@ -181,6 +195,7 @@ export class JobsonsModalComponent implements OnInit {
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
         this.activeModal.dismiss();
+        this.StudyService.setProcedure(3); //open next panel;
       })
       .catch((err) => {
         console.log("error: ", err.message);
@@ -209,23 +224,42 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
-    if(this.StudyService.selectedStudy.Reaches) {
-      for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
-        if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
-          let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-          newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//.toUSGSvalue()
-          newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea*1000000)//.toUSGSvalue()
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000)//.toUSGSvalue()
-          newreach.parameters.push({show: this.StudyService.selectedStudy.Reaches[i].properties.show})
-          this.reachList.push(newreach);
-        } else {
-        }
 
+   
+
+    for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
+      if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
+        let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
+        newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
+        newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
+
+        let selectedUnits;
+        this.StudyService.units.forEach(j => {
+          if (j.isactive) {
+            if (j.name === 'metric') {
+              selectedUnits = this.units.metric;
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()//cms
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square meters
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue() //meters
+
+            } else {
+              selectedUnits = this.units.imperial;
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue() //cfs
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
+            }
+            newreach.parameters[0].unit.unit = selectedUnits['discharge']
+            newreach.parameters[1].unit.unit = selectedUnits['discharge']
+            newreach.parameters[2].unit.unit = selectedUnits['slope']
+            newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
+            newreach.parameters[4].unit.unit = selectedUnits['distance']
+          } else {
+          }
+        })
+        this.reachList.push(newreach);
+      } else {
       }
     }
-    console.log(this.reachList);
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

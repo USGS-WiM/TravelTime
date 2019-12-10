@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { MapComponent } from './components/map/map.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { CoreComponent } from './core.component';
@@ -16,9 +17,9 @@ import { TravelTimeService } from './services/traveltimeservices.service';
 
 
 @NgModule({
-  declarations: [SidebarComponent, MapComponent, CoreComponent],
+  declarations: [SidebarComponent, MapComponent, CoreComponent, FooterComponent],
   imports: [LeafletModule.forRoot(), MatExpansionModule, MatInputModule, CommonModule, BrowserModule, MatProgressButtonsModule, BrowserAnimationsModule],
   providers: [MapService, NavigationService, StudyService, TravelTimeService],
-  exports:[SidebarComponent, MapComponent, CoreComponent]
+  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent]
 })
 export class CoreModule { }

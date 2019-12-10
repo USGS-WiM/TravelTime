@@ -1,0 +1,18 @@
+.map-layer-check input[type="radio"] {
+  -webkit-appearance: radio;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: bottom;
+  width: 30px;
+}
+
+.map-layer-check label {
+  display: block;
+  font-size: 20px;
+  margin: 0 auto;
+  width: 150px;
+}
+
+.map-layer-check label {
+  width: 100%;
+}
