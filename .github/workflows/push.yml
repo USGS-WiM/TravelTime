@@ -1,7 +1,7 @@
 on: 
   push:
     branches:
-    - staging 
+    - staging
 name: Deploy to Test
 jobs:
   pushToTest:
@@ -13,13 +13,13 @@ jobs:
       with:
         node-version: '10.15'
     - run: npm run-script build
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: GitHub Action for AWS-1
+      uses: actions/aws/cli@efb074ae4510f2d12c7801e4461b65bf5e8317e6
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
-    - run: aws s3 cp /github/workspace/dist/ s3://test.streamstats.usgs.gov/tot/
+        args: s3 cp /github/workspace/dist/ s3://test.streamstats.usgs.gov/test-actions/ --recursive
     - name: GitHub Action for Slack
       uses: Ilshidur/action-slack@9273a03
       env:
