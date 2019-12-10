@@ -25,6 +25,29 @@ export class StudyService  {
     private messager: ToastrService;
     private ResultReturn = new Subject<boolean>();
     return$ = this.ResultReturn.asObservable();
+    public defDischarge = "cubic meters per second";
+    public defConcentration = "kilograms";
+
+    public unitS = {
+      "metric": {
+        "discharge": "cubic meters per second",
+        "drainageArea": "square meters",
+        "distance": "meters",
+        "concentration": "kilograms",
+        "slope": "meters/meters"
+      },
+      "imperial": {
+        "discharge": "cubic feet per second",
+        "drainageArea": "square feet",
+        "distance": "feet",
+        "concentration": "pounds",
+        "slope": "feet/feet"
+      }
+    };
+    private UnitsReturn = new Subject<string>();
+    units$ = this.UnitsReturn.asObservable();
+
+
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
     public units: UnitsArray[] = [
@@ -35,7 +58,13 @@ export class StudyService  {
     constructor(toastr: ToastrService) {
         this.messager = toastr;
         this.WorkFlowControl.next(this._workflow);
-        this.distance = 10;
+      this.distance = 10;
+      this.UnitsReturn.next('metric');
+    }
+
+    public setUnits(unit: string) {
+      this.defDischarge = this.unitS[unit].discharge;
+      this.defConcentration = this.unitS[unit].concentration;
     }
 
     public get checkingDelineatedPoint(): boolean {

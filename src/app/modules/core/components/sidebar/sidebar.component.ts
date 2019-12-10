@@ -75,6 +75,7 @@ export class SidebarComponent {
   private messager:ToastrService;
   private toggleButton = true;
 
+
   constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
     this.messager = toastr;
     this.MapService = mapservice;
@@ -119,6 +120,8 @@ export class SidebarComponent {
       }
       this.SelectedProcedureType = data;
     });
+
+
 
     this.StudyService.ReportOptions = [
       { name: "Table of values", checked: false }, 

@@ -36,7 +36,6 @@ export class JobsonsModalComponent implements OnInit {
   public reach_reference: reach;
   public reachList: Array<any> = [];
   public units;
-  public defaultUnits: any;
 
   private _spillMass: number;
   public get SpillMass(): number {
@@ -45,12 +44,7 @@ export class JobsonsModalComponent implements OnInit {
 
   public set SpillMass(v: number) {
     this._spillMass = v;
-    this.defaultUnits.forEach(i => {
-      if (i.isactive && i.name == "imperial") {
-      } else {
-      }
-      this.StudyService.selectedStudy.SpillMass = this._spillMass;
-    })
+    this.StudyService.selectedStudy.SpillMass = this._spillMass;
   }
 
   private _discharge: number;
@@ -76,7 +70,7 @@ export class JobsonsModalComponent implements OnInit {
   private lastIndex = null;
   private selectedIndex = null;
 
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
+  constructor( config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
@@ -85,6 +79,7 @@ export class JobsonsModalComponent implements OnInit {
     this.MapService = mapservice;
     this.StudyService = studyservice;
     this.messager = tstrservice;
+
    }
 
   ngOnInit():  any {   //on init, get the services for first reach, and add them as parameters to accordion
@@ -98,8 +93,9 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
-    this.defaultUnits = this.StudyService.units;
-
+    this.StudyService.units$.subscribe(data => {
+      this.defaultUnits = data;
+    })
   }
 
    //#region "Methods"

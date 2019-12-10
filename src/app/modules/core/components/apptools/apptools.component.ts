@@ -45,11 +45,15 @@ export class ApptoolsComponent implements OnInit {
       } else {
         i.isactive = false;
       }
-      if (i.isactive && i.name == "imperial") {
-        this.distance = initial_dist * 0.621371; //to miles
-      } else {
-        this.distance = initial_dist* 1.60934; //to km
-      }
+      if (i.isactive) {
+        if (i.name == "imperial") {
+          this.distance = initial_dist * 0.621371; //to miles
+          this.StudyService.setUnits(i.name);
+        } else {
+          this.distance = initial_dist * 1.60934; //to km
+          this.StudyService.setUnits(i.name);
+        }
+      } else {}
       this.distance = this.distance.toUSGSvalue()
       this.StudyService.distance = this.distance; //because on module construction this.distance gets value from shared service, we need to assign last value of the distance to that shared service
       j += 1;
