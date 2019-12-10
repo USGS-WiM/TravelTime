@@ -19,6 +19,7 @@ import { StudyService } from 'src/app/modules/core/services/study.service';
     }
   ]
 })
+
 export class DateTimePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit {
   @Input()
   dateString: string;
@@ -33,12 +34,10 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   secondStep = 30;
   @Input()
   seconds = true;
-
   @Input()
   disabled = false;
 
   private showTimePickerToggle = false;
-
   private datetime: DateTimeModel = new DateTimeModel();
   private firstTimeAssign = true;
 

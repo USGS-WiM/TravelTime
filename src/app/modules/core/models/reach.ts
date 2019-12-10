@@ -4,6 +4,8 @@ export class reach {
     public name: string
     public parameters:Array<any>
     public reaches: {} //initial input from the service
+    public result: {}
+    public ischeked: boolean;
 
     constructor(arg:reach) {
         arg = arg.reaches[0]
@@ -11,7 +13,8 @@ export class reach {
         this.id = arg.id
         this.name = arg.name
         this.parameters = []
-        this._init (arg.parameters)
+        this._init(arg.parameters)
+        this.ischeked = false;
     }
     
 
