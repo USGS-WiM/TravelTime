@@ -93,9 +93,9 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
-    this.StudyService.units$.subscribe(data => {
-      this.defaultUnits = data;
-    })
+    //this.StudyService.units$.subscribe(data => {
+      //this.defaultUnits = data;
+    //})
   }
 
    //#region "Methods"
