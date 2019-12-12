@@ -1,8 +1,7 @@
 on: 
   push:
     branches:
-    - KJ_Actions
-    # change back the branch!!
+    - staging
 name: Deploy to Test
 jobs:
   pushToTest:
