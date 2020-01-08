@@ -14,12 +14,13 @@ import { NavigationService } from './services/navigationservices.service';
 import {MapService} from './services/map.services';
 import { StudyService } from './services/study.service';
 import { TravelTimeService } from './services/traveltimeservices.service';
-
+import { AppchartsComponent } from './components/appcharts/appcharts.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
-  declarations: [SidebarComponent, MapComponent, CoreComponent, FooterComponent],
-  imports: [LeafletModule.forRoot(), MatExpansionModule, MatInputModule, CommonModule, BrowserModule, MatProgressButtonsModule, BrowserAnimationsModule],
+  declarations: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent],
+  imports: [LeafletModule.forRoot(), MatExpansionModule, MatInputModule, CommonModule, BrowserModule, MatProgressButtonsModule, BrowserAnimationsModule, ChartsModule],
   providers: [MapService, NavigationService, StudyService, TravelTimeService],
-  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent]
+  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent]
 })
 export class CoreModule { }

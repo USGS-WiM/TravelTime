@@ -13,3 +13,8 @@
   background-color: #123456 !important;
   color: white;
 }
+
+.grid-parent {
+  display: grid;
+  grid-template-columns: 1fr 1fr
+}

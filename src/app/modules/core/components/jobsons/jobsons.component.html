@@ -47,34 +47,44 @@
                     <!-- don't do anything with input condition-->
                     <label>{{getLabel(k.key)}}</label>
                     <input [(ngModel)]='item.name' placeholder="Name" name="name" type="text" ngControl="value" ngMaxlength="25" autocomplete="off">
-                      
+
                   </div>
-                </div> 
+                </div>
 
                 <!--Description input-->
                 <div *ngFor="let k of item | keyvalue; let it2 = index; trackBy:customTrackBy">
                   <div class="space8" *ngIf="k.key === 'description'">
                     <label>{{getLabel(k.key)}}</label>
-                      <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
+                    <input [(ngModel)]="k.value" placeholder="value" name="{{k.key}}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
                   </div>
-                </div> 
+                </div>
 
                 <!--Parameters input-->
                 <div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy">
-                  <div *ngFor="let u of pars.unit | keyvalue;">
-                    <div class="heading" *ngIf="u.key === 'unit'">
-                      <label>{{pars.name}} ({{u.value}}):</label>
+                  <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+                  <div *ngIf="i === currentStep; else disable">
+                    <div *ngIf="pars.required === true">
+                      <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
+                             type=number ngControl="value" required autocomplete="off">
+                    </div>
+                    <div *ngIf="pars.required === false">
+                      <input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                             type=number ngControl="value" autocomplete="off">
                     </div>
                   </div>
-                  <div class="space8" *ngIf="pars.required === true">
-                    <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
-                            type=number ngControl="value" required autocomplete="off">
-                  </div>
-                  <div class="space8" *ngIf="pars.required === false">
-                    <input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-                            type=number ngControl="value" autocomplete="off">
-                  </div>
+                  <ng-template #disable>
+                    <div *ngIf="pars.required === true">
+                      <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                             type=number ngControl="value" required autocomplete="off">
+                    </div>
+                    <div *ngIf="pars.required === false">
+                      <input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+                             type=number ngControl="value" autocomplete="off">
+                    </div>
+                  </ng-template>
                 </div>
+
+
               </div> 
             </div>
           </div>

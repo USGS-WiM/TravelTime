@@ -41,10 +41,10 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   private datetime: DateTimeModel = new DateTimeModel();
   private firstTimeAssign = true;
 
-  @ViewChild(NgbDatepicker)
+  @ViewChild(NgbDatepicker, { static: false })
   private dp: NgbDatepicker;
 
-  @ViewChild(NgbPopover)
+  @ViewChild(NgbPopover, { static: false })
   private popover: NgbPopover;
 
   private onTouched: () => void = noop;

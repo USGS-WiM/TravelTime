@@ -212,6 +212,8 @@ export class MapComponent extends deepCopy implements OnInit {
           }
         });
         this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+        console.log(this.StudyService.selectedStudy.Reaches);
+
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;

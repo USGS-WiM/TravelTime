@@ -12,6 +12,8 @@ import { ReportModalComponent } from './modules/core/components/report/report.co
 import { DateTimePickerComponent } from './modules/core/components/date-time-picker/date-time-picker.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApptoolsComponent } from './modules/core/components/apptools/apptools.component';
+import { ChartsModule } from 'ng2-charts';
+//import { AppchartsComponent } from './modules/core/components/appcharts/appcharts.component';
 
 
 @NgModule({
@@ -29,6 +31,7 @@ import { ApptoolsComponent } from './modules/core/components/apptools/apptools.c
     HttpClientModule,
     CoreModule,
     NgbTabsetModule,
+    ChartsModule,
     ToastNoAnimationModule.forRoot({
       timeOut: 5000,
       positionClass: 'toast-bottom-right',

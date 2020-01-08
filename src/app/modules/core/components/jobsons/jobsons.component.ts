@@ -60,8 +60,8 @@ export class JobsonsModalComponent implements OnInit {
   public reachIDs = []; 
   private messager: ToastrService;
 
-  @ViewChild('reaches') accordion1: NgbAccordion;
-  @ViewChild('acc') accordion: NgbAccordion;
+  @ViewChild('reaches', { static: false }) accordion1: NgbAccordion;
+  @ViewChild('acc', { static: false }) accordion: NgbAccordion;
   public model = {};
   public showhidetitle = "Show Reaches";
   public showReaches: boolean = true;
@@ -69,6 +69,7 @@ export class JobsonsModalComponent implements OnInit {
   public showDetails: Array<any>;
   private lastIndex = null;
   private selectedIndex = null;
+  private currentStep = 0;
 
   constructor( config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
@@ -132,6 +133,11 @@ export class JobsonsModalComponent implements OnInit {
   public customTrackBy(index: number, obj: any): any {
     return index;
   }
+
+  public beforeChange($event: NgbPanelChangeEvent): void {
+    this.currentStep = +($event.panelId);
+  };
+
 
   public showhideReaches(): void {
     if (this.showReaches === false) {
@@ -225,7 +231,7 @@ export class JobsonsModalComponent implements OnInit {
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
 
-   
+    let d = 0;
 
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
@@ -248,6 +254,11 @@ export class JobsonsModalComponent implements OnInit {
               newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
               newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
             }
+
+            d = d + newreach.parameters[4].value;
+            newreach.parameters[4].value = d;
+            console.log('Distance::' + d);
+
             newreach.parameters[0].unit.unit = selectedUnits['discharge']
             newreach.parameters[1].unit.unit = selectedUnits['discharge']
             newreach.parameters[2].unit.unit = selectedUnits['slope']
@@ -257,6 +268,7 @@ export class JobsonsModalComponent implements OnInit {
           }
         })
         this.reachList.push(newreach);
+        console.log(this.reachList);
       } else {
       }
     }
