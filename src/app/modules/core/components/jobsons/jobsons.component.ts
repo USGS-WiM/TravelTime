@@ -268,7 +268,7 @@ export class JobsonsModalComponent implements OnInit {
           }
         })
         this.reachList.push(newreach);
-        console.log(this.reachList);
+        //console.log(this.reachList);
       } else {
       }
     }

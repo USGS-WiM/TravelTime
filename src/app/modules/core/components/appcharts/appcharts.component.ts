@@ -32,19 +32,55 @@ export class AppchartsComponent implements OnInit {
     if (this.StudyService.GetWorkFlow('totResults')) {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
       this.reaches.shift(); //remove first element (one without results)
-      console.log(this.reaches);
       return (this.reaches);
     } else {
       return;
     }
   }
 
-  public lineChartData: ChartDataSets[] = [
+  /*public lineChartData: ChartDataSets[] = [
     { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
     { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
     { data: [180, 480, 770, 90, 1000, 270, 400], label: 'Series C', yAxisID: 'y-axis-1' }
   ];
-  public lineChartLabels: Label[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  public lineChartLabels: Label[] = [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July'
+  ];*/
+
+  public lineChartLabels: Label[] = [];
+
+  public lineChartData: ChartDataSets[] = [
+  ];
+
+  public getConcentration(c, o) {
+    let myarray = [];
+    for (let i = 0; i < this.output$.length * 3; i++) {
+      myarray.push(0);
+    }
+    myarray[c] = (o.result["tracer_Response"].leadingEdge.MostProbable.concentration);
+    c = c+ 1;
+    myarray[c] = (o.result["tracer_Response"].peakConcentration.MostProbable.concentration);
+    c = c + 1;
+    myarray[c] = (o.result["tracer_Response"].trailingEdge.MostProbable.concentration);
+    let myobj = { data: myarray, label: "reach" }
+    this.lineChartData.push(myobj);
+  }
+ 
+  public ExtractTime() {
+    let j = 0;
+    this.output$.forEach((o) => {
+      this.getTime(o);
+      this.getConcentration(j, o);
+      j += 3;
+    })
+  }
+
+  public getTime(o) {
+    this.lineChartLabels.push(o.result["tracer_Response"].leadingEdge.MostProbable.timeLapse);
+    this.lineChartLabels.push(o.result["tracer_Response"].peakConcentration.MostProbable.timeLapse);
+    this.lineChartLabels.push(o.result["tracer_Response"].trailingEdge.MostProbable.timeLapse);
+  }
+
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: true,
     scales: {
@@ -54,7 +90,14 @@ export class AppchartsComponent implements OnInit {
         {
           id: 'y-axis-0',
           position: 'left',
-        },
+          gridLines: {
+            color: 'rgba(255,0,0,0.3)',
+          },
+          ticks: {
+            fontColor: 'red',
+          }
+        }
+        /*,
         {
           id: 'y-axis-1',
           position: 'right',
@@ -64,7 +107,7 @@ export class AppchartsComponent implements OnInit {
           ticks: {
             fontColor: 'red',
           }
-        }
+        }*/
       ]
     },
     annotation: {
@@ -118,6 +161,7 @@ export class AppchartsComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
   ngOnInit() {
+    this.ExtractTime();
   }
 
   public randomize(): void {
