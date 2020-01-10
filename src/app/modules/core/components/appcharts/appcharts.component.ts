@@ -10,6 +10,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
+import { isInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
+import { ChartsService } from '../../services/charts.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-appcharts',
@@ -17,15 +20,16 @@ import * as pluginAnnotations from 'chartjs-plugin-annotation';
   styleUrls: ['./appcharts.component.css']
 })
 export class AppchartsComponent implements OnInit {
-  private MapService: MapService;
+  private ChartService: ChartsService;
   private StudyService: StudyService;
   private messanger: ToastrService;
   reaches: reach[];
+  private subscription: Subscription;
 
-  constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService) {
+  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService) {
     this.messanger = toastr;
     this.StudyService = studyservice;
-    this.MapService = mapservice;
+    this.ChartService = chartservice;
   }
 
   public get output$() {
@@ -38,21 +42,12 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-  /*public lineChartData: ChartDataSets[] = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
-    { data: [180, 480, 770, 90, 1000, 270, 400], label: 'Series C', yAxisID: 'y-axis-1' }
-  ];
-  public lineChartLabels: Label[] = [
-    'January', 'February', 'March', 'April', 'May', 'June', 'July'
-  ];*/
-
   public lineChartLabels: Label[] = [];
 
   public lineChartData: ChartDataSets[] = [
   ];
 
-  public getConcentration(c, o) {
+  public getConcentrationAll(c, o) {
     let myarray = [];
     for (let i = 0; i < this.output$.length * 3; i++) {
       myarray.push(0);
@@ -65,13 +60,41 @@ export class AppchartsComponent implements OnInit {
     let myobj = { data: myarray, label: "reach" }
     this.lineChartData.push(myobj);
   }
+
+  public getConcentration(o) {
+    let i = this.lineChartData.length;
+    let myarray = [];
+    for (let j = 0; j < i*3; j++) {
+      myarray.push(0);
+    }
+    myarray.push(o.result["tracer_Response"].leadingEdge.MostProbable.concentration);
+    myarray.push(o.result["tracer_Response"].peakConcentration.MostProbable.concentration);
+    myarray.push(o.result["tracer_Response"].trailingEdge.MostProbable.concentration);
+    let myobj = { data: myarray, label: "reach" }
+    this.lineChartData.push(myobj);
+  }
  
-  public ExtractTime() {
+  public ExecuteAll() {
     let j = 0;
     this.output$.forEach((o) => {
       this.getTime(o);
-      this.getConcentration(j, o);
+      this.getConcentrationAll(j, o);
       j += 3;
+    })
+  }
+
+  public ExecuteSelected(s: number[]) {
+    while (this.lineChartData.length > 0) {
+      this.lineChartData.pop();
+    }
+
+    while (this.lineChartLabels.length > 0) {
+      this.lineChartLabels.pop();
+    }
+
+    s.forEach((i) => {
+      this.getTime(this.output$[i]);
+      this.getConcentration(this.output$[i]);
     })
   }
 
@@ -161,7 +184,11 @@ export class AppchartsComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
   ngOnInit() {
-    this.ExtractTime();
+    this.subscription = this.ChartService.return$.subscribe(myvals => {
+       this.ExecuteSelected(myvals);
+    });
+
+    //this.ExecuteAll(); 
   }
 
   public randomize(): void {

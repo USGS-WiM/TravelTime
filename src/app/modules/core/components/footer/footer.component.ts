@@ -4,6 +4,7 @@ import { MapService } from '../../services/map.services';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
 import * as $ from 'jquery';
+import { ChartsService } from '../../services/charts.service';
 
 @Component({
   selector: 'tot-footer',
@@ -13,6 +14,7 @@ import * as $ from 'jquery';
 export class FooterComponent implements OnInit {
   private MapService: MapService;
   private StudyService: StudyService;
+  private ChartService: ChartsService;
   private messanger: ToastrService;
   selectedReach: reach;
   reaches: reach[];
@@ -37,10 +39,11 @@ export class FooterComponent implements OnInit {
     }
   }
 
-  constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService) {
+  constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService, chartservice: ChartsService) {
     this.messanger = toastr;
     this.StudyService = studyservice;
     this.MapService = mapservice;
+    this.ChartService = chartservice;
     this.setClickedRow = function (index) {
       this.selectedRow = index; //memorise selected row
       this.selectedReach = this.reaches[index] //selected reach
@@ -53,6 +56,7 @@ export class FooterComponent implements OnInit {
   }
 
   public highlightFeature(indx) {
+    this.ChartService.noticeAction(indx);
     this.MapService.HighlightFeature('Flowlines', indx+1);
   }
 

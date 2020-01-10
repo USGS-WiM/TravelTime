@@ -1,6 +1,6 @@
 <div class="flex">
   <div class="flex-item">
-    <div style="display: block;">
+    <div style="display: block;" *ngIf="lineChartData.length > 1">
       <canvas baseChart width="400" height="400"
               [datasets]="lineChartData"
               [labels]="lineChartLabels"
