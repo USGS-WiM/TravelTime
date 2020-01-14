@@ -1,18 +1,13 @@
-//import { Component, OnInit } from '@angular/core';
-//import { ChartDataSets, ChartOptions } from 'chart.js';
-//import { Color, BaseChartDirective, Label } from 'ng2-charts';
-//import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { StudyService } from '../../services/study.service';
-import { MapService } from '../../services/map.services';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import { Color, BaseChartDirective, Label} from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
-import { isInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
 import { ChartsService } from '../../services/charts.service';
 import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-appcharts',
@@ -25,6 +20,12 @@ export class AppchartsComponent implements OnInit {
   private messanger: ToastrService;
   reaches: reach[];
   private subscription: Subscription;
+  public gradient;
+
+  @ViewChild(BaseChartDirective,{ static: false }) chart: BaseChartDirective;
+
+  @ViewChild("myCanvas", { static: false }) canvas: ElementRef;
+
 
   constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService) {
     this.messanger = toastr;
@@ -47,42 +48,22 @@ export class AppchartsComponent implements OnInit {
   public lineChartData: ChartDataSets[] = [
   ];
 
-  public getConcentrationAll(c, o) {
-    let myarray = [];
-    for (let i = 0; i < this.output$.length * 3; i++) {
-      myarray.push(0);
+    public getConcentration(o) {
+    if (this.lineChartData.some(e => e.label === o.name)) { }
+    else {
+      let l = this.lineChartData.length;
+      let myarray = [];
+      for (let j = 0; j < l * 3; j++) {
+        myarray.push(0);
+      }
+      myarray.push(o.result["tracer_Response"].leadingEdge.MostProbable.concentration);
+      myarray.push(o.result["tracer_Response"].peakConcentration.MostProbable.concentration);
+      myarray.push(o.result["tracer_Response"].trailingEdge.MostProbable.concentration);
+      let myobj = { data: myarray, label: o.name }
+      this.lineChartData.push(myobj);
     }
-    myarray[c] = (o.result["tracer_Response"].leadingEdge.MostProbable.concentration);
-    c = c+ 1;
-    myarray[c] = (o.result["tracer_Response"].peakConcentration.MostProbable.concentration);
-    c = c + 1;
-    myarray[c] = (o.result["tracer_Response"].trailingEdge.MostProbable.concentration);
-    let myobj = { data: myarray, label: "reach" }
-    this.lineChartData.push(myobj);
-  }
-
-  public getConcentration(o) {
-    let i = this.lineChartData.length;
-    let myarray = [];
-    for (let j = 0; j < i*3; j++) {
-      myarray.push(0);
-    }
-    myarray.push(o.result["tracer_Response"].leadingEdge.MostProbable.concentration);
-    myarray.push(o.result["tracer_Response"].peakConcentration.MostProbable.concentration);
-    myarray.push(o.result["tracer_Response"].trailingEdge.MostProbable.concentration);
-    let myobj = { data: myarray, label: "reach" }
-    this.lineChartData.push(myobj);
   }
  
-  public ExecuteAll() {
-    let j = 0;
-    this.output$.forEach((o) => {
-      this.getTime(o);
-      this.getConcentrationAll(j, o);
-      j += 3;
-    })
-  }
-
   public ExecuteSelected(s: number[]) {
     while (this.lineChartData.length > 0) {
       this.lineChartData.pop();
@@ -92,20 +73,40 @@ export class AppchartsComponent implements OnInit {
       this.lineChartLabels.pop();
     }
 
+    //ok if charts array is more then two, charts does exist, so they can be updated;
     s.forEach((i) => {
       this.getTime(this.output$[i]);
       this.getConcentration(this.output$[i]);
+      if (s.length > 2) {
+        this.gradient = this.canvas.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 200);
+        this.gradient.addColorStop(0, 'green');
+        this.gradient.addColorStop(1, 'white');
+        console.log(this.chart)
+        this.chart.update();
+        this.chart.updateColors();
+
+      } else { }
     })
   }
 
+
+
   public getTime(o) {
-    this.lineChartLabels.push(o.result["tracer_Response"].leadingEdge.MostProbable.timeLapse);
-    this.lineChartLabels.push(o.result["tracer_Response"].peakConcentration.MostProbable.timeLapse);
-    this.lineChartLabels.push(o.result["tracer_Response"].trailingEdge.MostProbable.timeLapse);
+    if (this.lineChartData.some(e => e.label === o.name)) { }
+    else {
+      this.lineChartLabels.push(o.result["tracer_Response"].leadingEdge.MostProbable.timeLapse);
+      this.lineChartLabels.push(o.result["tracer_Response"].peakConcentration.MostProbable.timeLapse);
+      this.lineChartLabels.push(o.result["tracer_Response"].trailingEdge.MostProbable.timeLapse);
+    }
   }
 
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: true,
+    legend: { position: 'left' },
+    title: {
+      text: 'Time of travel downstream',
+      display: true
+    },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
@@ -119,7 +120,7 @@ export class AppchartsComponent implements OnInit {
           ticks: {
             fontColor: 'red',
           }
-        }
+        } //add additional axis
         /*,
         {
           id: 'y-axis-1',
@@ -152,25 +153,81 @@ export class AppchartsComponent implements OnInit {
     },
   };
   public lineChartColors: Color[] = [
-    { // grey
-      backgroundColor: 'rgba(148,159,177,0.2)',
+    {
+      backgroundColor: this.gradient,
       borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
-    { // dark grey
-      backgroundColor: 'rgba(77,83,96,0.2)',
-      borderColor: 'rgba(77,83,96,1)',
+    {
+      backgroundColor: 'rgba(51,102,102,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(77,83,96,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(77,83,96,1)'
     },
-    { // red
-      backgroundColor: 'rgba(255,0,0,0.3)',
-      borderColor: 'red',
+    { 
+      backgroundColor: 'rgba(51,204,204,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(51,255,255,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(51,102,255,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(51,153,255,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(51,204,255,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(51,255,255,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(102,255,204,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    {
+      backgroundColor: 'rgba(102,255,255,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
       pointBackgroundColor: 'rgba(148,159,177,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
@@ -181,60 +238,21 @@ export class AppchartsComponent implements OnInit {
   public lineChartType = 'line';
   public lineChartPlugins = [pluginAnnotations];
 
-  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-
   ngOnInit() {
+
+
     this.subscription = this.ChartService.return$.subscribe(myvals => {
        this.ExecuteSelected(myvals);
     });
 
-    //this.ExecuteAll(); 
-  }
-
-  public randomize(): void {
-    for (let i = 0; i < this.lineChartData.length; i++) {
-      for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-        this.lineChartData[i].data[j] = this.generateNumber(i);
-      }
-    }
-    this.chart.update();
-  }
-
-  private generateNumber(i: number) {
-    return Math.floor((Math.random() * (i < 2 ? 100 : 1000)) + 1);
   }
 
   // events
   public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
-    console.log(event, active);
+    //console.log(event, active);
   }
 
   public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
-    console.log(event, active);
+    //console.log(event, active);
   }
-
-  public hideOne() {
-    const isHidden = this.chart.isDatasetHidden(1);
-    this.chart.hideDataset(1, !isHidden);
-  }
-
-  public pushOne() {
-    this.lineChartData.forEach((x, i) => {
-      const num = this.generateNumber(i);
-      const data: number[] = x.data as number[];
-      data.push(num);
-    });
-    this.lineChartLabels.push(`Label ${this.lineChartLabels.length}`);
-  }
-
-  public changeColor() {
-    this.lineChartColors[2].borderColor = 'green';
-    this.lineChartColors[2].backgroundColor = `rgba(0, 255, 0, 0.3)`;
-  }
-
-  public changeLabel() {
-    this.lineChartLabels[2] = ['1st Line', '2nd Line'];
-    // this.chart.update();
-  }
-
 }

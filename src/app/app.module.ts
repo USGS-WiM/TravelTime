@@ -15,7 +15,6 @@ import { ApptoolsComponent } from './modules/core/components/apptools/apptools.c
 import { ChartsModule } from 'ng2-charts';
 //import { AppchartsComponent } from './modules/core/components/appcharts/appcharts.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
