@@ -124,8 +124,8 @@ export class SidebarComponent {
 
 
     this.StudyService.ReportOptions = [
+      { name: "Map of study area", checked: false },
       { name: "Table of values", checked: false }, 
-      { name: "Map of study area", checked: false }, 
       { name: "Graph of timeline", checked: false }
     ]
   }

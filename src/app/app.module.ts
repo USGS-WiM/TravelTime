@@ -13,7 +13,6 @@ import { DateTimePickerComponent } from './modules/core/components/date-time-pic
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApptoolsComponent } from './modules/core/components/apptools/apptools.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +41,7 @@ import { ApptoolsComponent } from './modules/core/components/apptools/apptools.c
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ReportModalComponent, ApptoolsComponent]
 })
 export class AppModule {}
+

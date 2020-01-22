@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, Input } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import { MapService } from '../../services/map.services';
@@ -36,6 +36,9 @@ import {
       state('out', style({
         height: '100vh'
       })),
+      state('report', style({
+        height: '25vh'
+      })),
       transition('in => out', animate('400ms ease-in-out')),
       transition('out => in', animate('400ms ease-in-out'))
     ])
@@ -54,6 +57,8 @@ export class MapComponent extends deepCopy implements OnInit {
   private subscription: Subscription;
   public fitBounds;
 
+  @Input() public modal: boolean;
+  
   scaleMap: string;
 
   public get LayersControl() {
@@ -79,15 +84,19 @@ export class MapComponent extends deepCopy implements OnInit {
 
 
   ngOnInit() {
+    if(!this.modal) {
+      this.scaleMap = 'out';
+      this.StudyService.noticeAction(false);
 
-    this.scaleMap = 'out';
-    this.StudyService.noticeAction(false);
-
-    this.subscription = this.StudyService.return$.subscribe(isWorking => {
-      if (isWorking) {
-        this.scaleMap = 'in';
-      }
-    });
+      this.subscription = this.StudyService.return$.subscribe(isWorking => {
+        if (isWorking) {
+          this.scaleMap = 'in';
+        }
+      });
+    } 
+    else {
+      this.scaleMap = 'report';
+    }
 
     //method to subscribe to the layers
     this.MapService.LayersControl.subscribe(data => {
@@ -184,7 +193,7 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 10, valueType: "numeric"};
+          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 100, valueType: "numeric"};
         }//end switch
       });//next item
       return config;
