@@ -31,7 +31,7 @@ import {
     trigger('slideInOut', [
       state('in', style({
         overflow: 'hidden',
-        height: '70vh'
+        height: '60vh'
       })),
       state('out', style({
         height: '100vh'
