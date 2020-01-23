@@ -20,7 +20,6 @@ import { ChartsModule } from 'ng2-charts';
     AppComponent,
     AboutModalComponent,
     JobsonsModalComponent,
-    ReportModalComponent,
     NavbarComponent,
     DateTimePickerComponent,
     ApptoolsComponent

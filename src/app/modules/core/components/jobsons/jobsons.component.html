@@ -1,9 +1,9 @@
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
-        <div class="col-xs-12">
-            <h4 class="modal-title pull-left">Jobsons Results</h4>  
-            <button class="close pull-right" (click)="activeModal.dismiss('Cross click')">x</button>                
+        <div style="width:100%">
+            <h4 class="modal-title">Jobsons Results</h4>  
+            <button class="close" (click)="activeModal.dismiss('Cross click')">x</button>                
         </div>  
     </div>
     <div class="modal-body">
@@ -15,7 +15,7 @@
             <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
           </div>
           <div class="initial-input">
-            <label class="tight">Spill Concentration ({{this.StudyService.defConcentration}}):</label>
+            <label class="tight">Spill Mass ({{this.StudyService.defConcentration}}):</label>
             <input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
           </div>
           <div class="input-with-icon initial-input spacer30">

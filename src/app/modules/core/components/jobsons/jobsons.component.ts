@@ -231,9 +231,7 @@ export class JobsonsModalComponent implements OnInit {
   //#endregion
 
   //#region "Private methods"
-  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
-
-    //let d = 0;
+  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side   
 
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
@@ -256,11 +254,6 @@ export class JobsonsModalComponent implements OnInit {
               newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
               newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
             }
-
-            //d = d + newreach.parameters[4].value;
-            //newreach.parameters[4].value = d;
-            //console.log('Distance::' + d);
-
             newreach.parameters[0].unit.unit = selectedUnits['discharge']
             newreach.parameters[1].unit.unit = selectedUnits['discharge']
             newreach.parameters[2].unit.unit = selectedUnits['slope']
@@ -270,7 +263,6 @@ export class JobsonsModalComponent implements OnInit {
           }
         })
         this.reachList.push(newreach);
-        //
       } else {
       }
     }
