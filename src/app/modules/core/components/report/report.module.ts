@@ -1,20 +1,23 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from 'src/app/app.component';
-import { MapComponent } from '../map/map.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapModule } from '../map/map.module';
 import { ReportModalComponent } from './report.component';
-import { CoreComponent } from '../../core.component';
-import { CoreModule } from '../../core.module';
+import { CommonModule } from '@angular/common';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ReportModalComponent],
   imports: [ 
+    CommonModule,
     MapModule,
-    CoreModule,
-    BrowserModule
+    LeafletModule,
+    NgbModule,
+    FormsModule
   ],
-  bootstrap: [ReportModalComponent]
+  entryComponents: [ReportModalComponent],
+  exports: [
+    ReportModalComponent
+  ]
 })
 export class ReportModule { }

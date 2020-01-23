@@ -18,7 +18,6 @@ import { ApptoolsComponent } from './modules/core/components/apptools/apptools.c
     AppComponent,
     AboutModalComponent,
     JobsonsModalComponent,
-    ReportModalComponent,
     NavbarComponent,
     DateTimePickerComponent,
     ApptoolsComponent
@@ -41,7 +40,7 @@ import { ApptoolsComponent } from './modules/core/components/apptools/apptools.c
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ReportModalComponent, ApptoolsComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
 })
 export class AppModule {}
 

@@ -14,12 +14,31 @@ import { NavigationService } from './services/navigationservices.service';
 import {MapService} from './services/map.services';
 import { StudyService } from './services/study.service';
 import { TravelTimeService } from './services/traveltimeservices.service';
+import {NgxPrintModule} from 'ngx-print';
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { MapModule } from './components/map/map.module';
+import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ReportModule } from './components/report/report.module';
 
 
 @NgModule({
-  declarations: [SidebarComponent, MapComponent, CoreComponent, FooterComponent],
-  imports: [LeafletModule.forRoot(), MatExpansionModule, MatInputModule, CommonModule, BrowserModule, MatProgressButtonsModule, BrowserAnimationsModule],
-  providers: [MapService, NavigationService, StudyService, TravelTimeService],
-  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent]
+  declarations: [SidebarComponent, CoreComponent, FooterComponent],
+  imports: [
+    LeafletModule.forRoot(), 
+    MatExpansionModule, 
+    MatInputModule, 
+    CommonModule, 
+    BrowserModule, 
+    MatProgressButtonsModule, 
+    BrowserAnimationsModule, 
+    NgxPrintModule, 
+    AppRoutingModule, 
+    MapModule, 
+    ReportModule, 
+    NgbModule
+  ],
+  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal],
+  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent],
+  bootstrap: [CoreComponent]
 })
 export class CoreModule { }

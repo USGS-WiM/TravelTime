@@ -6,7 +6,7 @@ import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import { MapService } from '../../services/map.services';
 
 @Component({
-  selector: 'app-report',
+  selector: 'tot-report',
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.css']
 })
@@ -14,6 +14,7 @@ export class ReportModalComponent implements OnInit {
 
   public reportTitle = "Time of Travel Report";
   public reportComments = "";
+  //public print: any;
 
   private StudyService: StudyService;
   private MapService: MapService;
@@ -34,8 +35,39 @@ export class ReportModalComponent implements OnInit {
     config.keyboard = false;
     this.StudyService = studyservice;
     this.MapService = mapservice;
+
+    //this.print = function () {
+      //window.print();
+  //};
   }
 
   ngOnInit() {
+  }
+
+  public onPrint() {
+    // var div2Print=document.getElementById('print-content');
+    // var newWin=window.open('','Print-Window');
+    // newWin.document.open();
+    // newWin.document.write('<html><body onload="window.print()">'+div2Print.innerHTML+'</body></html>');
+    // newWin.document.close();
+    // setTimeout(function(){newWin.close();},10);
+    //window.print();
+    this.printElement(document.getElementById("print-content"));
+  }
+  
+  private printElement(elem) {
+      var domClone = elem.cloneNode(true);
+      
+      var $printSection = document.getElementById("printSection");
+      
+      if (!$printSection) {
+          $printSection = document.createElement("div");
+          $printSection.id = "printSection";
+          document.body.appendChild($printSection);
+      }
+      
+      $printSection.innerHTML = "";
+      $printSection.appendChild(domClone);
+      window.print();
   }
 }
