@@ -1,19 +1,19 @@
 export class reach {
-    public description: string
-    public id: number
-    public name: string
-    public parameters:Array<any>
-    public reaches: {} //initial input from the service
-    public result: {}
+    public description: string;
+    public id: number;
+    public name: string;
+    public parameters:Array<any>;
+    public reaches: any = {}; //initial input from the service
+    public result: any = {};
     public ischeked: boolean;
 
     constructor(arg:reach) {
-        arg = arg.reaches[0]
-        this.description = arg.description
-        this.id = arg.id
-        this.name = arg.name
-        this.parameters = []
-        this._init(arg.parameters)
+        arg = arg.reaches[0];
+        this.description = arg.description;
+        this.id = arg.id;
+        this.name = arg.name;
+        this.parameters = [];
+        this._init(arg.parameters);
         this.ischeked = false;
     }
     

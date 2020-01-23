@@ -1,8 +1,19 @@
-* {
-  height: 100vh;
+:host * {
   padding: 0;
-  margin-top: 20px;
   right: 0px;
+}
+
+:host-context( .main ) * {
+  height: 100vh;
+  margin-top: 20px;
   margin-left: 360px;
   margin-bottom: 0px;
 }
+
+ :host-context( .report ) * {
+  height: 100%;
+  width:100%;
+  margin-top: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+}  
