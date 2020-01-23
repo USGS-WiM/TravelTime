@@ -4554,6 +4554,10 @@ ul {
       background-color: #F4F5F6;
     }
 
+.flex-item {
+  overflow: auto;
+}
+
   .banner.success:before {
     content: '\f120';
   }

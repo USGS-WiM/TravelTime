@@ -5,6 +5,7 @@ import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
 import * as $ from 'jquery';
 import { ChartsService } from '../../services/charts.service';
+import '../../../../shared/extensions/number.toUSGSValue';
 
 @Component({
   selector: 'tot-footer',
@@ -27,11 +28,25 @@ export class FooterComponent implements OnInit {
     }
     return (this.StudyService.GetWorkFlow('totResults'));
   }
-
+  
   public get output$ () {
     if (this.StudyService.GetWorkFlow('totResults')) {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
       this.reaches.shift(); //remove first element (one without results)
+
+      //apply rounding function ?
+
+      /*this.reaches.forEach((o => {
+        o.result["equations"]["v"]["value"] = (o.result["equations"]["v"]["value"]).toUSGSvalue();
+        o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"]).toUSGSvalue();
+        o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"]).toUSGSvalue();
+        o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"]).toUSGSvalue();
+        o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"]).toUSGSvalue();
+
+      }))*/
+
+
+
 
       return (this.reaches);
     } else {
