@@ -19,14 +19,18 @@ export class AppchartsComponent implements OnInit {
   private StudyService: StudyService;
   private messanger: ToastrService;
   private subscription: Subscription;
+  private maxY;
+  private maxX;
+  private minX;
   private myTime = [];
   private myTimeLabels = [];
+  private myConcentration =[];
   reaches: reach[];
 
   public lineChartLabels: Array<any> = [];
   public lineChartData: ChartDataSets[] = [];
   public lineChartLegend = true;
-  public lineChartType = 'line';
+  public lineChartType = 'scatter';
   public lineChartPlugins = [pluginAnnotations];
 
 
@@ -42,22 +46,53 @@ export class AppchartsComponent implements OnInit {
     //get time stamp, lowest to highest
     //add these time stamps
     console.log(this.output$);
+
+    this.getAll();
     this.getTimeall();
-    this.getTimeLabels();
+
     this.subscription = this.ChartService.return$.subscribe(myvals => {
       this.ExecuteSelected(myvals);
     });
   }
 
-  public getTimeLabels() {
+  public getAll() {
     this.output$.forEach((o => {
       this.myTimeLabels.push(o.result["tracer_Response"].leadingEdge.MostProbable.date);
+      this.myConcentration.push(o.result["tracer_Response"].leadingEdge.MostProbable.concentration);
       this.myTimeLabels.push(o.result["tracer_Response"].peakConcentration.MostProbable.date);
+      this.myConcentration.push(o.result["tracer_Response"].peakConcentration.MostProbable.concentration);
       this.myTimeLabels.push(o.result["tracer_Response"].trailingEdge.MostProbable.date);
+      this.myConcentration.push(o.result["tracer_Response"].trailingEdge.MostProbable.concentration);
     }));
-    //this.lineChartLabels = this.myTimeLabels;
+
+    function isoFormatDMY(d) { //2020-01-24 11:39:22
+      function pad(n) { return (n < 10 ? '0' : '') + n }
+      return pad(d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + d.getUTCDate() + ' ' + d.getUTCHours() + ':' + d.getUTCMinutes() + ':' + d.getUTCSeconds())
+    }
+
+    this.lineChartLabels = this.myTimeLabels;
+
+    /*for (var i = 0; i < this.myTimeLabels.length; i++) {
+      this.lineChartLabels.push(isoFormatDMY(new Date(this.myTimeLabels[i])))
+    }*/
+
     console.log(this.lineChartLabels);
+
+    this.myTimeLabels.sort(function (a, b) {
+      return (a < b) ? -1 : ((a > b) ? 1 : 0);
+    });
+
+    this.maxX = this.myTimeLabels[this.myTimeLabels.length - 1];
+    this.minX = this.myTimeLabels[0];
+
+
+    //this.maxX = isoFormatDMY(new Date(this.maxX))
+    //this.minX = isoFormatDMY(new Date(this.minX))
+    console.log(this.maxX);
+    console.log(this.minX);
+    this.maxY = Math.max.apply(Math, this.myConcentration);
   }
+
   public getTimeall() {
     let i = 0;
     let leadEd: Number;
@@ -85,11 +120,9 @@ export class AppchartsComponent implements OnInit {
     }
     this.myTime = this.myTime.sort(compareSecondColumn);
     for (let i = 0; i < this.myTime.length; i++) {
-      this.lineChartLabels.push(this.myTime[i][1]);
+      //this.lineChartLabels.push(this.myTime[i][1]);
     }
   }
-
-
   public ExecuteSelected(s: number[]) {
     while (this.lineChartData.length > 0) {
       this.lineChartData.pop();
@@ -100,7 +133,6 @@ export class AppchartsComponent implements OnInit {
       j += 3;
     })
   }
-
   public get output$() {
     if (this.StudyService.GetWorkFlow('totResults')) {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
@@ -209,7 +241,36 @@ export class AppchartsComponent implements OnInit {
       this.lineChartData.push(myobj);
     }
   }
-  public lineChartOptions: (ChartOptions & { annotation: any }) = {
+
+
+  public lineChartOptions: any = {
+    responsive: true,
+    scales: {
+      yAxes: [{
+        ticks: {
+          max: this.maxY, //GET maximum concentration from the data
+          min: 0, //Minimum is 0
+        }
+      }],
+      xAxes: [{
+        type: 'time',
+        ticks: {
+          max: this.maxX, // get time max
+          min: (this.minX - 5),//'2018-01-29 10:00:00', // get time min
+          //2020-01-24T11:39:22.014+00:00 convert to 
+          unit: 'minute',
+          unitStepSize: 10,
+          displayFormats: {
+            'second': 'HH:mm:ss',
+            'minute': 'HH:mm:ss',
+            'hour': 'HH:mm',
+          },
+        },
+      }],
+    },
+  };
+
+  /*public lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: true,
 
     legend: { position: 'left' },
@@ -242,7 +303,7 @@ export class AppchartsComponent implements OnInit {
           ticks: {
             fontColor: 'red',
           }
-        }*/
+        }
       ]
     },
     annotation: {
@@ -262,7 +323,9 @@ export class AppchartsComponent implements OnInit {
         },
       ],
     },
-  };
+  };*/
+
+
   public lineChartColors: Color[] = [
     {
       backgroundColor: 'rgba(51,102,102,0.2)',
