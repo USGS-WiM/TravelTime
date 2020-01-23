@@ -193,7 +193,7 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 100, valueType: "numeric"};
+          case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
         }//end switch
       });//next item
       return config;
