@@ -19,10 +19,11 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { MapModule } from './components/map/map.module';
 import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReportModule } from './components/report/report.module';
-
-
+import { AppchartsComponent } from './components/appcharts/appcharts.component';
+import { ChartsModule } from 'ng2-charts';
+import { ChartsService } from './services/charts.service';
 @NgModule({
-  declarations: [SidebarComponent, CoreComponent, FooterComponent],
+    declarations: [SidebarComponent, CoreComponent, FooterComponent, AppchartsComponent],
   imports: [
     LeafletModule.forRoot(), 
     MatExpansionModule, 
@@ -35,10 +36,11 @@ import { ReportModule } from './components/report/report.module';
     AppRoutingModule, 
     MapModule, 
     ReportModule, 
-    NgbModule
-  ],
-  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal],
-  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent],
+    NgbModule,
+    ChartsModule
+    ],
+    providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService],
+    exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent],
   bootstrap: [CoreComponent]
 })
 export class CoreModule { }

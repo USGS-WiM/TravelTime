@@ -47,6 +47,8 @@ export class JobsonsModalComponent implements OnInit {
     this.StudyService.selectedStudy.SpillMass = this._spillMass;
   }
 
+  log(val) { console.log(val); }
+
   private _discharge: number;
 
   public get Discharge(): number {
@@ -60,8 +62,8 @@ export class JobsonsModalComponent implements OnInit {
   public reachIDs = []; 
   private messager: ToastrService;
 
-  @ViewChild('reaches') accordion1: NgbAccordion;
-  @ViewChild('acc') accordion: NgbAccordion;
+  @ViewChild('reaches', { static: false }) accordion1: NgbAccordion;
+  @ViewChild('acc', { static: false }) accordion: NgbAccordion;
   public model = {};
   public showhidetitle = "Show Reaches";
   public showReaches: boolean = true;
@@ -69,6 +71,7 @@ export class JobsonsModalComponent implements OnInit {
   public showDetails: Array<any>;
   private lastIndex = null;
   private selectedIndex = null;
+  private currentStep = 0;
 
   constructor( config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService){
     // customize default values of modals used by this component tree
@@ -132,6 +135,11 @@ export class JobsonsModalComponent implements OnInit {
   public customTrackBy(index: number, obj: any): any {
     return index;
   }
+
+  public beforeChange($event: NgbPanelChangeEvent): void {
+    this.currentStep = +($event.panelId);
+  };
+
 
   public showhideReaches(): void {
     if (this.showReaches === false) {

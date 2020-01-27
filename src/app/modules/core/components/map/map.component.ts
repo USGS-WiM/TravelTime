@@ -31,7 +31,7 @@ import {
     trigger('slideInOut', [
       state('in', style({
         overflow: 'hidden',
-        height: '70vh'
+        height: '60vh'
       })),
       state('out', style({
         height: '100vh'
@@ -193,7 +193,7 @@ export class MapComponent extends deepCopy implements OnInit {
             break;
           case 5: item.value = "downstream";
             break;
-          case 0: item.value = {id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: 100, valueType: "numeric"};
+          case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
         }//end switch
       });//next item
       return config;
@@ -221,6 +221,8 @@ export class MapComponent extends deepCopy implements OnInit {
           }
         });
         this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+        //console.log(this.StudyService.selectedStudy.Reaches);
+
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
