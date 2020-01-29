@@ -47,7 +47,7 @@ export class FooterComponent implements OnInit {
 
 
 
-      console.log(this.reaches);
+     //console.log(this.reaches);
       return (this.reaches);
     } else {
       return;
