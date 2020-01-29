@@ -3,6 +3,7 @@
      [@slideInOut]="scaleMap"
      leaflet
      [leafletOptions]="MapOptions"
+     (leafletMapReady)="onMapReady($event)"
      [leafletLayers]="Layers"
      [leafletLayersControl]="LayersControl"
      (leafletZoomChange)="onZoomChange($event)"

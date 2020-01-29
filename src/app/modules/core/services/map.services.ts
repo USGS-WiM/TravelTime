@@ -17,7 +17,10 @@ export class MapService {
   public Options: L.MapOptions;
   // for layers that will show up in the leaflet control
   public LayersControl: Subject<layerControl> = new Subject<any>();
-  private _layersControl: layerControl = { baseLayers: [], overlays: [] };
+
+  public _layersControl: layerControl = {
+    baseLayers: [], overlays: []
+  };
   public CurrentZoomLevel;
   public CurrentLayer: String;
   public isClickable: boolean = false;

@@ -69,6 +69,21 @@ export class MapComponent extends deepCopy implements OnInit {
     return this.MapService.Options;
   }
 
+  optionsSpec: any = {
+    layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
+    zoom: 5,
+    center: [46.879966, -121.726909]
+  };
+
+  // Leaflet bindings
+  zoom = this.optionsSpec.zoom;
+  center = L.latLng(this.optionsSpec.center);
+  options = {
+    layers: [L.tileLayer(this.optionsSpec.layers[0].url, { attribution: this.optionsSpec.layers[0].attribution })],
+    zoom: this.optionsSpec.zoom,
+    center: L.latLng(this.optionsSpec.center)
+  };
+
   public get Layers() {
     return this._layers;
   }
@@ -127,30 +142,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
 
   public onMapReady(map: L.Map) {
-    //adjusted example provided from http://www.coffeegnome.net/control-button-leaflet/
-    var ourCustomControl =
-      L.Control.extend({
-        options: {
-          position: 'topleft'
-          //control position - allowed: 'topleft', 'topright', 'bottomleft', 'bottomright'
-        },
-        onAdd: function (map) {
-          var container = L.DomUtil.create('div', 'leaflet-bar-custom');
-          //container.style.backgroundImage = "url(https://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
-          container.textContent = "Exploration Tool";
-          container.style.color = "black";
-          container.style.backgroundSize = "30px 30px";
-          container.style.width = '100px';
-          container.style.height = '30px';
-
-          container.onclick = function () {
-            console.log('buttonClicked'); //this can call for a modal from the service
-          }
-          return container;
-        },
-      });
-
-    map.addControl(new ourCustomControl());
+    map.invalidateSize ()
   }
 
   public onZoomChange(zoom: number) {
