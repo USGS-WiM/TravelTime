@@ -14,6 +14,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApptoolsComponent } from './modules/core/components/apptools/apptools.component';
 import { ChartsModule } from 'ng2-charts';
 //import { AppchartsComponent } from './modules/core/components/appcharts/appcharts.component';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { MapModule } from './modules/core/components/map/map.module';
+import { AppRoutingModule } from './modules/core/core-routing.module';
 
 @NgModule({
   declarations: [
@@ -22,14 +25,18 @@ import { ChartsModule } from 'ng2-charts';
     JobsonsModalComponent,
     NavbarComponent,
     DateTimePickerComponent,
-    ApptoolsComponent
+    ApptoolsComponent,
+    ReportModalComponent
   ],
   imports: [
+    LeafletModule.forRoot(),
     BrowserModule,
     HttpClientModule,
     CoreModule,
     NgbTabsetModule,
     ChartsModule,
+    MapModule,
+    AppRoutingModule,
     ToastNoAnimationModule.forRoot({
       timeOut: 5000,
       positionClass: 'toast-bottom-right',
@@ -37,12 +44,12 @@ import { ChartsModule } from 'ng2-charts';
       preventDuplicates: true,
       countDuplicates:true
     }),
-    NgbModule.forRoot(),
+    NgbModule,
     FormsModule, 
     ReactiveFormsModule
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent, ReportModalComponent]
 })
 export class AppModule {}
