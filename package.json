@@ -26,6 +26,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@ng-bootstrap/ng-bootstrap": "^4.2.1",
+    "@ng-select/ng-select": "^3.7.2",
     "@turf/turf": "^5.1.6",
     "@types/esri-leaflet": "^2.1.4",
     "@types/jquery": "^3.3.31",

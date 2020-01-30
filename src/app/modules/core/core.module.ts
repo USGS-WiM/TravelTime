@@ -21,15 +21,20 @@ import { AppchartsComponent } from './components/appcharts/appcharts.component';
 import { ChartsModule } from 'ng2-charts';
 import { ChartsService } from './services/charts.service';
 import { MapModule } from './components/map/map.module';
+import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent, AppchartsComponent],
   imports: [
-    LeafletModule.forRoot(), 
+    LeafletModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
     MatExpansionModule, 
     MatInputModule, 
     CommonModule, 
-    BrowserModule, 
+    BrowserModule,
+    NgSelectModule,
     MatProgressButtonsModule, 
     BrowserAnimationsModule, 
     NgxPrintModule, 

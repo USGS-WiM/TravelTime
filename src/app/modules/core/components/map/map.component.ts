@@ -212,9 +212,14 @@ export class MapComponent extends deepCopy implements OnInit {
             }
           }
         });
-        this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-        //console.log(this.StudyService.selectedStudy.Reaches);
 
+
+        //one liner to sort data by drainage area;
+        if (typeof (response != "undefined")) {
+          response.features.sort((a, b) => (a.properties.DrainageArea > b.properties.DrainageArea) ? 1 : ((b.properties.DrainageArea > a.properties.DrainageArea) ? -1 : 0));
+        }
+
+        this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;

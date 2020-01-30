@@ -6,3 +6,16 @@
   height: 420px;
   overflow-y: scroll;
 }
+
+.container {
+  width: 500px;
+  border-radius: .5em;
+  padding: 10px;
+}
+
+.item {
+  width: 200px;
+  padding: 10px;
+  display: inline-block;
+  vertical-align: middle
+}
