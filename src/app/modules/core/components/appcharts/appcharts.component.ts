@@ -38,32 +38,26 @@ export class AppchartsComponent implements OnInit {
 
   private maxTimeLabels = [];
   private maxConcentration = [];
-
   private mostTimeLabels = [];
-  private mostConcentration =[];
-
+  private mostConcentration = [];
   public buttonName = "MaximumProbable";
+
   public showMost = true;
   public showMax = false;
 
   public open() {
-    if (this.buttonName == "MostProbable") {
+    if (this.buttonName == "MostProbable") { //move this to the service;
       this.buttonName = "MaximumProbable";
-      this.showMost = true;
-      this.showMax = false;
-
+      this.ChartService.displayAction("most", true);
+      this.ChartService.displayAction("max", false);
     } else {
       this.buttonName = "MostProbable";
-      this.showMost = false;
-      this.showMax = true;
+      this.ChartService.displayAction("most", false);
+      this.ChartService.displayAction("max", true);
     }
-
     this.flushChartData();
     this.getAllMostProbable();
     this.generateData();
-
-
-
     this.chart.update();
     this.chart.updateColors();
   }
@@ -96,6 +90,11 @@ export class AppchartsComponent implements OnInit {
 
   public chartIsActive(e) {
     
+    /*while (e.value.length > 1) {
+      e.value.pop();
+    }*/
+    //just to check
+
     if (typeof (e) == "undefined") {//if nothing selected, plot all
       return null;
     }
@@ -103,8 +102,10 @@ export class AppchartsComponent implements OnInit {
     this.getAllForGroup(e.value);
     this.generateDataGroup(e.value);
     this.lineChartLegend = true;
+
     this.mostLineChartOptions.legend = { position: 'left' }
     this.maxLineChartOptions.legend = { position: 'left' }
+
     this.chart.update();
     this.chart.updateColors();
   }
@@ -130,12 +131,18 @@ export class AppchartsComponent implements OnInit {
     this.messanger = toastr;
     this.StudyService = studyservice;
     this.ChartService = chartservice;
+    this.ChartService.displayAction("max", false);
+    this.ChartService.displayAction("most", true);
   }
   //Get time all, subscribe to selected row and plot selected one;
   ngOnInit() {
-    //let groupArray = this.splitToarray(); //move this function to the services.
     this.getAllMostProbable();
     this.generateData();
+
+    this.subscription = this.ChartService.display$.subscribe(isShown => {
+      this.showMax = isShown.max;
+      this.showMost = isShown.most;
+    });
   }
 
   //PARSE ENTIRE DATA RETURN FOR THE CHARTS
@@ -228,7 +235,11 @@ export class AppchartsComponent implements OnInit {
       var i, j, temparray;
       for (i = 0, j = arr.length; i < j; i += size) {
         temparray = arr.slice(i, i + size);
-        tempvar = { "id": id, "label": "Reach group #" + id, "value": temparray };
+        if (temparray.length < 2) {
+          array[array.length].value.push(temparray);
+        } else {
+          tempvar = { "id": id, "label": "Reach group #" + id, "value": temparray };
+        }
         array.push(tempvar);
         id += 1;
       }
@@ -266,7 +277,6 @@ export class AppchartsComponent implements OnInit {
     this.maxTimeLabels.sort(function (a, b) {
       return (a < b) ? -1 : ((a > b) ? 1 : 0);
     });
-
     this.maxMostProbableY = Math.max.apply(Math, this.mostConcentration);
     this.maxMaxProbableY = Math.max.apply(Math, this.maxConcentration);
   }

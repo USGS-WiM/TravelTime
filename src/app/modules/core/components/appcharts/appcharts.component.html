@@ -18,8 +18,8 @@
 
 <div class="flex">
   <div class="flex-item" id="block1">
-    <div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMost">
-      <canvas baseChart width="600" height="400"
+    <div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMost"> <!--Service call-->
+      <canvas baseChart width="600" height="350"
               [datasets]="mostLineChartData"
               [labels]="mostLineChartLabels"
               [options]="mostLineChartOptions"
@@ -32,7 +32,7 @@
     </div>
 
     <div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMax">
-      <canvas baseChart width="600" height="400"
+      <canvas baseChart width="600" height="350"
               [datasets]="maxLineChartData"
               [labels]="maxLineChartLabels"
               [options]="maxLineChartOptions"

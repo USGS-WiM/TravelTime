@@ -6,6 +6,7 @@ import { reach } from '../../models/reach';
 import * as $ from 'jquery';
 import { ChartsService } from '../../services/charts.service';
 import '../../../../shared/extensions/number.toUSGSValue';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'tot-footer',
@@ -17,6 +18,11 @@ export class FooterComponent implements OnInit {
   private StudyService: StudyService;
   private ChartService: ChartsService;
   private messanger: ToastrService;
+  private subscription: Subscription;
+
+  private showMost: boolean;
+  private showMax: boolean;
+
   selectedReach: reach;
   reaches: reach[];
   setClickedRow: Function;
@@ -36,14 +42,13 @@ export class FooterComponent implements OnInit {
 
       //apply rounding function ?
 
-      /*this.reaches.forEach((o => {
+      this.reaches.forEach((o => {
         o.result["equations"]["v"]["value"] = (o.result["equations"]["v"]["value"]).toUSGSvalue();
         o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"]).toUSGSvalue();
         o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"]).toUSGSvalue();
         o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"]).toUSGSvalue();
         o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"]).toUSGSvalue();
-
-      }));*/
+      }));
 
 
 
@@ -76,6 +81,10 @@ export class FooterComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.subscription = this.ChartService.display$.subscribe(isShown => {
+      this.showMax = isShown.max;
+      this.showMost = isShown.most;
+    });
   }
 
 }
