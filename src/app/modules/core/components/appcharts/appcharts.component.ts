@@ -236,7 +236,7 @@ export class AppchartsComponent implements OnInit {
       for (i = 0, j = arr.length; i < j; i += size) {
         temparray = arr.slice(i, i + size);
         if (temparray.length < 2) {
-          array[array.length].value.push(temparray);
+          array[array.length-1].value.push(temparray);
         } else {
           tempvar = { "id": id, "label": "Reach group #" + id, "value": temparray };
         }

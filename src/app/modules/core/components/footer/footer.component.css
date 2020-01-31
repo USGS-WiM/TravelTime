@@ -7,6 +7,7 @@
   font-size: 11px;
   position: relative;
   overflow: auto;
+  overflow-y: scroll;
 }
 
 .table tr.active td {

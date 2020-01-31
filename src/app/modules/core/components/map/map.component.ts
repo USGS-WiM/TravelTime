@@ -34,7 +34,7 @@ import {
         height: '60vh'
       })),
       state('out', style({
-        height: '100vh'
+        height: '90vh'
       })),
       state('report', style({
         height: '25vh'
