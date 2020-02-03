@@ -22,6 +22,8 @@ import {
   transition,
   // ...
 } from '@angular/animations';
+import { KrigservicesService } from '../../services/krigservices.service';
+declare let search_api: any;
 
 @Component({
   selector: "tot-map",
@@ -56,6 +58,10 @@ export class MapComponent extends deepCopy implements OnInit {
   private _layers = [];
   private subscription: Subscription;
   public fitBounds;
+  private KrigService: KrigservicesService;
+  public states:any = [];
+
+  public evnt;
 
   @Input() public modal: boolean;
   
@@ -89,17 +95,21 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
 
-  constructor( private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(private krigservice: KrigservicesService, private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
     this.NavigationService = navigationservice;
     this.StudyService = studyservice;
+    this.KrigService = krigservice;
   }
 
+  getStates() {
+    this.states = this.MapService.states$;
+  }
 
   ngOnInit() {
-    if(!this.modal) {
+    if (!this.modal) {
       this.scaleMap = 'out';
       this.StudyService.noticeAction(false);
 
@@ -108,7 +118,7 @@ export class MapComponent extends deepCopy implements OnInit {
           this.scaleMap = 'in';
         }
       });
-    } 
+    }
     else {
       this.scaleMap = 'report';
     }
@@ -134,6 +144,14 @@ export class MapComponent extends deepCopy implements OnInit {
       this._layers = activelayers;
     });
 
+    this.MapService.states$.subscribe(states => {
+      for (let i = 0; i < states.length; i++) {
+        this.KrigService.getNearestMostCorrelatedStations(this.evnt, states[i]).subscribe(response => {
+          console.log(response);
+        });
+      }
+    })
+
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
     })
@@ -152,10 +170,16 @@ export class MapComponent extends deepCopy implements OnInit {
     this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) {
+  public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
+
+    this.evnt = evnt.latlng;
+
     if (this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
+
+      this.MapService.findState(evnt.latlng);
       this.setPOI(evnt.latlng);
+
       this.sm("Layer added to map!!!");
       this.MapService.setCursor("");
     }
@@ -181,7 +205,7 @@ export class MapComponent extends deepCopy implements OnInit {
           case 1: item.value = marker.toGeoJSON().geometry;
             item.value["crs"] = {"properties":{"name":"EPSG:4326"},"type":"name"};
             break;
-          case 6: item.value = ["flowline", "nwisgage"];
+          case 6: item.value = ["flowline", "nwisgage"]; //"flowline", "wqpsite", "streamStatsgage", "nwisgage"
             break;
           case 5: item.value = "downstream";
             break;
@@ -189,9 +213,8 @@ export class MapComponent extends deepCopy implements OnInit {
         }//end switch
       });//next item
       return config;
-    }).then(config =>{
+    }).then(config => {
       this.NavigationService.getRoute("3", config, true).subscribe(response => {
-
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
         var r = 0;
@@ -211,7 +234,9 @@ export class MapComponent extends deepCopy implements OnInit {
               i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
             }
           }
-        });
+        }
+
+        );
 
 
         //one liner to sort data by drainage area;

@@ -114,13 +114,16 @@ export class JobsonsModalComponent implements OnInit {
         this.setDischarge()
       }, 500)
     }
+
+    this.StudyService.setDischarge(this._discharge);
   }
 
-  public setConc(event): void {
-    if (this.reachList) {
-      this.StudyService.selectedStudy.SpillMass = this._spillMass;
+    public setConc(event): void {
+      if (this.reachList) {
+        this.StudyService.selectedStudy.SpillMass = this._spillMass;
+        this.StudyService.setConcentration(this._spillMass);
+      }
     }
-  }
 
   public validateForm(mainForm): boolean {
 
@@ -197,6 +200,7 @@ export class JobsonsModalComponent implements OnInit {
       reach.parameters.splice(6,1);
       postReachList.push(reach);
     })
+
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
       .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;

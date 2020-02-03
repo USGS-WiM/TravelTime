@@ -29,8 +29,11 @@ export class MapService {
   public fitBounds: Subject<any> = new Subject<any>();
   public _bound;
   public unitsOptions;
+  public http: HttpClient;
 
   constructor(http: HttpClient) {
+
+    this.http = http;
 
     this.Options = {
       zoom: 4,
@@ -204,4 +207,32 @@ export class MapService {
       return null;
     }
   }
+
+  public states = [];
+  private States = new Subject<any>();
+  states$ = this.States.asObservable()
+
+  findState(latlng: any) {
+    while (this.states.length > 0) {
+      this.states.splice(0, this.states.length);
+    }
+    this.http.get("assets/data/states.json").subscribe(data => {
+      var conf: any = data;
+      conf.States.forEach(bbox => {
+        if (latlng.lng > bbox.xmin && latlng.lng < bbox.xmax && latlng.lat > bbox.ymin && latlng.lat < bbox.ymax) {
+          this.states.push(bbox.STUSPS);
+        }
+      });
+      this.States.next(this.states);
+    });
+  }
+
+  public latlng: L.LatLng;
+  private LatLng = new Subject<L.LatLng>();
+  Poi$ = this.LatLng.asObservable();
+  SetPoi(latlng: L.LatLng) {
+    this.latlng = latlng;
+    this.LatLng.next(this.latlng);
+  }
+
 }

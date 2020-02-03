@@ -156,6 +156,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   setDateStringModel() {
     this.dateString = this.datetime.toString();
+    this.StudyService.setDate(this.dateString);
 
     if (!this.firstTimeAssign) {
       this.onChange(this.dateString);

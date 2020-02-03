@@ -18,13 +18,37 @@ export interface workflowControl {
  
 @Injectable()
 export class StudyService  {
+
+
+  //HOLDS DISCHARGE AND MASS;
     public selectedStudy: Study;
+    private SelectedReturn = new Subject<Study>();
+  study$ = this.SelectedReturn.asObservable()
+  //SET MASS
+    public setConcentration(mass) {
+      this.selectedStudy.SpillMass = mass;
+      this.SelectedReturn.next(this.selectedStudy);
+    }
+  //SET DISCHARGE
+    public setDischarge(discharge) {
+      this.selectedStudy.Discharge = discharge;
+      this.SelectedReturn.next(this.selectedStudy);
+  }
+
+  //SET TIME
+  public setDate(datestring) {
+    this.selectedStudy.SpillDate = datestring;
+    this.SelectedReturn.next(this.selectedStudy);
+  }
+
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
     public ReportOptions: Array<any>;
     public distance: number;
     private messager: ToastrService;
+
     private ResultReturn = new Subject<boolean>();
     return$ = this.ResultReturn.asObservable();
+
     public defDischarge = "cubic meters per second";
     public defConcentration = "kilograms";
 

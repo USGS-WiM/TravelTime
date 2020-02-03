@@ -18,10 +18,11 @@ export class FooterComponent implements OnInit {
   private StudyService: StudyService;
   private ChartService: ChartsService;
   private messanger: ToastrService;
-  private subscription: Subscription;
 
   private showMost: boolean;
   private showMax: boolean;
+  public spillMass;
+  public spillDate;
 
   selectedReach: reach;
   reaches: reach[];
@@ -81,10 +82,15 @@ export class FooterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subscription = this.ChartService.display$.subscribe(isShown => {
+    this.ChartService.display$.subscribe(isShown => {
       this.showMax = isShown.max;
       this.showMost = isShown.most;
     });
+
+    this.StudyService.study$.subscribe(mystudy => {
+      this.spillMass = mystudy.SpillMass;
+      this.spillDate = mystudy.SpillDate;
+    })
   }
 
 }
