@@ -61,9 +61,9 @@ export class ReportModalComponent implements OnInit {
       var $printSection = document.getElementById("printSection");
       
       if (!$printSection) {
-          $printSection = document.createElement("div");
-          $printSection.id = "printSection";
-          document.body.appendChild($printSection);
+          var $print = document.createElement("div");
+          $print.id = "printSection";
+          document.body.appendChild($print);
       }
       
       $printSection.innerHTML = "";

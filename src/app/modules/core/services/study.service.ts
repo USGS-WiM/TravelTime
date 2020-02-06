@@ -61,7 +61,7 @@ export class StudyService  {
     constructor(toastr: ToastrService) {
         this.messager = toastr;
         this.WorkFlowControl.next(this._workflow);
-        this.distance = 10;
+        this.distance = 50;
         this.UnitsReturn.next('metric');
         this.selectedProcedure.next(1);
     }

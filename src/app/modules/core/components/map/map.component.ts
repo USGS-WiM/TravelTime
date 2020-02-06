@@ -246,7 +246,11 @@ export class MapComponent extends deepCopy implements OnInit {
     streamArray.map((reach) => {
       reach.properties.show = false;
     })
-    return(streamArray);
+
+    var sortArray = streamArray.sort(function (a,b) {
+      return a.properties.DrainageArea - b.properties.DrainageArea;
+    }) 
+    return(sortArray);
   }
 
   //#endregion

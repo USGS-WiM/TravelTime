@@ -192,7 +192,7 @@ export class JobsonsModalComponent implements OnInit {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
-    let postReachList = [];
+    let postReachList = []; 
     this.reachList.forEach(reach => {
       reach.parameters.splice(6,1);
       postReachList.push(reach);
