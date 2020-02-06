@@ -9,7 +9,7 @@ import { StudyService } from 'src/app/modules/core/services/study.service';
 @Component({
   selector: 'app-date-time-picker',
   templateUrl: './date-time-picker.component.html',
-  styleUrls: ['./date-time-picker.component.css'],
+  styleUrls: ['./date-time-picker.component.scss'],
   providers: [
     DatePipe,
     {

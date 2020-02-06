@@ -8,7 +8,6 @@ import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import '../../../../shared/extensions/number.toUSGSValue';
-//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -23,7 +22,7 @@ export const DateTimeValidator = (fc: FormControl) => {
 @Component({
   selector: 'app-jobsons',
   templateUrl: './jobsons.component.html',
-  styleUrls: ['./jobsons.component.css']
+  styleUrls: ['./jobsons.component.scss']
 })
 export class JobsonsModalComponent implements OnInit {
 
@@ -186,6 +185,13 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public getResults() {
+
+	// Set default footer height to half, show buttons to switch
+	$("#mapWrapper").attr('class','half-map');
+	$("#mapHeightToggle").attr('class','visible');
+
+
+
     this.gettingResults = true;
 
     if (this.dateModel instanceof Date) {

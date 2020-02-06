@@ -26,12 +26,11 @@ import {
 @Component({
   selector: "tot-map",
   templateUrl: "./map.component.html",
-  styleUrls: ['./map.component.css'],
+  styleUrls: ['./map.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('in', style({
-        overflow: 'hidden',
-        height: '60vh'
+        overflow: 'hidden'
       })),
       state('out', style({
         height: '100vh'
@@ -155,7 +154,9 @@ export class MapComponent extends deepCopy implements OnInit {
   public onMouseClick(evnt: any) {
     if (this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
-      this.setPOI(evnt.latlng);
+      (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
+	  
+	  this.setPOI(evnt.latlng);
       this.sm("Layer added to map!!!");
       this.MapService.setCursor("");
     }

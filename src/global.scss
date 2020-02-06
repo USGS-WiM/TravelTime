@@ -1,0 +1,451 @@
+// Global.scss
+// All styles here apply to all components and elements
+
+// Import font
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap');
+
+$sans: 'Source Sans Pro', sans-serif;
+// Variables
+$borderRadius: 4px;
+$transition: 0.2s;
+$text: #0C141E;
+
+html{
+	overflow: hidden;
+}
+body, html {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: $sans;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+// Root on index.html
+app-root{
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+// Initial loader that shows before angular
+.initial-loader {
+	position: fixed !important;
+	width: 100%;
+	height: 100%;
+	opacity: 1;
+	z-index: 5000;
+	background-color: rgba(0,0,30,0.6);
+	background-image: url('assets/images/usgs-loading.svg');
+	display: block !important;
+	background-repeat: no-repeat;
+	background-size: 120px auto;
+	background-position: center center;
+
+	&:after {
+		content: 'Loading...';
+		position: fixed;
+		top: 64%;
+		font-size: 22px;
+		color: white;
+		width: 100%;
+		text-align: center;
+		z-index: 5001;
+	}
+}
+
+////////////////////////////
+////////////////////////////
+//     Global styles     //
+//////////////////////////
+//////////////////////////
+
+// Buttons
+// Buttons
+button{
+	background-color: #142234;
+	color: white;
+	box-sizing: border-box;
+	padding: 7px 8px;
+	border-radius: $borderRadius;
+	border: none;
+	transition: $transition;
+	font-size: 14px;
+	font-weight: 600;
+
+	&:hover{
+		cursor: pointer;
+		background-color: #0C141E;
+		transition: $transition;
+		text-decoration: underline;
+	}
+
+	&:disabled{
+		background-color: #E1E7EE;
+		color: #9aa6b5;
+
+		&:hover{
+			background-color: #E1E7EE;
+			text-decoration: none;
+			cursor: not-allowed;
+		}
+	}
+
+	&.full-width{
+		width: 100%;
+		display: block;
+	}
+
+	// Button with icon
+	&.icon-button{
+		i{
+			margin-right: 5px;
+		}
+	}
+
+	// Active button waiting for action
+	&.waiting{
+		background-color: #449A7E;
+		transition: $transition;
+	}
+
+	// Colors
+	&.red{
+		background-color: #ED1515;
+		color: white;
+		&:hover{
+			background-color: #D00808;
+		}
+	
+		&:disabled{
+			background-color: #FFACAC;
+			color: white;
+			&:hover{
+				background-color: #FFACAC;
+			}
+		}
+	}
+}
+
+// Checkboxes
+// Checkboxes
+input[type="checkbox"],
+input[type="radio"] {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	-webkit-tap-highlight-color: transparent;
+	cursor: pointer;
+	height: 24px;
+	min-height: 24px;
+	max-height: 24px;
+	width: 24px;
+	min-width: 24px;
+	max-width: 24px;
+	margin: 0;
+	border-radius: 3px;
+	box-sizing: border-box;
+	border: 1.5px solid #D9DDE4;
+	transition: all 0.2s ease;
+	background: white;
+	position: relative;
+
+	
+
+	&:focus{
+		transition: all 0.2s ease;
+	}
+
+	&:after {
+		content: "\f00c";
+		font-family: "Font Awesome 5 Pro";
+		transition: 0.2s;
+		transform: scale(0.75);
+		color: #1052D9;
+		opacity: 0.2;
+		font-size: 16px;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		box-sizing: border-box;
+		display: inline-block;
+		font-weight: 800;
+	}
+
+	// Hover
+	&:hover{
+		transition: all 0.2s ease;
+		border-color: #C7CDD7;
+
+		&:after{
+			opacity: 0.6;
+		}
+	}
+
+	// Checked hover
+	&:checked {
+		&:hover{
+			border-color: #C7CDD7;
+			&:after{
+				opacity: 0.5;
+			}
+		}
+	}
+
+	// When checked
+	&:checked:after {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+// Change checkboxes to checks
+input[type="checkbox"] {
+	border-radius: 3px;
+
+	&:after {
+		content: "\f00c";
+		transform: scale(0.75);
+		opacity: 0.2;
+		font-size: 16px;
+		position: relative;
+		top: -1px;
+	}
+
+	&:checked {
+		&:hover{
+			&:after{
+				opacity: 0.5;
+			}
+		}
+	}
+
+	&:checked:after {
+		opacity: 1;
+	}
+}
+
+// Switch icon to circle for radio,
+// make circle
+input[type="radio"] {
+	border-radius: 50%;
+
+	&:after {
+		content: "\f111";
+		font-size: 14px;
+	}
+
+	&:checked {
+		&:hover{
+			cursor: default;
+			&:after{
+				opacity: 1;
+			}
+		}
+	}
+
+	&:checked:after {
+		opacity: 1;
+	}
+}
+
+
+
+/////////////////////
+//     Layout     //
+///////////////////
+.space10,.space20,.space30{
+	display: block;
+	width: 100%;
+}
+.space10{
+	height: 10px;
+}
+.space20{
+	height: 20px;
+}
+.space30{
+	height: 30px;
+}
+
+
+
+/////////////////////////
+//     Typography     //
+///////////////////////
+
+
+h1,h2,h3,h4,h5,h6,a,p,label{
+	font-family: $sans;
+	color: $text;
+}
+h1,h2,h3,h4,h5,h6{
+	max-width: 700px;
+
+	&.unset{
+		max-width: none;
+	}
+}
+h1,h2{
+	color: $text;
+}
+h1{
+	font-size: 30px;
+	padding: 0 0 2px 0;
+	line-height: 38px;
+	font-weight: 700;
+	letter-spacing: 0.3px;
+}
+h2{
+	font-size: 22px;
+	line-height: 28px;
+	padding: 0 0 2px 0;
+	font-weight: 700;
+}
+h3, h4, h5{
+
+}
+h3{
+	font-size: 18px;
+	letter-spacing: 0.2px;
+	line-height: 26px;
+	font-weight: 700;
+}
+h4{
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 22px;
+	letter-spacing: 0.2px;
+}
+h5{
+	font-size: 16px;
+	font-weight: 700;
+	text-transform: uppercase;
+	line-height: 20px;
+	letter-spacing: 0.5px;
+}
+h6{
+	font-size: 12px;
+	color: #1D304B;
+	font-weight: 800;
+	text-transform: uppercase;
+	line-height: 16px;
+	letter-spacing: 0.6px;
+}
+
+
+////////////////////////
+//   Text Elements   //
+//////////////////////
+// Paragraphs
+p{
+	font-size: 13.5px;
+	line-height: 18px;
+	max-width: 700px;
+	padding: 8px 0;
+	color: #142234;
+	letter-spacing: 0.2px;
+
+	&.unset{
+		max-width: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	&.tight{
+		line-height: 20px;
+	}
+
+	// Decrease sizing
+	&.small{
+		font-size: 13px;
+		line-height: 20px;
+	}
+	// Increase sizing
+	&.big{
+		font-size: 20px;
+		line-height: 36px;
+	}
+	
+	// Bold
+	b{
+		font-weight: 700;
+	}
+}
+
+
+// Default Links
+a{
+	color: #083489;
+	transition: $transition;
+
+	&:hover{
+		color: #1052D9;
+		transition: $transition;
+	}
+}
+
+// Listts
+ul{
+	list-style-type: disc;
+	display: block;
+	box-sizing: border-box;
+	padding: 6px 0 6px 25px;
+
+	li{
+		line-height: 140%;
+		padding: 2px 0;
+	}
+}
+ol{
+	list-style-type: decimal;
+}
+ul{
+	list-style-type: disc;
+}
+
+
+///////////////////////////////
+//   Misc global elements   //
+/////////////////////////////
+
+// Search
+.search-api-container{
+	margin: 0;
+	padding: 0;
+	max-width: 100% !important;
+	width: 100% !important;
+
+	.search-api-icon{
+		padding-bottom: 4px;
+	}
+}
+.search-api-menu{
+	max-height: 200px;
+	overflow: hidden;
+}
+
+
+// Map
+#leaflet{
+	display: block;
+	position: relative;
+	left: 0;
+	top: 0;
+	margin: 0;
+	width: 100% !important;
+	height: 100% !important;
+}
+
+
+
+
+
+
+#scroll{
+	display: block !important;
+	max-width: 100% !important;
+}

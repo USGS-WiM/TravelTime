@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-appcharts',
   templateUrl: './appcharts.component.html',
-  styleUrls: ['./appcharts.component.css']
+  styleUrls: ['./appcharts.component.scss']
 })
 
 export class AppchartsComponent implements OnInit {

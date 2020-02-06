@@ -8,7 +8,7 @@ import { MapService } from '../../services/map.services';
 @Component({
   selector: 'tot-report',
   templateUrl: './report.component.html',
-  styleUrls: ['./report.component.css']
+  styleUrls: ['./report.component.scss']
 })
 export class ReportModalComponent implements OnInit {
 

@@ -8,7 +8,6 @@ import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap'; 
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ApptoolsComponent } from '../apptools/apptools.component';
 import { ReportModalComponent } from '../report/report.component';
 
@@ -17,7 +16,7 @@ declare let search_api: any;
 @Component({
   selector: 'tot-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css'],
+  styleUrls: ['./sidebar.component.scss'],
   providers: []
 })
 
@@ -152,11 +151,6 @@ export class SidebarComponent {
     this.MapService.setCursor("crosshair");
   }
    
-  public ToggleSideBar() {
-    if (this.Collapsed) this.Collapsed = false;
-            else this.Collapsed = true; 
-  }
-
   public ToggleScenario(i) {
     if(this.AvailableScenarioTypes && this.AvailableScenarioTypes[i]) {
       // if(this.AvailableScenarioTypes[i].selected === false) {

@@ -10,7 +10,7 @@ import '../../../../shared/extensions/number.toUSGSValue';
 @Component({
   selector: 'tot-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.css'],
+  styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
   private MapService: MapService;
@@ -24,7 +24,8 @@ export class FooterComponent implements OnInit {
 
   public get showResult$(): boolean {
     if (this.StudyService.GetWorkFlow('totResults')) {
-      $(".footer").css("height", "30vh");
+	//   $(".footer").css("height", "30vh");
+		alert("Results")
     }
     return (this.StudyService.GetWorkFlow('totResults'));
   }
