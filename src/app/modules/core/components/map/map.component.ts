@@ -144,13 +144,15 @@ export class MapComponent extends deepCopy implements OnInit {
       this._layers = activelayers;
     });
 
-    this.MapService.states$.subscribe(states => {
+
+    //Attached Krig service;
+    /*this.MapService.states$.subscribe(states => {
       for (let i = 0; i < states.length; i++) {
         this.KrigService.getNearestMostCorrelatedStations(this.evnt, states[i]).subscribe(response => {
           console.log(response);
         });
       }
-    })
+    })*/
 
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
@@ -197,6 +199,8 @@ export class MapComponent extends deepCopy implements OnInit {
     //add marker to map
     this.MapService.AddMapLayer({ name: "POI", layer: marker, visible: true });
 
+    let lastCoord = [];
+
     this.NavigationService.getNavigationResource("3")
     .toPromise().then(data => {
       let config: Array<any> = data['configuration'];
@@ -224,6 +228,18 @@ export class MapComponent extends deepCopy implements OnInit {
             layerGroup.addLayer(gage);
           } else if (typeof i.properties.nhdplus_comid === "undefined") {
           } else {
+            console.log(i);
+            console.log(i.geometry.coordinates);
+            if (lastCoord.length < 1) {
+              lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
+            } else {
+              let f = lastCoord[lastCoord.length];
+              let j = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+              console.log (f);
+              console.log(j);
+            }
+            
+
             var nhdcomid = String(i.properties.nhdplus_comid);
             var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
             //var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
@@ -235,7 +251,6 @@ export class MapComponent extends deepCopy implements OnInit {
             }
           }
         }
-
         );
 
 
@@ -252,6 +267,13 @@ export class MapComponent extends deepCopy implements OnInit {
 
       });
     })
+  }
+
+
+  public outofOrder(line: any) {
+    console.log(line.geometry.coordinates[0]);
+    console.log(line.geometry.coordinates[line.geometry.coordinates.length-1]);
+    //console.log(line);
   }
   
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

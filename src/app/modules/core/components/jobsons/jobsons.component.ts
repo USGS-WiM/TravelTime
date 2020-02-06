@@ -106,7 +106,7 @@ export class JobsonsModalComponent implements OnInit {
     if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
       this.reachList.forEach((item) => {
-        item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
+        item.parameters[1].value = Number(this.StudyService.selectedStudy.Discharge) * Number(item.parameters[0].value);
         this.StudyService.SetWorkFlow("hasDischarge", true);
       })
     } else {

@@ -36,7 +36,8 @@ export class FooterComponent implements OnInit {
     return (this.StudyService.GetWorkFlow('totResults'));
   }
   
-  public get output$ () {
+  public get output$() {
+    
     if (this.StudyService.GetWorkFlow('totResults')) {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
       this.reaches.shift(); //remove first element (one without results)
