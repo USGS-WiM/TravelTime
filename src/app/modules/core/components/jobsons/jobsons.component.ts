@@ -244,19 +244,19 @@ export class JobsonsModalComponent implements OnInit {
           if (j.isactive) {
             if (j.name === 'metric') {
               selectedUnits = this.units.metric;
-              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()//cms
-              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square meters
-              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue() //meters
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//cfs to cms
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square kilometers to square meters
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000) //kilometers to meters
 
             } else {
               selectedUnits = this.units.imperial;
-              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue() //cfs
-              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
-              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge) //cfs
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square kilometers to square foot
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84) //foot
             }
-            newreach.parameters[0].unit.unit = selectedUnits['discharge']
-            newreach.parameters[1].unit.unit = selectedUnits['discharge']
-            newreach.parameters[2].unit.unit = selectedUnits['slope']
+            newreach.parameters[0].unit.unit = selectedUnits['discharge']   //mean annual discharge
+            newreach.parameters[1].unit.unit = selectedUnits['discharge']   //real-time discharge
+            newreach.parameters[2].unit.unit = selectedUnits['slope']        
             newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
             newreach.parameters[4].unit.unit = selectedUnits['distance']
           } else {

@@ -234,3 +234,8 @@ label {
     left: 10px;
     top: -25px;
   }
+
+  .light_label {
+    font-weight:lighter; 
+    margin-bottom:3px;
+   }

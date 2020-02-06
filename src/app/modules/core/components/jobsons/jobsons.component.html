@@ -49,7 +49,7 @@
                 <div *ngFor="let k of item | keyvalue;  let it1 = index; trackBy:customTrackBy">
                   <div class="space8" *ngIf="k.key === 'name'">
                     <!-- don't do anything with input condition-->
-                    <label>{{getLabel(k.key)}}</label>
+                    <label class="light_label">{{getLabel(k.key)}}</label>
                     <input [(ngModel)]="k.value" placeholder="Name" name="{{k.value}}" type="text" ngControl="value" ngMaxlength="25" autocomplete="off">
                   </div>
                 </div>
@@ -57,14 +57,14 @@
                 <!--Description input-->
                 <div *ngFor="let k of item | keyvalue; let it2 = index; trackBy:customTrackBy">
                   <div class="space8" *ngIf="k.key === 'description'">
-                    <label>{{getLabel(k.key)}}</label>
+                    <label class="light_label">{{getLabel(k.key)}}</label>
                     <input [(ngModel)]="k.value" placeholder="value" name="{{k.value}}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
                   </div>
                 </div>
 
                 <!--Parameters input-->
                 <div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy">
-                  <label>{{pars.name}} ({{pars.unit.unit}}):</label>
+                  <label class="light_label">{{pars.name}} ({{pars.unit.unit}}):</label>
                   <div *ngIf="i === currentStep; else disable">
                     <div *ngIf="pars.required === true">
                       <input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
