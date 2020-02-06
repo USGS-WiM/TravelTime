@@ -222,30 +222,45 @@ export class MapComponent extends deepCopy implements OnInit {
         response.features.shift();
         var layerGroup = new L.LayerGroup([]);//streamLayer
         var r = 0;
+        let tail;
+        let head;
         response.features.forEach(i => {
           if (i.geometry.type === 'Point') {
             var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
             layerGroup.addLayer(gage);
           } else if (typeof i.properties.nhdplus_comid === "undefined") {
           } else {
-            console.log(i);
-            console.log(i.geometry.coordinates);
-            if (lastCoord.length < 1) {
-              lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
-            } else {
-              let f = lastCoord[lastCoord.length];
-              let j = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-              console.log (f);
-              console.log(j);
+            if (r == 0) {
+              layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
             }
-            
+            else if (r == 1) {
+              lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
+              layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+            } else {
+              tail = lastCoord[lastCoord.length - 1];
+              head = i.geometry.coordinates[0];
 
-            var nhdcomid = String(i.properties.nhdplus_comid);
-            var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-            //var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
-            //layerGroup.addLayer(marker);
-            layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+              //if it gets market; ignore it and do not add it to the tail;
+
+              if (this.outofOrder(tail, head)) {
+                var nhdcomid = String(i.properties.nhdplus_comid);
+                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+                //var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
+                //layerGroup.addLayer(marker);
+                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+                tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+                lastCoord.push(tail);
+              } else {
+                tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+                lastCoord.push(tail);
+                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_unorder));
+              }
+            }
+
+
             r += 1;
+            console.log("adding layers");
+
             if (r === 1) {
               i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
             }
@@ -259,7 +274,7 @@ export class MapComponent extends deepCopy implements OnInit {
           response.features.sort((a, b) => (a.properties.DrainageArea > b.properties.DrainageArea) ? 1 : ((b.properties.DrainageArea > a.properties.DrainageArea) ? -1 : 0));
         }
 
-        this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+        this.StudyService.selectedStudy.Reaches = response.features; //this.formatReaches(response);
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
@@ -270,10 +285,24 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
 
-  public outofOrder(line: any) {
-    console.log(line.geometry.coordinates[0]);
-    console.log(line.geometry.coordinates[line.geometry.coordinates.length-1]);
-    //console.log(line);
+  public outofOrder(arr1, arr2) {
+    if (!arr1 || !arr2) return
+
+    let result;
+
+    arr1.forEach((e1, i) => arr2.forEach(e2 => {
+
+      if (e1.length > 1 && e2.length) {
+        result = this.outofOrder(e1, e2);
+      } else if (e1 !== e2) {
+        result = false
+      } else {
+        result = true
+      }
+    })
+    )
+
+    return result
   }
   
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

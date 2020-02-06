@@ -22,12 +22,15 @@ export class NavigationService {
 
   public getNavigationResource(identifier:string): Observable <any>{
     let url = this.baseURL + "/navigation/" + identifier;
+    console.log(url);
     return this.http.get<any>(url)
         .pipe(catchError(this.handleError('getNavigationResource',[])));
   }
   
   public getRoute(identifier:string, configuredResource, includeproperties:boolean = true): Observable <any>{
     let url = this.baseURL + "/navigation/" + identifier + "/route?properties=" + includeproperties;
+    console.log(url);
+    console.log(configuredResource);
     return this.http.post<any>(url, configuredResource)
         .pipe(catchError(this.handleError('getRoute',[])));
   }

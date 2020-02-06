@@ -115,7 +115,7 @@ export class MapService {
     var j = 0;//counts only lines;
     ml.layer.eachLayer(o => {
       //what if there also a stream gage ?
-
+      console.log(o);
       if (typeof (o._layers) === "undefined") {
       } else if (o.options.radius > 50) {
       } else if (j === indx) {
