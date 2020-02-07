@@ -79,7 +79,7 @@ export class FooterComponent implements OnInit {
 
   public highlightFeature(indx) {
     this.ChartService.noticeAction(indx);
-    this.MapService.HighlightFeature('Flowlines', indx+1);
+    this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
   }
 
   ngOnInit() {

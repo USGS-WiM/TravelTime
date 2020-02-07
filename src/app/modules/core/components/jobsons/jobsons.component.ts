@@ -235,7 +235,7 @@ export class JobsonsModalComponent implements OnInit {
   //#endregion
 
   //#region "Private methods"
-  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side   
+  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
 
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
@@ -267,8 +267,6 @@ export class JobsonsModalComponent implements OnInit {
           }
         })
         this.reachList.push(newreach);
-        
-        
       } else {
       }
     }

@@ -191,6 +191,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
+    if (!this.StudyService.GetWorkFlow("hasPOI")) {
     this.StudyService.SetWorkFlow("hasPOI", true);
     if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
     let marker = L.marker(latlng, {
@@ -240,13 +241,8 @@ export class MapComponent extends deepCopy implements OnInit {
               tail = lastCoord[lastCoord.length - 1];
               head = i.geometry.coordinates[0];
 
-              //if it gets market; ignore it and do not add it to the tail;
-
-              if (this.outofOrder(tail, head)) {
-                var nhdcomid = String(i.properties.nhdplus_comid);
-                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-                //var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
-                //layerGroup.addLayer(marker);
+              //Current chunk is depreciated, it used to compare leading edge of a polyline coordinates and inflow polyline tail edge.
+              /*if (this.outofOrder(tail, head)) {
                 layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
                 tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
                 lastCoord.push(tail);
@@ -254,13 +250,17 @@ export class MapComponent extends deepCopy implements OnInit {
                 tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
                 lastCoord.push(tail);
                 layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_unorder));
-              }
+              }*/
+
+              layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+
+              var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
+              var drainage = " Drainage area: " + String(i.properties.DrainageArea);
+              var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+              var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + drainage);
+              layerGroup.addLayer(marker);
             }
-
-
             r += 1;
-            console.log("adding layers");
-
             if (r === 1) {
               i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
             }
@@ -273,15 +273,14 @@ export class MapComponent extends deepCopy implements OnInit {
         if (typeof (response != "undefined")) {
           response.features.sort((a, b) => (a.properties.DrainageArea > b.properties.DrainageArea) ? 1 : ((b.properties.DrainageArea > a.properties.DrainageArea) ? -1 : 0));
         }
-
-        this.StudyService.selectedStudy.Reaches = response.features; //this.formatReaches(response);
+        this.StudyService.selectedStudy.Reaches = response.features;
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         this.StudyService.setProcedure(2);
-
       });
     })
+    }
   }
 
 
@@ -301,7 +300,6 @@ export class MapComponent extends deepCopy implements OnInit {
       }
     })
     )
-
     return result
   }
   
@@ -315,21 +313,6 @@ export class MapComponent extends deepCopy implements OnInit {
     catch (e) {
     }
   }
-
-  private formatReaches(data): any {
-    let streamArray = [];
-    for (var i = 0; i < data['features'].length; i++) {
-      if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
-        var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?
-        streamArray.push(polylinePoints);
-      }
-    }
-    streamArray.map((reach) => {
-      reach.properties.show = false;
-    })
-    return(streamArray);
-  }
-
   //#endregion
 
 }
