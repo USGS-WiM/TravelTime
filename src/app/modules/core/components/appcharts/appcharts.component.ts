@@ -40,16 +40,19 @@ export class AppchartsComponent implements OnInit {
   public showMost = true;
   public showMax = false;
 
-  public open() {
+  public toggleProbable() {
     if (this.buttonName == "MostProbable") {
-      this.buttonName = "MaximumProbable";
-      this.showMost = true;
-      this.showMax = false;
+		this.buttonName = "MaximumProbable";
+		this.showMost = true;
+		this.showMax = false;
     } else {
-      this.buttonName = "MostProbable";
-      this.showMost = false;
-      this.showMax = true;
+		this.buttonName = "MostProbable";
+		this.showMost = false;
+		this.showMax = true;
     }
+
+	// Reverse the data display
+	$("#footerData").toggleClass("reverse");
 
   }
 
