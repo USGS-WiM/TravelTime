@@ -140,15 +140,6 @@ export class JobsonsModalComponent implements OnInit {
   };
 
 
-  public showhideReaches(): void {
-    if (this.showReaches === false) {
-      this.showhidetitle = 'Show Reaches';
-      this.showReaches = true;
-    } else {
-      this.showhidetitle = 'Hide Reaches';
-      this.showReaches = false;
-    }
-  }
 
   public removeReach(index): void {   //remove reach by id
     if (index >= 0) {

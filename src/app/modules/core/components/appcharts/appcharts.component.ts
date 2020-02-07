@@ -76,6 +76,8 @@ export class AppchartsComponent implements OnInit {
   }
   //Get time all, subscribe to selected row and plot selected one;
   ngOnInit() {
+    this.getAllMostProbable();
+    this.generateData();
   }
 
   public generateData() {
@@ -110,17 +112,13 @@ export class AppchartsComponent implements OnInit {
   }
 
   public get output$() {
-    this.StudyService.WorkFlowControl.subscribe(o => {
-      if (o.totResults) {
-        this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-        this.reaches.shift(); //remove first element (one without results)
-        this.reaches;
-        this.getAllMostProbable();
-        this.generateData();
-      } else {
-      }
-    });
-    return (this.reaches);
+    if (this.StudyService.GetWorkFlow('totResults')) {
+      this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
+      this.reaches.shift(); //remove first element (one without results)
+      return (this.reaches);
+    } else {
+      return;
+    }
   }
 
   public getAllMostProbable() {

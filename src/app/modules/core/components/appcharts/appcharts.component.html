@@ -1,7 +1,5 @@
-<button mat-button mat-raised-button color="primary" (click)="open()">{{buttonName}}</button>
+<button color="primary" (click)="open()">{{buttonName}}</button>
 
-<div class="flex">
-  <div class="flex-item" id="block1">
     <div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMost">
       <canvas baseChart width="600" height="400"
               [datasets]="mostLineChartData"
@@ -27,5 +25,3 @@
               (chartHover)="chartHovered($event)"
               (chartClick)="chartClicked($event)"></canvas>
     </div>
-  </div>
-</div>

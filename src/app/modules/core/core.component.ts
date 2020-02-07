@@ -20,7 +20,6 @@ export class CoreComponent {
 	// }
 
 	public changeMapSize(size) {
-		console.log("CHANGING MAP SIZE")
 		if(size == "small"){
 			$("#mapWrapper").attr('class','small-map');
 		}else if(size == "half"){

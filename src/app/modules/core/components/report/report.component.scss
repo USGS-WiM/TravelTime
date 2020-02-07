@@ -1,23 +1,39 @@
-.modal-content {
-    margin-top:25px; 
-    z-index:2000; 
-    position: absolute;
-    height:auto;
-    width:800px; 
- }
- 
- .modal-body {
-   height:100%;
-   padding: 1em;
-   border-bottom: 1px solid #CCCCCC;
- }
+// Tables
+.table,
+.citations-table {
+	padding: 9px;
+	border-radius: 3px; 
+	font-size:x-small;
+	margin-bottom: 20px;
+	border: 1px solid #e3e3e3;
+}
 
- .modal-title {
-   font-size: 16px;
-   color: #6e7490;
-   padding-left: 0;
+// Set specifics for data tables
+.table{
+	max-height:400px; 
+	overflow:scroll; 
+}
 
- }
+// Citations and Disclaimers
+.citations-table{
+
+	// Actual citatation (<a> Tag)
+	.citation{
+		font-size: 14px;
+		line-height: 15px;
+		margin-bottom: 10px;
+		display: block;
+		color: #0B53D7;
+	}
+
+	.disclaimer {
+		padding: 0;
+		margin-bottom: 10px;
+		font-size: 11px;
+		line-height: 12px;
+	}
+}
+
 
  #map_container {
    height: auto;
@@ -25,65 +41,8 @@
    margin-bottom: 1em;
  }
 
- .shadowtext {
-	color: black;
-	width: 100%;
-	padding: 14px 18px;
-	margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 1em;
-	font-family: 'Roboto';
-	font-size: 13px;
-  background-color: #e2e2e2;
-  border-radius: 3px;
-  border: 1px solid #d3d3d3;
-}
 
-.table {
-  border: solid #cccccc 1px; 
-  padding: 9px;
-  border-radius: 3px; 
-  overflow:scroll; 
-  max-height:400px; 
-  font-size:x-small;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #e3e3e3;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-}
-
-.citations-table {
-  border: solid #cccccc 1px; 
-  padding: 9px;
-  border-radius: 3px; 
-  font-size:x-small;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #e3e3e3;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-}
-.center {
-  text-align: center;
-}
-
-#printblock {
-  height:auto;
-  padding:1em;
- }
-
- .margin3 {
-   margin-right: 3px;
- }
-
- .light_label {
-  font-weight:lighter; 
-  margin-bottom:3px;
- }
-
- .italic {
-   font-style: italic;
- }
-
+ 
  .citation {
   color:#0071bc;
   font-weight:600;
@@ -91,102 +50,72 @@
   cursor: pointer;
  }
 
- .disclaimer {
-   font-size: 10px;
- }
- .print-only {
-   display: none;
- }
 
- .btn-wrapper {
-  margin: 0 auto 20px auto;
-  width: auto;
-  display: inline-block;
-}
 
-.close {
-  font-size: 15pt;
-  margin: 0 5px;
-  width: 25px;
-  height: 25px;
-  opacity: 1;
-  background-color: white;
-  border-radius: 50%;
-  box-sizing: border-box;
-  padding: 0 0 2px 0;
-  float: right;
-  color: rgba(0,0,0,0.5);
-  box-shadow: 1px 1px 5px #333;
-  position: relative;
-  left: 10px;
-  top: -25px;
-}
+//  Print Styles
+@media print{
+	#printArea, #printArea * {
+		visibility: visible !important;
+	}
+	#printArea {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: auto;
+	}
 
-.pad1 {
-  margin-left:1em;
-  margin-top: 1em;
-}
+	  
+	
+	.hidden-print {
+		display: none !important;
+	}
+	.print-only {
+		display: block;
+	}
+	#print-content * {
+		visibility: visible;
+	}
+	.modal{
+		/**Remove scrollbar for printing.**/
+		overflow: visible !important;
+		/**Needs to be relative for printing in IE11**/
+		position: absolute;
+		left: 0;
+		top: 0;
+		margin: 0;
+		padding-right:20px;
+		min-height:550px;
+		visibility: visible;
+	}
+	.modal-dialog {
+		width: 100%;
+		padding: 0;
+		margin:20px;
+		visibility: visible !important;
+		/**Remove scrollbar for printing.**/
+		overflow: visible !important;
+	}
+	.modal-footer {
+		border-top:0;
+	}
+	.leaflet-control-container{
+		display: none!important;
+	}
+	.page_break {
+		float: none !important;
+		position: relative;
+		page-break-after: always;
+	}
 
- @media print{
-  body * {
-      visibility: hidden;
-      -webkit-print-color-adjust: exact !important;
-  }
-  .wim-alert-warning {
-      background-color: #fdb81e !important;
-  }
-  table .wim-warning {
-      background-color: #fdb81e !important;
-  }
-  .hidden-print {
-      display: none !important;
-  }
-  .print-only {
-    display: block;
-  }
-  #print-content * {
-      visibility: visible;
-  }
-  .modal{
-      /**Remove scrollbar for printing.**/
-      overflow: visible !important;
-      /**Needs to be relative for printing in IE11**/
-      position: absolute;
-      left: 0;
-      top: 0;
-      margin: 0;
-      padding-right:20px;
-      min-height:550px;
-      visibility: visible;
-  }
-  .modal-dialog {
-      width: 100%;
-      padding: 0;
-      margin:20px;
-      visibility: visible !important;
-      /**Remove scrollbar for printing.**/
-      overflow: visible !important;
-  }
-  .modal-footer {
-      border-top:0;
-  }
-  .leaflet-control-container{
-      display: none!important;
-  }
-  .page_break {
-      float: none !important;
-      position: relative;
-      page-break-after: always;
-  }
+	.chart {
+		overflow-x: unset;
+		width: 100%;
+	}
 
-  .chart {
-      overflow-x: unset;
-      width: 100%;
-  }
-
-  .identifier {
-      padding-bottom: 2em;
-  }
+	.identifier {
+		padding-bottom: 2em;
+	}
 }
 
 @media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {

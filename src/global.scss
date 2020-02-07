@@ -70,7 +70,7 @@ button{
 	background-color: #142234;
 	color: white;
 	box-sizing: border-box;
-	padding: 7px 8px;
+	padding: 7px 10px;
 	border-radius: $borderRadius;
 	border: none;
 	transition: $transition;
@@ -108,11 +108,17 @@ button{
 	}
 
 	// Active button waiting for action
+	// Green Background
 	&.waiting{
-		background-color: #449A7E;
+		background-color: #44BEAE;
 		transition: $transition;
+
+		&:hover{
+			background-color: #389C8F;
+		}
 	}
 
+	// Colors
 	// Colors
 	&.red{
 		background-color: #ED1515;
@@ -126,6 +132,38 @@ button{
 			color: white;
 			&:hover{
 				background-color: #FFACAC;
+			}
+		}
+	}
+	// Blue
+	&.blue{
+		background-color: #2643FC;
+		color: white;
+		&:hover{
+			background-color: #0D28E5;
+		}
+	
+		&:disabled{
+			background-color: #B4BBE3;
+			color: white;
+			&:hover{
+				background-color: #B4BBE3;
+			}
+		}
+	}
+	// Grey/white
+	&.white{
+		background-color: #EAECF4;
+		color: #1C2541;
+		&:hover{
+			background-color: #D9DDEB;
+		}
+	
+		&:disabled{
+			background-color: white;
+			color: #303E6C;
+			&:hover{
+				background-color: white;
 			}
 		}
 	}
@@ -170,10 +208,14 @@ input[type="radio"] {
 		font-size: 16px;
 		width: 100%;
 		height: 100%;
-		text-align: center;
-		box-sizing: border-box;
-		display: inline-block;
 		font-weight: 800;
+
+		display: flex;
+		text-align: center;
+		width: 100%;
+		height: 100%;
+		justify-content: center;
+		flex-direction: column;
 	}
 
 	// Hover
@@ -211,8 +253,6 @@ input[type="checkbox"] {
 		transform: scale(0.75);
 		opacity: 0.2;
 		font-size: 16px;
-		position: relative;
-		top: -1px;
 	}
 
 	&:checked {
@@ -254,6 +294,143 @@ input[type="radio"] {
 
 
 
+///////////////////////////////
+//   Toggle / Accordion     //
+/////////////////////////////
+.toggle-header{
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	max-height: 100%;
+	overflow: auto;
+	padding: 0 15px;
+	height: 50px;
+	color: #0C141E;
+	background-color: rgb(236, 242, 255);
+	transition: 0.2s;
+	border-bottom: 1px solid rgb(204, 209, 218);
+
+	// Toggle within a toggle body 
+	// Shrink
+	&.nested{
+		padding: 0 10px;
+		height: 38px;
+		background-color: white;
+	}
+
+	.text,
+	.icon{	
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		font-weight: bold;
+	}
+	.text{
+		font-size: 16px;
+		font-weight: 600;
+	}
+	.icon{
+		font-size: 22px;
+
+		// Plus and minus for collapsible
+		.fa-minus-circle,
+		.fa-plus-circle{
+			opacity: 0.5;
+			transition: $transition;
+		}
+
+		// Checkbox
+		.fa-check-circle{
+			color: #1052D9;
+		}
+		.fa-times-circle{
+			color: #ED1515;
+		}
+	}
+
+	// hover
+	&:hover{
+		cursor: pointer;
+		transition: 0.2s;
+		background-color: rgb(226, 230, 245);;
+		
+		.text{
+			text-decoration: underline;
+		}
+
+		// Plus and minus for collapsible
+		.fa-minus-circle,
+		.fa-plus-circle{
+			opacity: 1 !important;
+			transition: $transition;
+		}
+	}
+	&.nested:hover{
+		background-color: white;
+	}
+
+	// Users cannot toggle, so no hover state changes
+	&.notoggle{
+		background-color: rgb(236, 242, 255);
+		&:hover{
+			cursor: default;
+			.text{
+				text-decoration: none;
+			}
+		}
+	}
+	// Can't access these tabs until allowed,
+	// So fade when blocked
+	&.blocked{
+		opacity: 0.5;
+		background-color: rgb(236, 242, 255);
+
+		.icon{
+			display: none;
+		}
+
+		&:hover{
+			cursor: default;
+			.text{
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+.toggle-block{
+	display: block;
+	box-sizing: border-box;
+	max-height: 0px;
+	width: 100%;
+	padding: 0;
+	transition: padding 0.2s ease-in, max-height 0.2s ease, padding 0.2s ease-in;
+	overflow: hidden;
+	border-bottom: none;
+
+	// When class visible, expand
+	&.visible{
+		max-height: 700px;
+		padding: 15px;
+		transition: padding 0s ease, max-height 0.2s ease, border-bottom 0s ease;
+		border-bottom: 1px solid #B7BECC;
+	}
+
+	// Remove bottom border (last item)
+	&.remove-bottom-border{
+		border-bottom: none;
+
+		&.visible{
+			border-bottom: none;
+		}
+	}
+
+	.toggle-block-body{
+		display: block;
+		box-sizing: border-box;
+
+	}
+}
 /////////////////////
 //     Layout     //
 ///////////////////
@@ -408,6 +585,156 @@ ul{
 }
 
 
+//////////////////////////////
+//          Modal          //
+////////////////////////////
+.modal-wrapper{
+	z-index: 2000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0,0,0,0.5);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	box-sizing: border-box;
+	padding-bottom: 10vh;
+
+	// Full width mobile
+	@media (max-width: 768px) {
+		padding-bottom: 0;
+	}
+
+	.modal-box{
+		display: flex;
+		flex-direction: column;
+		position: fixed;
+		width: 500px;
+		max-height: 75vh;
+		background-color: white;
+		min-height: 15vh;
+		margin: 0 auto;
+		border-radius: 10px;
+		position: fixed;
+		left: 50%;
+		margin-left: -250px;
+
+		// Full width mobile
+		@media (max-width: 768px) {
+			width: 100%;
+			left: 0;
+			margin-left: 0;
+			bottom: 0px;
+			border-top-left-radius: 25;
+			border-top-right-radius: 25;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		// Top of modal / header
+		.modal-top{
+			display: flex;
+			justify-content: space-between;
+			height: 50px;
+			box-sizing: border-box;
+			padding: 0 15px;
+			border-bottom: 1px solid #D9DDE4;
+			min-height: 50px;
+
+			.title,
+			.close-modal{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.title{
+				font-size: 18px;
+				font-weight: 700;
+			}
+
+			// Close X
+			.close-modal{
+				opacity: 0.5;
+				transition: 0.2s;
+
+				i{
+					font-size: 22px;
+				}
+
+				&:hover{
+					cursor: pointer;
+					opacity: 1;
+					transition: 0.2s;
+				}
+			}
+		}
+
+		// Main body content
+		.modal-middle{
+			flex-grow: 3;
+			box-sizing: border-box;
+			padding: 10px 15px;
+			overflow: auto;
+		}
+
+		// Footer / bottom
+		.modal-buttons{
+			padding: 15px;
+			box-sizing: border-box;
+			border-top: 1px solid #D9DDE4;
+			display: flex;
+
+			&.center{
+				justify-content: center;
+			}
+
+			&.space-around{
+				justify-content: space-between;
+			}
+
+			button{
+				margin: 0 5px;
+			}
+		}
+	}
+}
+
+// Modal Input Rows
+.modal-form-row{
+	display: flex;
+	box-sizing: border-box;
+	padding: 5px 0;
+
+	label,
+	.row-input{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	label{
+		padding-right: 15px;
+		line-height: 14px;
+		width: 150px;
+
+		small{
+			display: block;
+		}
+	}
+
+	.row-input{
+		flex-grow: 3;
+
+		input{
+			width: 100%;
+		}
+	}
+}
+
+
 ///////////////////////////////
 //   Misc global elements   //
 /////////////////////////////
@@ -439,13 +766,31 @@ ul{
 	width: 100% !important;
 	height: 100% !important;
 }
+.leaflet-control-attribution{
+	font-size: 8px !important;
+	background: transparent !important;
+	color: rgba(0,0,0,0.5) !important;
+}
+
+// Fix leaflet loading grey tiles
+.leaflet-pane{
+    img{
+        position: absolute !important;
+    }
+}
 
 
 
-
-
-
-#scroll{
-	display: block !important;
-	max-width: 100% !important;
+// Hide everything on print
+// In component scss file, override with 
+// opposite for print area
+@media print{
+	body * {
+		visibility: hidden !important;
+	}
+	.sidebar,
+	.full-map,
+	.footer{
+		display: none !important;
+	}
 }

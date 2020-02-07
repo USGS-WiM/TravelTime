@@ -5,83 +5,22 @@ $transition: 0.2s;
 $text: #0C141E;
 
 
-.sidebar-toggle-header{
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
+// Styles specific to the sidebar
+.sidebar{
 	max-height: 100%;
 	overflow: auto;
-	padding: 15px;
-	color: #0C141E;
-	background-color: rgb(216, 223, 231);
-	transition: 0.2s;
-	border-bottom: 1px solid rgb(204, 209, 218);
-
-	.text,
-	.icon{	
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		font-weight: bold;
-	}
-	.text{
-		font-size: 14px;
-	}
-	.icon{
-		font-size: 18px;
-	}
-
-	&:hover{
-		cursor: pointer;
-		transition: 0.2s;
-		background-color: #D9DDE4;
-		
-		.text{
-			text-decoration: underline;
-		}
-	}
-
-	// Users cannot toggle, so no hover state changes
-	&.notoggle{
-		&:hover{
-			background-color: rgb(216, 223, 231);
-			cursor: default;
-			.text{
-				text-decoration: none;
-			}
-		}
-	}
 }
+.sidebar .toggle-block{
 
-.sidebar-block{
-	display: block;
-	box-sizing: border-box;
-	max-height: 0px;
-	width: 100%;
-	padding: 0;
-	transition: padding 0.2s ease-in, max-height 0.2s ease, padding 0.2s ease-in;
-	overflow: hidden;
-	border-bottom: none;
-
-	// When class visible, expand
-	&.visible{
-		max-height: 700px;
-		padding: 15px;
-		transition: padding 0s ease, max-height 0.2s ease, border-bottom 0s ease;
-		border-bottom: 1px solid #B7BECC;
-	}
-
-	.sidebar-block-body{
-		display: block;
-		box-sizing: border-box;
+	.toggle-block-body{
 
 		p{
 			font-size: 12.5px;
 			line-height: 16px;
 			padding-top: 0;
+			margin-bottom: 0;
 		}
 		
-
 		// Checkbox or radio (and label) wrapper/row
 		.sidebar-toggle-row{
 			margin: 4px 0;
@@ -97,6 +36,33 @@ $text: #0C141E;
 				&:hover{
 					cursor: pointer;
 				}
+			}
+		}
+
+		// Current Zoom Level
+		// Current Zoom Level
+		// Current Zoom Level
+		.sidebar-zoom-level{
+			display: flex;
+			justify-content: flex-start;
+			margin-bottom: 14px;
+
+			span,b{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			span{
+				font-size: 14px;
+				letter-spacing: 0.3px;
+			}
+			b{
+				font-size: 24px;
+				font-weight: 700;
+				margin-left: 6px;
+				box-sizing: border-box;
+				padding-bottom: 1px;
 			}
 		}
 

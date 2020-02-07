@@ -23,10 +23,6 @@ export class FooterComponent implements OnInit {
   selectedRow: Number;
 
   public get showResult$(): boolean {
-    if (this.StudyService.GetWorkFlow('totResults')) {
-	//   $(".footer").css("height", "30vh");
-		alert("Results")
-    }
     return (this.StudyService.GetWorkFlow('totResults'));
   }
   

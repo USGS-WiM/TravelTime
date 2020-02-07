@@ -148,7 +148,7 @@ export class MapComponent extends deepCopy implements OnInit {
     setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
     })
-    this.sm("Zoom changed to " + zoom);
+    // this.sm("Zoom changed to " + zoom);
   }
 
   public onMouseClick(evnt: any) {
@@ -157,7 +157,7 @@ export class MapComponent extends deepCopy implements OnInit {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
 	  
 	  this.setPOI(evnt.latlng);
-      this.sm("Layer added to map!!!");
+      this.sm("Point selected. Loading...");
       this.MapService.setCursor("");
     }
   }

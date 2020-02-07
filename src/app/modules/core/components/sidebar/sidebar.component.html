@@ -6,16 +6,16 @@
 		Map Layers 
 	-->
 	<!-- Header -->
-    <div class="sidebar-toggle-header" (click)="showMapLayers = !showMapLayers">
+    <div class="toggle-header" (click)="showMapLayers = !showMapLayers">
 		<div class="text">Map Layers</div>
 		<div class="icon">
 			<i class="far" [ngClass]="showMapLayers ? 'fa-minus-circle' : 'fa-plus-circle'"></i>
 		</div>
     </div>
 	<!-- Map Layers Body -->
-    <div class="sidebar-block" [ngClass]="{'visible': showMapLayers}">
+    <div class="toggle-block" [ngClass]="{'visible': showMapLayers}">
 
-		<div class="sidebar-block-body">
+		<div class="toggle-block-body">
 			<!-- Base Maps -->
 			<h3>Base Maps</h3>
 			<div *ngFor="let item of baselayers" class="sidebar-toggle-row">
@@ -45,20 +45,24 @@
 		Identify Area 
 	-->
 	<!-- Header -->
-    <div class="sidebar-toggle-header notoggle" (click)="SetProcedureType(1)">
+    <div class="toggle-header" (click)="SetProcedureType(1)" [ngClass]="{'notoggle': SelectedProcedureType == 1}">
 		<div class="text">Identify Area</div>
 		<div class="icon">
-			<!-- <i class="far" [ngClass]="SelectedProcedureType === 1 ? 'fa-minus-circle' : 'fa-plus-circle'"></i> -->
+			<i class="far" [ngClass]="this.StudyService.GetWorkFlow('hasReaches') ? 'fa-check-circle' : ''"></i>
 		</div>
 	</div>
-    <div class="sidebar-block" [ngClass]="{'visible': SelectedProcedureType == 1}">
+    <div class="toggle-block" [ngClass]="{'visible': SelectedProcedureType == 1}">
 		
-		<div class="sidebar-block-body">
+		<div class="toggle-block-body">
 
 			<!-- Steps -->
 			<div *ngIf="ZoomLevel < 10">
 				<h5>Step 1:</h5>
-				<p>Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.</p>
+				<p>Use the map or the search tool below to identify an area of interest. At zoom level <b>10 or greater</b>, trace methods will be enabled.</p>
+				<div class="sidebar-zoom-level">
+					<span>Current Zoom Level:</span>
+					<b>{{this.MapService.CurrentZoomLevel}}</b>
+				</div>
 			</div>
 			<div *ngIf="ZoomLevel > 9">
 				<h5>Step 2:</h5>
@@ -126,14 +130,16 @@
 		Scenarios 
 	-->
 	<!-- Header -->
-    <div class="sidebar-toggle-header notoggle" (click)="SetProcedureType(2)">
+
+	<div class="toggle-header" (click)="SetProcedureType(2)" [ngClass]="{'notoggle': SelectedProcedureType == 2, 'blocked': !this.StudyService.GetWorkFlow('hasReaches')}">
 		<div class="text">Scenarios</div>
 		<div class="icon">
-			<!-- <i class="far" [ngClass]="SelectedProcedureType === 1 ? 'fa-minus-circle' : 'fa-plus-circle'"></i> -->
+			<i class="far" class="far fa-check-circle"></i>
+			<!-- <i class="far" [ngClass]="this.StudyService.selectedStudy || this.StudyService.GetWorkFlow('totResults') ? 'fa-check-circle' : ''"></i> -->
 		</div>
 	</div>
-	<div class="sidebar-block" [ngClass]="{'visible': SelectedProcedureType == 2}">
-		<div class="sidebar-block-body">
+    <div class="toggle-block" [ngClass]="{'visible': SelectedProcedureType == 2}">
+		<div class="toggle-block-body">
 
 			<span *ngFor="let item of AvailableScenarioTypes">
 				<div class="sidebar-toggle-row">
@@ -157,16 +163,16 @@
 		Build Report 
 	-->
 	<!-- Header -->
-    <div class="sidebar-toggle-header notoggle" (click)="SetProcedureType(3)">
+
+	<div class="toggle-header" (click)="SetProcedureType(3)" [ngClass]="{'notoggle': SelectedProcedureType == 3, 'blocked': !this.StudyService.selectedStudy || !this.StudyService.GetWorkFlow('totResults')}">
 		<div class="text">Build Report</div>
 		<div class="icon">
-			<!-- <i class="far" [ngClass]="SelectedProcedureType === 1 ? 'fa-minus-circle' : 'fa-plus-circle'"></i> -->
+			<i class="far" class="far fa-check-circle"></i>
+			<!-- <i class="far" [ngClass]="this.StudyService.selectedStudy || this.StudyService.GetWorkFlow('totResults') ? 'fa-check-circle' : ''"></i> -->
 		</div>
 	</div>
-
-
-	<div class="sidebar-block" [ngClass]="{'visible': SelectedProcedureType == 3}">
-		<div class="sidebar-block-body">
+    <div class="toggle-block no-bottom-border" [ngClass]="{'visible': SelectedProcedureType == 3}">
+		<div class="toggle-block-body">
 
 			<div *ngIf="!CanContinue">
 				<h5>Step 1:</h5>
@@ -186,6 +192,7 @@
 				<label for="{{option.name}}Option">{{option.name}}</label>
 			</span>
 
+			<div class="space10"></div>
 
 			<button class="full-width blue" (click)="open('Report')" [disabled]="!CanContinue">Continue</button>
 
