@@ -8,7 +8,7 @@
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
-      "schematics": {},
+      "schematics": { "@schematics/angular:component": { "style": "scss" } },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -23,9 +23,8 @@
               "./node_modules/usgs-search-api/dist/search_api.css",
               "./node_modules/leaflet/dist/leaflet.css",
               "./node_modules/bootstrap/dist/css/bootstrap.css",
-              "./node_modules/ngx-toastr/toastr.css",
-              "src/styles.css",
-              "./node_modules/font-awesome/css/font-awesome.min.css"
+			  "./node_modules/ngx-toastr/toastr.css",
+			  "./src/global.scss"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",
@@ -92,9 +91,7 @@
               "./node_modules/usgs-search-api/dist/search_api.css",
               "./node_modules/leaflet/dist/leaflet.css",
               "./node_modules/bootstrap/dist/css/bootstrap.css",
-              "./node_modules/ngx-toastr/toastr.css",
-              "src/styles.css",
-              "./node_modules/font-awesome/css/font-awesome.min.css"
+              "./node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.min.js",

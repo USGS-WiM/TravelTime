@@ -8,7 +8,7 @@ import { MapService } from '../../services/map.services';
 @Component({
   selector: 'tot-report',
   templateUrl: './report.component.html',
-  styleUrls: ['./report.component.css']
+  styleUrls: ['./report.component.scss']
 })
 export class ReportModalComponent implements OnInit {
 
@@ -52,7 +52,10 @@ export class ReportModalComponent implements OnInit {
     // newWin.document.close();
     // setTimeout(function(){newWin.close();},10);
     //window.print();
-    this.printElement(document.getElementById("print-content"));
+	// this.printElement(document.getElementById("print-content"));
+	
+	window.print();
+
   }
   
   private printElement(elem) {

@@ -17,7 +17,7 @@ interface chartData {
 @Component({
   selector: 'app-appcharts',
   templateUrl: './appcharts.component.html',
-  styleUrls: ['./appcharts.component.css']
+  styleUrls: ['./appcharts.component.scss']
 })
 
 export class AppchartsComponent implements OnInit {
@@ -106,8 +106,10 @@ export class AppchartsComponent implements OnInit {
     this.mostLineChartOptions.legend = { position: 'left' }
     this.maxLineChartOptions.legend = { position: 'left' }
 
-    this.chart.update();
-    this.chart.updateColors();
+	// Reverse the data display
+	$("#footerData").toggleClass("reverse");
+      this.chart.update();
+      this.chart.updateColors();
   }
 
   reaches: reach[];

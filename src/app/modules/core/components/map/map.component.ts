@@ -28,15 +28,14 @@ declare let search_api: any;
 @Component({
   selector: "tot-map",
   templateUrl: "./map.component.html",
-  styleUrls: ['./map.component.css'],
+  styleUrls: ['./map.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('in', style({
-        overflow: 'hidden',
-        height: '60vh'
+        overflow: 'hidden'
       })),
       state('out', style({
-        height: '90vh'
+        height: '100vh'
       })),
       state('report', style({
         height: '25vh'
@@ -169,7 +168,7 @@ export class MapComponent extends deepCopy implements OnInit {
     setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
     })
-    this.sm("Zoom changed to " + zoom);
+    // this.sm("Zoom changed to " + zoom);
   }
 
   public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
@@ -178,11 +177,10 @@ export class MapComponent extends deepCopy implements OnInit {
 
     if (this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
-
-      this.MapService.findState(evnt.latlng);
-      this.setPOI(evnt.latlng);
-
-      this.sm("Layer added to map!!!");
+      (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
+	  
+	  this.setPOI(evnt.latlng);
+      this.sm("Point selected. Loading...");
       this.MapService.setCursor("");
     }
   }

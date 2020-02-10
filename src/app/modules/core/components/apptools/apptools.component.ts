@@ -8,7 +8,7 @@ import '../../../../shared/extensions/number.toUSGSValue';
 @Component({
   selector: 'app-apptools',
   templateUrl: './apptools.component.html',
-  styleUrls: ['./apptools.component.css']
+  styleUrls: ['./apptools.component.scss']
 })
 
 export class ApptoolsComponent implements OnInit {

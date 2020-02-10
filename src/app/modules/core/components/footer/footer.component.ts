@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'tot-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.css'],
+  styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
   private MapService: MapService;
@@ -30,9 +30,6 @@ export class FooterComponent implements OnInit {
   selectedRow: Number;
 
   public get showResult$(): boolean {
-    if (this.StudyService.GetWorkFlow('totResults')) {
-      $(".footer").css("height", "30vh");
-    }
     return (this.StudyService.GetWorkFlow('totResults'));
   }
   

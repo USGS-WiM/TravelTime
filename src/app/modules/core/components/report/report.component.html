@@ -1,171 +1,231 @@
-<div id="print-content" class="modal-dialog">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="print-only">
-        <img src="" alt="USGS Identifier" title="USGS Science for a Changing World" />
-      </div>
-      <div style="width:100%">
-          <h4 class="modal-title">Spill Report Summary</h4>  
-          <button class="close hidden-print" (click)="activeModal.dismiss('Cross click')">x</button>                
-      </div>  
-    </div>
-    <div class="modal-body">
-      <div class="hidden-print">
-        <div class="panel-body boundingbox">
-          <div class="shadowtext">
-            <p>Enter a report title and/or comments here that will display on the printed report. Use the print button below.</p>
-          </div>
-        </div>
-        <label class="light_label">Enter report title:</label>
-        <input class="hidden" [(ngModel)]="reportTitle" type="text">
-        <br />
-        <label class="light_label">Enter comments:</label>
-        <input [(ngModel)]="reportComments" type="text" height="4em">
-      </div>
 
-      <h2>{{reportTitle}}</h2>
-      <div *ngIf="StudyService.ReportOptions[0].checked">
-      <!--INSERT MAP HERE-->
-        <div id="map_container">
-           <tot-map _nghost-c0 ng-version="6.1.3" class="report" [modal]="true"></tot-map>
-        </div>
-      </div>
-      <div *ngIf="reportComments">
-        <p>{{reportComments}}</p>
-      </div>
-      <div *ngIf="StudyService.ReportOptions[1].checked">
-        <div class="table" id="scroll">
-          <h4>Most Probable</h4>
-          <table>
-            <thead>
-              <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-                <th>Name</th>
-                <th title="Streamflow (cubic feet per second)">Q</th>
-                <th title="Drainage area (square miles)">D<sub>a</sub></th>
-                <th title="Reach length (meters)">L</th>
-                <th title="Velocity (meters per second)">V</th>
-                <th title="Traveltime of the leading edge">T<sub>l</sub></th>
-                <!--<th title="Time span of leading edge">T<sub>l</sub> Span</th>-->
-                <th title="Accumulated Travel Time of the leading edge">CumT<sub>l</sub></th>
-                <th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
-                <th title="Traveltime of the peak">T<sub>p</sub></th>
-                <th title="Accumulated Travel Time of the peak">CumT<sub>p</sub></th>
-                <th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
-                <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
-                <th title="Accumulated Travel Time of trailing edge">CumT<sub>d10</sub></th>
-              </tr>
-            </thead>
-    
-            <tbody>
-              <tr *ngFor="let reach of output$; let i = index">
-                <td>{{reach.name}}</td>
-    
-                <ng-container *ngFor="let pars of reach.parameters">
-                  <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Drainage area'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Distance'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                </ng-container>
-    
-                <ng-container>
-                  <!-- if the key is equal to v - this is av speed, else it is vmax-->
-                  <td>{{reach.result.equations.vmax.value.toUSGSvalue(2)}}</td>
-                  <td>{{reach.result.tracer_Response.leadingEdge.MostProbable.reachTime}}</td>
-                  <td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MostProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration.toUSGSvalue(2)}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MostProbable.reachTime}}</td>
-                  <td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.peakConcentration.MostProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MostProbable.concentration.toUSGSvalue(2)}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MostProbable.reachTime}}</td>
-                  <td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.trailingEdge.MostProbable.cumTime}}</td>
-                </ng-container>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="table" id="scroll">
-          <h4>Maximum Probable</h4>
-          <table>
-            <thead>
-              <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-                <th>Name</th>
-                <th title="Streamflow (cubic feet per second)">Q</th>
-                <th title="Drainage area (square miles)">D<sub>a</sub></th>
-                <th title="Reach length (meters)">L</th>
-                <th title="Velocity (meters per second)">V</th>
-                <th title="Traveltime of the leading edge">T<sub>l</sub></th>
-                <!--<th title="Time span of leading edge">T<sub>l</sub> Span</th>-->
-                <th title="Accumulated Travel Time of the leading edge">CumT<sub>l</sub></th>
-                <th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
-                <th title="Traveltime of the peak">T<sub>p</sub></th>
-                <th title="Accumulated Travel Time of the peak">CumT<sub>p</sub></th>
-                <th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
-                <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
-                <th title="Accumulated Travel Time of trailing edge">CumT<sub>d10</sub></th>
-              </tr>
-            </thead>
-    
-            <tbody>
-              <tr *ngFor="let reach of output$; let i = index">
-                <td>{{reach.name}}</td>
-    
-                <ng-container *ngFor="let pars of reach.parameters">
-                  <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Drainage area'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Distance'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                </ng-container>
-    
-                <ng-container>
-                  <!-- if the key is equal to v - this is av speed, else it is vmax-->
-                  <td>{{reach.result.equations.vmax.value.toUSGSvalue(2)}}</td>
-                  <td>{{reach.result.tracer_Response.leadingEdge.MaximumProbable.reachTime}}</td>
-                  <td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration.toUSGSvalue(2)}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.reachTime}}</td>
-                  <td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.concentration.toUSGSvalue(2)}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.reachTime}}</td>
-                  <td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime}}</td>
-                </ng-container>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div *ngIf="StudyService.ReportOptions[2].checked">
-        <!--INSERT GRAPH HERE-->
-        <p class="center">Graph Goes Here</p>
-      </div>
-      <div class="citations-table">
-        <p class="italic" style="font-size:small;">Citations</p>
-        <a href="https://pubs.usgs.gov/of/1996/4013"><p class="citation">Jobson, H.E., 1996, Prediction of traveltime and longitudinal dispersion in rivers and streams: U.S. Geological Survey Water-Resources Investigations Report 96–4013, 69 p.; https://pubs.usgs.gov/of/1996/4013.</p></a>
-        <p class="disclaimer">USGS Data Disclaimer: Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected. 
-          Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.</p>
-        <p class="disclaimer">USGS Software Disclaimer: This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. 
-          No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.</p>
-        <p class="disclaimer">USGS Product Names Disclaimer: Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.</p>
-      </div>
-      <button class="btn-black btn-main" (click)="download()"><i class="fa fa-download"></i>&nbsp;&nbsp;Download</button>
-    </div> <!-- END MODAL BODY-->
-    <div id="modal-footer">      
-      <div id="printblock" class="center">
-        <div class="btn-wrapper">
-          <button class="btn-black btn-main margin3" (click)="activeModal.dismiss()"><i class="fa fa-times"></i>&nbsp;&nbsp;Close</button>
-          <!--<button class="btn-blue btn-main" printSectionId="print-content" ngxPrint><i class="fa fa-print"></i>&nbsp;&nbsp;Print</button>-->
-          <button class="btn-blue btn-main" (click)="onPrint()"><i class="fa fa-print"></i>&nbsp;&nbsp;Print</button>          
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="modal-wrapper" id="print-content">
+	<div class="modal-box">
+		<!-- Header -->
+		<div class="modal-top">
+			<div class="title">Spill Report Summary</div>
+			<div class="close-modal" (click)="activeModal.dismiss()">
+				<i class="far fa-times"></i>
+			</div>
+		</div>
+		<!-- Main content -->
+		<div class="modal-middle" id="printArea">
+
+			<!-- Instructions -->
+            <p class="hidden-print">Enter a report title and/or comments here that will display on the printed report. Use the print button below.</p>
+
+			<!-- Report Title -->
+			<div class="modal-form-row hidden-print">
+				<label>
+					Report title:
+				</label>
+				<div class="row-input">
+					<input class="hidden" [(ngModel)]="reportTitle" type="text">
+				</div>
+			</div>
+			<!-- Comments -->
+			<div class="modal-form-row hidden-print">
+				<label>
+					Comments:
+				</label>
+				<div class="row-input">
+					<input [(ngModel)]="reportComments" type="text" height="4em">
+				</div>
+			</div>
+
+			<!-- Space -->
+			<div class="space30 hidden-print"></div>
+
+
+			<!-- Actual Report -->
+			<h2 class="report-title">{{reportTitle}}</h2>
+
+			<!-- Map -->
+			<div *ngIf="StudyService.ReportOptions[0].checked">
+				<div id="map_container">
+					<tot-map _nghost-c0 ng-version="6.1.3" class="report" [modal]="true"></tot-map>
+				</div>
+			</div>
+
+
+			<!-- Comments -->
+			<div *ngIf="reportComments">
+				<p>{{reportComments}}</p>
+			</div>
+
+
+			<div *ngIf="StudyService.ReportOptions[1].checked">
+				<div class="table" id="scroll">
+				  	<h4>Most Probable</h4>
+				  	<table>
+						<thead>
+					  		<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th>Name</th>
+								<th title="Streamflow (cubic feet per second)">Q</th>
+								<th title="Drainage area (square miles)">D<sub>a</sub></th>
+								<th title="Reach length (meters)">L</th>
+								<th title="Velocity (meters per second)">V</th>
+								<th title="Traveltime of the leading edge">T<sub>l</sub></th>
+								<!--<th title="Time span of leading edge">T<sub>l</sub> Span</th>-->
+								<th title="Accumulated Travel Time of the leading edge">CumT<sub>l</sub></th>
+								<th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
+								<th title="Traveltime of the peak">T<sub>p</sub></th>
+								<th title="Accumulated Travel Time of the peak">CumT<sub>p</sub></th>
+								<th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
+								<th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
+								<th title="Accumulated Travel Time of trailing edge">CumT<sub>d10</sub></th>
+					  		</tr>
+						</thead>
+			
+						<tbody>
+					  		<tr *ngFor="let reach of output$; let i = index">
+								<td>{{reach.name}}</td>
+				
+								<ng-container *ngFor="let pars of reach.parameters">
+									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+										<td>{{pars.value}}</td>
+									</ng-container>
+									<ng-container *ngIf="pars.name === 'Drainage area'">
+										<td>{{pars.value}}</td>
+									</ng-container>
+									<ng-container *ngIf="pars.name === 'Distance'">
+										<td>{{pars.value}}</td>
+									</ng-container>
+								</ng-container>
+				
+								<ng-container>
+									<!-- if the key is equal to v - this is av speed, else it is vmax-->
+									<td>{{reach.result.equations.vmax.value.toUSGSvalue(2)}}</td>
+									<td>{{reach.result.tracer_Response.leadingEdge.MostProbable.reachTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MostProbable.cumTime}}</td>
+									<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration.toUSGSvalue(2)}}</td>
+									<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.reachTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.peakConcentration.MostProbable.cumTime}}</td>
+									<td>{{reach.result.tracer_Response.trailingEdge.MostProbable.concentration.toUSGSvalue(2)}}</td>
+									<td>{{reach.result.tracer_Response.trailingEdge.MostProbable.reachTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.trailingEdge.MostProbable.cumTime}}</td>
+								</ng-container>
+					  		</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+				<div class="table" id="scroll">
+				  	<h4>Maximum Probable</h4>
+				  	<table>
+						<thead>
+					  		<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th>Name</th>
+								<th title="Streamflow (cubic feet per second)">Q</th>
+								<th title="Drainage area (square miles)">D<sub>a</sub></th>
+								<th title="Reach length (meters)">L</th>
+								<th title="Velocity (meters per second)">V</th>
+								<th title="Traveltime of the leading edge">T<sub>l</sub></th>
+								<!--<th title="Time span of leading edge">T<sub>l</sub> Span</th>-->
+								<th title="Accumulated Travel Time of the leading edge">CumT<sub>l</sub></th>
+								<th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
+								<th title="Traveltime of the peak">T<sub>p</sub></th>
+								<th title="Accumulated Travel Time of the peak">CumT<sub>p</sub></th>
+								<th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
+								<th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
+								<th title="Accumulated Travel Time of trailing edge">CumT<sub>d10</sub></th>
+					  		</tr>
+						</thead>
+			
+						<tbody>
+					  		<tr *ngFor="let reach of output$; let i = index">
+								<td>{{reach.name}}</td>
+			
+								<ng-container *ngFor="let pars of reach.parameters">
+									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+										<td>{{pars.value}}</td>
+									</ng-container>
+									<ng-container *ngIf="pars.name === 'Drainage area'">
+										<td>{{pars.value}}</td>
+									</ng-container>
+									<ng-container *ngIf="pars.name === 'Distance'">
+										<td>{{pars.value}}</td>
+									</ng-container>
+								</ng-container>
+			
+								<ng-container>
+									<!-- if the key is equal to v - this is av speed, else it is vmax-->
+									<td>{{reach.result.equations.vmax.value.toUSGSvalue(2)}}</td>
+									<td>{{reach.result.tracer_Response.leadingEdge.MaximumProbable.reachTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime}}</td>
+									<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration.toUSGSvalue(2)}}</td>
+									<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.reachTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime}}</td>
+									<td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.concentration.toUSGSvalue(2)}}</td>
+									<td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.reachTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime}}</td>
+								</ng-container>
+					  		</tr>
+						</tbody>
+				  	</table>
+				</div>
+			</div>
+
+
+			<!-- Graph -->
+			<div *ngIf="StudyService.ReportOptions[2].checked">
+				<p class="center">Graph Goes Here</p>
+			</div>
+
+
+			<!-- Citations -->
+			<div class="citations-table">
+				<h4>Citations</h4>
+				<a href="https://pubs.usgs.gov/of/1996/4013" class="citation">
+					Jobson, H.E., 1996, Prediction of traveltime and longitudinal dispersion in rivers and streams: U.S. Geological Survey Water-Resources Investigations Report 96–4013, 69 p.; https://pubs.usgs.gov/of/1996/4013.
+				</a>
+				<div class="space10"></div>
+				<p class="disclaimer">
+					USGS Data Disclaimer: Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected. 
+				  Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.
+				</p>
+				<p class="disclaimer">
+					USGS Software Disclaimer: This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. 
+				  No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.
+				</p>
+				<p class="disclaimer">
+					USGS Product Names Disclaimer: Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
+				</p>
+			</div>
+
+
+
+
+		</div>
+		<!-- Footer -->
+		<div class="modal-buttons space-around">
+
+			<!-- Close Modal -->
+			<button class="icon-button white" (click)="activeModal.dismiss()">
+				<i class="far fa-times"></i>
+				<span>Close</span>
+			</button>
+
+			<!-- 
+				Empty span makes print and download buttons float right
+				Because of flex space-between
+			-->
+			<span>
+				<!-- Download -->
+				<button class="icon-button" (click)="download()">
+					<i class="far fa-download"></i>
+					<span>Download</span>
+				</button>
+
+				<!--<button class="btn-blue btn-main" printSectionId="print-content" ngxPrint><i class="fa fa-print"></i>&nbsp;&nbsp;Print</button>-->
+
+				<button class="icon-button blue" (click)="onPrint()">
+					<i class="far fa-print"></i>
+					<span>Print</span>
+				</button>  
+			</span>
+			        
+		</div>
+	</div>
 </div>
