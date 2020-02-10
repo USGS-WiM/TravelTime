@@ -190,80 +190,85 @@ export class MapComponent extends deepCopy implements OnInit {
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
     if (!this.StudyService.GetWorkFlow("hasPOI")) {
-    this.StudyService.SetWorkFlow("hasPOI", true);
-    if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
-    let marker = L.marker(latlng, {
-      icon: L.icon(this.MapService.markerOptions.Spill)
-    });
-    //add marker to map
-    this.MapService.AddMapLayer({ name: "POI", layer: marker, visible: true });
+      this.StudyService.SetWorkFlow("hasPOI", true);
+      if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
+      let marker = L.marker(latlng, {
+        icon: L.icon(this.MapService.markerOptions.Spill)
+      });
+      //add marker to map
+      this.MapService.AddMapLayer({ name: "POI", layer: marker, visible: true });
 
-    let lastCoord = [];
+      let lastCoord = [];
 
-    this.NavigationService.getNavigationResource("3")
-    .toPromise().then(data => {
-      let config: Array<any> = data['configuration'];
-      config.forEach(item =>{
-        switch(item.id){
-          case 1: item.value = marker.toGeoJSON().geometry;
-            item.value["crs"] = {"properties":{"name":"EPSG:4326"},"type":"name"};
-            break;
-          case 6: item.value = ["flowline", "nwisgage"]; //"flowline", "wqpsite", "streamStatsgage", "nwisgage"
-            break;
-          case 5: item.value = "downstream";
-            break;
-          case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
-        }//end switch
-      });//next item
-      return config;
-    }).then(config => {
-      this.NavigationService.getRoute("3", config, true).subscribe(response => {
-        response.features.shift();
-        var layerGroup = new L.LayerGroup([]);//streamLayer
-        var r = 0;
-        let tail;
-        let head;
-        response.features.forEach(i => {
-          if (i.geometry.type === 'Point') {
-            var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
-            layerGroup.addLayer(gage);
-          } else if (typeof i.properties.nhdplus_comid === "undefined") {
-          } else {
-            if (r == 0) {
-              layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-            }
-            else if (r == 1) {
-              lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
-              layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+      this.NavigationService.getNavigationResource("3")
+      .toPromise().then(data => {
+        let config: Array<any> = data['configuration'];
+        config.forEach(item =>{
+          switch(item.id){
+            case 1: item.value = marker.toGeoJSON().geometry;
+              item.value["crs"] = {"properties":{"name":"EPSG:4326"},"type":"name"};
+              break;
+            case 6: item.value = ["flowline", "nwisgage"]; //"flowline", "wqpsite", "streamStatsgage", "nwisgage"
+              break;
+            case 5: item.value = "downstream";
+              break;
+            case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
+          }//end switch
+        });//next item
+        return config;
+      }).then(config => {
+        this.NavigationService.getRoute("3", config, true).subscribe(response => {
+          response.features.shift();
+          var layerGroup = new L.LayerGroup([]);//streamLayer
+          var r = 0;
+          let tail;
+          let head;
+          response.features.forEach(i => {
+            if (i.geometry.type === 'Point') {
+              var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
+              layerGroup.addLayer(gage);
+            } else if (typeof i.properties.nhdplus_comid === "undefined") {
             } else {
-              tail = lastCoord[lastCoord.length - 1];
-              head = i.geometry.coordinates[0];
-
-              //Current chunk is depreciated, it used to compare leading edge of a polyline coordinates and inflow polyline tail edge.
-              /*if (this.outofOrder(tail, head)) {
+              if (r == 0) {
                 layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-                tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-                lastCoord.push(tail);
+              }
+              else if (r == 1) {
+                lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
+                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
               } else {
-                tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-                lastCoord.push(tail);
-                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_unorder));
-              }*/
+                tail = lastCoord[lastCoord.length - 1];
+                head = i.geometry.coordinates[0];
 
-              layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+                //Current chunk is depreciated, it used to compare leading edge of a polyline coordinates and inflow polyline tail edge.
+                /*if (this.outofOrder(tail, head)) {
+                  console.log("Tail and head match: " + tail + "\n" + head);
 
-              var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
-              var drainage = " Drainage area: " + String(i.properties.DrainageArea);
-              var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-              var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + drainage);
-              layerGroup.addLayer(marker);
-            }
-            r += 1;
-            if (r === 1) {
-              i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
+                  layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+                  tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+                  lastCoord.push(tail);
+                } else {
+
+                  console.log("Tail and head do not match: " + tail + "\n"+ head);
+                
+                  tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+                  lastCoord.push(tail);
+                  layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_unorder));
+                }*/
+                //i-th reach - ith marker 
+                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+
+                var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
+                var drainage = " Drainage area: " + String(i.properties.DrainageArea);
+                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + drainage);
+                layerGroup.addLayer(marker);
+              }
+              r += 1;
+              if (r === 1) {
+                i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
+              }
             }
           }
-        }
         );
 
 
@@ -276,8 +281,10 @@ export class MapComponent extends deepCopy implements OnInit {
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         this.StudyService.setProcedure(2);
-      });
-    })
+      }
+      );
+      }
+      )
     }
   }
 
@@ -291,7 +298,7 @@ export class MapComponent extends deepCopy implements OnInit {
 
       if (e1.length > 1 && e2.length) {
         result = this.outofOrder(e1, e2);
-      } else if (e1 !== e2) {
+      } else if (Math.round(e1*100)/100 !== Math.round(e2*100)/100) {
         result = false
       } else {
         result = true
