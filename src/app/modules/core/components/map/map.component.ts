@@ -179,9 +179,9 @@ export class MapComponent extends deepCopy implements OnInit {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
 	  
-	  this.setPOI(evnt.latlng);
-      this.sm("Point selected. Loading...");
-      this.MapService.setCursor("");
+      this.setPOI(evnt.latlng);
+
+
     }
   }
 
@@ -190,6 +190,9 @@ export class MapComponent extends deepCopy implements OnInit {
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
     if (!this.StudyService.GetWorkFlow("hasPOI")) {
+      this.sm("Point selected. Loading...");
+      this.MapService.setCursor("");
+
       this.StudyService.SetWorkFlow("hasPOI", true);
       if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
       let marker = L.marker(latlng, {
@@ -235,6 +238,11 @@ export class MapComponent extends deepCopy implements OnInit {
               else if (r == 1) {
                 lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
                 layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+                var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
+                var drainage = " Drainage area: " + String(i.properties.DrainageArea);
+                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
+                layerGroup.addLayer(marker);
               } else {
                 tail = lastCoord[lastCoord.length - 1];
                 head = i.geometry.coordinates[0];
@@ -260,7 +268,7 @@ export class MapComponent extends deepCopy implements OnInit {
                 var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
                 var drainage = " Drainage area: " + String(i.properties.DrainageArea);
                 var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + drainage);
+                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
                 layerGroup.addLayer(marker);
               }
               r += 1;

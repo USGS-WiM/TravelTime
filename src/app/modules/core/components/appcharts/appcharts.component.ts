@@ -7,6 +7,7 @@ import { Color, BaseChartDirective, Label} from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
 import { Subscription } from 'rxjs';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 interface chartData {
   id: number,
@@ -18,7 +19,7 @@ interface chartData {
   selector: 'app-appcharts',
   templateUrl: './appcharts.component.html',
   styleUrls: ['./appcharts.component.scss']
-})
+})  
 
 export class AppchartsComponent implements OnInit {
   private ChartService: ChartsService;
@@ -60,6 +61,8 @@ export class AppchartsComponent implements OnInit {
     this.generateData();
     this.chart.update();
     this.chart.updateColors();
+    // Call to clear
+    this.ngSelectComponent.handleClearClick();
   }
 
 
@@ -89,13 +92,19 @@ export class AppchartsComponent implements OnInit {
 
 
   public chartIsActive(e) {
-    
+   
     /*while (e.value.length > 1) {
       e.value.pop();
     }*/
     //just to check
 
     if (typeof (e) == "undefined") {//if nothing selected, plot all
+      // Call to clear
+      this.flushChartData();
+      this.getAllMostProbable();
+      this.generateData();
+      this.chart.update();
+      this.chart.updateColors();
       return null;
     }
     this.flushChartData();
@@ -128,7 +137,11 @@ export class AppchartsComponent implements OnInit {
   public lineChartPlugins = [pluginAnnotations];
 
 
-  @ViewChild(BaseChartDirective,{ static: false }) chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective, { static: false }) chart: BaseChartDirective;
+  // Access ng-select
+  @ViewChild(NgSelectComponent, { static: false }) ngSelectComponent: NgSelectComponent;
+
+
   constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService) {
     this.messanger = toastr;
     this.StudyService = studyservice;
@@ -237,13 +250,14 @@ export class AppchartsComponent implements OnInit {
       var i, j, temparray;
       for (i = 0, j = arr.length; i < j; i += size) {
         temparray = arr.slice(i, i + size);
+        
         if (temparray.length < 2) {
-          array[array.length-1].value.push(temparray);
+          array[array.length - 1].value.push(temparray[0]);
         } else {
           tempvar = { "id": id, "label": "Reach group #" + id, "value": temparray };
+          array.push(tempvar);
+          id += 1;
         }
-        array.push(tempvar);
-        id += 1;
       }
     } else {
       array = arr;
@@ -252,6 +266,7 @@ export class AppchartsComponent implements OnInit {
   }
 
   public getAllForGroup(groupArray) {
+
     groupArray.forEach((o => {
       this.mostTimeLabels.push(o.result["tracer_Response"].leadingEdge.MostProbable.date);
       this.mostConcentration.push(o.result["tracer_Response"].leadingEdge.MostProbable.concentration);

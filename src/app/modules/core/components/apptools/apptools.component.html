@@ -3,7 +3,6 @@
     <div class="modal-header">
       <div class="col-xs-12">
         <h4 class="modal-title pull-left">Configure units</h4>
-        <button class="close pull-right" (click)="activeModal.dismiss('Cross click')">x</button>
       </div>
     </div>
     <div class="modal-body">
@@ -13,20 +12,22 @@
           <div class="initial-input">
             <label>Select distance</label>
             <input [(ngModel)]="this.StudyService.distance" placeholder="value" name="Select distance"
-                     type=number ngControl="distance" required autocomplete="off">
-              
-
+                   type=number ngControl="distance" required autocomplete="off">
           </div>
 
           <div class="map-layer-check">
             <label>Select units</label> <!--add ngif condition-->
             <div *ngFor="let item of units; let i = index" class="map-layer">
 
-              <label><input type="radio" name="Units" (change)="setUnits(i);" [checked]="item.isactive" />
-              {{item.name}}</label>
+              <label>
+                <input type="radio" name="Units" (change)="setUnits(i);" [checked]="item.isactive" />
+                {{item.name}} {{unit[i]}}
+              </label>
 
             </div>
           </div>
+          <br />
+          <button class="pull-right" (click)="activeModal.dismiss('Cross click')">OK</button>
         </div>
       </form>
     </div>
