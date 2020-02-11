@@ -119,10 +119,26 @@
     },
     "imperial": {
       "discharge": "cubic feet per second",
-      "drainageArea": "square feet",
+      "drainageArea": "square miles",
       "distance": "feet",
       "concentration": "pounds",
       "slope":  "feet/feet"
+    }
+  },
+  "Abbreviations": {
+    "metric": {
+      "discharge": "cms",
+      "drainageArea": "m^2",
+      "distance": "m",
+      "concentration": "kg",
+      "slope":  "m/m"
+    },
+    "imperial": {
+      "discharge": "cfs",
+      "drainageArea": "mi^2",
+      "distance": "ft",
+      "concentration": "lbs",
+      "slope":  "ft/ft"
     }
   }
 }
