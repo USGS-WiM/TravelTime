@@ -100,14 +100,34 @@ export class JobsonsModalComponent implements OnInit {
     //})
   }
 
+  public FirstReachDischarge;
    //#region "Methods"
   public setDischarge(): void {
     if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
+      var accumRatio = [this._discharge];     
+      let cond = false;
+      var value;
+
+      //current function is using ratio of i-th - 1 reach, it can be easily adjusted to nearest gage flow value;
       this.reachList.forEach((item) => {
-        item.parameters[1].value = Number(item.parameters[0].value); //Number(this.StudyService.selectedStudy.Discharge) * 
-        this.StudyService.SetWorkFlow("hasDischarge", true);
+        if (cond) {
+          item.parameters[1].value = (accumRatio[accumRatio.length - 1] * item.parameters[0].value).toFixed(3); //Number(this.StudyService.selectedStudy.Discharge) * 
+          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
+          accumRatio.push(value);
+        } else {
+          item.parameters[1].value = this._discharge;
+          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
+          this.FirstReachDischarge = item.parameters[0].value;
+          accumRatio.push(value);
+          cond = true;
+        }
       })
+      /*this.reachList.forEach((item) => {
+        item.parameters[1].value = item.parameters[0].value;
+      })*/
+      this.StudyService.SetWorkFlow("hasDischarge", true);
+
     } else {
       setTimeout(() => {
         this.setDischarge()

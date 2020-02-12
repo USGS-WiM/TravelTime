@@ -48,10 +48,6 @@ export class FooterComponent implements OnInit {
         o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"]).toUSGSvalue();
         o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"]).toUSGSvalue();
       }));
-
-
-
-     //console.log(this.reaches);
       return (this.reaches);
     } else {
       return;

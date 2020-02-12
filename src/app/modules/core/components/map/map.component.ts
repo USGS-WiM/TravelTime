@@ -222,6 +222,7 @@ export class MapComponent extends deepCopy implements OnInit {
       }).then(config => {
         this.NavigationService.getRoute("3", config, true).subscribe(response => {
           response.features.shift();
+
           var layerGroup = new L.LayerGroup([]);//streamLayer
           var r = 0;
           let tail;
@@ -234,6 +235,11 @@ export class MapComponent extends deepCopy implements OnInit {
             } else {
               if (r == 0) {
                 layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+                var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
+                var drainage = " Drainage area: " + String(i.properties.DrainageArea);
+                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
+                layerGroup.addLayer(marker);
               }
               else if (r == 1) {
                 lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
@@ -272,9 +278,9 @@ export class MapComponent extends deepCopy implements OnInit {
                 layerGroup.addLayer(marker);
               }
               r += 1;
-              if (r === 1) {
+              //if (r === 0) {
                 i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
-              }
+              //}
             }
           }
         );
