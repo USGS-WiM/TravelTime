@@ -7,6 +7,7 @@ import { MapService } from '../../services/map.services';
 import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { Study } from '../../models/study';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'tot-report',
@@ -29,11 +30,6 @@ export class ReportModalComponent implements OnInit {
 
   public get output$ () {
     if (this.StudyService.GetWorkFlow('totResults')) {
-      // let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-      // reachList.shift(); //remove first element (one without results)
-
-      // this.checkUnits(reachList);
-
       return (this.reaches);
     } else {
       return;

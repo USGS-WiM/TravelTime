@@ -28,22 +28,7 @@ declare let search_api: any;
 @Component({
   selector: "tot-map",
   templateUrl: "./map.component.html",
-  styleUrls: ['./map.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      state('in', style({
-        overflow: 'hidden'
-      })),
-      state('out', style({
-        height: '100vh'
-      })),
-      state('report', style({
-        height: '25vh'
-      })),
-      transition('in => out', animate('400ms ease-in-out')),
-      transition('out => in', animate('400ms ease-in-out'))
-    ])
-  ]
+  styleUrls: ['./map.component.scss']
 })
 
 export class MapComponent extends deepCopy implements OnInit {
@@ -61,8 +46,6 @@ export class MapComponent extends deepCopy implements OnInit {
   public states:any = [];
 
   public evnt;
-
-  @Input() public modal: boolean;
   
   scaleMap: string;
 
@@ -108,20 +91,6 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.modal) {
-      this.scaleMap = 'out';
-      this.StudyService.noticeAction(false);
-
-      this.subscription = this.StudyService.return$.subscribe(isWorking => {
-        if (isWorking) {
-          this.scaleMap = 'in';
-        }
-      });
-    }
-    else {
-      this.scaleMap = 'report';
-    }
-
     //method to subscribe to the layers
     this.MapService.LayersControl.subscribe(data => {
       this._layersControl = {
