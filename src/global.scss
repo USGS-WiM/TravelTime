@@ -747,7 +747,8 @@ ul{
 	.row-input{
 		flex-grow: 3;
 
-		input{
+		input[type=text],
+		input[type=number]{
 			width: 100%;
 			padding: 7px;
 			box-sizing: border-box;
@@ -868,4 +869,19 @@ ul{
 			}
 		}
 	}
+}
+
+
+
+// Config Form
+#configForm{
+
+	.modal-form-row{
+
+		label{
+			padding-left: 5px;
+			text-transform: capitalize;
+		}
+	}
+
 }
