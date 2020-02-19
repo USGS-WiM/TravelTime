@@ -282,7 +282,6 @@ export class MapComponent extends deepCopy implements OnInit {
                 i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
               //}
             }
-          }
         });
         this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
 
