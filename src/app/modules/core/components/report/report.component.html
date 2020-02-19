@@ -48,10 +48,10 @@
               <th>Leading edge,</th>
               <!-- <th title="Peak Concentration (mg/L)">C<sub>up</sub></th> -->
               <!-- <th title="Traveltime of the peak">T<sub>p</sub></th> -->
-              <th>Peak concentration,</th>              
+              <th title="mg/L">Peak concentration,</th>              
               <!-- <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th> -->
               <th>Trailing edge at 10% peak concentration,</th>
-              <th title="{{ !StudyService.isMetric() ? 'lbs/gal' : 'mg/L' }}">Peak concentration,</th>
+              <th title="mg/L">Peak concentration,</th>
             </tr>
             <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
               <th>Q</th>
@@ -104,19 +104,19 @@
           <h4>Maximum Probable</h4>
           <table>
             <tr style="vertical-align: center; text-align: center;">
-              <th rowspan="2">Name</th>
-              <th title="cubic feet per second">Discharge,</th>
-              <th title="square miles">Drainage area,</th>
-              <th title="Distance downstream from spill (meters)">Distance,</th>
-              <th title="meters per second">Reach Velocity,</th>
+              <th rowspan="2" vertical-align="center">Name</th>
+              <th title="{{ !StudyService.isMetric() ? 'cubic feet per second' : 'cubic meters per second' }}">Discharge,</th>
+              <th title="{{ !StudyService.isMetric() ? 'square miles' : 'square kilometers' }}">Drainage area,</th>
+              <th title="{{ !StudyService.isMetric() ? 'miles' : 'kilometers' }}">Distance,</th>
+              <th title="{{ !StudyService.isMetric() ? 'feet per second' : 'meters per second' }}">Reach Velocity,</th>
               <!-- <th title="Traveltime of the leading edge">Leading edge,</th> -->
               <!--<th title="Time span of leading edge">T<sub>l</sub> Span</th>-->
               <th title="Cumulative Travel Time of the leading edge">Leading edge,</th>
               <!-- <th title="Peak Concentration (mg/L)">C<sub>up</sub></th> -->
               <!-- <th title="Traveltime of the peak">T<sub>p</sub></th> -->
-              <th title="Cumulative Travel Time of the peak">Peak Concentration,</th>
+              <th title="mg/L">Peak Concentration,</th>
               <!-- <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th> -->
-              <th title="Cumulative Travel Time of trailing edge">Trailing edge at 10% peak concentration,</th>
+              <th>Trailing edge at 10% peak concentration,</th>
               <th title="mg/L">Peak concentration,</th>
             </tr>
             <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">

@@ -100,11 +100,6 @@ export class ReportModalComponent implements OnInit {
           if(newreach.parameters[6]) { newreach.parameters[6].unit.unit = this.units.imperial['concentration'] }               //spill mass
           if(newreach.parameters[6]) { newreach.parameters[6].unit.abbr = this.abbrev.imperial['concentration'] }
 
-          newreach.result.tracer_Response.peakConcentration.MostProbable.concentration = (reaches[i].result.tracer_Response.peakConcentration.MostProbable.concentration * 0.0000083).toUSGSvalue(); //mg/L to lbs/gal
-          newreach.result.tracer_Response.peakConcentration.MaximumProbable.concentration = (reaches[i].result.tracer_Response.peakConcentration.MaximumProbable.concentration * 0.0000083).toUSGSvalue(); //mg/L to lbs/gal
-          newreach.result.tracer_Response.trailingEdge.MostProbable.concentration = (reaches[i].result.tracer_Response.trailingEdge.MostProbable.concentration * 0.0000083).toUSGSvalue(); //mg/L to lbs/gal
-          newreach.result.tracer_Response.trailingEdge.MaximumProbable.concentration = (reaches[i].result.tracer_Response.trailingEdge.MaximumProbable.concentration * 0.0000083).toUSGSvalue(); //mg/L to lbs/gal;
-
           newreach.result.equations.vmax.value = (reaches[i].result.equations.vmax.value * 3.2808399).toUSGSvalue(); //m/s to ft/s
           newreach.result.equations.v.value = (reaches[i].result.equations.v.value * 3.2808399).toUSGSvalue(); //m/s to ft/s
 
