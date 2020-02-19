@@ -8,7 +8,6 @@ import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import '../../../../shared/extensions/number.toUSGSValue';
-//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -23,7 +22,7 @@ export const DateTimeValidator = (fc: FormControl) => {
 @Component({
   selector: 'app-jobsons',
   templateUrl: './jobsons.component.html',
-  styleUrls: ['./jobsons.component.css']
+  styleUrls: ['./jobsons.component.scss']
 })
 export class JobsonsModalComponent implements OnInit {
 
@@ -103,26 +102,49 @@ export class JobsonsModalComponent implements OnInit {
     //})
   }
 
+  public FirstReachDischarge;
    //#region "Methods"
   public setDischarge(): void {
     if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
+      var accumRatio = [this._discharge];     
+      let cond = false;
+      var value;
+
+      //current function is using ratio of i-th - 1 reach, it can be easily adjusted to nearest gage flow value;
       this.reachList.forEach((item) => {
-        item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
-        this.StudyService.SetWorkFlow("hasDischarge", true);
+        if (cond) {
+          item.parameters[1].value = (accumRatio[accumRatio.length - 1] * item.parameters[0].value).toFixed(3); //Number(this.StudyService.selectedStudy.Discharge) * 
+          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
+          accumRatio.push(value);
+        } else {
+          item.parameters[1].value = this._discharge;
+          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
+          this.FirstReachDischarge = item.parameters[0].value;
+          accumRatio.push(value);
+          cond = true;
+        }
       })
+      /*this.reachList.forEach((item) => {
+        item.parameters[1].value = item.parameters[0].value;
+      })*/
+      this.StudyService.SetWorkFlow("hasDischarge", true);
+
     } else {
       setTimeout(() => {
         this.setDischarge()
       }, 500)
     }
+
+    this.StudyService.setDischarge(this._discharge);
   }
 
-  public setConc(event): void {
-    if (this.reachList) {
-      this.StudyService.selectedStudy.SpillMass = this._spillMass;
+    public setConc(event): void {
+      if (this.reachList) {
+        this.StudyService.selectedStudy.SpillMass = this._spillMass;
+        this.StudyService.setConcentration(this._spillMass);
+      }
     }
-  }
 
   public validateForm(mainForm): boolean {
 
@@ -143,15 +165,6 @@ export class JobsonsModalComponent implements OnInit {
   };
 
 
-  public showhideReaches(): void {
-    if (this.showReaches === false) {
-      this.showhidetitle = 'Show Reaches';
-      this.showReaches = true;
-    } else {
-      this.showhidetitle = 'Hide Reaches';
-      this.showReaches = false;
-    }
-  }
 
   public removeReach(index): void {   //remove reach by id
     if (index >= 0) {
@@ -188,6 +201,13 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public getResults() {
+
+	// Set default footer height to half, show buttons to switch
+	$("#mapWrapper").attr('class','half-map');
+	$("#mapHeightToggle").attr('class','visible');
+
+
+
     this.gettingResults = true;
 
     if (this.dateModel instanceof Date) {
@@ -268,7 +288,7 @@ export class JobsonsModalComponent implements OnInit {
   //#endregion
 
   //#region "Private methods"
-  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side   
+  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
 
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {

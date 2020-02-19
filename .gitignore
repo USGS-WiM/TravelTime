@@ -6,6 +6,9 @@
 # Only exists if Bazel was run
 /bazel-out
 
+# Buikd
+/dist
+
 # dependencies
 /node_modules
 

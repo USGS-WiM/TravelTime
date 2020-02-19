@@ -78,7 +78,7 @@
         "color": "orange",
         "fillColor": "#f03",
         "fillOpacity": 0.5,
-        "radius": 20
+        "radius": 100
       },
       "Reach": {
         "color": "orange",
@@ -87,9 +87,14 @@
         "radius": 100
       },
       "Polyline": {
-        "color": "#FF3333",
+        "color": "#0000FF",
         "weight": 3,
-        "opacity": 0.60
+        "opacity": 1
+      },
+      "Polyline_unorder": {
+        "color": "red",
+        "weight": 3,
+        "opacity": 1
       },
       "GagesUpstream": {
         "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",

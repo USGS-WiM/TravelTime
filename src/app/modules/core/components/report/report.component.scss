@@ -1,0 +1,127 @@
+// Tables
+.table,
+.citations-table {
+	padding: 9px;
+	border-radius: 3px; 
+	font-size:x-small;
+	margin-bottom: 20px;
+	border: 1px solid #e3e3e3;
+}
+
+// Set specifics for data tables
+.table{
+	max-height:400px; 
+	overflow:scroll; 
+}
+
+// Citations and Disclaimers
+.citations-table{
+
+	// Actual citatation (<a> Tag)
+	.citation{
+		font-size: 14px;
+		line-height: 15px;
+		margin-bottom: 10px;
+		display: block;
+		color: #0B53D7;
+	}
+
+	.disclaimer {
+		padding: 0;
+		margin-bottom: 10px;
+		font-size: 11px;
+		line-height: 12px;
+	}
+}
+
+
+ #map_container {
+   height: auto;
+   width: auto;
+   margin-bottom: 1em;
+ }
+
+
+ 
+ .citation {
+  color:#0071bc;
+  font-weight:600;
+  font-size: small;
+  cursor: pointer;
+ }
+
+
+
+//  Print Styles
+@media print{
+	#printArea, #printArea * {
+		visibility: visible !important;
+	}
+	#printArea {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: auto;
+	}
+
+	  
+	
+	.hidden-print {
+		display: none !important;
+	}
+	.print-only {
+		display: block;
+	}
+	#print-content * {
+		visibility: visible;
+	}
+	.modal{
+		/**Remove scrollbar for printing.**/
+		overflow: visible !important;
+		/**Needs to be relative for printing in IE11**/
+		position: absolute;
+		left: 0;
+		top: 0;
+		margin: 0;
+		padding-right:20px;
+		min-height:550px;
+		visibility: visible;
+	}
+	.modal-dialog {
+		width: 100%;
+		padding: 0;
+		margin:20px;
+		visibility: visible !important;
+		/**Remove scrollbar for printing.**/
+		overflow: visible !important;
+	}
+	.modal-footer {
+		border-top:0;
+	}
+	.leaflet-control-container{
+		display: none!important;
+	}
+	.page_break {
+		float: none !important;
+		position: relative;
+		page-break-after: always;
+	}
+
+	.chart {
+		overflow-x: unset;
+		width: 100%;
+	}
+
+	.identifier {
+		padding-bottom: 2em;
+	}
+}
+
+@media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS styles go here */
+  .modal {
+      /**Needs to be relative for printing in IE11**/
+      position: relative;
+  }
+}
