@@ -86,6 +86,19 @@ export class StudyService  {
       this.defConcentration = this.unitS[unit].concentration;
     }
 
+    public isMetric(): boolean {
+      var tf;
+      this.units.forEach(j => {
+        if (j.isactive) {
+          if (j.name === 'imperial') {
+            tf = false;
+          }
+          else tf = true;
+        } else {}
+      })
+      return tf;
+    }
+
     public get checkingDelineatedPoint(): boolean {
         return (this._workflow.hasPOI && !this._workflow.hasReaches);
     }

@@ -39,10 +39,10 @@
           <table style="word-wrap: break-word; white-space: normal;">
             <tr style="vertical-align: center; text-align: center;">
               <th rowspan="2" vertical-align="center">Name</th>
-              <th title="cubic feet per second">Discharge,</th>
-              <th title="square miles">Drainage area,</th>
-              <th title="Distance downstream from spill (meters)">Distance,</th>
-              <th title="meters per second">Reach Velocity,</th>
+              <th title="{{ !StudyService.isMetric() ? 'cubic feet per second' : 'cubic meters per second' }}">Discharge,</th>
+              <th title="{{ !StudyService.isMetric() ? 'square miles' : 'square kilometers' }}">Drainage area,</th>
+              <th title="{{ !StudyService.isMetric() ? 'miles' : 'kilometers' }}">Distance,</th>
+              <th title="{{ !StudyService.isMetric() ? 'feet per second' : 'meters per second' }}">Reach Velocity,</th>
               <!-- <th title="Traveltime of the leading edge">Leading edge,</th> -->
               <!--<th title="Time span of leading edge">T<sub>l</sub> Span</th>-->
               <th>Leading edge,</th>
@@ -51,7 +51,7 @@
               <th>Peak concentration,</th>              
               <!-- <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th> -->
               <th>Trailing edge at 10% peak concentration,</th>
-              <th title="mg/L">Peak concentration,</th>
+              <th title="{{ !StudyService.isMetric() ? 'lbs/gal' : 'mg/L' }}">Peak concentration,</th>
             </tr>
             <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
               <th>Q</th>
@@ -77,10 +77,10 @@
                   <td style="text-align: center;">{{pars.value}}</td>
                 </ng-container>
                 <ng-container *ngIf="pars.name === 'Drainage area'">
-                  <td>{{pars.value}}</td>
+                  <td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
                 </ng-container>
                 <ng-container *ngIf="pars.name === 'Cumulative Distance'">
-                  <td style="text-align: center;">{{pars.value}}</td>
+                  <td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
                 </ng-container>
               </ng-container>
   

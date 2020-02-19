@@ -196,44 +196,41 @@ export class JobsonsModalComponent implements OnInit {
     }
     let tempReachList = [];
     let postReachList = []; 
-    this.StudyService.units.forEach(j => {
-      if (j.isactive) {
-        if (j.name === 'imperial') {
-          for (var i = 0; i < this.reachList.length; i++) { 
-              let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-              newreach.name = this.reachList[i].name;
-              newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   //slope
-              newreach.parameters[1].value = (this.reachList[i].parameters[1].value * 0.028316847);   //real-time discharge from cfs to cms
-              newreach.parameters[0].value = (this.reachList[i].parameters[0].value * 0.028316847);   //mean annual discharge from cfs to cms
-              newreach.parameters[3].value = (this.reachList[i].parameters[3].value / 0.00000038610215855); //drainage area from square miles to square meters
-              newreach.parameters[4].value = (this.reachList[i].parameters[4].value / 3.2808);        //length from feet to meters 
+    if(!this.StudyService.isMetric()) {
+      for (var i = 0; i < this.reachList.length; i++) { 
+        let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
+        newreach.name = this.reachList[i].name;
+        newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   //slope
+        newreach.parameters[1].value = (this.reachList[i].parameters[1].value * 0.028316847);   //real-time discharge from cfs to cms
+        newreach.parameters[0].value = (this.reachList[i].parameters[0].value * 0.028316847);   //mean annual discharge from cfs to cms
+        newreach.parameters[3].value = (this.reachList[i].parameters[3].value / 0.00000038610215855); //drainage area from square miles to square meters
+        newreach.parameters[4].value = (this.reachList[i].parameters[4].value / 3.2808);        //length from feet to meters 
 
-              newreach.parameters[0].unit.unit = this.units.metric['discharge']   //mean annual discharge
-              newreach.parameters[0].unit.abbr = this.abbrev.metric['discharge']
-              newreach.parameters[1].unit.unit = this.units.metric['discharge']   //real-time discharge
-              newreach.parameters[1].unit.abbr = this.abbrev.metric['discharge']
-              newreach.parameters[2].unit.unit = this.units.metric['slope']        
-              newreach.parameters[2].unit.abbr = this.abbrev.metric['slope']
-              newreach.parameters[3].unit.unit = this.units.metric['drainageArea']
-              newreach.parameters[3].unit.abbr = this.abbrev.metric['drainageArea']
-              newreach.parameters[4].unit.unit = this.units.metric['distance']
-              newreach.parameters[4].unit.abbr = this.abbrev.metric['distance']
-              
-              tempReachList.push(newreach);
-          }
-          tempReachList.forEach(reach => {
-            reach.parameters.splice(6,1);
-            postReachList.push(reach);
-          })
-          this.StudyService.selectedStudy.SpillMass = this.StudyService.selectedStudy.SpillMass * 0.453592;
-        } else {
-          this.reachList.forEach(reach => {
-            reach.parameters.splice(6,1);
-            postReachList.push(reach);
-          })
-        }        
-      } 
-    })
+        newreach.parameters[0].unit.unit = this.units.metric['discharge']   //mean annual discharge
+        newreach.parameters[0].unit.abbr = this.abbrev.metric['discharge']
+        newreach.parameters[1].unit.unit = this.units.metric['discharge']   //real-time discharge
+        newreach.parameters[1].unit.abbr = this.abbrev.metric['discharge']
+        newreach.parameters[2].unit.unit = this.units.metric['slope']        
+        newreach.parameters[2].unit.abbr = this.abbrev.metric['slope']
+        newreach.parameters[3].unit.unit = this.units.metric['drainageArea']
+        newreach.parameters[3].unit.abbr = this.abbrev.metric['drainageArea']
+        newreach.parameters[4].unit.unit = this.units.metric['distance']
+        newreach.parameters[4].unit.abbr = this.abbrev.metric['distance']
+        
+        tempReachList.push(newreach);
+      }
+      tempReachList.forEach(reach => {
+        reach.parameters.splice(6,1);
+        postReachList.push(reach);
+      })
+      this.StudyService.selectedStudy.SpillMass = this.StudyService.selectedStudy.SpillMass * 0.453592;
+    } else {
+      this.reachList.forEach(reach => {
+        reach.parameters.splice(6,1);
+        postReachList.push(reach);
+      })
+    }        
+
     console.log(postReachList);
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
       .toPromise().then(data => {
@@ -280,28 +277,23 @@ export class JobsonsModalComponent implements OnInit {
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
 
         let selectedUnits;
-        this.StudyService.units.forEach(j => {
-          if (j.isactive) {
-            if (j.name === 'metric') {
-              selectedUnits = this.units.metric;
-              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//cfs to cms
-              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0);//square kilometers to square meters
-              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000) //kilometers to meters
+        if(this.StudyService.isMetric()) {
+          selectedUnits = this.units.metric;
+          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//cfs to cms
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0);//square kilometers to square meters
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000) //kilometers to meters
+        } else {
+          selectedUnits = this.units.imperial;
+          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge) //cfs
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102) //square kilometers to square miles
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84) //kilometers to feet
+        }
+        newreach.parameters[0].unit.unit = selectedUnits['discharge']   //mean annual discharge
+        newreach.parameters[1].unit.unit = selectedUnits['discharge']   //real-time discharge
+        newreach.parameters[2].unit.unit = selectedUnits['slope']        
+        newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
+        newreach.parameters[4].unit.unit = selectedUnits['distance']
 
-            } else {
-              selectedUnits = this.units.imperial;
-              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge) //cfs
-              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102) //square kilometers to square miles
-              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84) //kilometers to feet
-            }
-            newreach.parameters[0].unit.unit = selectedUnits['discharge']   //mean annual discharge
-            newreach.parameters[1].unit.unit = selectedUnits['discharge']   //real-time discharge
-            newreach.parameters[2].unit.unit = selectedUnits['slope']        
-            newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
-            newreach.parameters[4].unit.unit = selectedUnits['distance']
-          } else {
-          }
-        })
         this.reachList.push(newreach);
       } else {
       }
