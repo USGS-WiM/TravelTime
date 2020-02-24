@@ -22,7 +22,6 @@
             "styles": [
               "./node_modules/usgs-search-api/dist/search_api.css",
               "./node_modules/leaflet/dist/leaflet.css",
-              "./node_modules/bootstrap/dist/css/bootstrap.css",
 			  "./node_modules/ngx-toastr/toastr.css",
 			  "./src/global.scss"
             ],

@@ -17,7 +17,7 @@
 					<label>
 						Time of Spill:
 					</label>
-					<div class="">
+					<div class="row-input ri-flex">
 						<app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
 					</div>
 				</div>
@@ -61,7 +61,7 @@
 					</div>
 				</div>
 				<!-- Map Layers Body -->
-				<div class="toggle-block remove-bottom-border jobsons-toggles" [ngClass]="{'visible': showReaches}">
+				<div class="toggle-block remove-bottom-border jobsons-toggles" [ngClass]="{'visible-extend': showReaches}">
 			
 					<div class="toggle-block-body">
 						

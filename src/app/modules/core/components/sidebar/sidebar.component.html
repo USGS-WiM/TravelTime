@@ -72,11 +72,11 @@
 			<!-- Search box -->
 			<div id="searchBox"></div>
 			<!-- Search Help -->
-			<button class="search-help-toggle" [hidden]="showSearchHelp" (click)="showSearchHelp = !showSearchHelp">
+			<button class="search-help-toggle" *ngIf="!showSearchHelp" (click)="showSearchHelp = true">
 				<i class="far fa-question-circle"></i> 
 				<span>Show Search Help</span>
 			</button>
-			<button class="search-help-toggle" [hidden]="!showSearchHelp" (click)="showSearchHelp = false">
+			<button class="search-help-toggle" *ngIf="showSearchHelp" (click)="showSearchHelp = false">
 				<i class="far fa-times"></i> 
 				<span>Hide Search Help</span>
 			</button>
