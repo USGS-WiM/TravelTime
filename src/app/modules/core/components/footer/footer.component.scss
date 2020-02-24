@@ -44,6 +44,20 @@
 	}
 }
 
+table {
+  border-collapse: collapse;
+  border: 1px solid #696969;
+}
+
+tr:hover {
+  background-color: #44BEAE;
+}
+
+table td {
+  border-right: solid 1px #696969;
+  border-left: solid 1px #696969;
+}
+
 // .table tr.active td {
 //   background-color: #123456 !important;
 //   color: white;

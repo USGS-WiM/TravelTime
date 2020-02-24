@@ -26,7 +26,8 @@ export class AppchartsComponent implements OnInit {
   private StudyService: StudyService;
   private messanger: ToastrService;
   private subscription: Subscription;
-  
+
+
 
   //site grouping disabled;
   isDisabled = false;
@@ -90,7 +91,7 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-
+  @ViewChild('selectGroup') ref:ElementRef;
   public chartIsActive(e) {
    
     /*while (e.value.length > 1) {
@@ -105,8 +106,11 @@ export class AppchartsComponent implements OnInit {
       this.generateData();
       this.chart.update();
       this.chart.updateColors();
+      this.ref.placeholder="Select group";
       return null;
     }
+    this.ref.placeholder=""; //if reach selected, reset placeholder to null
+
     this.flushChartData();
     this.getAllForGroup(e.value);
     this.generateDataGroup(e.value);
@@ -190,6 +194,7 @@ export class AppchartsComponent implements OnInit {
       this.maxLineChartData.push(myobj);
       c += 3;
     }))
+
     if (this.output$.length <= 5) { this.isDisabled = true; }
     if (this.mostLineChartData.length > 20) { this.lineChartLegend = false; }
   }
