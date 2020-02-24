@@ -28,22 +28,7 @@ declare let search_api: any;
 @Component({
   selector: "tot-map",
   templateUrl: "./map.component.html",
-  styleUrls: ['./map.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      state('in', style({
-        overflow: 'hidden'
-      })),
-      state('out', style({
-        height: '100vh'
-      })),
-      state('report', style({
-        height: '25vh'
-      })),
-      transition('in => out', animate('400ms ease-in-out')),
-      transition('out => in', animate('400ms ease-in-out'))
-    ])
-  ]
+  styleUrls: ['./map.component.scss']
 })
 
 export class MapComponent extends deepCopy implements OnInit {
@@ -61,8 +46,6 @@ export class MapComponent extends deepCopy implements OnInit {
   public states:any = [];
 
   public evnt;
-
-  @Input() public modal: boolean;
   
   scaleMap: string;
 
@@ -108,20 +91,6 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.modal) {
-      this.scaleMap = 'out';
-      this.StudyService.noticeAction(false);
-
-      this.subscription = this.StudyService.return$.subscribe(isWorking => {
-        if (isWorking) {
-          this.scaleMap = 'in';
-        }
-      });
-    }
-    else {
-      this.scaleMap = 'report';
-    }
-
     //method to subscribe to the layers
     this.MapService.LayersControl.subscribe(data => {
       this._layersControl = {
@@ -282,15 +251,9 @@ export class MapComponent extends deepCopy implements OnInit {
                 i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
               //}
             }
-          }
-        );
+        });
+        this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
 
-
-        //one liner to sort data by drainage area;
-        if (typeof (response != "undefined")) {
-          response.features.sort((a, b) => (a.properties.DrainageArea > b.properties.DrainageArea) ? 1 : ((b.properties.DrainageArea > a.properties.DrainageArea) ? -1 : 0));
-        }
-        this.StudyService.selectedStudy.Reaches = response.features;
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
@@ -331,6 +294,24 @@ export class MapComponent extends deepCopy implements OnInit {
     }
     catch (e) {
     }
+  }
+
+  private formatReaches(data): any {
+    let streamArray = [];
+    for (var i = 0; i < data['features'].length; i++) {
+      if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
+        var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?
+        streamArray.push(polylinePoints);
+      }
+    }
+    streamArray.map((reach) => {
+      reach.properties.show = false;
+    })
+
+    var sortArray = streamArray.sort(function (a,b) {
+      return a.properties.DrainageArea - b.properties.DrainageArea;
+    }) 
+    return(sortArray);
   }
   //#endregion
 

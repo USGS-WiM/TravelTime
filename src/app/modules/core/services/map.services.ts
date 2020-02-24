@@ -29,6 +29,7 @@ export class MapService {
   public fitBounds: Subject<any> = new Subject<any>();
   public _bound;
   public unitsOptions;
+  public abbrevOptions;
   public http: HttpClient;
 
   constructor(http: HttpClient) {
@@ -62,6 +63,7 @@ export class MapService {
 
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
+      this.abbrevOptions = conf.Abbreviations;
 
     });
     this.CurrentZoomLevel = this.Options.zoom;

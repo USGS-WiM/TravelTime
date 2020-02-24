@@ -16,6 +16,7 @@ import { ChartsModule } from 'ng2-charts';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapModule } from './modules/core/components/map/map.module';
 import { AppRoutingModule } from './modules/core/core-routing.module';
+import { ReportModule } from './modules/core/components/report/report.module';
 
 
 
@@ -26,8 +27,7 @@ import { AppRoutingModule } from './modules/core/core-routing.module';
     AboutModalComponent,
     JobsonsModalComponent,
     DateTimePickerComponent,
-    ApptoolsComponent,
-    ReportModalComponent
+    ApptoolsComponent
   ],
   imports: [
     LeafletModule.forRoot(),
@@ -37,6 +37,7 @@ import { AppRoutingModule } from './modules/core/core-routing.module';
     NgbTabsetModule,
     ChartsModule,
     MapModule,
+    ReportModule,
     AppRoutingModule,
     ToastNoAnimationModule.forRoot({
       timeOut: 5000,
@@ -51,6 +52,6 @@ import { AppRoutingModule } from './modules/core/core-routing.module';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent, ReportModalComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
 })
 export class AppModule {}

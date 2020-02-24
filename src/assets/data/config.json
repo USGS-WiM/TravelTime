@@ -120,14 +120,34 @@
       "drainageArea": "square meters",
       "distance": "meters",
       "concentration": "kilograms",
-      "slope":  "meters/meters"
+      "slope":  "meters/meters",
+      "velocity": "meters/second"
     },
     "imperial": {
       "discharge": "cubic feet per second",
-      "drainageArea": "square feet",
+      "drainageArea": "square miles",
       "distance": "feet",
       "concentration": "pounds",
-      "slope":  "feet/feet"
+      "slope":  "feet/feet",
+      "velocity": "feet/second"
+    }
+  },
+  "Abbreviations": {
+    "metric": {
+      "discharge": "cms",
+      "drainageArea": "m^2",
+      "distance": "m",
+      "concentration": "kg",
+      "slope":  "m/m",
+      "velocity": "m/s"
+    },
+    "imperial": {
+      "discharge": "cfs",
+      "drainageArea": "mi^2",
+      "distance": "ft",
+      "concentration": "lbs",
+      "slope":  "ft/ft",
+      "velocity": "ft/s"
     }
   }
 }

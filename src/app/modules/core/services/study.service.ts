@@ -65,15 +65,30 @@ export class StudyService  {
       },
       "imperial": {
         "discharge": "cubic feet per second",
-        "drainageArea": "square feet",
-        "distance": "feet",
+        "drainageArea": "square miles",
+        "distance": "miles",
         "concentration": "pounds",
         "slope": "feet/feet"
       }
     };
+    public abbrev = {
+      "metric": {
+        "discharge": "cms",
+        "drainageArea": "m^2",
+        "distance": "m",
+        "concentration": "kg",
+        "slope": "m/m"
+      },
+      "imperial": {
+        "discharge": "cfs",
+        "drainageArea": "mi^2",
+        "distance": "mi",
+        "concentration": "lbs",
+        "slope": "ft/ft"
+      }
+    }
     private UnitsReturn = new Subject<string>();
     units$ = this.UnitsReturn.asObservable();
-
 
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
@@ -93,6 +108,19 @@ export class StudyService  {
     public setUnits(unit: string) {
       this.defDischarge = this.unitS[unit].discharge;
       this.defConcentration = this.unitS[unit].concentration;
+    }
+
+    public isMetric(): boolean {
+      var tf;
+      this.units.forEach(j => {
+        if (j.isactive) {
+          if (j.name === 'imperial') {
+            tf = false;
+          }
+          else tf = true;
+        } else {}
+      })
+      return tf;
     }
 
     public get checkingDelineatedPoint(): boolean {

@@ -6,7 +6,7 @@ import { ReportModule } from './components/report/report.module';
 	selector: 'tot-core',
 	templateUrl: './core.component.html',
 	providers: [NgbModalConfig, NgbModal],
-	styleUrls: ['./core.component.scss'],
+	styleUrls: ['./core.component.scss']
 })
 
 export class CoreComponent {
