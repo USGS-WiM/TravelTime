@@ -121,7 +121,7 @@ export class MapService {
       } else {
         var nhdplusid = Object.values(o._layers)[0]["feature"].properties.nhdplus_comid;
         if (Number(indx) == Number(nhdplusid)) {
-          this.setBounds (Object.values(o._layers)[0]._bounds); //set bounds to selected reach;
+          this.setBounds (Object.values(o._layers)[0]["_bounds"]); //set bounds to selected reach;
           o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
         } else {
           o.setStyle({

@@ -91,7 +91,7 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-  @ViewChild('selectGroup') ref:ElementRef;
+  @ViewChild('selectGroup', { static: false }) ref:ElementRef;
   public chartIsActive(e) {
    
     /*while (e.value.length > 1) {
@@ -106,10 +106,10 @@ export class AppchartsComponent implements OnInit {
       this.generateData();
       this.chart.update();
       this.chart.updateColors();
-      this.ref.placeholder="Select group";
+      this.ref["placeholder"]="Select group";
       return null;
     }
-    this.ref.placeholder=""; //if reach selected, reset placeholder to null
+    this.ref["placeholder"]=""; //if reach selected, reset placeholder to null
 
     this.flushChartData();
     this.getAllForGroup(e.value);
