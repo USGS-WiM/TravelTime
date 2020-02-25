@@ -1,51 +1,34 @@
-<div class="modal-wrapper">
-	<div class="modal-box">
-		<!-- Header -->
-		<div class="modal-top">
-			<div class="title">Configure units</div>
-			<div class="close-modal" (click)="activeModal.dismiss()">
-				<i class="far fa-times"></i>
-			</div>
-		</div>
-		<!-- Main content -->
-		<div class="modal-middle">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="col-xs-12">
+        <h4 class="modal-title pull-left">Configure units</h4>
+        <button class="close pull-right" (click)="activeModal.dismiss('Cross click')">x</button>
+      </div>
+    </div>
+    <div class="modal-body">
 
-			<form form #myForm="ngForm" id="configForm">
-				<!-- Select Distance -->
-				<div class="modal-form-row">
-					<label>
-						Select distance
-					</label>
-					<div class="row-input">
-						<input [(ngModel)]="this.StudyService.distance" placeholder="value" name="Select distance"
-							type=number ngControl="distance" required autocomplete="off">
-				 	</div>
-				</div>
-				<!-- Select Units -->
-				<div class="modal-form-row">
-					<label>
-						Select units
-					</label>
-					<div class="row-input">
-						<span *ngFor="let item of units; let i = index" class="modal-form-row">
-							<input type="radio" id="configUnits{{i}}" name="Units" (change)="setUnits(i);" [checked]="item.isactive" />
-							<label for="configUnits{{i}}">{{item.name}}</label>
-						</span>
-					</div>
-				</div>
-		
-			</form>
+      <form form #myForm="ngForm">
+        <div class="form-group" style="width:100%;">
+          <div class="initial-input">
+            <label>Select distance</label>
+            <input [(ngModel)]="this.StudyService.distance" placeholder="value" name="Select distance"
+                     type=number ngControl="distance" required autocomplete="off">
+              
 
+          </div>
 
-		</div>
-		<!-- Footer -->
-		<div class="modal-buttons center">
-			<button class="blue" (click)="activeModal.dismiss()">
-				<span>Done</span>
-			</button>
-	  </div>
-	</div>
-</div>
+          <div class="map-layer-check">
+            <label>Select units</label> <!--add ngif condition-->
+            <div *ngFor="let item of units; let i = index" class="map-layer">
 
+              <label><input type="radio" name="Units" (change)="setUnits(i);" [checked]="item.isactive" />
+              {{item.name}}</label>
 
-      
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>

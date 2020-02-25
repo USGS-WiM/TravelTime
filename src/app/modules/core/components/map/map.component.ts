@@ -22,13 +22,27 @@ import {
   transition,
   // ...
 } from '@angular/animations';
-import { KrigservicesService } from '../../services/krigservices.service';
-declare let search_api: any;
 
 @Component({
   selector: "tot-map",
   templateUrl: "./map.component.html",
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        overflow: 'hidden',
+        height: '60vh'
+      })),
+      state('out', style({
+        height: '100vh'
+      })),
+      state('report', style({
+        height: '25vh'
+      })),
+      transition('in => out', animate('400ms ease-in-out')),
+      transition('out => in', animate('400ms ease-in-out'))
+    ])
+  ]
 })
 
 export class MapComponent extends deepCopy implements OnInit {
@@ -42,10 +56,8 @@ export class MapComponent extends deepCopy implements OnInit {
   private _layers = [];
   private subscription: Subscription;
   public fitBounds;
-  private KrigService: KrigservicesService;
-  public states:any = [];
 
-  public evnt;
+  @Input() public modal: boolean;
   
   scaleMap: string;
 
@@ -77,20 +89,30 @@ export class MapComponent extends deepCopy implements OnInit {
   }
 
 
-  constructor(private krigservice: KrigservicesService, private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor( private zone: NgZone, mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
     this.NavigationService = navigationservice;
     this.StudyService = studyservice;
-    this.KrigService = krigservice;
   }
 
-  getStates() {
-    this.states = this.MapService.states$;
-  }
 
   ngOnInit() {
+    if(!this.modal) {
+      this.scaleMap = 'out';
+      this.StudyService.noticeAction(false);
+
+      this.subscription = this.StudyService.return$.subscribe(isWorking => {
+        if (isWorking) {
+          this.scaleMap = 'in';
+        }
+      });
+    } 
+    else {
+      this.scaleMap = 'report';
+    }
+
     //method to subscribe to the layers
     this.MapService.LayersControl.subscribe(data => {
       this._layersControl = {
@@ -112,16 +134,6 @@ export class MapComponent extends deepCopy implements OnInit {
       this._layers = activelayers;
     });
 
-
-    //Attached Krig service;
-    /*this.MapService.states$.subscribe(states => {
-      for (let i = 0; i < states.length; i++) {
-        this.KrigService.getNearestMostCorrelatedStations(this.evnt, states[i]).subscribe(response => {
-          console.log(response);
-        });
-      }
-    })*/
-
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
     })
@@ -137,20 +149,15 @@ export class MapComponent extends deepCopy implements OnInit {
     setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
     })
-    // this.sm("Zoom changed to " + zoom);
+    this.sm("Zoom changed to " + zoom);
   }
 
-  public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
-
-    this.evnt = evnt.latlng;
-
+  public onMouseClick(evnt: any) {
     if (this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
-      (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
-	  
       this.setPOI(evnt.latlng);
-
-
+      this.sm("Layer added to map!!!");
+      this.MapService.setCursor("");
     }
   }
 
@@ -158,131 +165,63 @@ export class MapComponent extends deepCopy implements OnInit {
 
   //#region "Helper methods"
   private setPOI(latlng: L.LatLng) {
-    if (!this.StudyService.GetWorkFlow("hasPOI")) {
-      this.sm("Point selected. Loading...");
-      this.MapService.setCursor("");
+    this.StudyService.SetWorkFlow("hasPOI", true);
+    if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
+    let marker = L.marker(latlng, {
+      icon: L.icon(this.MapService.markerOptions.Spill)
+    });
+    //add marker to map
+    this.MapService.AddMapLayer({ name: "POI", layer: marker, visible: true });
 
-      this.StudyService.SetWorkFlow("hasPOI", true);
-      if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
-      let marker = L.marker(latlng, {
-        icon: L.icon(this.MapService.markerOptions.Spill)
-      });
-      //add marker to map
-      this.MapService.AddMapLayer({ name: "POI", layer: marker, visible: true });
+    this.NavigationService.getNavigationResource("3")
+    .toPromise().then(data => {
+      let config: Array<any> = data['configuration'];
+      config.forEach(item =>{
+        switch(item.id){
+          case 1: item.value = marker.toGeoJSON().geometry;
+            item.value["crs"] = {"properties":{"name":"EPSG:4326"},"type":"name"};
+            break;
+          case 6: item.value = ["flowline", "nwisgage"];
+            break;
+          case 5: item.value = "downstream";
+            break;
+          case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
+        }//end switch
+      });//next item
+      return config;
+    }).then(config =>{
+      this.NavigationService.getRoute("3", config, true).subscribe(response => {
 
-      let lastCoord = [];
-
-      this.NavigationService.getNavigationResource("3")
-      .toPromise().then(data => {
-        let config: Array<any> = data['configuration'];
-        config.forEach(item =>{
-          switch(item.id){
-            case 1: item.value = marker.toGeoJSON().geometry;
-              item.value["crs"] = {"properties":{"name":"EPSG:4326"},"type":"name"};
-              break;
-            case 6: item.value = ["flowline", "nwisgage"]; //"flowline", "wqpsite", "streamStatsgage", "nwisgage"
-              break;
-            case 5: item.value = "downstream";
-              break;
-            case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
-          }//end switch
-        });//next item
-        return config;
-      }).then(config => {
-        this.NavigationService.getRoute("3", config, true).subscribe(response => {
-          response.features.shift();
-
-          var layerGroup = new L.LayerGroup([]);//streamLayer
-          var r = 0;
-          let tail;
-          let head;
-          response.features.forEach(i => {
-            if (i.geometry.type === 'Point') {
-              var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
-              layerGroup.addLayer(gage);
-            } else if (typeof i.properties.nhdplus_comid === "undefined") {
-            } else {
-              if (r == 0) {
-                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-                var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
-                var drainage = " Drainage area: " + String(i.properties.DrainageArea);
-                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
-                layerGroup.addLayer(marker);
-              }
-              else if (r == 1) {
-                lastCoord.push(i.geometry.coordinates[i.geometry.coordinates.length - 1]);
-                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-                var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
-                var drainage = " Drainage area: " + String(i.properties.DrainageArea);
-                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
-                layerGroup.addLayer(marker);
-              } else {
-                tail = lastCoord[lastCoord.length - 1];
-                head = i.geometry.coordinates[0];
-
-                //Current chunk is depreciated, it used to compare leading edge of a polyline coordinates and inflow polyline tail edge.
-                /*if (this.outofOrder(tail, head)) {
-                  console.log("Tail and head match: " + tail + "\n" + head);
-
-                  layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-                  tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-                  lastCoord.push(tail);
-                } else {
-
-                  console.log("Tail and head do not match: " + tail + "\n"+ head);
-                
-                  tail = i.geometry.coordinates[i.geometry.coordinates.length - 1]
-                  lastCoord.push(tail);
-                  layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_unorder));
-                }*/
-                //i-th reach - ith marker 
-                layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-
-                var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
-                var drainage = " Drainage area: " + String(i.properties.DrainageArea);
-                var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-                var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
-                layerGroup.addLayer(marker);
-              }
-              r += 1;
-              //if (r === 0) {
-                i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
-              //}
+        response.features.shift();
+        var layerGroup = new L.LayerGroup([]);//streamLayer
+        var r = 0;
+        response.features.forEach(i => {
+          if (i.geometry.type === 'Point') {
+            var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
+            layerGroup.addLayer(gage);
+          } else if (typeof i.properties.nhdplus_comid === "undefined") {
+          } else {
+            var nhdcomid = String(i.properties.nhdplus_comid);
+            var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1]
+            //var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid);
+            //layerGroup.addLayer(marker);
+            layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+            r += 1;
+            if (r === 1) {
+              i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
             }
+          }
         });
         this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+        //console.log(this.StudyService.selectedStudy.Reaches);
 
         this.MapService.AddMapLayer({ name: "Flowlines", layer: layerGroup, visible: true });
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         this.StudyService.setProcedure(2);
-      }
-      );
-      }
-      )
-    }
-  }
 
-
-  public outofOrder(arr1, arr2) {
-    if (!arr1 || !arr2) return
-
-    let result;
-
-    arr1.forEach((e1, i) => arr2.forEach(e2 => {
-
-      if (e1.length > 1 && e2.length) {
-        result = this.outofOrder(e1, e2);
-      } else if (Math.round(e1*100)/100 !== Math.round(e2*100)/100) {
-        result = false
-      } else {
-        result = true
-      }
+      });
     })
-    )
-    return result
   }
   
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
@@ -307,12 +246,9 @@ export class MapComponent extends deepCopy implements OnInit {
     streamArray.map((reach) => {
       reach.properties.show = false;
     })
-
-    var sortArray = streamArray.sort(function (a,b) {
-      return a.properties.DrainageArea - b.properties.DrainageArea;
-    }) 
-    return(sortArray);
+    return(streamArray);
   }
+
   //#endregion
 
 }

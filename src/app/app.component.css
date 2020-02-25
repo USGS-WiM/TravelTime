@@ -1,0 +1,45 @@
+#banner {
+  display: table;
+  width: 100%;
+  background-color: black;
+  padding-left: 1em;
+  color: white;
+  height: 2em;
+  vertical-align: middle;
+}
+
+.right {
+  float: right;
+}
+
+.gray {
+  color: gray;
+}
+
+button {
+  width: 200px;
+}
+
+.position-left {
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  top: 90px;
+  width: 100%;
+  z-index: 1;
+}
+
+header {
+  height: 50px;
+  line-height: 20px;
+  background: black;
+  margin-top: 0px;
+}
+
+.Title {
+  color: white;
+  width: 100%;
+  padding: 12px 20px;
+  font-family: 'Roboto';
+  font-size: 24px;
+}

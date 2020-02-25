@@ -1,0 +1,20 @@
+.footer {
+  clear: both;
+  text-align: center;
+  margin: 0px 0px 0px 0px;
+  font-family: arial, helvetica;
+  font-weight: bold;
+  font-size: 11px;
+  position: relative;
+  overflow: auto;
+}
+
+.table tr.active td {
+  background-color: #123456 !important;
+  color: white;
+}
+
+.grid-parent {
+  display: grid;
+  grid-template-columns: 1fr 1fr
+}

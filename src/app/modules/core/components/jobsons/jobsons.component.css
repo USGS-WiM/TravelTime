@@ -1,0 +1,236 @@
+.modal-content {
+   margin-top:25px; 
+   z-index:2000; 
+   position: absolute;
+   height:800px;
+}
+
+.modal-body {
+  height:600px;
+}
+
+.input-with-icon {
+   /* causes absolute icon div to be positioned correctly */
+   position: relative;
+   /*width: 25rem;*/
+   height: 3.2rem;
+   box-sizing: border-box;
+   margin-bottom:1em;
+ }
+ 
+.input-with-icon .form-control {
+   /*height: 100%;*/
+   width: 100%;
+   padding-right: 3.65rem;
+   box-sizing: border-box;
+   /*margin-bottom: 1em;*/
+   font-family: 'Open Sans',Helvetica,sans-serif;
+   font-size: 14px;
+}
+
+.input-with-icon .icon {
+   position: absolute;
+   /* These are set relative to the height of the input box to bound the box neatly inside. This is aesthetic to me but you may change the dimensions of course. */
+   right: -0.1rem;
+   top: 1.6rem;
+   width: 2.6rem;
+   height: 2.6rem;
+   border-radius: 0.3rem;
+   /* content in the icon div is centered, without bootstrap or font-awesome you may wish to add your own text in the span */
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
+   /*box-sizing: border-box;*/
+}
+
+.initial-input {
+   clear:both;
+   margin-bottom:1em;
+ }
+
+.btn-wrapper {
+   margin-left: auto;
+   margin-right: auto;
+   width: auto;
+   display: inline-block;
+ }
+
+.btn-main {
+   margin-left: 5px;
+   width:140px;
+ }
+ 
+.center {
+   text-align: center;
+ }
+
+.list-group-item {
+  background-color: #bbbbbb88;
+  text-transform: uppercase;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 18px;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #FFF !important;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.list-group-item i {
+  padding-left: 5px;
+  display: inline-block;
+  text-align: right;
+  width: 50px;
+}
+
+.list-group-item:hover {
+  color: #8c8c8c !important;
+  transition: 0.2s;
+}
+
+.dropdown-menu {
+  max-height: 150px;
+  width: 90%;
+  /*overflow-y:scroll;*/
+}
+
+.list-heading {
+  display: block;
+  background-color: rgb(130, 194, 255);
+  text-transform: uppercase;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 18px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: #0F8AFF !important;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.list-heading i {
+  padding-left: 5px;
+  display: inline-block;
+  width: 50px;
+  position: relative;
+  top: 3px;
+}
+
+.reachlist {
+  padding-left: 5px;
+  background-color:#e0e3e6;
+  border:whitesmoke;
+  border-style: solid;
+  border-width:1px;
+  
+  font-weight:bold;
+  width: 100%;
+  line-height:38px;
+  display: table;
+}
+
+.reachList:hover {
+  text-decoration: none !important;
+  background-color: #FFFFFF;
+}
+
+.listrow {
+  display: table-cell; 
+  vertical-align: middle;
+  cursor: pointer;
+  width:100%;
+}
+
+.remove {
+  float: right;
+  border:darkred;
+  color: darkred;
+  width:20%;
+  padding:0px;
+  margin-top: auto;
+  margin-right: 1em;
+  margin-bottom: auto;
+  margin-left: 0em;
+}
+
+#details {
+  display: inline-block;
+  margin-left: 1em;
+  margin-bottom: 1em;
+  height:auto;
+}
+
+#details div .space8{
+  margin-bottom: 8px;
+}
+
+.row {
+  margin: 0px 0px 0px 16px;
+  font-weight:lighter;
+  font-size: 13px;
+  float:left;
+  width:70%;
+}
+
+#block1 {
+  position: relative;
+  width: auto;
+  height: 450px;
+}
+
+#block2 {
+  height: 330px;
+  overflow-y: scroll;
+} 
+
+#block3 {
+ height:auto;
+}
+
+input .tight {
+  margin-bottom: -10px;
+}
+
+label {
+  margin-bottom: 0px;
+}
+
+.spacer30 {
+  margin-bottom: 30px;
+}
+
+/* .inline-label { 
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  float:left;     
+  } */
+
+  .floatright {
+    float: right;
+  }
+
+  .floatleft {
+    float: left;
+  }
+  
+  .close {
+    font-size: 15pt;
+    margin: 0 5px;
+    width: 25px;
+    height: 25px;
+    opacity: 1;
+    background-color: white;
+    border-radius: 50%;
+    box-sizing: border-box;
+    padding: 0 0 2px 0;
+    float: right;
+    color: rgba(0,0,0,0.5);
+    box-shadow: 1px 1px 5px #333;
+    position: relative;
+    left: 10px;
+    top: -25px;
+  }

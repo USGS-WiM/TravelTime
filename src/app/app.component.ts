@@ -3,34 +3,25 @@ import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {AboutModalComponent} from './components/about/about.component'
 
 @Component({
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.scss'],
-	providers:[NgbModalConfig, NgbModal]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  providers:[NgbModalConfig, NgbModal]
 })
 
 export class AppComponent {
-	public title:string;
-	  
-  	public mapSize:string;
+  public title:string;
 
-  	constructor(config: NgbModalConfig, private modalService: NgbModal) {
-   		this.title = "USGS Time of Travel";
-   		this.mapSize = "half-map";
+  constructor(config: NgbModalConfig, private modalService: NgbModal) {
+   this.title = "USGS Time of Travel";
 
-    	config.backdrop = 'static';
-    	config.keyboard = false;
-   	}
-	
-  	public openAboutModal(){
-    	const modalRef = this.modalService.open(AboutModalComponent);
-    	modalRef.componentInstance.title = 'About';
-  	}
-
-	public toggleSidebar(){
-		console.log("Toggling Sidebar")
-		$("#sidebarWrapper").toggleClass("menu-visible");
-		$("#menuButtonIcon").toggleClass("fa-bars, fa-times");
-
-	}
+    config.backdrop = 'static';
+    config.keyboard = false;
+   }
+//#region "Methods"
+  public open(){
+    const modalRef = this.modalService.open(AboutModalComponent);
+    modalRef.componentInstance.title = 'About';
+  }
+//#endregion
 }
