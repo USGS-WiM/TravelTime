@@ -1,167 +1,203 @@
 <div class="sidebar">
-  <div class="panel panel-default">
-    <!--MAP LAYERS PANEL-->
-    <div class="sidebar-item" (click)="SetProcedureType(0)">
-      <a ngClass="list-group-item-maps">Map layers&nbsp;<span [ngClass]="SelectedProcedureType === 0 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
+
+	<!-- 
+		Map Layers 
+		Map Layers 
+		Map Layers 
+	-->
+	<!-- Header -->
+    <div class="toggle-header" (click)="showMapLayers = !showMapLayers">
+		<div class="text">Map Layers</div>
+		<div class="icon">
+			<i class="far" [ngClass]="showMapLayers ? 'fa-minus-circle' : 'fa-plus-circle'"></i>
+		</div>
     </div>
+	<!-- Map Layers Body -->
+    <div class="toggle-block" [ngClass]="{'visible': showMapLayers}">
 
-    <div class="panel-body boundingbox" [hidden]="SelectedProcedureType !== 0">
-      <!--BASE MAPS-->
-      <div class="panel panel-primary">
-        <div class="panel-heading pointerCursor">
-          <h5 class="panel-title pointerCursor">Base maps</h5>
-        </div>
-      </div>
+		<div class="toggle-block-body">
+			<!-- Base Maps -->
+			<h3>Base Maps</h3>
+			<div *ngFor="let item of baselayers" class="sidebar-toggle-row">
+				<input *ngIf="item.visible; else disabled" type="radio" id="basemap{{item.name}}" name="mapLayer" (change)="SetBaselayer(item.name);" [checked]="item.name" />
+				<ng-template #disabled>
+					<input type="radio" id="basemap{{item.name}}" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);" />
+				</ng-template>
+				<label for="basemap{{item.name}}">{{item.name}}</label>
+			</div>
+			<!-- Overlays -->
+			<h3>Overlays</h3>
+			<div *ngFor="let item of overlays" class="sidebar-toggle-row" [hidden]="ishiddenOverlay">
+				<input *ngIf="item.visible; else disabled" id="overlay{{item.name}}" type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);" [checked]="item.name" />
+				<ng-template #disabled>
+					<input type="checkbox" name="options" id="overlay{{item.name}}" (change)="model.overlays === item.name; SetOverlay(item.name);" [checked]="item.name === model.overlays" />
+				</ng-template>
+				<label for="overlay{{item.name}}">{{item.name}}</label>
+			</div>
+		</div>
 
-      <div class="panel-body">
-        <!-- if selected procedure type 1 or 2 set expanded-->
-        <label *ngFor="let item of baselayers" class="map-layer">
-          <div *ngIf="item.visible; else disabled" class="map-layer-check">
-            <input type="radio" name="mapLayer" (change)="SetBaselayer(item.name);"
-                   [checked]="item.name">
-          </div>
-          <ng-template #disabled>
-            <div class="map-layer-check">
-              <input type="radio" name="mapLayer" (change)="model.baselayers === item.name; SetBaselayer(item.name);">
-            </div>
-          </ng-template>
-          <span class="map-layer-title">{{item.name}}</span>
-        </label>
-      </div>
-      <!--END BASE MAPS-->
-      <!--OVERLAYS-->
-      <div class="panel panel-primary">
-        <div class="panel-heading pointerCursor">
-          <h5 class="panel-title">Overlays</h5>
-        </div>
-      </div>
+	</div>
+	<!-- End Map Layers -->
 
-      <div class="panel-body" [hidden]="ishiddenOverlay">
-        <label *ngFor="let item of overlays" class="map-layer">
-          <div *ngIf="item.visible; else disabled" class="map-layer-check">
-            <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
-                   [checked]="item.name">
-          </div>
-          <ng-template #disabled>
-            <div class="map-layer-check">
-              <input type="checkbox" name="options" (change)="model.overlays === item.name; SetOverlay(item.name);"
-                     [checked]="item.name === model.overlays">
-            </div>
-          </ng-template>
-          <span class="map-layer-title">{{item.name}}</span>
-        </label>
-      </div>
-      <!--END OVERLAYS-->
-      
-    </div>
-    <!--END MAP LAYERS PANEL-->
+	<!-- 
+		Identify Area 
+		Identify Area 
+		Identify Area 
+	-->
+	<!-- Header -->
+    <div class="toggle-header" (click)="SetProcedureType(1)" [ngClass]="{'notoggle': SelectedProcedureType == 1}">
+		<div class="text">Identify Area</div>
+		<div class="icon">
+			<i class="far" [ngClass]="this.StudyService.GetWorkFlow('hasReaches') ? 'fa-check-circle' : ''"></i>
+		</div>
+	</div>
+    <div class="toggle-block" [ngClass]="{'visible': SelectedProcedureType == 1}">
+		
+		<div class="toggle-block-body">
 
-    <!--IDENTIFY AREA PANEL-->
-    <div class="sidebar-item" (click)="SetProcedureType(1)">
-      <a [ngClass]="GetClass(1)">IDENTIFY AREA&nbsp;<span [ngClass]="SelectedProcedureType === 1 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
-    </div>
+			<!-- Steps -->
+			<div *ngIf="ZoomLevel < 10">
+				<h5>Step 1:</h5>
+				<p>Use the map or the search tool below to identify an area of interest. At zoom level <b>10 or greater</b>, trace methods will be enabled.</p>
+				<div class="sidebar-zoom-level">
+					<span>Current Zoom Level:</span>
+					<b>{{this.MapService.CurrentZoomLevel}}</b>
+				</div>
+			</div>
+			<div *ngIf="ZoomLevel > 9">
+				<h5>Step 2:</h5>
+				<p>You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</p>
+			</div>
 
-    <div class="panel-body" [hidden]="SelectedProcedureType !== 1">
-      <div class="startover_wrapper" *ngIf="StudyService.GetWorkFlow('hasReaches')">
-        <button class="startover" mat-raised-button (click)="reset()"><i class="fa fa-undo"></i>&nbsp;&nbsp;Start Over</button>
-        <br />
-      </div>
-      <div *ngIf="ZoomLevel < 10">
-        <div class="shadowtext">
-          <b>Step 1:</b> Use the map or the search tool below to identify an area of interest. At zoom level 10 or greater, trace methods will be enabled.
-        </div>
-      </div>
-      <div *ngIf="ZoomLevel > 9">
-        <div class="shadowtext"><b>Step 2:</b> You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</div>
-      </div>
+			<!-- Search box -->
+			<div id="searchBox"></div>
+			<!-- Search Help -->
+			<button class="search-help-toggle" *ngIf="!showSearchHelp" (click)="showSearchHelp = true">
+				<i class="far fa-question-circle"></i> 
+				<span>Show Search Help</span>
+			</button>
+			<button class="search-help-toggle" *ngIf="showSearchHelp" (click)="showSearchHelp = false">
+				<i class="far fa-times"></i> 
+				<span>Hide Search Help</span>
+			</button>
+			<!-- Help body -->
+			<div class="search-help" [ngClass]="{'visible': showSearchHelp}">
+				<label cla>Supported search strings:</label>
+				<div class="search-strings">
+					<span>GNIS locations</span>
+					<span>States</span>
+					<span>Zip Codes</span>
+					<span>Area Codes</span>
+					<span>USGS Sites</span>
+					<span>Street Address</span>
+					<span>Hydrologic Unit</span>
+					<span>Lat/Long ('43.9,-72.1' or '43.9N,72.1W')</span>
+				</div>
+				<small>
+					Search provided by <a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank">USGS Search JavaScript API</a>
+				</small>
+			  </div>
 
-      <div id="searchWrapper">
 
-        <div id="searchBox"></div>
+			<!-- Methods -->
+			<div id="methods">
+				<!-- Start over -->
+				<button class="red icon-button full-width" *ngIf="StudyService.GetWorkFlow('hasReaches')" (click)="reset()">
+					<i class="far fa-undo"></i>
+					Start Over
+				</button>
 
-        <button class="btn-link fullwidth" (click)="showSearchHelp = !showSearchHelp">
-          <span class="top" [hidden]="showSearchHelp"><i class="fa fa-question-circle"></i> Help</span>
-          <span class="top" [hidden]="!showSearchHelp"><i class="fa fa-close"></i> Close Help</span>
-        </button>
+				<button id="response" class="full-width icon-button" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('response')" [ngClass]="{'waiting': MapService.isClickable}">
+					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
+					Spill Response
+				</button>
+				<button id="planning" class="full-width icon-button" [disabled]="true" (click)="SetMethodType('planning')">
+					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
+					Spill Planning
+				</button>
+				<button id="equations" class="full-width" (click)="open_config()">Configure</button>
+			  </div>
+		
+		</div>
+		<!-- End identify area panel --> 
 
-        <!-- supported search strings -->
-        <div class="banner info banner-no-icon" [hidden]="!showSearchHelp" style="margin-top: 0px;">
-          <div class="banner-body">
-            <h5>Supported search strings:</h5>
-            <p>
-              <br />
-              GNIS locations<br />
-              USGS Sites<br />
-              Zip Codes<br />
-              Area Codes<br />
-              States<br />
-              Lat/Long ('43.9,-72.1' or '43.9N,72.1W')<br />
-              Street Address<br />
-              Hydrologic Unit<br />
-              <br />
-              Search provided by<br /><a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank" style="text-decoration:underline !important; padding: 0 !important;">USGS Search JavaScript API</a>
-            </p>
-          </div>
-        </div><!-- End supported search strings -->
-      </div>
+	</div>
+	
 
-      <div id="methods" class="button-wrapper">
-        <button id="response" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('response')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Response</button><br />
-        <button id="planning" [disabled]="true" (click)="SetMethodType('planning')"><span [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'fa fa-refresh fa-spin' : 'fa fa-map-marker'"></span>&nbsp;Spill Planning</button>
-        <div id="equations" class="button-wrapper">
-          <button (click)="open_config()">Configure</button>
-        </div>
-      </div>
-    </div>   
-    <!--END IDENTIFY AREA PANEL--> 
+	<!-- 
+		Scenarios 
+		Scenarios 
+		Scenarios 
+	-->
+	<!-- Header -->
 
-    <!--SCENARIOS PANEL-->
-    <div class="sidebar-item" (click)="SetProcedureType(2)">
-      <a [ngClass]="GetClass(2)">SCENARIOS&nbsp;<span [ngClass]="SelectedProcedureType === 2 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
-    </div>
+	<div class="toggle-header" (click)="SetProcedureType(2)" [ngClass]="{'notoggle': SelectedProcedureType == 2, 'blocked': !this.StudyService.GetWorkFlow('hasReaches')}">
+		<div class="text">Scenarios</div>
+		<div class="icon">
+			<i class="far" class="far fa-check-circle"></i>
+			<!-- <i class="far" [ngClass]="this.StudyService.selectedStudy || this.StudyService.GetWorkFlow('totResults') ? 'fa-check-circle' : ''"></i> -->
+		</div>
+	</div>
+    <div class="toggle-block" [ngClass]="{'visible': SelectedProcedureType == 2}">
+		<div class="toggle-block-body">
 
-    <div class="panel-body" [hidden]="SelectedProcedureType !== 2" *ngFor="let item of AvailableScenarioTypes">
-      <div class="boundingbox">
-        <label class="map-layer">
-          <div class="map-layer-check">
-            <input type="checkbox" name="scenario" id="scenario" [checked]="item.selected" (change)="ToggleScenario(item)" />         
-          </div>
-          <span class="map-layer-title">{{item.name}}</span>
-        </label>
-      </div>
-      <div id="continue" class="button-wrapper">
-        <button (click)="open(SelectedScenario)">Continue</button>
-      </div>
+			<span *ngFor="let item of AvailableScenarioTypes">
+				<div class="sidebar-toggle-row">
+					<input type="checkbox" id="scenario{{item.name}}" name="scenario" [checked]="item.selected" (change)="ToggleScenario(item)"/>
+					<label for="scenario{{item.name}}">{{item.name}}</label>
+				</div>
 
-    </div>
-    <!--END SCENARIOS PANEL-->
+				<div class="space10"></div>
 
-    <!--BUILD REPORT PANEL-->
-    <div class="sidebar-item">
-      <a [ngClass]="GetClass(3)" (click)="SetProcedureType(3)">BUILD REPORT&nbsp;<span [ngClass]="SelectedProcedureType === 3 ? 'fa fa-angle-right' : 'fa fa-angle-down'"></span></a>
-    </div>
-    <div class="panel-body" [hidden]="SelectedProcedureType !== 3">
-        <div *ngIf="!CanContinue">
-          <div class="shadowtext">
-            <b>Step 1:</b> Select report components below.
-          </div>
-        </div>
-        <div *ngIf="CanContinue">
-            <div class="shadowtext">
-              <b>Step 2:</b> Click "Continue" to proceed.
-            </div>
-          </div>
-      <div class="boundingbox">
-        <label class="map-layer" *ngFor="let option of StudyService.ReportOptions; let i = index; trackBy:identify">
-          <div class="map-layer-check">
-            <input type="checkbox" name="report" id="report" [checked]="option.checked" (change)="ToggleReportOptions(i)" />
-          </div>
-          <span class="map-layer-title">{{option.name}}</span>
-        </label>
-      </div>
-      <div id="continue" class="button-wrapper">
-        <button [ngClass]="!CanContinue ? 'gray' : ''" (click)="open('Report')">Continue</button>
-      </div>
-    </div>
-  </div>
-</div>
+				<button class="full-width blue" (click)="open(SelectedScenario)">Continue</button>
+				
+			</span>
+
+		</div>
+	</div>
+
+
+	<!-- 
+		Build Report 
+		Build Report 
+		Build Report 
+	-->
+	<!-- Header -->
+
+	<div class="toggle-header" (click)="SetProcedureType(3)" [ngClass]="{'notoggle': SelectedProcedureType == 3, 'blocked': !this.StudyService.selectedStudy || !this.StudyService.GetWorkFlow('totResults')}">
+		<div class="text">Build Report</div>
+		<div class="icon">
+			<i class="far" class="far fa-check-circle"></i>
+			<!-- <i class="far" [ngClass]="this.StudyService.selectedStudy || this.StudyService.GetWorkFlow('totResults') ? 'fa-check-circle' : ''"></i> -->
+		</div>
+	</div>
+    <div class="toggle-block no-bottom-border" [ngClass]="{'visible': SelectedProcedureType == 3}">
+		<div class="toggle-block-body">
+
+			<div *ngIf="!CanContinue">
+				<h5>Step 1:</h5>
+				<p>Select report components below.</p>
+			</div>
+			<div *ngIf="CanContinue">
+				<h5>Step 2:</h5>
+				<p>Click "Continue" to proceed.</p>
+			</div>
+			
+			<span class="sidebar-toggle-row" *ngFor="let option of StudyService.ReportOptions; let i = index; trackBy:identify">
+				<!-- <div class="sidebar-toggle-row">
+					<input type="checkbox" id="option{{item.name}}" name="report" [checked]="option.checked" (change)="ToggleReportOptions(i)"/>
+					<label for="option{{option.name}}">{{option.name}}</label>
+				</div> -->
+				<input type="checkbox" name="report" id="{{option.name}}Option" [checked]="option.checked" (change)="ToggleReportOptions(i)" />
+				<label for="{{option.name}}Option">{{option.name}}</label>
+			</span>
+
+			<div class="space10"></div>
+
+			<button class="full-width blue" (click)="open('Report')" [disabled]="!CanContinue">Continue</button>
+
+		</div>
+	</div>
+
+
+</div> <!-- End Sidebar -->

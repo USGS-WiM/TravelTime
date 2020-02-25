@@ -1,6 +1,14 @@
-<div>
-  <tot-sidebar></tot-sidebar>
-  <tot-map _nghost-c0 ng-version="6.1.3" class="main" [modal]="false"></tot-map>
-  <tot-footer></tot-footer>
-</div>
+<div class="app-body">
+	<tot-sidebar id="sidebarWrapper"></tot-sidebar>
+	<div class="app-content">
+		<tot-map class="full-map" id="mapWrapper"></tot-map><!--[modal]="false"-->
+		<tot-footer class="footer"></tot-footer>
 
+		<!-- Button to toggle map height -->
+		<div id="mapHeightToggle" class="map-height-toggle">
+			<button (click)="changeMapSize('full');">Full</button>
+			<button (click)="changeMapSize('half');">Half</button>
+			<button (click)="changeMapSize('small');">Small</button>
+		</div>
+	</div>
+</div>
