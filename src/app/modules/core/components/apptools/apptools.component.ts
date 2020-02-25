@@ -8,7 +8,7 @@ import '../../../../shared/extensions/number.toUSGSValue';
 @Component({
   selector: 'app-apptools',
   templateUrl: './apptools.component.html',
-  styleUrls: ['./apptools.component.scss']
+  styleUrls: ['./apptools.component.css']
 })
 
 export class ApptoolsComponent implements OnInit {
@@ -17,7 +17,6 @@ export class ApptoolsComponent implements OnInit {
   public StudyService: StudyService;
   public distance: number;
   public units: UnitsArray[];
-  public unit = [];
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, public studyservice: StudyService) {
     // customize default values of modals used by this component tree
@@ -32,8 +31,6 @@ export class ApptoolsComponent implements OnInit {
     this.formGroup = new FormGroup({
     activeEndDate: new FormControl(new Date(), { validators: [Validators.required] })
     }, { updateOn: 'change' });
-    this.unit.push(" (kilometers)");
-    this.unit.push(" (miles)");
   }
 
   public setUnits(indx) {

@@ -4,7 +4,7 @@ import { NgbModal,NgbActiveModal,NgbModalConfig } from '@ng-bootstrap/ng-bootstr
 @Component({
   selector: 'aboutModal',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss']
+  styleUrls: ['./about.component.css']
 })
 
 export class AboutModalComponent implements OnInit {   

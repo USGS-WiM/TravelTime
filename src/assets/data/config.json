@@ -78,7 +78,7 @@
         "color": "orange",
         "fillColor": "#f03",
         "fillOpacity": 0.5,
-        "radius": 100
+        "radius": 20
       },
       "Reach": {
         "color": "orange",
@@ -87,14 +87,9 @@
         "radius": 100
       },
       "Polyline": {
-        "color": "#0000FF",
+        "color": "#FF3333",
         "weight": 3,
-        "opacity": 1
-      },
-      "Polyline_unorder": {
-        "color": "red",
-        "weight": 3,
-        "opacity": 1
+        "opacity": 0.60
       },
       "GagesUpstream": {
         "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
@@ -120,34 +115,14 @@
       "drainageArea": "square meters",
       "distance": "meters",
       "concentration": "kilograms",
-      "slope":  "meters/meters",
-      "velocity": "meters/second"
+      "slope":  "meters/meters"
     },
     "imperial": {
       "discharge": "cubic feet per second",
-      "drainageArea": "square miles",
+      "drainageArea": "square feet",
       "distance": "feet",
       "concentration": "pounds",
-      "slope":  "feet/feet",
-      "velocity": "feet/second"
-    }
-  },
-  "Abbreviations": {
-    "metric": {
-      "discharge": "cms",
-      "drainageArea": "m^2",
-      "distance": "m",
-      "concentration": "kg",
-      "slope":  "m/m",
-      "velocity": "m/s"
-    },
-    "imperial": {
-      "discharge": "cfs",
-      "drainageArea": "mi^2",
-      "distance": "ft",
-      "concentration": "lbs",
-      "slope":  "ft/ft",
-      "velocity": "ft/s"
+      "slope":  "feet/feet"
     }
   }
 }
