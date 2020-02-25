@@ -1,49 +1,47 @@
-.footer-wrapper {
-  display: block;
-  box-sizing: border-box;
-  padding: 25px;
-  width: 100%;
-  max-width: 100%;
-  overflow: auto;
+.footer-wrapper{
+	display: block;
+	box-sizing: border-box;
+	padding: 25px;
 
-  .footer-data {
-    display: flex;
-    justify-content: space-around;
+	width: 100%;
+	max-width: 100%;
+	overflow: auto;
 
-    .footer-data-left {
-      overflow: hidden;
-      box-sizing: border-box;
-      padding-top: 20px;
-      padding-right: 15px;
-      flex-grow: 3;
-      display: flex;
-      flex-direction: column;
+	.footer-data{
+		display: flex;
+		justify-content: space-around;
 
-      &.reverse {
-        flex-direction: column-reverse;
-      }
+		.footer-data-left{
+			overflow: hidden;
+			box-sizing: border-box;
+			padding-right: 15px;
+			flex-grow: 3;
+			display: flex;
+			flex-direction: column;
 
-      .data-display {
-        display: block;
-        width: 100%;
-        height: 400px;
-        overflow: scroll;
+			&.reverse{
+				flex-direction: column-reverse;
+			}
 
-        .table-display {
-          display: block;
-          width: 100%;
-          overflow: hidden;
-        }
-      }
-    }
+			.data-display{
+				display: block;
+				width: 100%;
+				overflow: hidden;
 
-    .footer-data-right {
-      padding-left: 15px;
-      box-sizing: border-box;
-      overflow: hidden;
-      min-width: 400px;
-    }
-  }
+				.table-display{
+					display: block;
+					width: 100%;
+					overflow: auto;
+				}
+			}
+		}
+		.footer-data-right{
+			padding-left: 15px;
+			box-sizing: border-box;
+			overflow: hidden;
+			min-width: 400px;
+		}
+	}
 }
 
 table {
