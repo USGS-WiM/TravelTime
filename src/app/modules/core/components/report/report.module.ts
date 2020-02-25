@@ -4,7 +4,6 @@ import { MapModule } from '../map/map.module';
 import { ReportModalComponent } from './report.component';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ReportModalComponent],
@@ -12,8 +11,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     MapModule,
     LeafletModule,
-    NgbModule,
-    FormsModule
+    NgbModule
   ],
   entryComponents: [ReportModalComponent],
   exports: [

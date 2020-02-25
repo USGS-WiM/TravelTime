@@ -8,6 +8,7 @@ import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import '../../../../shared/extensions/number.toUSGSValue';
+//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -22,7 +23,7 @@ export const DateTimeValidator = (fc: FormControl) => {
 @Component({
   selector: 'app-jobsons',
   templateUrl: './jobsons.component.html',
-  styleUrls: ['./jobsons.component.scss']
+  styleUrls: ['./jobsons.component.css']
 })
 export class JobsonsModalComponent implements OnInit {
 
@@ -35,7 +36,6 @@ export class JobsonsModalComponent implements OnInit {
   public reach_reference: reach;
   public reachList: Array<any> = [];
   public units;
-  public abbrev;
 
   private _spillMass: number;
   public get SpillMass(): number {
@@ -90,7 +90,6 @@ export class JobsonsModalComponent implements OnInit {
       .toPromise().then(data => {
         this.reach_reference = data;
         this.units = this.MapService.unitsOptions;
-        this.abbrev = this.MapService.abbrevOptions;
         this.populateReachArray()
       }); //get service {description: Initial description}
     this.formGroup = new FormGroup({
@@ -102,49 +101,26 @@ export class JobsonsModalComponent implements OnInit {
     //})
   }
 
-  public FirstReachDischarge;
    //#region "Methods"
   public setDischarge(): void {
     if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
-      var accumRatio = [this._discharge];     
-      let cond = false;
-      var value;
-
-      //current function is using ratio of i-th - 1 reach, it can be easily adjusted to nearest gage flow value;
       this.reachList.forEach((item) => {
-        if (cond) {
-          item.parameters[1].value = (accumRatio[accumRatio.length - 1] * item.parameters[0].value).toFixed(3); //Number(this.StudyService.selectedStudy.Discharge) * 
-          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
-          accumRatio.push(value);
-        } else {
-          item.parameters[1].value = this._discharge;
-          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
-          this.FirstReachDischarge = item.parameters[0].value;
-          accumRatio.push(value);
-          cond = true;
-        }
+        item.parameters[1].value = this.StudyService.selectedStudy.Discharge;
+        this.StudyService.SetWorkFlow("hasDischarge", true);
       })
-      /*this.reachList.forEach((item) => {
-        item.parameters[1].value = item.parameters[0].value;
-      })*/
-      this.StudyService.SetWorkFlow("hasDischarge", true);
-
     } else {
       setTimeout(() => {
         this.setDischarge()
       }, 500)
     }
-
-    this.StudyService.setDischarge(this._discharge);
   }
 
-    public setConc(event): void {
-      if (this.reachList) {
-        this.StudyService.selectedStudy.SpillMass = this._spillMass;
-        this.StudyService.setConcentration(this._spillMass);
-      }
+  public setConc(event): void {
+    if (this.reachList) {
+      this.StudyService.selectedStudy.SpillMass = this._spillMass;
     }
+  }
 
   public validateForm(mainForm): boolean {
 
@@ -165,6 +141,15 @@ export class JobsonsModalComponent implements OnInit {
   };
 
 
+  public showhideReaches(): void {
+    if (this.showReaches === false) {
+      this.showhidetitle = 'Show Reaches';
+      this.showReaches = true;
+    } else {
+      this.showhidetitle = 'Hide Reaches';
+      this.showReaches = false;
+    }
+  }
 
   public removeReach(index): void {   //remove reach by id
     if (index >= 0) {
@@ -201,62 +186,20 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public getResults() {
-
-	// Set default footer height to half, show buttons to switch
-	$("#mapWrapper").attr('class','half-map');
-	$("#mapHeightToggle").attr('class','visible');
-
-
-
     this.gettingResults = true;
 
     if (this.dateModel instanceof Date) {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
-    let tempReachList = [];
-    let postReachList = []; 
-    if(!this.StudyService.isMetric()) {
-      for (var i = 0; i < this.reachList.length; i++) { 
-        let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-        newreach.name = this.reachList[i].name;
-        newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   //slope
-        newreach.parameters[1].value = (this.reachList[i].parameters[1].value * 0.028316847);   //real-time discharge from cfs to cms
-        newreach.parameters[0].value = (this.reachList[i].parameters[0].value * 0.028316847);   //mean annual discharge from cfs to cms
-        newreach.parameters[3].value = (this.reachList[i].parameters[3].value / 0.00000038610215855); //drainage area from square miles to square meters
-        newreach.parameters[4].value = (this.reachList[i].parameters[4].value / 3.2808);        //length from feet to meters 
-
-        newreach.parameters[0].unit.unit = this.units.metric['discharge']   //mean annual discharge
-        newreach.parameters[0].unit.abbr = this.abbrev.metric['discharge']
-        newreach.parameters[1].unit.unit = this.units.metric['discharge']   //real-time discharge
-        newreach.parameters[1].unit.abbr = this.abbrev.metric['discharge']
-        newreach.parameters[2].unit.unit = this.units.metric['slope']        
-        newreach.parameters[2].unit.abbr = this.abbrev.metric['slope']
-        newreach.parameters[3].unit.unit = this.units.metric['drainageArea']
-        newreach.parameters[3].unit.abbr = this.abbrev.metric['drainageArea']
-        newreach.parameters[4].unit.unit = this.units.metric['distance']
-        newreach.parameters[4].unit.abbr = this.abbrev.metric['distance']
-        
-        tempReachList.push(newreach);
-      }
-      tempReachList.forEach(reach => {
-        reach.parameters.splice(6,1);
-        postReachList.push(reach);
-      })
-      this.StudyService.selectedStudy.SpillMass = this.StudyService.selectedStudy.SpillMass * 0.453592;
-    } else {
-      this.reachList.forEach(reach => {
-        reach.parameters.splice(6,1);
-        postReachList.push(reach);
-      })
-    }        
-
-    //console.log(postReachList);
+    let postReachList = [];
+    this.reachList.forEach(reach => {
+      reach.parameters.splice(6,1);
+      postReachList.push(reach);
+    })
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
       .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
-        //console.log("This is the return from the services");
-        //console.log(this.StudyService.selectedStudy.Results);
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
         this.activeModal.dismiss();
@@ -288,7 +231,7 @@ export class JobsonsModalComponent implements OnInit {
   //#endregion
 
   //#region "Private methods"
-  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
+  private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side   
 
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
@@ -297,23 +240,28 @@ export class JobsonsModalComponent implements OnInit {
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
 
         let selectedUnits;
-        if(this.StudyService.isMetric()) {
-          selectedUnits = this.units.metric;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847)//cfs to cms
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0);//square kilometers to square meters
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000) //kilometers to meters
-        } else {
-          selectedUnits = this.units.imperial;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge) //cfs
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102) //square kilometers to square miles
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84) //kilometers to feet
-        }
-        newreach.parameters[0].unit.unit = selectedUnits['discharge']   //mean annual discharge
-        newreach.parameters[1].unit.unit = selectedUnits['discharge']   //real-time discharge
-        newreach.parameters[2].unit.unit = selectedUnits['slope']        
-        newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
-        newreach.parameters[4].unit.unit = selectedUnits['distance']
+        this.StudyService.units.forEach(j => {
+          if (j.isactive) {
+            if (j.name === 'metric') {
+              selectedUnits = this.units.metric;
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847).toUSGSvalue()//cms
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000)//square meters
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toUSGSvalue() //meters
 
+            } else {
+              selectedUnits = this.units.imperial;
+              newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge).toUSGSvalue() //cfs
+              newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102 * 27878000) //square foot
+              newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toUSGSvalue() //foot
+            }
+            newreach.parameters[0].unit.unit = selectedUnits['discharge']
+            newreach.parameters[1].unit.unit = selectedUnits['discharge']
+            newreach.parameters[2].unit.unit = selectedUnits['slope']
+            newreach.parameters[3].unit.unit = selectedUnits['drainageArea']
+            newreach.parameters[4].unit.unit = selectedUnits['distance']
+          } else {
+          }
+        })
         this.reachList.push(newreach);
       } else {
       }

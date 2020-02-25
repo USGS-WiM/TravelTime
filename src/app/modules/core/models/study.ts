@@ -4,9 +4,9 @@ import { Observable, of, Subject } from 'rxjs';
 export class Study {
     public LocationOfInterest: LatLng;
     public Reaches: Array<any> = [];
-    public SpillMass: number;
-    public Discharge: number;
-    public SpillDate: string;
+    public SpillMass: Number;
+    public Discharge: Number;
+    public SpillDate: String;
     
     private _methodType : string;
     public get MethodType() : string {

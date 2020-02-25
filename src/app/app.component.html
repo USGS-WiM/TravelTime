@@ -1,44 +1,17 @@
-<!-- Nav bar -->
-<nav id="main">
-	<!-- Mobile menu toggle -->
-	<div id="mobileMenuButton">
-		<button (click)="toggleSidebar()" aria-label="Menu">
-			<i id="menuButtonIcon" class="far fa-bars"></i>
-		</button>
-	</div>
-
-	<!-- Branding - logo and title -->
-	<div class="branding">
-		<a href="https://usgs.gov" class="branding-logo">
-			<span>
-				<img src="https://wim.usgs.gov/website-assets/usgs-logo.png" />
-			</span>
-		</a>
-		<div class="branding-title">
-			Time of Travel
-		</div>
-	</div>
-
-	<!-- Links -->
-	<div nav-links class="nav-links">
-		<!-- Open about modal -->
-		<a (click)="openAboutModal()">
-			<span>
-				<i class="far fa-info-circle"></i>
-				<span class="nav-link-text">About</span>
-			</span>
-		</a>
-	</div>      
-</nav>
-
-<!-- App -->
-
-<!-- <div class="app-body">
-	<tot-sidebar></tot-sidebar>
-	<div class="app-content">
-		<tot-map _nghost-c0 ng-version="6.1.3" [modal]="false"></tot-map>
-		<tot-footer></tot-footer>
-	</div>
-</div> -->
-<tot-core class="app-content"></tot-core>
-
+<div>
+  <header>
+    <h3 class='Title'>{{title}}</h3>
+  </header>
+  <wim-navbar>
+    <div nav-title>{{title}}</div>
+    <div nav-links>
+      <a (click)="open()">
+          <span>
+              <i class="ion-information-circled"></i>
+              <span class="nav-link-text">About</span>
+          </span>
+      </a>
+    </div>
+  </wim-navbar>
+  <tot-core></tot-core>
+</div>
