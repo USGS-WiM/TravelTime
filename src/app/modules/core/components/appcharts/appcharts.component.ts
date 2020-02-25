@@ -66,6 +66,8 @@ export class AppchartsComponent implements OnInit {
   }
 
 
+
+
   public flushChartData() {
     //most probable
     this.maxMostProbableY = 0;
@@ -90,7 +92,7 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-
+  @ViewChild('selectGroup', { static: false }) ref: ElementRef;
   public chartIsActive(e) {
    
     /*while (e.value.length > 1) {
@@ -105,8 +107,10 @@ export class AppchartsComponent implements OnInit {
       this.generateData();
       this.chart.update();
       this.chart.updateColors();
+      this.ref["placeholder"] = "Select group";
       return null;
     }
+    this.ref["placeholder"] = "";
     this.flushChartData();
     this.getAllForGroup(e.value);
     this.generateDataGroup(e.value);

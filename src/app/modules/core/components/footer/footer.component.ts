@@ -42,6 +42,7 @@ export class FooterComponent implements OnInit {
       //apply rounding function ?
 
       this.reaches.forEach((o => {
+        o.parameters["4"].value = (o.parameters["4"]["value"]).toUSGSvalue();
         o.result["equations"]["v"]["value"] = (o.result["equations"]["v"]["value"]).toUSGSvalue();
         o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"]).toUSGSvalue();
         o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"]).toUSGSvalue();
