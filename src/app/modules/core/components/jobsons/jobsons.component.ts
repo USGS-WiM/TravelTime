@@ -251,12 +251,12 @@ export class JobsonsModalComponent implements OnInit {
       })
     }        
 
-    //console.log(postReachList);
+    console.log(postReachList);
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
       .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
-        //console.log("This is the return from the services");
-        //console.log(this.StudyService.selectedStudy.Results);
+        console.log("This is the return from the services");
+        console.log(this.StudyService.selectedStudy.Results);
         this.StudyService.SetWorkFlow("totResults", true);
         this.gettingResults = false;
         this.activeModal.dismiss();

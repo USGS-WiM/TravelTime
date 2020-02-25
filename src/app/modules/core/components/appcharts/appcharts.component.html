@@ -2,14 +2,13 @@
 	<button class="blue" (click)="open()">{{buttonName}}</button>
 </div>
 
-<a>Select group</a>
-<ng-select #selectGroup [items]="reachesGrouped" 
+<ng-select [items]="reachesGrouped" 
 						[disabled]="isDisabled"
 						[virtualScroll]="true"
 						bindLabel="label"
 						bindValue="id"
 						(change)="chartIsActive($event)"
-					 placeholder ="Select group"
+					placeholder="Selected group"
 					[(ngModel)]="selectedGroupId">
 </ng-select>
 
