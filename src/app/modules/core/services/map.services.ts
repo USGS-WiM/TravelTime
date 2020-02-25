@@ -29,8 +29,12 @@ export class MapService {
   public fitBounds: Subject<any> = new Subject<any>();
   public _bound;
   public unitsOptions;
+  public abbrevOptions;
+  public http: HttpClient;
 
   constructor(http: HttpClient) {
+
+    this.http = http;
 
     this.Options = {
       zoom: 4,
@@ -59,6 +63,7 @@ export class MapService {
 
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
+      this.abbrevOptions = conf.Abbreviations;
 
     });
     this.CurrentZoomLevel = this.Options.zoom;
@@ -110,21 +115,22 @@ export class MapService {
     if (!ml.visible) { ml.visible = true; }
 
     var j = 0;//counts only lines;
-    ml.layer.eachLayer(o => {
-      //what if there also a stream gage ?
-
+    ml.layer.eachLayer(o => {    
       if (typeof (o._layers) === "undefined") {
       } else if (o.options.radius > 50) {
-      } else if (j === indx) {
-        o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
-        j += 1;
       } else {
-        o.setStyle({
-          "color": "#FF3333",
-          "weight": 3,
-          "opacity": 0.60
-        })
-        j += 1; 
+        var nhdplusid = Object.values(o._layers)[0]["feature"].properties.nhdplus_comid;
+        if (Number(indx) == Number(nhdplusid)) {
+          this.setBounds (Object.values(o._layers)[0]._bounds); //set bounds to selected reach;
+          o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
+        } else {
+          o.setStyle({
+            "color": "#FF3333",
+            "weight": 3,
+            "opacity": 0.60
+          })
+        }
+        j += 1;
       }
     });
   }
@@ -204,4 +210,32 @@ export class MapService {
       return null;
     }
   }
+
+  public states = [];
+  private States = new Subject<any>();
+  states$ = this.States.asObservable()
+
+  findState(latlng: any) {
+    while (this.states.length > 0) {
+      this.states.splice(0, this.states.length);
+    }
+    this.http.get("assets/data/states.json").subscribe(data => {
+      var conf: any = data;
+      conf.States.forEach(bbox => {
+        if (latlng.lng > bbox.xmin && latlng.lng < bbox.xmax && latlng.lat > bbox.ymin && latlng.lat < bbox.ymax) {
+          this.states.push(bbox.STUSPS);
+        }
+      });
+      this.States.next(this.states);
+    });
+  }
+
+  public latlng: L.LatLng;
+  private LatLng = new Subject<L.LatLng>();
+  Poi$ = this.LatLng.asObservable();
+  SetPoi(latlng: L.LatLng) {
+    this.latlng = latlng;
+    this.LatLng.next(this.latlng);
+  }
+
 }
