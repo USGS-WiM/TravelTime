@@ -23,30 +23,13 @@ export class StudyService  {
   //HOLDS DISCHARGE AND MASS;
     public selectedStudy: Study;
     private SelectedReturn = new Subject<Study>();
-  study$ = this.SelectedReturn.asObservable()
+    study$ = this.SelectedReturn.asObservable();
+
   //SET MASS
     public setConcentration(mass) {
         this.selectedStudy.SpillMass = mass;
         this.SelectedReturn.next(this.selectedStudy);
     }
-  //Return output from study service
-  public roundOutputs() { //ROUND  output numbers;
-    var reaches: Array<any> = [];
-    reaches = Object.values(this.selectedStudy.Results["reaches"]);
-    reaches.shift();
-    reaches.forEach((o => {
-      o.parameters["4"].value = (o.parameters["4"]["value"]).toUSGSvalue();
-      o.result["equations"]["v"]["value"] = (o.result["equations"]["v"]["value"]).toUSGSvalue();
-      o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"]).toUSGSvalue();
-      o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"]).toUSGSvalue();
-      o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"]).toUSGSvalue();
-      o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"]).toUSGSvalue();
-    }));
-    this.selectedStudy.Results["reaches"] = reaches;
-  }
-
-
-
   //SET DISCHARGE
     public setDischarge(discharge) {
       this.selectedStudy.Discharge = discharge;
@@ -164,9 +147,6 @@ export class StudyService  {
 
 
   public setProcedure(indx: number) {
-    if (indx == 3) {
-      this.roundOutputs();
-    }
       this.selectedProcedure.next(indx);
     }
 

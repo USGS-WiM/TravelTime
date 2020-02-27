@@ -147,10 +147,7 @@ export class MapComponent extends deepCopy implements OnInit {
     if (this.StudyService.GetWorkFlow("hasMethod")) {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
-	  
       this.setPOI(evnt.latlng);
-
-
     }
   }
 
@@ -161,8 +158,8 @@ export class MapComponent extends deepCopy implements OnInit {
     if (!this.StudyService.GetWorkFlow("hasPOI")) {
       this.sm("Point selected. Loading...");
       this.MapService.setCursor("");
-
       this.StudyService.SetWorkFlow("hasPOI", true);
+
       if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) return;
       let marker = L.marker(latlng, {
         icon: L.icon(this.MapService.markerOptions.Spill)

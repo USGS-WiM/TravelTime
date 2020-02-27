@@ -36,7 +36,8 @@ export class FooterComponent implements OnInit {
   public get output$() {
     
     if (this.StudyService.GetWorkFlow('totResults')) {
-        this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
+      this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
+        this.reaches.shift();
         return (this.reaches);
       } else {
         return;
