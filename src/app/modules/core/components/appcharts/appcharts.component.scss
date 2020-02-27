@@ -1,0 +1,39 @@
+.most-max-probable-toggle{
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding-bottom: 15px;
+}
+
+ng-select {
+  > div {
+    > div.single {
+      > div.toggle {
+        color: white !important;
+        background: none;
+
+        &:hover {
+          background-color: #4389a9;
+        }
+      }
+
+      > div.placeholder {
+        color: white;
+        font-size: 35px;
+        font-family: MontserratRegular;
+      }
+
+      > div.clear {
+        &:hover {
+          background-color: #4389a9;
+        }
+      }
+    }
+
+    border: none !important;
+  }
+}
+
+select-dropdown {
+  display: none;
+}

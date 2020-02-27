@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AboutModalComponent } from './components/about/about.component';
-import { NavbarComponent} from './components/navbar/navbar.component';
 import {NgbTabsetModule,NgbModule,NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastrModule, ToastNoAnimation, ToastNoAnimationModule} from 'ngx-toastr';
 import { CoreModule } from './modules/core/core.module';
@@ -17,16 +16,18 @@ import { ChartsModule } from 'ng2-charts';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapModule } from './modules/core/components/map/map.module';
 import { AppRoutingModule } from './modules/core/core-routing.module';
+import { ReportModule } from './modules/core/components/report/report.module';
+
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     AboutModalComponent,
     JobsonsModalComponent,
-    NavbarComponent,
     DateTimePickerComponent,
-    ApptoolsComponent,
-    ReportModalComponent
+    ApptoolsComponent
   ],
   imports: [
     LeafletModule.forRoot(),
@@ -36,6 +37,7 @@ import { AppRoutingModule } from './modules/core/core-routing.module';
     NgbTabsetModule,
     ChartsModule,
     MapModule,
+    ReportModule,
     AppRoutingModule,
     ToastNoAnimationModule.forRoot({
       timeOut: 5000,
@@ -50,6 +52,6 @@ import { AppRoutingModule } from './modules/core/core-routing.module';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent, ReportModalComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
 })
 export class AppModule {}

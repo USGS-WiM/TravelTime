@@ -21,25 +21,33 @@ import { AppchartsComponent } from './components/appcharts/appcharts.component';
 import { ChartsModule } from 'ng2-charts';
 import { ChartsService } from './services/charts.service';
 import { MapModule } from './components/map/map.module';
+import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReportModalComponent } from './components/report/report.component';
+import { ReportModule } from './components/report/report.module';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent, AppchartsComponent],
   imports: [
-    LeafletModule.forRoot(), 
+    LeafletModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
     MatExpansionModule, 
     MatInputModule, 
     CommonModule, 
-    BrowserModule, 
+    BrowserModule,
+    NgSelectModule,
     MatProgressButtonsModule, 
     BrowserAnimationsModule, 
     NgxPrintModule, 
     AppRoutingModule, 
     NgbModule,
     ChartsModule,
-    MapModule
+    MapModule,
+    ReportModule
     ],
   providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService],
-  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent],
+  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],
   bootstrap: [CoreComponent]
 })
 export class CoreModule { }

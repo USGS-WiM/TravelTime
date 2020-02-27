@@ -1,126 +1,151 @@
-<div class ="footer">
-  <div *ngIf="showResult$ === true">
-
-    <div class='parent grid-parent'>
-
-      <div id="child">
+<div class="footer-wrapper" *ngIf="showResult$ === true">
+		<div>
+			<h3> {{spillMass}} kg Spill Occuring {{spillDate}}</h3>
+		</div>
 
 
-        <h4>Most Probable</h4>
+		<div class="footer-data">
+			<div class="footer-data-left" id="footerData">
 
-        <div style="border: solid #cccccc 1px; border-radius: 10px; padding: 4px 4px 4px 4px;" id="scroll">
-          <table class="table table-hover" width="400">
-            <thead>
-              <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-                <th>Name</th>
-                <th title="Streamflow (cubic feet per second)">Q</th>
-                <th title="Drainage area (square miles)">D<sub>a</sub></th>
-                <th title="Reach length (meters)">L</th>
-                <th title="Velocity (meters per second)">V</th>
-                <th title="Traveltime of the leading edge">T<sub>l</sub></th>
-                <th title="Time span of leading edge">T<sub>l</sub> Span</th>
-                <th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
-                <th title="Traveltime of the peak">T<sub>p</sub></th>
-                <th title="Time span of the peak">T<sub>p</sub> Span</th>
-                <th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
-                <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
-                <th title="Time span of trailing edge">T<sub>d10</sub> Span</th>
-              </tr>
-            </thead>
+				<!-- Most Probable Table -->
+				<div class="data-display" *ngIf = "showMost">
+					<h2>Most Probable</h2>
 
-            <tbody>
-              <tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
-                <td>{{reach.name}}</td>
+					<div class="table-display">
+						<table class="table table-hover" width="400">
+							<thead>
+								<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+									<th>Name</th>
+									<th title="Streamflow (cubic meters per second)">Q</th>
+									<th title="Drainage area (square meters)">D<sub>a</sub></th>
+									<th title="Reach length (meters)">L</th>
+									<th title="Velocity (meters per second)">V</th>
+									<th title="Traveltime of the leading edge">T<sub>l</sub></th>
+									<th title="Time span of leading edge">T<sub>l</sub> Span</th>
+									<th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
+									<th title="Traveltime of the peak">T<sub>p</sub></th>
+									<th title="Time span of the peak">T<sub>p</sub> Span</th>
+									<th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
+									<th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
+									<th title="Time span of trailing edge">T<sub>d10</sub> Span</th>
+								</tr>
+							</thead>
 
-                <ng-container *ngFor="let pars of reach.parameters">
-                  <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Drainage area'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Distance'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                </ng-container>
+							<tbody>
+								<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
+									<td>{{reach.name}}</td>
 
-                <ng-container>
-                  <!-- if the key is equal to v - this is av speed, else it is vmax-->
-                  <td>{{reach.result.equations.v.value}}</td>
-                  <td>{{reach.result.tracer_Response.leadingEdge.MostProbable.reachTime}}</td>
-                  <td>{{reach.result.tracer_Response.leadingEdge.MostProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MostProbable.reachTime}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MostProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MostProbable.concentration}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MostProbable.reachTime}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MostProbable.cumTime}}</td>
-                </ng-container>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+									<ng-container *ngFor="let pars of reach.parameters">
+										<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Drainage area'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Distance'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+									</ng-container>
 
-        <h4>Maximum Probable</h4>
+									<ng-container>
+										<!-- if the key is equal to v - this is av speed, else it is vmax-->
+										<td>{{reach.result.equations.v.value}}</td>
+										<td>{{reach.result.tracer_Response.leadingEdge.MostProbable.reachTime}}</td>
+										<td>{{reach.result.tracer_Response.leadingEdge.MostProbable.cumTime}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.reachTime}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.cumTime}}</td>
+										<td>{{reach.result.tracer_Response.trailingEdge.MostProbable.concentration}}</td>
+										<td>{{reach.result.tracer_Response.trailingEdge.MostProbable.reachTime}}</td>
+										<td>{{reach.result.tracer_Response.trailingEdge.MostProbable.cumTime}}</td>
+									</ng-container>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-        <div style="border: solid #cccccc 1px; border-radius: 10px; padding: 4px 4px 4px 4px;" id="scroll">
-          <table class="table table-hover">
-            <thead>
-              <tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-                <th>Name</th>
-                <th title="Streamflow (cubic feet per second)">Q</th>
-                <th title="Drainage area (square miles)">D<sub>a</sub></th>
-                <th title="Reach length (meters)">L</th>
-                <th title="Velocity (meters per second)">V</th>
-                <th title="Traveltime of the leading edge">T<sub>l</sub></th>
-                <th title="Time span of leading edge">T<sub>l</sub> Span</th>
-                <th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
-                <th title="Traveltime of the peak">T<sub>p</sub></th>
-                <th title="Time span of the peak">T<sub>p</sub> Span</th>
-                <th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
-                <th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
-                <th title="Time span of trailing edge">T<sub>d10</sub> Span</th>
-              </tr>
-            </thead>
+				<!-- Max Probable -->
+				<div class="data-display" *ngIf = "showMax">
+					<h2>Maximum Probable</h2>
+					<div class="table-display">
+						<table class="table table-hover" width="400">
+							<thead>
+								<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+									<th>Name</th>
+									<th title="Streamflow (cubic meters per second)">Q</th>
+									<th title="Drainage area (square meters)">D<sub>a</sub></th>
+									<th title="Reach length (meters)">L</th>
+									<th title="Velocity (meters per second)">V</th>
+									<th title="Traveltime of the leading edge">T<sub>l</sub></th>
+									<th title="Time span of leading edge">T<sub>l</sub> Span</th>
+									<th title="Peak Concentration (mg/L)">C<sub>up</sub></th>
+									<th title="Traveltime of the peak">T<sub>p</sub></th>
+									<th title="Time span of the peak">T<sub>p</sub> Span</th>
+									<th title="Trailing Edge Concentration (mg/L)">C<sub>t</sub></th>
+									<th title="Traveltime of trailing edge (Time of passage from the leading edge to a point where the concentration has been reduced to 10 percent of the peak concentration)">T<sub>d10</sub></th>
+									<th title="Time span of trailing edge">T<sub>d10</sub> Span</th>
+								</tr>
+							</thead>
 
-            <tbody>
-              <tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
-                <td>{{reach.name}}</td>
+							<tbody>
+								<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
+									<td>{{reach.name}}</td>
 
-                <ng-container *ngFor="let pars of reach.parameters">
-                  <ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Drainage area'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                  <ng-container *ngIf="pars.name === 'Distance'">
-                    <td>{{pars.value}}</td>
-                  </ng-container>
-                </ng-container>
+									<ng-container *ngFor="let pars of reach.parameters">
+										<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Drainage area'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Distance'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+									</ng-container>
 
-                <ng-container>
-                  <!-- if the key is equal to v - this is av speed, else it is vmax-->
-                  <td>{{reach.result.equations.vmax.value}}</td>
-                  <td>{{reach.result.tracer_Response.leadingEdge.MaximumProbable.reachTime}}</td>
-                  <td>{{reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.reachTime}}</td>
-                  <td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.concentration}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.reachTime}}</td>
-                  <td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime}}</td>
-                </ng-container>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+									<ng-container>
+										<!-- if the key is equal to v - this is av speed, else it is vmax-->
+										<td>{{reach.result.equations.vmax.value}}</td>
+										<td>{{reach.result.tracer_Response.leadingEdge.MaximumProbable.reachTime}}</td>
+										<td>{{reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.reachTime}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime}}</td>
+										<td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.concentration}}</td>
+										<td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.reachTime}}</td>
+										<td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime}}</td>
+									</ng-container>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<div class="footer-data-right">
 
-      <div id="child">
-        <app-appcharts></app-appcharts>
-      </div>
+			<!-- Charts -->
+			<div class="chart-wrapper">
+				<app-appcharts></app-appcharts>
+			</div>
+		</div>
+	</div>
 
-    </div>
-  </div>
- </div>
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+

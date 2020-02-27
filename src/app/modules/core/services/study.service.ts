@@ -18,13 +18,38 @@ export interface workflowControl {
  
 @Injectable()
 export class StudyService  {
+
+
+  //HOLDS DISCHARGE AND MASS;
     public selectedStudy: Study;
+    private SelectedReturn = new Subject<Study>();
+    study$ = this.SelectedReturn.asObservable();
+
+  //SET MASS
+    public setConcentration(mass) {
+        this.selectedStudy.SpillMass = mass;
+        this.SelectedReturn.next(this.selectedStudy);
+    }
+  //SET DISCHARGE
+    public setDischarge(discharge) {
+      this.selectedStudy.Discharge = discharge;
+      this.SelectedReturn.next(this.selectedStudy);
+  }
+
+  //SET TIME
+  public setDate(datestring) {
+    this.selectedStudy.SpillDate = datestring;
+    this.SelectedReturn.next(this.selectedStudy);
+  }
+
     public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
     public ReportOptions: Array<any>;
     public distance: number;
     private messager: ToastrService;
+
     private ResultReturn = new Subject<boolean>();
     return$ = this.ResultReturn.asObservable();
+
     public defDischarge = "cubic meters per second";
     public defConcentration = "kilograms";
 
@@ -41,15 +66,30 @@ export class StudyService  {
       },
       "imperial": {
         "discharge": "cubic feet per second",
-        "drainageArea": "square feet",
-        "distance": "feet",
+        "drainageArea": "square miles",
+        "distance": "miles",
         "concentration": "pounds",
         "slope": "feet/feet"
       }
     };
+    public abbrev = {
+      "metric": {
+        "discharge": "cms",
+        "drainageArea": "m^2",
+        "distance": "m",
+        "concentration": "kg",
+        "slope": "m/m"
+      },
+      "imperial": {
+        "discharge": "cfs",
+        "drainageArea": "mi^2",
+        "distance": "mi",
+        "concentration": "lbs",
+        "slope": "ft/ft"
+      }
+    }
     private UnitsReturn = new Subject<string>();
     units$ = this.UnitsReturn.asObservable();
-
 
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
@@ -61,7 +101,7 @@ export class StudyService  {
     constructor(toastr: ToastrService) {
         this.messager = toastr;
         this.WorkFlowControl.next(this._workflow);
-        this.distance = 10;
+        this.distance = 100;
         this.UnitsReturn.next('metric');
         this.selectedProcedure.next(1);
     }
@@ -69,6 +109,19 @@ export class StudyService  {
     public setUnits(unit: string) {
       this.defDischarge = this.unitS[unit].discharge;
       this.defConcentration = this.unitS[unit].concentration;
+    }
+
+    public isMetric(): boolean {
+      var tf;
+      this.units.forEach(j => {
+        if (j.isactive) {
+          if (j.name === 'imperial') {
+            tf = false;
+          }
+          else tf = true;
+        } else {}
+      })
+      return tf;
     }
 
     public get checkingDelineatedPoint(): boolean {
@@ -80,19 +133,20 @@ export class StudyService  {
         this.WorkFlowControl.next(this._workflow);
     }
 
-    public noticeAction(action: boolean) {
+  public noticeAction(action: boolean) {
       this.ResultReturn.next(action);
     }
 
     public GetWorkFlow(step) {
       if (this._workflow["totResults"]) {
+
         this.noticeAction(true);
       }
         return this._workflow[step];
     }
 
 
-    public setProcedure(indx: number) {
+  public setProcedure(indx: number) {
       this.selectedProcedure.next(indx);
     }
 
