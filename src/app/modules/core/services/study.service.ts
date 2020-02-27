@@ -23,11 +23,12 @@ export class StudyService  {
   //HOLDS DISCHARGE AND MASS;
     public selectedStudy: Study;
     private SelectedReturn = new Subject<Study>();
-  study$ = this.SelectedReturn.asObservable()
+    study$ = this.SelectedReturn.asObservable();
+
   //SET MASS
     public setConcentration(mass) {
-      this.selectedStudy.SpillMass = mass;
-      this.SelectedReturn.next(this.selectedStudy);
+        this.selectedStudy.SpillMass = mass;
+        this.SelectedReturn.next(this.selectedStudy);
     }
   //SET DISCHARGE
     public setDischarge(discharge) {
@@ -132,19 +133,20 @@ export class StudyService  {
         this.WorkFlowControl.next(this._workflow);
     }
 
-    public noticeAction(action: boolean) {
+  public noticeAction(action: boolean) {
       this.ResultReturn.next(action);
     }
 
     public GetWorkFlow(step) {
       if (this._workflow["totResults"]) {
+
         this.noticeAction(true);
       }
         return this._workflow[step];
     }
 
 
-    public setProcedure(indx: number) {
+  public setProcedure(indx: number) {
       this.selectedProcedure.next(indx);
     }
 
