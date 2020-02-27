@@ -7,7 +7,6 @@ import { reach } from '../../models/reach';
 import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
-import '../../../../shared/extensions/number.toUSGSValue';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -120,7 +119,7 @@ export class JobsonsModalComponent implements OnInit {
         } else {
           item.parameters[1].value = this._discharge;
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
-          this.FirstReachDischarge = item.parameters[0].value;
+          this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
           accumRatio.push(value);
           cond = true;
         }

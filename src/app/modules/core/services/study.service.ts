@@ -26,9 +26,27 @@ export class StudyService  {
   study$ = this.SelectedReturn.asObservable()
   //SET MASS
     public setConcentration(mass) {
-      this.selectedStudy.SpillMass = mass;
-      this.SelectedReturn.next(this.selectedStudy);
+        this.selectedStudy.SpillMass = mass;
+        this.SelectedReturn.next(this.selectedStudy);
     }
+  //Return output from study service
+  public roundOutputs() { //ROUND  output numbers;
+    var reaches: Array<any> = [];
+    reaches = Object.values(this.selectedStudy.Results["reaches"]);
+    reaches.shift();
+    reaches.forEach((o => {
+      o.parameters["4"].value = (o.parameters["4"]["value"]).toUSGSvalue();
+      o.result["equations"]["v"]["value"] = (o.result["equations"]["v"]["value"]).toUSGSvalue();
+      o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MostProbable"]["concentration"]).toUSGSvalue();
+      o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MostProbable"]["concentration"]).toUSGSvalue();
+      o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["peakConcentration"]["MaximumProbable"]["concentration"]).toUSGSvalue();
+      o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"] = (o.result["tracer_Response"]["trailingEdge"]["MaximumProbable"]["concentration"]).toUSGSvalue();
+    }));
+    this.selectedStudy.Results["reaches"] = reaches;
+  }
+
+
+
   //SET DISCHARGE
     public setDischarge(discharge) {
       this.selectedStudy.Discharge = discharge;
@@ -132,19 +150,23 @@ export class StudyService  {
         this.WorkFlowControl.next(this._workflow);
     }
 
-    public noticeAction(action: boolean) {
+  public noticeAction(action: boolean) {
       this.ResultReturn.next(action);
     }
 
     public GetWorkFlow(step) {
       if (this._workflow["totResults"]) {
+
         this.noticeAction(true);
       }
         return this._workflow[step];
     }
 
 
-    public setProcedure(indx: number) {
+  public setProcedure(indx: number) {
+    if (indx == 3) {
+      this.roundOutputs();
+    }
       this.selectedProcedure.next(indx);
     }
 
