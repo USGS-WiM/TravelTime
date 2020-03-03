@@ -54,15 +54,39 @@
 
 //  Print Styles
 @media print{
+	
+	body * {
+        visibility: hidden;
+    }
 	#printArea, #printArea * {
 		visibility: visible !important;
 	}
+	html,body{
+		overflow: visible !important;
+	}
 	#printArea {
-		position: fixed;
+		position: absolute;
 		left: 0;
 		top: 0;
 		width: 100%;
 		height: auto;
+	}
+	.modal-box{
+		width: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin: 0;
+		padding: 0;
+	}
+
+	.modal-wrapper{
+		display: block;
+		height: fit-content;
+		left: 0;
+		margin: 0;
+		padding: 0;
+		position: absolute;
 	}
 
 	  
