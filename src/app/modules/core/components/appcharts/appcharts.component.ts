@@ -16,7 +16,7 @@ interface chartData {
 }
 
 @Component({
-  selector: 'app-appcharts',
+  selector: 'tot-appcharts',
   templateUrl: './appcharts.component.html',
   styleUrls: ['./appcharts.component.scss']
 })  
