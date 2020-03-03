@@ -25,6 +25,7 @@ import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportModalComponent } from './components/report/report.component';
 import { ReportModule } from './components/report/report.module';
+import {Angulartics2Module } from 'angulartics2';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent, AppchartsComponent],
@@ -44,7 +45,8 @@ import { ReportModule } from './components/report/report.module';
     NgbModule,
     ChartsModule,
     MapModule,
-    ReportModule
+    ReportModule,
+    Angulartics2Module.forRoot()
     ],
   providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService],
   exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],

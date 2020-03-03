@@ -8,6 +8,7 @@ import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { Study } from '../../models/study';
 import { MapComponent } from '../map/map.component';
+import { Angulartics2 } from 'angulartics2';
 
 @Component({
   selector: 'tot-report',
@@ -35,16 +36,16 @@ export class ReportModalComponent implements OnInit {
       return;
     }
   }
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, traveltimeservice: TravelTimeService) { 
+  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, traveltimeservice: TravelTimeService, private angulartics2: Angulartics2) { 
     config.backdrop = 'static';
     config.keyboard = false;
     this.StudyService = studyservice;
     this.MapService = mapservice;
     this.TravelTimeService = traveltimeservice;
-
-    //this.print = function () {
-      //window.print();
-  //};
+    this.angulartics2.eventTrack.next({
+      action: 'myAction',
+      properties: { category: 'myCategory' }
+    });
   }
 
   ngOnInit() {
@@ -57,18 +58,99 @@ export class ReportModalComponent implements OnInit {
   }
 
   public onPrint() {
-    // var div2Print=document.getElementById('print-content');
-    // var newWin=window.open('','Print-Window');
-    // newWin.document.open();
-    // newWin.document.write('<html><body onload="window.print()">'+div2Print.innerHTML+'</body></html>');
-    // newWin.document.close();
-    // setTimeout(function(){newWin.close();},10);
-    //window.print();
-	// this.printElement(document.getElementById("print-content"));
-	
-	window.print();
-
+    window.print();
   }
+
+  public downloadCSV() {
+    this.angulartics2.eventTrack.next({ action: 'Download', properties: { category: 'Report', label: 'CSV' }});
+    var filename = 'data.csv';
+
+    var processTables = () => {
+      var finalVal = 'Traveltime Results\n';
+      finalVal += this.tableToCSV($('#MostProbableTable'));
+      finalVal += '\n' + this.tableToCSV($('#MaxProbableTable'));
+      return finalVal + '\r\n';
+    };
+
+    //main file header with site information
+    var csvFile = 'Traveltime Report\n\n' + 'Spill Mass of ' + this.StudyService.selectedStudy.SpillMass + ' occurring ' + this.StudyService.selectedStudy.SpillDate + '\nLocated at ' + this.StudyService.selectedStudy.LocationOfInterest.lat + '\, ' + this.StudyService.selectedStudy.LocationOfInterest.lng + '\n';
+    //first write main parameter table
+    csvFile += processTables();
+
+    //download
+    var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        var link = <any>document.createElement("a");
+        var url = URL.createObjectURL(blob);
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        else {
+            window.open(url);
+        }
+      }
+  }
+
+  private tableToCSV($table) {
+    var $headers = $table.find('tr:has(th)')
+        , $rows = $table.find('tr:has(td)')
+
+        // Temporary delimiter characters unlikely to be typed by keyboard
+        // This is to avoid accidentally splitting the actual contents
+        , tmpColDelim = String.fromCharCode(11) // vertical tab character
+        , tmpRowDelim = String.fromCharCode(0) // null character
+
+        // actual delimiter characters for CSV format
+        , colDelim = '","'
+        , rowDelim = '"\r\n"';
+
+    // Grab text from table into CSV formatted string
+    var csv = '"';
+    csv += formatRows($headers.map(grabRow));
+    csv += rowDelim;
+    csv += formatRows($rows.map(grabRow)) + '"';
+    return csv
+
+    //------------------------------------------------------------
+    // Helper Functions 
+    //------------------------------------------------------------
+    // Format the output so it has the appropriate delimiters
+    function formatRows(rows) {
+        return rows.get().join(tmpRowDelim)
+            .split(tmpRowDelim).join(rowDelim)
+            .split(tmpColDelim).join(colDelim);
+    }
+
+    // Grab and format a row from the table
+    function grabRow(i, row) {
+
+        var $row = $(row);
+        //for some reason $cols = $row.find('td') || $row.find('th') won't work...
+        var $cols = $row.find('td');
+        if (!$cols.length) $cols = $row.find('th');
+
+        return $cols.map(grabCol)
+            .get().join(tmpColDelim);
+    }
+
+    // Grab and format a column from the table 
+    function grabCol(j, col) {
+        var $col = $(col),
+            $text = $col.text();
+
+        return $text.replace('"', '""'); // escape double quotes
+
+    }
+}
   
   private checkUnits(reaches) {
     if(!this.StudyService.isMetric()) {

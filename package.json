@@ -28,6 +28,7 @@
     "@types/esri-leaflet": "^2.1.4",
     "@types/jquery": "^3.3.31",
     "@types/web-animations-js": "^2.2.8",
+    "angulartics2": "^8.3.0",
     "chart.js": "^2.9.3",
     "chartjs-plugin-annotation": "^0.5.7",
     "core-js": "^2.5.4",
