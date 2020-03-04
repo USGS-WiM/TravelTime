@@ -9,6 +9,7 @@ import { connectableObservableDescriptor } from 'rxjs/internal/observable/Connec
 import { Study } from '../../models/study';
 import { MapComponent } from '../map/map.component';
 import { Angulartics2 } from 'angulartics2';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'tot-report',
@@ -17,17 +18,48 @@ import { Angulartics2 } from 'angulartics2';
 })
 export class ReportModalComponent implements OnInit {
 
-  public reportTitle = "Time of Travel Report";
-  public reportComments = "";
-  //public print: any;
-
   private StudyService: StudyService;
   private MapService: MapService;
   private TravelTimeService: TravelTimeService;
   private reaches: reach[];
   private reach_reference: reach;
+  private _layersControl;
+  private _layers = [];
+
+  private optionsSpec: any = {
+    layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
+    zoom: 5,
+    center: [46.879966, -121.726909]
+  };
+
+  public reportTitle = "Time of Travel Report";
+  public reportComments = "";
+ 
+  public get LayersControl() {
+    return this._layersControl;
+  }
+
+  public get MapOptions() {
+    return this.MapService.Options;
+  }
+
+  // Leaflet bindings
+  public zoom = this.optionsSpec.zoom;
+  public center = L.latLng(this.optionsSpec.center);
+  public options = {
+    layers: [L.tileLayer(this.optionsSpec.layers[0].url, { attribution: this.optionsSpec.layers[0].attribution })],
+    zoom: this.optionsSpec.zoom,
+    center: L.latLng(this.optionsSpec.center)
+  };
+
+  public get Layers() {
+    return this._layers;
+  }
+
   public units;
   public abbrev;
+  public fitBounds;
+  public evnt;
 
   public get output$ () {
     if (this.StudyService.GetWorkFlow('totResults')) {
@@ -49,12 +81,51 @@ export class ReportModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.MapService.LayersControl.subscribe(data => {
+      this._layersControl = {
+        baseLayers: data.baseLayers.reduce((acc, ml) => {
+          acc[ml.name] = ml.layer;
+          return acc;
+        }, {}),
+        overlays: data.overlays.reduce((acc, ml) => { acc[ml.name] = ml.layer; return acc; }, {})
+      }
+    });
+
+    //method to filter out layers by visibility
+    this.MapService.LayersControl.subscribe(data => {
+      var activelayers = data.overlays
+        .filter((l: any) => l.visible)
+        .map((l: any) => l.layer);
+      activelayers.unshift(data.baseLayers.find((l: any) => (l.visible)).layer);
+      this._layers = activelayers;
+    });
+
+    this.MapService.fitBounds.subscribe(data => {
+      this.fitBounds = data;
+    })
+
     this.units = this.MapService.unitsOptions;
     this.abbrev = this.MapService.abbrevOptions;
     let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
       reachList.shift(); //remove first element (one without results)
 
       this.checkUnits(reachList);
+  }
+
+  public onMapReady(map: L.Map) {
+    map.invalidateSize ()
+  }
+
+  public onZoomChange(zoom: number) {
+    setTimeout(() => {
+      this.MapService.CurrentZoomLevel = zoom;
+    })
+    // this.sm("Zoom changed to " + zoom);
+  }
+
+  public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
+
+    this.evnt = evnt.latlng;
   }
 
   public onPrint() {

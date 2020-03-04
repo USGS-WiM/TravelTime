@@ -292,7 +292,7 @@ export class JobsonsModalComponent implements OnInit {
     for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
-        newreach.name = "Reach " + this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
+        newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope
 
         let selectedUnits;

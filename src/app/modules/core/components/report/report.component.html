@@ -43,9 +43,8 @@
 			<!-- Map -->
 			<div leaflet
 				id="leaflet"
-				style="width: 100%; height: 100%;"
+				style="width: 500px; height: 300px;"
 				[leafletOptions]="options"
-				(leafletMapReady)="onMapReady($event)"
 				[leafletLayers]="Layers"
 				[leafletLayersControl]="LayersControl"
 				(leafletZoomChange)="onZoomChange($event)"
@@ -64,7 +63,7 @@
 				<p>{{reportComments}}</p>
 			</div>
 
-
+			<!--Tables-->
 			<div *ngIf="StudyService.ReportOptions[1].checked">
 				<div class="table" id="scroll">
 				  	<h4>Most Probable</h4>
@@ -79,7 +78,7 @@
 							<th></th>
 						</tr>
 						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-							<th rowspan="2" vertical-align="center">Name</th>
+							<th rowspan="2" vertical-align="center">Reach ID</th>
 							<th title="{{ !StudyService.isMetric() ? 'cfs' : 'cms' }}">Discharge</th>
 							<th title="{{ !StudyService.isMetric() ? 'mi^2' : 'km^2' }}">Drainage area</th>
 							<th title="{{ !StudyService.isMetric() ? 'mi' : 'km' }}">Distance</th>
@@ -104,13 +103,13 @@
 							<td>{{reach.name}}</td>
 							<ng-container *ngFor="let pars of reach.parameters">
 								<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-								<td style="text-align: center;">{{pars.value}}</td>
+									<td style="text-align: center;">{{pars.value}}</td>
 								</ng-container>
 								<ng-container *ngIf="pars.name === 'Drainage area'">
-								<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
+									<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
 								</ng-container>
 								<ng-container *ngIf="pars.name === 'Cumulative Distance'">
-								<td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
+									<td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
 								</ng-container>
 							</ng-container>
 			
@@ -163,9 +162,9 @@
 								<ng-container *ngIf="pars.name === 'Cumulative Distance'">
 									<td style="text-align: center;">{{pars.value}}</td>
 								</ng-container>
-								</ng-container>
+							</ng-container>
 
-								<ng-container>
+							<ng-container>
 								<!-- if the key is equal to v - this is av speed, else it is vmax-->
 								<td style="text-align: center;">{{reach.result.equations.vmax.value}}</td>
 								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime}}</td>
