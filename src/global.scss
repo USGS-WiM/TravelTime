@@ -816,6 +816,11 @@ ul{
     }
 }
 
+.leaflet-pane.leaflet-map-pane {
+    width: 100% !important;
+    height: 100% !important;
+    transform: none;
+  }
 
 
 // Hide everything on print

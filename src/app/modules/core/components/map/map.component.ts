@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Input } from '@angular/core';
+import { Component, OnInit, NgZone, Input, AfterViewInit } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from "../../../../shared/messageType";
 import { MapService } from '../../services/map.services';
@@ -10,18 +10,7 @@ import { Study } from '../../models/study';
 import * as turf from '@turf/turf';
 import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  // ...
-} from '@angular/animations';
 import { KrigservicesService } from '../../services/krigservices.service';
 declare let search_api: any;
 
@@ -31,12 +20,12 @@ declare let search_api: any;
   styleUrls: ['./map.component.scss']
 })
 
-export class MapComponent extends deepCopy implements OnInit {
+export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
-	private messager: ToastrService;
-	private MapService: MapService;
-	private NavigationService: NavigationService;
-	private StudyService: StudyService;
+  private messager: ToastrService;
+  private MapService: MapService;
+  private NavigationService: NavigationService;
+  private StudyService: StudyService;
   private _layersControl;
   private _bounds;
   private _layers = [];
@@ -44,9 +33,11 @@ export class MapComponent extends deepCopy implements OnInit {
   public fitBounds;
   private KrigService: KrigservicesService;
   public states:any = [];
+  public reportMap = undefined;
 
   public evnt;
-  
+  @Input() report: boolean;
+
   scaleMap: string;
 
   public get LayersControl() {
@@ -99,17 +90,19 @@ export class MapComponent extends deepCopy implements OnInit {
           return acc;
         }, {}),
         overlays: data.overlays.reduce((acc, ml) => { acc[ml.name] = ml.layer; return acc; }, {})
-      }
+      };
     });
 
 
     //method to filter out layers by visibility
     this.MapService.LayersControl.subscribe(data => {
-      var activelayers = data.overlays
-        .filter((l: any) => l.visible)
-        .map((l: any) => l.layer);
-      activelayers.unshift(data.baseLayers.find((l: any) => (l.visible)).layer);
-      this._layers = activelayers;
+        if (data.overlays.length > 0) {
+            var activelayers = data.overlays
+              .filter((l: any) => l.visible)
+              .map((l: any) => l.layer);
+            activelayers.unshift(data.baseLayers.find((l: any) => (l.visible)).layer);
+            this._layers = activelayers;
+        }
     });
 
 
@@ -124,19 +117,34 @@ export class MapComponent extends deepCopy implements OnInit {
 
     this.MapService.fitBounds.subscribe(data => {
       this.fitBounds = data;
-    })
+    });
+  }
+
+  ngAfterViewInit() {
+    if (this.report) {
+        if (this.reportMap !== undefined) {
+            this.reportMap.off();
+            this.reportMap.remove();
+        }
+        this.reportMap = new L.Map('reportMap', this.options);
+        this._layers.forEach((lay) => {
+            lay.addTo(this.reportMap);
+        });
+        this.reportMap.fitBounds(this.fitBounds, {maxZoom: 13});
+
+    }
   }
 
 
 
   public onMapReady(map: L.Map) {
-    map.invalidateSize ()
+    map.invalidateSize();
   }
 
   public onZoomChange(zoom: number) {
     setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
-    })
+    });
     // this.sm("Zoom changed to " + zoom);
   }
 
@@ -148,6 +156,7 @@ export class MapComponent extends deepCopy implements OnInit {
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).disabled = true;
       (<HTMLInputElement>document.getElementById(this.StudyService.selectedStudy.MethodType)).classList.remove("waiting");
       this.setPOI(evnt.latlng);
+      this.MapService.setBounds([[this.evnt.lat, this.evnt.lng]]);
     }
   }
 
@@ -255,10 +264,8 @@ export class MapComponent extends deepCopy implements OnInit {
         this.StudyService.SetWorkFlow("hasReaches", true);
         this.StudyService.selectedStudy.LocationOfInterest = latlng;
         this.StudyService.setProcedure(2);
-      }
-      );
-      }
-      )
+      });
+      });
     }
   }
 

@@ -25,6 +25,7 @@ export class ReportModalComponent implements OnInit {
   private reach_reference: reach;
   private _layersControl;
   private _layers = [];
+  public closed = false;
 
   private optionsSpec: any = {
     layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
@@ -113,7 +114,7 @@ export class ReportModalComponent implements OnInit {
   }
 
   public onMapReady(map: L.Map) {
-    map.invalidateSize ()
+    map.invalidateSize();
   }
 
   public onZoomChange(zoom: number) {
@@ -282,5 +283,10 @@ export class ReportModalComponent implements OnInit {
       $printSection.innerHTML = "";
       $printSection.appendChild(domClone);
       window.print();
+  }
+
+  public closeModal() {
+      this.MapService.LayersControl.next(this.MapService._layersControl);
+      this.closed = true;
   }
 }

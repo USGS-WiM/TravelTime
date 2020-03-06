@@ -41,20 +41,8 @@
 			<h2 class="report-title">{{reportTitle}}</h2>
 
 			<!-- Map -->
-			<div leaflet
-				id="leaflet"
-				style="width: 500px; height: 300px;"
-				[leafletOptions]="options"
-				[leafletLayers]="Layers"
-				[leafletLayersControl]="LayersControl"
-				(leafletZoomChange)="onZoomChange($event)"
-				[leafletFitBounds]="fitBounds"
-				(leafletClick)="onMouseClick($event)"></div>
-
 			<div *ngIf="StudyService.ReportOptions[0].checked">
-				<div id="map_container">
-					<tot-map></tot-map>
-				</div>
+					<tot-map id="mapWrapper" [report]="true"></tot-map>
 			</div>
 
 
@@ -212,7 +200,7 @@
 		<div class="modal-buttons space-around">
 
 			<!-- Close Modal -->
-			<button class="icon-button white" (click)="activeModal.dismiss()">
+			<button class="icon-button white" (click)="closeModal(); activeModal.dismiss()">
 				<i class="far fa-times"></i>
 				<span>Close</span>
 			</button>
