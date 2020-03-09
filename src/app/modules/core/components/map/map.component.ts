@@ -12,7 +12,6 @@ import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import 'leaflet-geometryutil'
 
 import {
   trigger,
