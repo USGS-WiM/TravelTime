@@ -138,8 +138,8 @@ export class ReportModalComponent implements OnInit {
 
     var processTables = () => {
       var finalVal = 'Traveltime Results\n';
-      finalVal += this.tableToCSV($('#MostProbableTable'));
-      finalVal += '\n' + this.tableToCSV($('#MaxProbableTable'));
+      finalVal += this.tableToCSV($('#MostProbTableDL'));
+      finalVal += '\n' + this.tableToCSV($('#MaxProbTableDL'));
       return finalVal + '\r\n';
     };
 
@@ -181,7 +181,7 @@ export class ReportModalComponent implements OnInit {
         , tmpRowDelim = String.fromCharCode(0) // null character
 
         // actual delimiter characters for CSV format
-        , colDelim = '","'
+        , colDelim = '";"'
         , rowDelim = '"\r\n"';
 
     // Grab text from table into CSV formatted string

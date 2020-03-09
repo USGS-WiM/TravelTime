@@ -51,7 +51,6 @@
  }
 
 
-
 //  Print Styles
 @media print{
 	
@@ -153,4 +152,9 @@
       /**Needs to be relative for printing in IE11**/
       position: relative;
   }
+}
+
+.hidden {
+	visibility: hidden;
+	height:1px;
 }
