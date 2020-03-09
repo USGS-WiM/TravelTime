@@ -32,6 +32,8 @@ export class MapService {
   public abbrevOptions;
   public http: HttpClient;
 
+  public FlowLines: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+
   constructor(http: HttpClient) {
 
     this.http = http;
@@ -206,7 +208,7 @@ export class MapService {
   }
 
   public latlng: L.LatLng;
-  private LatLng = new BehaviorSubject<L.LatLng>(undefined);
+  public LatLng = new BehaviorSubject<L.LatLng>(undefined);
   Poi$ = this.LatLng.asObservable();
   SetPoi(latlng: L.LatLng) {
     this.latlng = latlng;
