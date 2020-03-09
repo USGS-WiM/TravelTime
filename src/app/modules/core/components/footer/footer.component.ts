@@ -7,6 +7,7 @@ import * as $ from 'jquery';
 import { ChartsService } from '../../services/charts.service';
 import '../../../../shared/extensions/number.toUSGSValue';
 import { Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
   selector: 'tot-footer',
@@ -37,7 +38,7 @@ export class FooterComponent implements OnInit {
     
     if (this.StudyService.GetWorkFlow('totResults')) {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-        this.reaches.shift();
+      this.reaches.shift();
         return (this.reaches);
       } else {
         return;
@@ -59,6 +60,10 @@ export class FooterComponent implements OnInit {
         this.reaches[index]['ischeked'] = true;
       }
     }
+  }
+
+  public toDecimals(timeval: string) {
+    return (moment.duration(timeval).asHours().toFixed(4));
   }
 
   public highlightFeature(indx) {
