@@ -64,9 +64,9 @@
 										<ng-container>
 											<!-- if the key is equal to v - this is av speed, else it is vmax-->
 											<td>{{reach.result.equations.vmax.value}}</td>
-											<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MostProbable.cumTime}}</td>
-											<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.peakConcentration.MostProbable.cumTime}}</td>
-											<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{reach.result.tracer_Response.trailingEdge.MostProbable.cumTime}}</td>
+											<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>
+											<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>
+											<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>
 											<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
 										</ng-container>
 									</tr>
@@ -119,9 +119,9 @@
 								<ng-container>
 									<!-- if the key is equal to v - this is av speed, else it is vmax-->
 									<td>{{reach.result.equations.vmax.value}}</td>
-									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime}}</td>
-									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime}}</td>                
-									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>                
+									<td title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
 									<td>{{reach.result.tracer_Response.trailingEdge.MaximumProbable.concentration}}</td>
 								</ng-container>
 							</tr>
@@ -137,22 +137,4 @@
 			</div>
 		</div>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
-
-
-
-
-
-
