@@ -106,9 +106,9 @@ export class JobsonsModalComponent implements OnInit {
   public setDischarge(): void {
     if (this.reachList.length>0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
-      var accumRatio = [this._discharge];     
+      let accumRatio = [this._discharge];     
       let cond = false;
-      var value;
+      let value;
 
       //current function is using ratio of i-th - 1 reach, it can be easily adjusted to nearest gage flow value;
       this.reachList.forEach((item) => {
@@ -195,7 +195,7 @@ export class JobsonsModalComponent implements OnInit {
           return 'Description';
       }//end switch
     } catch (e) {
-      var x = e;
+      let x = e;
     }
   }
 
@@ -216,7 +216,7 @@ export class JobsonsModalComponent implements OnInit {
     let tempReachList = [];
     let postReachList = []; 
     if(!this.StudyService.isMetric()) {
-      for (var i = 0; i < this.reachList.length; i++) { 
+      for (let i = 0; i < this.reachList.length; i++) { 
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = this.reachList[i].name;
         newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   //slope
@@ -289,7 +289,7 @@ export class JobsonsModalComponent implements OnInit {
   //#region "Private methods"
   private populateReachArray(): void {   //add class jobson to an array of items that has been iterated over on ui side
 
-    for (var i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
+    for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { //remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); //new Jobson reaches object that will store initial object
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid

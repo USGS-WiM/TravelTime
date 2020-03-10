@@ -2,11 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModalConfig, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { StudyService } from '../../services/study.service';
 import { reach } from '../../models/reach';
-import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import { MapService } from '../../services/map.services';
-import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-import { Study } from '../../models/study';
 import { MapComponent } from '../map/map.component';
 import { Angulartics2 } from 'angulartics2';
 import * as L from 'leaflet';
@@ -21,11 +18,10 @@ export class ReportModalComponent implements OnInit {
 
   private StudyService: StudyService;
   private MapService: MapService;
-  private TravelTimeService: TravelTimeService;
   private reaches: reach[];
-  private reach_reference: reach;
   private _layersControl;
   private _layers = [];
+  public closed = false;
 
   private optionsSpec: any = {
     layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
@@ -36,27 +32,6 @@ export class ReportModalComponent implements OnInit {
   public reportTitle = "Time of Travel Report";
   public reportComments = "";
  
-  public get LayersControl() {
-    return this._layersControl;
-  }
-
-  public get MapOptions() {
-    return this.MapService.Options;
-  }
-
-  // Leaflet bindings
-  public zoom = this.optionsSpec.zoom;
-  public center = L.latLng(this.optionsSpec.center);
-  public options = {
-    layers: [L.tileLayer(this.optionsSpec.layers[0].url, { attribution: this.optionsSpec.layers[0].attribution })],
-    zoom: this.optionsSpec.zoom,
-    center: L.latLng(this.optionsSpec.center)
-  };
-
-  public get Layers() {
-    return this._layers;
-  }
-
   public units;
   public abbrev;
   public fitBounds;
@@ -69,12 +44,11 @@ export class ReportModalComponent implements OnInit {
       return;
     }
   }
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, traveltimeservice: TravelTimeService, private angulartics2: Angulartics2) { 
+  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, private angulartics2: Angulartics2) { 
     config.backdrop = 'static';
     config.keyboard = false;
     this.StudyService = studyservice;
     this.MapService = mapservice;
-    this.TravelTimeService = traveltimeservice;
     this.angulartics2.eventTrack.next({
       action: 'myAction',
       properties: { category: 'myCategory' }
@@ -101,10 +75,6 @@ export class ReportModalComponent implements OnInit {
       this._layers = activelayers;
     });
 
-    this.MapService.fitBounds.subscribe(data => {
-      this.fitBounds = data;
-    })
-
     this.units = this.MapService.unitsOptions;
     this.abbrev = this.MapService.abbrevOptions;
     let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
@@ -118,7 +88,7 @@ export class ReportModalComponent implements OnInit {
   }
 
   public onMapReady(map: L.Map) {
-    map.invalidateSize ()
+    map.invalidateSize();
   }
 
   public onZoomChange(zoom: number) {
@@ -129,7 +99,6 @@ export class ReportModalComponent implements OnInit {
   }
 
   public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
-
     this.evnt = evnt.latlng;
   }
 
@@ -253,16 +222,13 @@ export class ReportModalComponent implements OnInit {
     function grabCol(j, col) {
         var $col = $(col),
             $text = $col.text();
-
         return $text.replace('"', '""'); // escape double quotes
-
     }
   }
   
   private checkUnits(reaches) {
     if(!this.StudyService.isMetric()) {
       let tempreaches = [];
-
       for (var i = 0; i < reaches.length; i++) { 
           let newreach = reaches[i]; //copy jobson output for reach i to newreach
 
@@ -304,6 +270,8 @@ export class ReportModalComponent implements OnInit {
       this.reaches = reaches;
     } //keep existing metric units        
   }
+
+
   private printElement(elem) {
       var domClone = elem.cloneNode(true);
       
@@ -318,5 +286,10 @@ export class ReportModalComponent implements OnInit {
       $printSection.innerHTML = "";
       $printSection.appendChild(domClone);
       window.print();
+  }
+
+  public closeModal() {
+      this.MapService.LayersControl.next(this.MapService._layersControl);
+      this.closed = true;
   }
 }
