@@ -33,6 +33,7 @@ export class MapService {
   public http: HttpClient;
 
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
+  public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
 
   constructor(http: HttpClient) {
 

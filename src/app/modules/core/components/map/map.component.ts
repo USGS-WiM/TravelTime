@@ -34,6 +34,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public poi;
   public flowlines;
   public layerGroup;
+  public reportlayerGroup;
 
   public evnt;
   @Input() report: boolean;
@@ -81,6 +82,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     this.NavigationService = navigationservice;
     this.StudyService = studyservice;
     this.layerGroup = new L.FeatureGroup([]);//streamLayer
+    this.reportlayerGroup = new L.FeatureGroup([]);
   }
 
   ngOnInit() {
@@ -112,9 +114,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     this.MapService.LatLng.subscribe(res => {
         this.poi = res;
     });
+
     this.MapService.layerGroup.subscribe(layerGroup => {
       this.layerGroup = layerGroup;
-    })
+    });
+
+    this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
+      this.reportlayerGroup = reportlayerGroup;
+    });
     //#endregion
   }
 
@@ -134,8 +141,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
         const marker = L.marker(this.poi, {
             icon: L.icon(this.MapService.markerOptions.Spill)
         });
+
         marker.addTo(this.reportMap);
-        this.layerGroup.addTo(this.reportMap);
+        this.reportlayerGroup.addTo(this.reportMap);
+
         setTimeout(() => {
           this.reportMap.fitBounds(this.layerGroup.getBounds());
         })
@@ -213,20 +222,27 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
   public getFlowLineLayerGroup(features) {
     const layerGroup = new L.FeatureGroup([]);
+    const reportlayerGroup = new L.FeatureGroup([]);
 
     features.forEach(i => {
         if (i.geometry.type === 'Point') {
-          var gage = L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) })
-          layerGroup.addLayer(gage);
+          layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream)}));
+          reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
         } else if (typeof i.properties.nhdplus_comid === "undefined") {
         } else {
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+
           var nhdcomid = "NHDPLUSid: " + String(i.properties.nhdplus_comid);
           var drainage = " Drainage area: " + String(i.properties.DrainageArea);
           var temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-          var marker = L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage);
-          layerGroup.addLayer(marker);
+
+          layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage));
+          reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + "\n" + drainage));
+
           this.MapService.layerGroup.next(layerGroup);
+          this.MapService.reportlayerGroup.next(reportlayerGroup);
+
           i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
         }
     });
