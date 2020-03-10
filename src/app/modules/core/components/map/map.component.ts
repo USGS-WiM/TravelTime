@@ -193,7 +193,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
               break;
             case 6: item.value = ["flowline", "nwisgage"]; //"flowline", "wqpsite", "streamStatsgage", "nwisgage"
               break;
-            case 5: item.value = inputMethod;
+            case 5: item.value = "downstream";
               break;
             case 0: item.value = { id: 3, description: "Limiting distance in kilometers from starting point", name: "Distance (km)", value: this.StudyService.distance, valueType: "numeric" };
           }//end switch

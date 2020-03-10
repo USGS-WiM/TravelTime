@@ -8,13 +8,17 @@ import { ChartsService } from '../../services/charts.service';
 import '../../../../shared/extensions/number.toUSGSValue';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { deepCopy } from 'src/app/shared/extensions/object.DeepCopy';
 
 @Component({
   selector: 'tot-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent extends deepCopy implements OnInit {
+  // ngOnInit(): void {
+  //   throw new Error("Method not implemented.");
+  // }
   public spillMass;
   public spillDate;
   public units;
@@ -30,28 +34,51 @@ export class FooterComponent implements OnInit {
 
   private selectedReach: reach;
   private reaches: reach[];
+  private hasReaches: boolean = false;
+  private selectedUnits: string;
   private setClickedRow: Function;
   private selectedRow: Number;
 
+
   public get showResult$(): boolean {
+    this.units = this.MapService.unitsOptions;
+    this.abbrev = this.MapService.abbrevOptions; 
+    
+    if (this.StudyService.GetWorkFlow('totResults')) {
+      if (!this.hasReaches) {
+        if(this.StudyService.isMetric) {        
+          let reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
+          let reachList = Object.values(reachesCopy);
+          reachList.shift(); //remove first element (one without results)
+          this.checkUnits(reachList);
+          this.hasReaches = true;
+          this.selectedUnits = "metric";
+        } else {
+          let reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
+          let reachList = Object.values(reachesCopy);
+          reachList.shift(); //remove first element (one without results)
+          this.checkUnits(reachList);
+          this.hasReaches = true;
+          this.selectedUnits = "imperial";
+        }
+      } //else if (this.hasReaches && this.selectedUnits === "metric") {
+      //     if (!this.StudyService.isMetric) {
+      //       let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
+      //       reachList.shift(); //remove first element (one without results)
+      //       this.checkUnits(reachList);
+      //       this.selectedUnits = "imperial";
+      //     }
+      // }
+    }
     return (this.StudyService.GetWorkFlow('totResults'));
   }
   
   public get output$() {
-
-    this.units = this.MapService.unitsOptions;
-    this.abbrev = this.MapService.abbrevOptions;
-    
-    if (this.StudyService.GetWorkFlow('totResults')) {
-      let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-      reachList.shift(); //remove first element (one without results)
-      this.checkUnits(reachList);      
-
       return this.reaches;
-    }
   }
 
   constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService, chartservice: ChartsService) {
+    super();
     this.messanger = toastr;
     this.StudyService = studyservice;
     this.MapService = mapservice;
@@ -100,8 +127,8 @@ export class FooterComponent implements OnInit {
           newreach.parameters[0].value = (reaches[i].parameters[0].value * 35.314666212661).toUSGSvalue();     //mean annual discharge from cms to cfs
           newreach.parameters[3].value = (reaches[i].parameters[3].value * 0.00000038610215855).toUSGSvalue(); //drainage area from square meters to square miles
           newreach.parameters[4].value = (reaches[i].parameters[4].value * 0.00062137).toUSGSvalue();              //length from meters to miles 
-          if(newreach.parameters[7]) {  newreach.parameters[7].value = (reaches[i].parameters[7].value * 0.00062137).toUSGSvalue(); }             //cumulative length from meters to miles
-          if(newreach.parameters[6]) {  newreach.parameters[6].value = (reaches[i].parameters[6].value * 0.0000022046).toUSGSvalue(); }            //spill mass from milligrams to pounds
+          if(newreach.parameters[6]) {  newreach.parameters[6].value = (reaches[i].parameters[6].value * 0.00062137).toUSGSvalue(); }             //cumulative length from meters to miles
+          if(newreach.parameters[7]) {  newreach.parameters[7].value = (reaches[i].parameters[7].value * 0.0000022046).toUSGSvalue(); }            //spill mass from milligrams to pounds
 
           newreach.parameters[0].unit.unit = this.units.imperial['discharge']                    //mean annual discharge
           newreach.parameters[0].unit.abbr = this.abbrev.imperial['discharge']
@@ -113,10 +140,10 @@ export class FooterComponent implements OnInit {
           newreach.parameters[3].unit.abbr = this.abbrev.imperial['drainageArea']
           newreach.parameters[4].unit.unit = this.units.imperial['distance']                     //reach length
           newreach.parameters[4].unit.abbr = this.abbrev.imperial['distance']
-          if(newreach.parameters[7]) { newreach.parameters[7].unit.unit = this.units.imperial['distance'] }                  //cumulative length
-          if(newreach.parameters[7]) { newreach.parameters[7].unit.abbr = this.abbrev.imperial['distance'] }
-          if(newreach.parameters[6]) { newreach.parameters[6].unit.unit = this.units.imperial['concentration'] }               //spill mass
-          if(newreach.parameters[6]) { newreach.parameters[6].unit.abbr = this.abbrev.imperial['concentration'] }
+          if(newreach.parameters[6]) { newreach.parameters[6].unit.unit = this.units.imperial['distance'] }                  //cumulative length
+          if(newreach.parameters[6]) { newreach.parameters[6].unit.abbr = this.abbrev.imperial['distance'] }
+          if(newreach.parameters[7]) { newreach.parameters[7].unit.unit = this.units.imperial['concentration'] }               //spill mass
+          if(newreach.parameters[7]) { newreach.parameters[7].unit.abbr = this.abbrev.imperial['concentration'] }
 
           newreach.result.equations.vmax.value = (reaches[i].result.equations.vmax.value * 3.2808399).toUSGSvalue(); //m/s to ft/s
           newreach.result.equations.v.value = (reaches[i].result.equations.v.value * 3.2808399).toUSGSvalue(); //m/s to ft/s

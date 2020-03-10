@@ -68,6 +68,7 @@ export class JobsonsModalComponent implements OnInit {
   public showReaches: boolean = true;
   public gettingResults: boolean = false;
   public showDetails: Array<any>;
+  public reachesReady: boolean = false;
   private lastIndex = null;
   private selectedIndex = null;
   private currentStep = 0;
@@ -257,6 +258,7 @@ export class JobsonsModalComponent implements OnInit {
         //console.log("This is the return from the services");
         //console.log(this.StudyService.selectedStudy.Results);
         this.StudyService.SetWorkFlow("totResults", true);
+        console.log(this.StudyService.GetWorkFlow("totResults"));
         this.gettingResults = false;
         this.activeModal.dismiss();
         this.StudyService.setProcedure(3); //open next panel;
@@ -317,6 +319,7 @@ export class JobsonsModalComponent implements OnInit {
       } else {
       }
     }
+    this.reachesReady = true;
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

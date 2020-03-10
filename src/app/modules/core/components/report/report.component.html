@@ -199,6 +199,15 @@
 				<div class="table" id="scroll">
 				  	<h4>Maximum Probable</h4>
 				  	<table id="MaxProbTablePrint">
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>							
+							<th colspan="3" style="text-align:center;border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">Time of</th>
+							<th></th>
+						</tr>
 						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
 							<th rowspan="2" vertical-align="center">Name</th>
 							<th title="{{ !StudyService.isMetric() ? 'cfs' : 'cms' }}">Discharge</th>
@@ -339,23 +348,25 @@
 				Because of flex space-between
 			-->
 			<span>
-				<!-- Download -->
-				<div class="btn-group mr-3">
-					<div class="btn-group" ngbDropdown role="group">
-						<button class="btn btn-outline-primary" ngbDropdownToggle><i class="far fa-download"></i>&nbsp;&nbsp;Download</button>
-						<div class="dropdown-menu" ngbDropdownMenu>
-						<button ngbDropdownItem (click)="downloadGeoJSON()">GeoJSON</button>
-						<button ngbDropdownItem (click)="downloadCSV()">CSV</button>
+				
+				<div class="row">				  
+					<!-- Download -->
+					<div class="col text-right">
+					  <div ngbDropdown placement="top-right" class="d-inline-block">
+						<button class="btn btn-outline-primary" id="dropdownBasic2" ngbDropdownToggle>Download</button>
+						<div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+						  <button ngbDropdownItem (click)="downloadGeoJSON()">GeoJSON</button>
+						  <button ngbDropdownItem (click)="downloadCSV()">CSV</button>
 						</div>
+					  </div>
 					</div>
+
+					<!--Print-->
+					<button class="icon-button blue" (click)="onPrint()">
+						<i class="far fa-print"></i>
+						<span>Print</span>
+					</button>   
 				</div>
-
-				<!--<button class="btn-blue btn-main" printSectionId="print-content" ngxPrint><i class="fa fa-print"></i>&nbsp;&nbsp;Print</button>-->
-
-				<button class="icon-button blue" (click)="onPrint()">
-					<i class="far fa-print"></i>
-					<span>Print</span>
-				</button>  
 			</span>
 			        
 		</div>
