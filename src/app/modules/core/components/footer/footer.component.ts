@@ -15,6 +15,11 @@ import * as moment from 'moment';
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
+  public spillMass;
+  public spillDate;
+  public units;
+  public abbrev;
+
   private MapService: MapService;
   private StudyService: StudyService;
   private ChartService: ChartsService;
@@ -22,27 +27,27 @@ export class FooterComponent implements OnInit {
 
   private showMost: boolean;
   private showMax: boolean;
-  public spillMass;
-  public spillDate;
 
-  selectedReach: reach;
-  reaches: reach[];
-  setClickedRow: Function;
-  selectedRow: Number;
+  private selectedReach: reach;
+  private reaches: reach[];
+  private setClickedRow: Function;
+  private selectedRow: Number;
 
   public get showResult$(): boolean {
     return (this.StudyService.GetWorkFlow('totResults'));
   }
   
   public get output$() {
+
+    this.units = this.MapService.unitsOptions;
+    this.abbrev = this.MapService.abbrevOptions;
     
     if (this.StudyService.GetWorkFlow('totResults')) {
-      this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-      this.reaches.shift();
-        return (this.reaches);
-      } else {
-        return;
-      
+      let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
+      reachList.shift(); //remove first element (one without results)
+      this.checkUnits(reachList);      
+
+      return this.reaches;
     }
   }
 
@@ -62,15 +67,6 @@ export class FooterComponent implements OnInit {
     }
   }
 
-  public toDecimals(timeval: string) {
-    return (moment.duration(timeval).asHours().toFixed(4));
-  }
-
-  public highlightFeature(indx) {
-    this.ChartService.noticeAction(indx);
-    this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
-  }
-
   ngOnInit() {
     this.ChartService.display$.subscribe(isShown => {
       this.showMax = isShown.max;
@@ -81,6 +77,62 @@ export class FooterComponent implements OnInit {
       this.spillMass = mystudy.SpillMass;
       this.spillDate = mystudy.SpillDate;
     })
+
+  }
+
+  public toDecimals(timeval: string) {
+    return (moment.duration(timeval).asHours().toFixed(4));
+  }
+
+  public highlightFeature(indx) {
+    this.ChartService.noticeAction(indx);
+    this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+  }
+
+  private checkUnits(reaches) {
+    if(!this.StudyService.isMetric()) {
+      let tempreaches = [];
+
+      for (var i = 0; i < reaches.length; i++) { 
+          let newreach = reaches[i]; //copy jobson output for reach i to newreach
+
+          newreach.parameters[1].value = (reaches[i].parameters[1].value * 35.314666212661).toUSGSvalue();     //real-time discharge from cms to cfs
+          newreach.parameters[0].value = (reaches[i].parameters[0].value * 35.314666212661).toUSGSvalue();     //mean annual discharge from cms to cfs
+          newreach.parameters[3].value = (reaches[i].parameters[3].value * 0.00000038610215855).toUSGSvalue(); //drainage area from square meters to square miles
+          newreach.parameters[4].value = (reaches[i].parameters[4].value * 0.00062137).toUSGSvalue();              //length from meters to miles 
+          if(newreach.parameters[7]) {  newreach.parameters[7].value = (reaches[i].parameters[7].value * 0.00062137).toUSGSvalue(); }             //cumulative length from meters to miles
+          if(newreach.parameters[6]) {  newreach.parameters[6].value = (reaches[i].parameters[6].value * 0.0000022046).toUSGSvalue(); }            //spill mass from milligrams to pounds
+
+          newreach.parameters[0].unit.unit = this.units.imperial['discharge']                    //mean annual discharge
+          newreach.parameters[0].unit.abbr = this.abbrev.imperial['discharge']
+          newreach.parameters[1].unit.unit = this.units.imperial['discharge']                    //real-time discharge
+          newreach.parameters[1].unit.abbr = this.abbrev.imperial['discharge']
+          newreach.parameters[2].unit.unit = this.units.imperial['slope']                        //slope
+          newreach.parameters[2].unit.abbr = this.abbrev.imperial['slope']
+          newreach.parameters[3].unit.unit = this.units.imperial['drainageArea']                 //drainage area
+          newreach.parameters[3].unit.abbr = this.abbrev.imperial['drainageArea']
+          newreach.parameters[4].unit.unit = this.units.imperial['distance']                     //reach length
+          newreach.parameters[4].unit.abbr = this.abbrev.imperial['distance']
+          if(newreach.parameters[7]) { newreach.parameters[7].unit.unit = this.units.imperial['distance'] }                  //cumulative length
+          if(newreach.parameters[7]) { newreach.parameters[7].unit.abbr = this.abbrev.imperial['distance'] }
+          if(newreach.parameters[6]) { newreach.parameters[6].unit.unit = this.units.imperial['concentration'] }               //spill mass
+          if(newreach.parameters[6]) { newreach.parameters[6].unit.abbr = this.abbrev.imperial['concentration'] }
+
+          newreach.result.equations.vmax.value = (reaches[i].result.equations.vmax.value * 3.2808399).toUSGSvalue(); //m/s to ft/s
+          newreach.result.equations.v.value = (reaches[i].result.equations.v.value * 3.2808399).toUSGSvalue(); //m/s to ft/s
+
+          newreach.result.equations.vmax.units = this.abbrev.imperial['velocity']
+          newreach.result.equations.v.units = this.abbrev.imperial['velocity']
+          
+          tempreaches.push(newreach);
+          console.log(i);
+      }
+      this.StudyService.selectedStudy.SpillMass = (this.StudyService.selectedStudy.SpillMass * 0.453592).toUSGSvalue();
+      this.reaches = tempreaches;
+      console.log(this.reaches);
+    } else {
+      this.reaches = reaches;
+    } //keep existing metric units        
   }
 
 }

@@ -10,6 +10,7 @@ import { Study } from '../../models/study';
 import { MapComponent } from '../map/map.component';
 import { Angulartics2 } from 'angulartics2';
 import * as L from 'leaflet';
+import * as moment from 'moment';
 
 @Component({
   selector: 'tot-report',
@@ -112,6 +113,10 @@ export class ReportModalComponent implements OnInit {
       this.checkUnits(reachList);
   }
 
+  public toDecimals(timeval: string) {
+    return (moment.duration(timeval).asHours().toFixed(4));
+  }
+
   public onMapReady(map: L.Map) {
     map.invalidateSize ()
   }
@@ -138,8 +143,9 @@ export class ReportModalComponent implements OnInit {
 
     var processTables = () => {
       var finalVal = 'Traveltime Results\n';
-      finalVal += this.tableToCSV($('#MostProbTableDL'));
-      finalVal += '\n' + this.tableToCSV($('#MaxProbTableDL'));
+      finalVal += 'Units\n' + this.tableToCSV($('#UnitTable'));
+      finalVal += '\nMost Probable\n' + this.tableToCSV($('#MostProbTableDL'));
+      finalVal += '\nMaximum Probable\n' + this.tableToCSV($('#MaxProbTableDL'));
       return finalVal + '\r\n';
     };
 
@@ -170,6 +176,36 @@ export class ReportModalComponent implements OnInit {
         }
       }
   }
+
+  public downloadGeoJSON() {
+
+    let fc = new GeoJSON.FeatureCollection;
+    fc = this.StudyService.selectedStudy.Results;
+
+    var GeoJSON = JSON.parse(JSON.stringify(fc));
+    
+    var filename = 'data.geojson';
+
+    var blob = new Blob([GeoJSON], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        var link = <any>document.createElement("a");
+        var url = URL.createObjectURL(blob);
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        else {
+            window.open(url);
+        }
+    }
+}
 
   private tableToCSV($table) {
     var $headers = $table.find('tr:has(th)')
@@ -221,7 +257,7 @@ export class ReportModalComponent implements OnInit {
         return $text.replace('"', '""'); // escape double quotes
 
     }
-}
+  }
   
   private checkUnits(reaches) {
     if(!this.StudyService.isMetric()) {

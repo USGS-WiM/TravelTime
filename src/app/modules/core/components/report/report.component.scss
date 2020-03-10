@@ -158,3 +158,9 @@
 	visibility: hidden;
 	height:1px;
 }
+
+.dropdown-menu{
+    max-height: 150px;
+    width: 90%;
+    /*overflow-y:scroll;*/
+  }
