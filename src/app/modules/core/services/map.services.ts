@@ -32,7 +32,7 @@ export class MapService {
   public abbrevOptions;
   public http: HttpClient;
 
-  public FlowLines: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
 
   constructor(http: HttpClient) {
 
