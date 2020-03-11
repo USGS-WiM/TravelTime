@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal,NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { MapService } from '../../services/map.services';
@@ -82,8 +82,7 @@ export class JobsonsModalComponent implements OnInit {
     this.MapService = mapservice;
     this.StudyService = studyservice;
     this.messager = tstrservice;
-
-   }
+  }
 
   ngOnInit():  any {   //on init, get the services for first reach, and add them as parameters to accordion
     this.TravelTimeService.getJobsonConfigurationObject() // get reach
@@ -164,8 +163,6 @@ export class JobsonsModalComponent implements OnInit {
     this.currentStep = +($event.panelId);
   };
 
-
-
   public removeReach(index): void {   //remove reach by id
     if (index >= 0) {
       this.reachList.splice(index, this.reachList.length);
@@ -205,8 +202,6 @@ export class JobsonsModalComponent implements OnInit {
 	// Set default footer height to half, show buttons to switch
 	$("#mapWrapper").attr('class','half-map');
 	$("#mapHeightToggle").attr('class','visible');
-
-
 
     this.gettingResults = true;
 
