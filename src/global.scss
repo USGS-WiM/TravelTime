@@ -801,7 +801,7 @@ ul{
 	top: 0;
 	margin: 0;
 	width: 100% !important;
-	height: 100% !important;
+	height: 100%;
 }
 .leaflet-control-attribution{
 	font-size: 8px !important;
@@ -816,6 +816,11 @@ ul{
     }
 }
 
+.leaflet-pane.leaflet-map-pane {
+    width: 100% !important;
+    height: 100% !important;
+    transform: none;
+  }
 
 
 // Hide everything on print

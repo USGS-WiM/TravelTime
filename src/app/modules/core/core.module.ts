@@ -25,9 +25,11 @@ import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportModalComponent } from './components/report/report.component';
 import { ReportModule } from './components/report/report.module';
+import {Angulartics2Module } from 'angulartics2';
+import { AppChartsModule } from './components/appcharts/appcharts.module';
 
 @NgModule({
-    declarations: [SidebarComponent, CoreComponent, FooterComponent, AppchartsComponent],
+    declarations: [SidebarComponent, CoreComponent, FooterComponent],
   imports: [
     LeafletModule.forRoot(),
     FormsModule,
@@ -44,7 +46,9 @@ import { ReportModule } from './components/report/report.module';
     NgbModule,
     ChartsModule,
     MapModule,
-    ReportModule
+    ReportModule,
+    Angulartics2Module.forRoot(),
+    AppChartsModule
     ],
   providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService],
   exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],

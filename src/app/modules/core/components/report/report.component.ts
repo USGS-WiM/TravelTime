@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModalConfig, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { StudyService } from '../../services/study.service';
 import { reach } from '../../models/reach';
-import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import { MapService } from '../../services/map.services';
-import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-import { Study } from '../../models/study';
 import { MapComponent } from '../map/map.component';
+import { Angulartics2 } from 'angulartics2';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'tot-report',
@@ -16,17 +15,26 @@ import { MapComponent } from '../map/map.component';
 })
 export class ReportModalComponent implements OnInit {
 
-  public reportTitle = "Time of Travel Report";
-  public reportComments = "";
-  //public print: any;
-
   private StudyService: StudyService;
   private MapService: MapService;
-  private TravelTimeService: TravelTimeService;
   private reaches: reach[];
-  private reach_reference: reach;
+  private _layersControl;
+  private _layers = [];
+  public closed = false;
+
+  private optionsSpec: any = {
+    layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
+    zoom: 5,
+    center: [46.879966, -121.726909]
+  };
+
+  public reportTitle = "Time of Travel Report";
+  public reportComments = "";
+ 
   public units;
   public abbrev;
+  public fitBounds;
+  public evnt;
 
   public get output$ () {
     if (this.StudyService.GetWorkFlow('totResults')) {
@@ -35,19 +43,37 @@ export class ReportModalComponent implements OnInit {
       return;
     }
   }
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, traveltimeservice: TravelTimeService) { 
+  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, private angulartics2: Angulartics2) { 
     config.backdrop = 'static';
     config.keyboard = false;
     this.StudyService = studyservice;
     this.MapService = mapservice;
-    this.TravelTimeService = traveltimeservice;
-
-    //this.print = function () {
-      //window.print();
-  //};
+    this.angulartics2.eventTrack.next({
+      action: 'myAction',
+      properties: { category: 'myCategory' }
+    });
   }
 
   ngOnInit() {
+    this.MapService.LayersControl.subscribe(data => {
+      this._layersControl = {
+        baseLayers: data.baseLayers.reduce((acc, ml) => {
+          acc[ml.name] = ml.layer;
+          return acc;
+        }, {}),
+        overlays: data.overlays.reduce((acc, ml) => { acc[ml.name] = ml.layer; return acc; }, {})
+      }
+    });
+
+    //method to filter out layers by visibility
+    this.MapService.LayersControl.subscribe(data => {
+      var activelayers = data.overlays
+        .filter((l: any) => l.visible)
+        .map((l: any) => l.layer);
+      activelayers.unshift(data.baseLayers.find((l: any) => (l.visible)).layer);
+      this._layers = activelayers;
+    });
+
     this.units = this.MapService.unitsOptions;
     this.abbrev = this.MapService.abbrevOptions;
     let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
@@ -56,24 +82,117 @@ export class ReportModalComponent implements OnInit {
       this.checkUnits(reachList);
   }
 
-  public onPrint() {
-    // var div2Print=document.getElementById('print-content');
-    // var newWin=window.open('','Print-Window');
-    // newWin.document.open();
-    // newWin.document.write('<html><body onload="window.print()">'+div2Print.innerHTML+'</body></html>');
-    // newWin.document.close();
-    // setTimeout(function(){newWin.close();},10);
-    //window.print();
-	// this.printElement(document.getElementById("print-content"));
-	
-	window.print();
+  public onMapReady(map: L.Map) {
+    map.invalidateSize();
+  }
 
+  public onZoomChange(zoom: number) {
+    setTimeout(() => {
+      this.MapService.CurrentZoomLevel = zoom;
+    })
+    // this.sm("Zoom changed to " + zoom);
+  }
+
+  public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
+    this.evnt = evnt.latlng;
+  }
+
+  public onPrint() {
+    window.print();
+  }
+
+  public downloadCSV() {
+    this.angulartics2.eventTrack.next({ action: 'Download', properties: { category: 'Report', label: 'CSV' }});
+    var filename = 'data.csv';
+
+    var processTables = () => {
+      var finalVal = 'Traveltime Results\n';
+      finalVal += this.tableToCSV($('#MostProbableTable'));
+      finalVal += '\n' + this.tableToCSV($('#MaxProbableTable'));
+      return finalVal + '\r\n';
+    };
+
+    //main file header with site information
+    var csvFile = 'Traveltime Report\n\n' + 'Spill Mass of ' + this.StudyService.selectedStudy.SpillMass + ' occurring ' + this.StudyService.selectedStudy.SpillDate + '\nLocated at ' + this.StudyService.selectedStudy.LocationOfInterest.lat + '\, ' + this.StudyService.selectedStudy.LocationOfInterest.lng + '\n';
+    //first write main parameter table
+    csvFile += processTables();
+
+    //download
+    var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        var link = <any>document.createElement("a");
+        var url = URL.createObjectURL(blob);
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        else {
+            window.open(url);
+        }
+      }
+  }
+
+  private tableToCSV($table) {
+    var $headers = $table.find('tr:has(th)')
+        , $rows = $table.find('tr:has(td)')
+
+        // Temporary delimiter characters unlikely to be typed by keyboard
+        // This is to avoid accidentally splitting the actual contents
+        , tmpColDelim = String.fromCharCode(11) // vertical tab character
+        , tmpRowDelim = String.fromCharCode(0) // null character
+
+        // actual delimiter characters for CSV format
+        , colDelim = '","'
+        , rowDelim = '"\r\n"';
+
+    // Grab text from table into CSV formatted string
+    var csv = '"';
+    csv += formatRows($headers.map(grabRow));
+    csv += rowDelim;
+    csv += formatRows($rows.map(grabRow)) + '"';
+    return csv
+
+    //------------------------------------------------------------
+    // Helper Functions 
+    //------------------------------------------------------------
+    // Format the output so it has the appropriate delimiters
+    function formatRows(rows) {
+        return rows.get().join(tmpRowDelim)
+            .split(tmpRowDelim).join(rowDelim)
+            .split(tmpColDelim).join(colDelim);
+    }
+
+    // Grab and format a row from the table
+    function grabRow(i, row) {
+
+        var $row = $(row);
+        //for some reason $cols = $row.find('td') || $row.find('th') won't work...
+        var $cols = $row.find('td');
+        if (!$cols.length) $cols = $row.find('th');
+
+        return $cols.map(grabCol)
+            .get().join(tmpColDelim);
+    }
+
+    // Grab and format a column from the table 
+    function grabCol(j, col) {
+        var $col = $(col),
+            $text = $col.text();
+        return $text.replace('"', '""'); // escape double quotes
+    }
   }
   
   private checkUnits(reaches) {
     if(!this.StudyService.isMetric()) {
       let tempreaches = [];
-
       for (var i = 0; i < reaches.length; i++) { 
           let newreach = reaches[i]; //copy jobson output for reach i to newreach
 
@@ -115,6 +234,8 @@ export class ReportModalComponent implements OnInit {
       this.reaches = reaches;
     } //keep existing metric units        
   }
+
+
   private printElement(elem) {
       var domClone = elem.cloneNode(true);
       
@@ -129,5 +250,10 @@ export class ReportModalComponent implements OnInit {
       $printSection.innerHTML = "";
       $printSection.appendChild(domClone);
       window.print();
+  }
+
+  public closeModal() {
+      this.MapService.LayersControl.next(this.MapService._layersControl);
+      this.closed = true;
   }
 }
