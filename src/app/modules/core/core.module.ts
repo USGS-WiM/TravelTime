@@ -27,7 +27,6 @@ import { ReportModalComponent } from './components/report/report.component';
 import { ReportModule } from './components/report/report.module';
 import { Angulartics2Module } from 'angulartics2';
 import { AppChartsModule } from './components/appcharts/appcharts.module';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent],
@@ -49,8 +48,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MapModule,
     ReportModule,
     Angulartics2Module.forRoot(),
-    AppChartsModule,
-    MatProgressBarModule
+    AppChartsModule
     ],
   providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService],
   exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],

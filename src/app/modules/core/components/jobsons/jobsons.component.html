@@ -1,10 +1,12 @@
-<div class="modal-wrapper">
-	<div class="modal-box">
-		<!--progress bar until reaches are loaded-->
-		<!-- <div *ngIf="!reachesReady">
-			<mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
-		</div> -->
-		<!-- <div *ngIf="reachesReady"> -->
+<div *ngIf="!reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
+		<i style="margin:auto;" class='far fa-sync fa-spin'></i>
+	</div>
+</div>
+
+<div *ngIf="reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
+		<div>
 			<!-- Header -->
 			<div class="modal-top">
 				<div class="title">Jobsons Results</div>
@@ -172,7 +174,7 @@
 					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
 				</button>
 			</div>
-		<!-- </div> -->
+		</div>
 	</div>
 </div>
 
