@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal,NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { MapService } from '../../services/map.services';
@@ -68,6 +68,7 @@ export class JobsonsModalComponent implements OnInit {
   public showReaches: boolean = true;
   public gettingResults: boolean = false;
   public showDetails: Array<any>;
+  public reachesReady: boolean = false;
   private lastIndex = null;
   private selectedIndex = null;
   private currentStep = 0;
@@ -81,8 +82,7 @@ export class JobsonsModalComponent implements OnInit {
     this.MapService = mapservice;
     this.StudyService = studyservice;
     this.messager = tstrservice;
-
-   }
+  }
 
   ngOnInit():  any {   //on init, get the services for first reach, and add them as parameters to accordion
     this.TravelTimeService.getJobsonConfigurationObject() // get reach
@@ -163,8 +163,6 @@ export class JobsonsModalComponent implements OnInit {
     this.currentStep = +($event.panelId);
   };
 
-
-
   public removeReach(index): void {   //remove reach by id
     if (index >= 0) {
       this.reachList.splice(index, this.reachList.length);
@@ -204,8 +202,6 @@ export class JobsonsModalComponent implements OnInit {
 	// Set default footer height to half, show buttons to switch
 	$("#mapWrapper").attr('class','half-map');
 	$("#mapHeightToggle").attr('class','visible');
-
-
 
     this.gettingResults = true;
 
@@ -257,6 +253,7 @@ export class JobsonsModalComponent implements OnInit {
         //console.log("This is the return from the services");
         //console.log(this.StudyService.selectedStudy.Results);
         this.StudyService.SetWorkFlow("totResults", true);
+        console.log(this.StudyService.GetWorkFlow("totResults"));
         this.gettingResults = false;
         this.activeModal.dismiss();
         this.StudyService.setProcedure(3); //open next panel;
@@ -317,6 +314,7 @@ export class JobsonsModalComponent implements OnInit {
       } else {
       }
     }
+    this.reachesReady = true;
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

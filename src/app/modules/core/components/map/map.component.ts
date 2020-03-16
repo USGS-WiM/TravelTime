@@ -272,11 +272,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     }
   }
 
+
   private formatReaches(data): any {
     let streamArray = [];
     for (var i = 0; i < data['features'].length; i++) {
-      if (data['features'][i].geometry['type'] == 'LineString') { //if type of point, add marker
-        var polylinePoints = this.deepCopy(data['features'][i]); //what is this doing?
+      if (data['features'][i].geometry['type'] == 'LineString') { 
+        var polylinePoints = this.deepCopy(data['features'][i]);
         streamArray.push(polylinePoints);
       }
     }

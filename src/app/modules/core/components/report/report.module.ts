@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { AppChartsModule } from '../appcharts/appcharts.module';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [ReportModalComponent],
@@ -15,7 +16,8 @@ import { AppChartsModule } from '../appcharts/appcharts.module';
     LeafletModule,
     NgbModule,
     FormsModule,
-    AppChartsModule
+    AppChartsModule,
+    BrowserModule
   ],
   entryComponents: [ReportModalComponent],
   exports: [
