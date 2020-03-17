@@ -55,13 +55,13 @@
 			<div *ngIf="StudyService.ReportOptions[1].checked">
 				<div class="table" id="scroll">
 				  	<h4>Most Probable</h4>
-				  	<table id="MostProbTablePrint">			
+				  	<table id="MostProbTablePrint">
 						<tr>
 							<th></th>
 							<th></th>
 							<th></th>
 							<th></th>
-							<th></th>							
+							<th></th>
 							<th colspan="3" style="text-align:center;border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">Time of</th>
 							<th></th>
 						</tr>
@@ -72,7 +72,7 @@
 							<th title="{{ !StudyService.isMetric() ? 'mi' : 'km' }}">Distance</th>
 							<th title="{{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }}">Reach Velocity</th>
 							<th title="hours">Leading edge</th>
-							<th title="hours">Peak concentration</th>              
+							<th title="hours">Peak concentration</th>
 							<th title="hours">Trailing edge at 10% peak concentration</th>
 							<th title="mg/L">Peak concentration</th>
 						</tr>
@@ -100,7 +100,7 @@
 									<td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
 								</ng-container>
 							</ng-container>
-			
+
 							<ng-container>
 								<!-- if the key is equal to v - this is av speed, else it is vmax-->
 								<td style="text-align: center;">{{reach.result.equations.v.value}}</td>
@@ -142,12 +142,12 @@
 							<td>Time of trailing edge at 10% peak concentration (Td10):</td>
 							<td>hours</td>
 						</tr>
-						<tr>						
+						<tr>
 							<td>Peak concentration (Ct)</td>
 							<td>milligrams per liter (mg/L)</td>
 						</tr>
 					</table>
-					<table id="MostProbTableDL">			
+					<table id="MostProbTableDL">
 						<tr>
 							<th>Reach ID</th>
 							<th>Discharge</th>
@@ -155,7 +155,7 @@
 							<th>Distance</th>
 							<th>Reach Velocity</th>
 							<th>Time of Leading edge</th>
-							<th>Time of Peak concentration</th>              
+							<th>Time of Peak concentration</th>
 							<th>Time of Trailing edge at 10% peak concentration</th>
 							<th>Peak concentration</th>
 						</tr>
@@ -183,7 +183,7 @@
 									<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
 								</ng-container>
 							</ng-container>
-			
+
 							<ng-container>
 								<!-- if the key is equal to v - this is av speed, else it is vmax-->
 								<td>{{reach.result.equations.v.value}}</td>
@@ -204,7 +204,7 @@
 							<th></th>
 							<th></th>
 							<th></th>
-							<th></th>							
+							<th></th>
 							<th colspan="3" style="text-align:center;border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">Time of</th>
 							<th></th>
 						</tr>
@@ -231,7 +231,7 @@
                         </tr>
 
 						<tr *ngFor="let reach of output$; let i = index">
-							<td>{{reach.name}}</td>		
+							<td>{{reach.name}}</td>
 							<ng-container *ngFor="let pars of reach.parameters">
 								<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
 									<td style="text-align: center;">{{pars.value}}</td>
@@ -248,7 +248,7 @@
 								<!-- if the key is equal to v - this is av speed, else it is vmax-->
 								<td style="text-align: center;">{{reach.result.equations.vmax.value}}</td>
 								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
-								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>                
+								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>
 								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
 								<td style="text-align: center;">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
 							</ng-container>
@@ -278,10 +278,10 @@
 							<th>T<sub>p</sub></th>
 							<th>T<sub>d10</sub></th>
 							<th>C<sub>t</sub></th>
-						</tr>						
-						
+						</tr>
+
 						<tr *ngFor="let reach of output$; let i = index">
-							<td>{{reach.name}}</td>		
+							<td>{{reach.name}}</td>
 							<ng-container *ngFor="let pars of reach.parameters">
 								<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
 									<td>{{pars.value}}</td>
@@ -298,7 +298,7 @@
 								<!-- if the key is equal to v - this is av speed, else it is vmax-->
 								<td>{{reach.result.equations.vmax.value}}</td>
 								<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
-								<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>                
+								<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>
 								<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
 								<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
 							</ng-container>
@@ -322,11 +322,11 @@
 				</a>
 				<div class="space10"></div>
 				<p class="disclaimer">
-					USGS Data Disclaimer: Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected. 
+					USGS Data Disclaimer: Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected.
 				  Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.
 				</p>
 				<p class="disclaimer">
-					USGS Software Disclaimer: This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. 
+					USGS Software Disclaimer: This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review.
 				  No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.
 				</p>
 				<p class="disclaimer">
@@ -343,13 +343,13 @@
 				<span>Close</span>
 			</button>
 
-			<!-- 
+			<!--
 				Empty span makes print and download buttons float right
 				Because of flex space-between
 			-->
 			<span>
-				
-				<div class="row">				  
+
+				<div class="row">
 					<!-- Download -->
 					<div class="col text-right">
 					  <div ngbDropdown placement="top-right" class="d-inline-block">
@@ -365,10 +365,10 @@
 					<button class="icon-button blue" (click)="onPrint()">
 						<i class="far fa-print"></i>
 						<span>Print</span>
-					</button>   
+					</button>
 				</div>
 			</span>
-			        
+
 		</div>
 	</div>
 </div>

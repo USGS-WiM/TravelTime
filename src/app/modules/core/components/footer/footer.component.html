@@ -19,7 +19,7 @@
 									<th></th>
 									<th></th>
 									<th></th>
-									<th></th>							
+									<th></th>
 									<th colspan="3" style="text-align:center;border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">Time of</th>
 									<th></th>
 								</tr>
@@ -30,7 +30,7 @@
 									<th title="{{ !StudyService.isMetric() ? 'mi' : 'km' }}">Distance</th>
 									<th title="{{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }}">Reach Velocity</th>
 									<th title="hours">Leading edge</th>
-									<th title="hours">Peak concentration</th>              
+									<th title="hours">Peak concentration</th>
 									<th title="hours">Trailing edge at 10% peak concentration</th>
 									<th title="mg/L">Peak concentration</th>
 								</tr>
@@ -47,7 +47,7 @@
 							</thead>
 
 							<tbody>
-								<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
+								<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
 									<td>{{reach.name}}</td>
 
 									<ng-container *ngFor="let pars of reach.parameters">
@@ -87,7 +87,7 @@
 									<th></th>
 									<th></th>
 									<th></th>
-									<th></th>							
+									<th></th>
 									<th colspan="3" style="text-align:center;border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">Time of</th>
 									<th></th>
 								</tr>
@@ -98,7 +98,7 @@
 									<th title="{{ !StudyService.isMetric() ? 'mi' : 'km' }}">Distance</th>
 									<th title="{{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }}">Reach Velocity</th>
 									<th title="hours">Leading edge</th>
-									<th title="hours">Peak concentration</th>              
+									<th title="hours">Peak concentration</th>
 									<th title="hours">Trailing edge at 10% peak concentration</th>
 									<th title="mg/L">Peak concentration</th>
 								</tr>
