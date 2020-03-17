@@ -250,8 +250,7 @@ export class SidebarComponent {
     try {
       let options:Partial<IndividualConfig> = null;
       if(timeout) options ={timeOut:timeout};
-      setTimeout(() =>
-        this.messager.show(msg,title,options, mType))
+      this.messager.show(msg, title, options, mType);
     }
     catch (e) {
     }

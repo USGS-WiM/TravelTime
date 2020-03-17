@@ -91,6 +91,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
+
+    this.MapService.bounds.subscribe(b => {
+      this.fitBounds = b;
+    })
+    
+    this.NavigationService.navigationGeoJSON$.subscribe(data => {
+      console.log(data);
+    });
     //#region "Base layer and overlay subscribers"
     //method to subscribe to the layers
     this.MapService.LayersControl.subscribe(data => {
@@ -149,9 +157,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
         marker.addTo(this.reportMap);
         this.reportlayerGroup.addTo(this.reportMap);
 
-        setTimeout(() => {
           this.reportMap.fitBounds(this.layerGroup.getBounds());
-        })
     }
   }
 
@@ -163,9 +169,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   }
 
   public onZoomChange(zoom: number) {
-    setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
-    });
   }
 
   public onMouseClick(evnt: any) { //need to create a subscriber on init and then use it as main poi value;
@@ -181,6 +185,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
       }
     }
   }
+
+  //#endregion
 
   //#region "Helper methods (create FeatureGroup layer)"
   private setPOI(latlng: L.LatLng, inputString: string) {
@@ -214,6 +220,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
           return config;
         }).then(config => {
           this.NavigationService.getRoute("3", config, true).subscribe(response => {
+            this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
             //this.MapService.FlowLines.next(response.features);
             this.getFlowLineLayerGroup(response.features);
@@ -223,6 +230,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.StudyService.selectedStudy.LocationOfInterest = latlng;
             this.StudyService.setProcedure(2);
           });
+
         });
     }
 
@@ -254,9 +262,11 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
         i.properties.Length = turf.length(i, { units: "kilometers" });//computes actual length; (services return nhdplus length)
       }
     });
+
+    //because it is async it takes time to process function above, once we have it done - we get the bounds
+    //Potential to improve
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
-      this.fitBounds = this.MapService._bound;
     });
   }
 
@@ -265,8 +275,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     try {
       let options: Partial<IndividualConfig> = null;
       if (timeout) options = { timeOut: timeout };
-      setTimeout(() =>
-        this.messager.show(msg, title, options, mType))
+      this.messager.show(msg, title, options, mType);
     }
     catch (e) {
     }

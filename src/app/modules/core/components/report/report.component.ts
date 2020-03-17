@@ -96,9 +96,7 @@ export class ReportModalComponent extends deepCopy implements OnInit {
   }
 
   public onZoomChange(zoom: number) {
-    setTimeout(() => {
       this.MapService.CurrentZoomLevel = zoom;
-    })
     // this.sm("Zoom changed to " + zoom);
   }
 
@@ -152,12 +150,12 @@ export class ReportModalComponent extends deepCopy implements OnInit {
 
   public downloadGeoJSON() {
 
-    let fc = new GeoJSON.FeatureCollection;
-    fc = this.StudyService.selectedStudy.Results;
+    var fc = this.StudyService.selectedStudy.Results;
+    console.log(fc);
 
-    var GeoJSON = JSON.parse(JSON.stringify(fc));
+    var GeoJSON = JSON.stringify(fc);
     
-    var filename = 'data.geojson';
+    var filename = 'data.geojson.txt';
 
     var blob = new Blob([GeoJSON], { type: 'text/csv;charset=utf-8;' });
     if (navigator.msSaveBlob) { // IE 10+

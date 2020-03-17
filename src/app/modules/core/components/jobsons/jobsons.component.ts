@@ -130,9 +130,9 @@ export class JobsonsModalComponent implements OnInit {
       this.StudyService.SetWorkFlow("hasDischarge", true);
 
     } else {
-      setTimeout(() => {
-        this.setDischarge()
-      }, 500)
+
+      this.setDischarge();
+
     }
 
     this.StudyService.setDischarge(this._discharge);
@@ -246,14 +246,10 @@ export class JobsonsModalComponent implements OnInit {
       })
     }        
 
-    //console.log(postReachList);
     this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
       .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
-        //console.log("This is the return from the services");
-        //console.log(this.StudyService.selectedStudy.Results);
         this.StudyService.SetWorkFlow("totResults", true);
-        console.log(this.StudyService.GetWorkFlow("totResults"));
         this.gettingResults = false;
         this.activeModal.dismiss();
         this.StudyService.setProcedure(3); //open next panel;
