@@ -13,10 +13,10 @@ import { ChartsModule } from 'ng2-charts';
     NgSelectModule,
     ChartsModule
   ],
-  exports: [ 
-    AppchartsComponent 
+  exports: [
+    AppchartsComponent
   ]
 })
-export class AppChartsModule { 
+export class AppChartsModule {
 
 }

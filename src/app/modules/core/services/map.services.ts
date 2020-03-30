@@ -34,6 +34,7 @@ export class MapService {
 
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
+  public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
 
   constructor(http: HttpClient) {
 
@@ -160,6 +161,7 @@ export class MapService {
 
   public setBounds(loc) {
     this._bound = loc;
+    this.bounds.next(loc);
     this.fitBounds.next(this._bound);
   }
 
