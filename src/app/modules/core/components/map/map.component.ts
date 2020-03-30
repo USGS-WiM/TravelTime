@@ -97,7 +97,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     });
 
     this.NavigationService.navigationGeoJSON$.subscribe(data => {
-      console.log(data);
+      //console.log(data);
     });
     //#region "Base layer and overlay subscribers"
     // method to subscribe to the layers

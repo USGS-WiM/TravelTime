@@ -9,6 +9,7 @@ import { Angulartics2 } from 'angulartics2';
 import * as L from 'leaflet';
 import * as moment from 'moment';
 import { deepCopy } from 'src/app/shared/extensions/object.DeepCopy';
+import { NavigationService } from '../../services/navigationservices.service';
 
 @Component({
   selector: 'tot-report',
@@ -37,6 +38,8 @@ export class ReportModalComponent extends deepCopy implements OnInit {
   public abbrev;
   public fitBounds;
   public evnt;
+  public reachesGeoJson;
+  
 
   public get output$ () {
     if (this.StudyService.GetWorkFlow('totResults')) {
@@ -45,7 +48,7 @@ export class ReportModalComponent extends deepCopy implements OnInit {
       return;
     }
   }
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, private angulartics2: Angulartics2) {
+  constructor(config: NgbModalConfig, public NavigationService: NavigationService, public activeModal: NgbActiveModal, studyservice: StudyService, mapservice: MapService, private angulartics2: Angulartics2) {
     super();
     config.backdrop = 'static';
     config.keyboard = false;
@@ -54,6 +57,9 @@ export class ReportModalComponent extends deepCopy implements OnInit {
     this.angulartics2.eventTrack.next({
       action: 'myAction',
       properties: { category: 'myCategory' }
+    });
+    this.NavigationService.navigationGeoJSON$.subscribe(data => {
+      this.reachesGeoJson = data;
     });
   }
 
@@ -141,8 +147,7 @@ export class ReportModalComponent extends deepCopy implements OnInit {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
-        else {
+        } else {
             window.open(url);
         }
       }
@@ -150,11 +155,18 @@ export class ReportModalComponent extends deepCopy implements OnInit {
 
   public downloadGeoJSON() {
 
+
     const fc = this.StudyService.selectedStudy.Results;
-    console.log(fc);
+    this.reachesGeoJson['features'].forEach(o => {
+      for (var key in fc['reaches']) {
+        if (o.properties.nhdplus_comid === fc['reaches'][key].name) {
+          o.properties['result'] = fc['reaches'][key];
+        }
+      }
+      
+    })
 
-    const GeoJSON = JSON.stringify(fc);
-
+    const GeoJSON = JSON.stringify(this.reachesGeoJson);
     const filename = 'data.geojson.txt';
 
     const blob = new Blob([GeoJSON], { type: 'text/csv;charset=utf-8;' });
@@ -171,14 +183,14 @@ export class ReportModalComponent extends deepCopy implements OnInit {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
-        else {
+        } else {
             window.open(url);
         }
     }
 }
 
   private tableToCSV($table) {
+    // tslint:disable-next-line: one-variable-per-declaration
     const $headers = $table.find('tr:has(th)')
         , $rows = $table.find('tr:has(td)')
 
@@ -222,6 +234,7 @@ export class ReportModalComponent extends deepCopy implements OnInit {
 
     // Grab and format a column from the table
     function grabCol(j, col) {
+        // tslint:disable-next-line: one-variable-per-declaration
         const $col = $(col),
             $text = $col.text();
         return $text.replace('"', '""'); // escape double quotes
