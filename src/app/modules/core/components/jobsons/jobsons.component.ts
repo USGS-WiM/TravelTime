@@ -64,6 +64,8 @@ export class JobsonsModalComponent implements OnInit {
   public reachList: Array<any> = [];
   public units;
   public abbrev;
+  public inputIsValid: boolean = false;
+
 
   private _spillMass: number;
 
@@ -86,14 +88,23 @@ export class JobsonsModalComponent implements OnInit {
   private selectedIndex = null;
   private currentStep = 0;
 
-  public FirstReachDischarge = new BehaviorSubject<number>(undefined);
+  public FirstReachDischarge;
   
 
-  log(val) { console.log(val); }
+    log(val) { console.log(val); }
+
+    public validateInputs(): boolean {
+        if (typeof (this.SpillMass) === "number" && typeof (this.discharge) === "number") {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
 
   public updateDischarge(): void {
-    console.log(this.reachList);
-    //this.FirstReachDischarge.next()
+      this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(3);
   }
 
   ngOnInit():  any {   // on init, get the services for first reach, and add them as parameters to accordion
@@ -127,6 +138,7 @@ export class JobsonsModalComponent implements OnInit {
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
         } else {
+          //this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
           item.parameters[1].value = this.discharge;
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
@@ -155,7 +167,7 @@ export class JobsonsModalComponent implements OnInit {
     }
 
   public validateForm(mainForm): boolean {
-
+      console.log(mainForm.$valid);
     if (mainForm.$valid) {
       return true;
     } else {

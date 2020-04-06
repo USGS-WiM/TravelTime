@@ -169,7 +169,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   }
 
   public onZoomChange(zoom: number) {
-      this.MapService.CurrentZoomLevel = zoom;
+     this.MapService.CurrentZoomLevel = zoom;
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;

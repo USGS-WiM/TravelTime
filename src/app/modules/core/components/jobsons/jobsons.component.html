@@ -10,8 +10,9 @@
 			<!-- Header -->
 			<div class="modal-top">
 				<div class="title">Jobsons Results</div>
-				<div class="close-modal" (click)="activeModal.dismiss()">
+				<div class="close-modal" (click)="activeModal.dismiss();">
 					<i class="far fa-times"></i>
+					{{updateDischarge()}}
 				</div>
 			</div>
 			<!-- Main content -->
@@ -35,7 +36,7 @@
 							<small>({{this.StudyService.defConcentration}}):</small>
 						</label>
 						<div class="row-input">
-							<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
+							<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event);validateInputs(); " type=number required placeholder="Value" name="spillmass" class="up">
 						</div>
 					</div>
 					<!-- Discharge -->
@@ -45,17 +46,17 @@
 							<small>({{this.StudyService.defDischarge}}):</small>
 						</label>
 						<div class="row-input">
-							<input [(ngModel)]="discharge" (ngModelChange) ="updateDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
+							<input [(ngModel)]="discharge" (ngModelChange) ="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
 						</div>
 					</div>
 
-					<!--
+
 						<div>
 							<label>
 								Mean annual flow of closest reach: {{FirstReachDischarge}}
 							</label>
 						</div>
-					-->
+
 					<!-- Add space between inputs and reaches -->
 					<div class="space20"></div>
 
@@ -169,7 +170,7 @@
 					<i class="far fa-trash-alt"></i>
 					<span>Clear</span>
 				</button>
-				<button  class="icon-button blue" (click)="setDischarge(); getResults();">
+				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setDischarge(); getResults();">
 					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
 					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
 				</button>
