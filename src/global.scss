@@ -933,12 +933,13 @@ table.basic {
 			font-size: 13px;
 			padding: 2px;
 		}
+		tr:nth-child(even) {
+			background: #EEF4FF;
+		}
 		tr:hover {
 			background-color: #B2B8D2;
 		}
-		tr:nth-child(even) {
-			background: #EEF4FF;
-		 }
+
 	}
 
 }
