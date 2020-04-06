@@ -35,6 +35,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public flowlines;
   public layerGroup;
   public reportlayerGroup;
+  public map: L.Map;
 
   public evnt;
   @Input() report: boolean;
@@ -166,6 +167,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   //#region "Map click events"
   public onMapReady(map: L.Map) {
     map.invalidateSize();
+    this.MapService.map = map;
   }
 
   public onZoomChange(zoom: number) {
