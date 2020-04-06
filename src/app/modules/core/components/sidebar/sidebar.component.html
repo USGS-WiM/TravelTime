@@ -111,11 +111,11 @@
 					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Response
 				</button>
-				<button id="planning" class="full-width icon-button" [disabled]="true" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
+				<button id="planning" class="full-width icon-button" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
 					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Planning
 				</button>
-				<button id="equations" class="full-width" (click)="open_config()">Configure</button>
+				<button [disabled]="this.StudyService.GetWorkFlow('totResults')" id="equations" class="full-width" (click)="open_config()">Configure</button>
 			  </div>
 		
 		</div>

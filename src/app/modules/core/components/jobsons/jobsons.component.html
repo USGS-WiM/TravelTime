@@ -1,5 +1,11 @@
-<div class="modal-wrapper">
-	<div class="modal-box">
+<div *ngIf="!reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
+		<i style="margin:auto;" class='far fa-sync fa-spin'></i>
+	</div>
+</div>
+
+<div *ngIf="reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
 		<!-- Header -->
 		<div class="modal-top">
 			<div class="title">Jobsons Results</div>
@@ -119,24 +125,24 @@
 
 										<span *ngIf="pars.required === true">
 											<input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" required autocomplete="off">
+														type=number ngControl="value" required autocomplete="off">
 										</span>
 
 										<span *ngIf="pars.required === false">
 											<input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" autocomplete="off">
+														type=number ngControl="value" autocomplete="off">
 										</span>
 									</div>
 
 									<ng-template #disable>
 										<span *ngIf="pars.required === true">
 											<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" required autocomplete="off">
+														type=number ngControl="value" required autocomplete="off">
 										</span>
 
 										<span *ngIf="pars.required === false">
 											<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" autocomplete="off">
+														type=number ngControl="value" autocomplete="off">
 										</span>
 									</ng-template>
 
@@ -144,8 +150,8 @@
 
 
 							</div> <!-- End Nested toggle body-->
- 
-						 </div>
+
+						</div>
 					</div> <!-- End toggle block body -->
 				</div>
 
@@ -166,7 +172,7 @@
 				<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
 				<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
 			</button>
-	  </div>
+		</div>
 	</div>
 </div>
 
