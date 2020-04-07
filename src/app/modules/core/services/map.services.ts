@@ -101,9 +101,11 @@ export class MapService {
       } else {
         var nhdplusid = Object.values(o._layers)[0]["feature"].properties.nhdplus_comid;
         if (Number(indx) == Number(nhdplusid)) {
-          this.setBounds(Object.values(o._layers)[0]["_bounds"]);
-          console.log(Object.values(o._layers)[0]["_bounds"]);
-          this.map.panTo(L.latLng(Object.values(o._layers)[0]["_bounds"]["_northEast"]));
+          let polybounds = (Object.values(o._layers)[0]["_bounds"]);
+          this.map.fitBounds(polybounds, {
+            paddingTopLeft: [0, 0],
+            paddingBottomRight: [100, 0]
+          });
           o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
         } else {
           o.setStyle({
