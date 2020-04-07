@@ -169,7 +169,7 @@
 					<i class="far fa-trash-alt"></i>
 					<span>Clear</span>
 				</button>
-				<button [disabled]="!myForm.form.valid" class="icon-button blue" (click)="getResults()">
+				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setDischarge(); getResults();">
 					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
 					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
 				</button>
