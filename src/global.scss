@@ -1,13 +1,21 @@
+////////////////////////////////
 // Global.scss
-// All styles here apply to all components and elements
+// ___________________________________
+//
+// Styles here apply to all components.
+//
+////////////////////////////////
 
 // Reset 
+// Resets all browser default styles so everything matches
 @import url('reset.scss');
 
-// Import font
+// Import fonts from Google Fonts
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap');
 
+
+// Variables to use in SCSS Files
 $sans: 'Source Sans Pro', sans-serif;
 // Variables
 $borderRadius: 4px;
@@ -15,9 +23,13 @@ $transition: 0.2s;
 $text: #0C141E;
 $border: rgba(12,20,30,0.17);
 
+
+
+// Global page structure
 html{
 	overflow: hidden;
 }
+
 body, html {
 	margin: 0;
 	padding: 0;
@@ -27,6 +39,9 @@ body, html {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+
+
+
 // Root on index.html
 app-root{
 	width: 100vw;
@@ -67,6 +82,7 @@ app-root{
 //     Global styles     //
 //////////////////////////
 //////////////////////////
+// TODO: Reorganize later - split into other files
 
 // Buttons
 // Buttons
@@ -648,6 +664,12 @@ ul{
 			border-top-right-radius: 25;
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
+		}
+
+		// Optional Large Modal
+		&.large-modal{
+			width: 900px;
+			margin-left: -450px;
 		}
 
 		// Top of modal / header

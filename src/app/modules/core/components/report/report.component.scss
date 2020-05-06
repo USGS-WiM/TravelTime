@@ -1,6 +1,15 @@
+// report.component.scss
+// _______________________________________________
+// 
+// Styling for the report section
+// 
+
+
+// TODO: Remove bootstrap?
 @import "~bootstrap/dist/css/bootstrap.css";
 
-// Tables
+
+// General Tables
 .table,
 .citations-table {
 	padding: 9px;
@@ -36,7 +45,7 @@
 	}
 }
 
-
+// Map continer
  #map_container {
    height: 300px;
    width: auto;
