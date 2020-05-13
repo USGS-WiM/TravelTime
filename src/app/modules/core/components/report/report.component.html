@@ -1,6 +1,6 @@
 
 <div class="modal-wrapper" id="print-content">
-	<div class="modal-box">
+	<div class="modal-box wide">
 		<!-- Header -->
 		<div class="modal-top">
 			<div class="title">Spill Report Summary</div>
@@ -343,31 +343,19 @@
 				<span>Close</span>
 			</button>
 
-			<!--
-				Empty span makes print and download buttons float right
-				Because of flex space-between
-			-->
-			<span>
 
-				<div class="row">
-					<!-- Download -->
-					<div class="col text-right">
-					  <div ngbDropdown placement="top-right" class="d-inline-block">
-						<button class="btn btn-outline-primary" id="dropdownBasic2" ngbDropdownToggle>Download</button>
-						<div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-						  <button ngbDropdownItem (click)="downloadGeoJSON()">GeoJSON</button>
-						  <button ngbDropdownItem (click)="downloadCSV()">CSV</button>
-						</div>
-					  </div>
-					</div>
+			<!-- Downloads -->
+			<div id="reportModalDownloadButtons">
+				<!-- Download -->
+				<button ngbDropdownItem (click)="downloadGeoJSON()">Download GeoJSON</button>
+				<button ngbDropdownItem (click)="downloadCSV()">Download CSV</button>
 
-					<!--Print-->
-					<button class="icon-button blue" (click)="onPrint()">
-						<i class="far fa-print"></i>
-						<span>Print</span>
-					</button>
-				</div>
-			</span>
+				<!--Print-->
+				<button class="icon-button blue" (click)="onPrint()">
+					<i class="far fa-print"></i>
+					<span>Print</span>
+				</button>
+			</div>
 
 		</div>
 	</div>

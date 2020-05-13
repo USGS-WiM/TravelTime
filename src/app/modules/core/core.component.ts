@@ -19,15 +19,7 @@ export class CoreComponent {
 	// 	const ModalComponentRef = this.modalService.open(ReportModule)
 	// }
 
-	public changeMapSize(size) {
-		if(size == "small"){
-			$("#mapWrapper").attr('class','small-map');
-		}else if(size == "half"){
-			$("#mapWrapper").attr('class','half-map');
-		}else if(size == "full"){
-			$("#mapWrapper").attr('class','full-map');
-		}else{
-			$("#mapWrapper").attr('class','half-map');
-		}
-	}
+	// Change map size
+	public mapSize = 'full';
+
 }

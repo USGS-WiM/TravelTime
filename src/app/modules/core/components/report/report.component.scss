@@ -1,15 +1,4 @@
-// report.component.scss
-// _______________________________________________
-// 
-// Styling for the report section
-// 
-
-
-// TODO: Remove bootstrap?
-@import "~bootstrap/dist/css/bootstrap.css";
-
-
-// General Tables
+// Tables
 .table,
 .citations-table {
 	padding: 9px;
@@ -45,11 +34,11 @@
 	}
 }
 
-// Map continer
+
  #map_container {
-   height: 300px;
+   height: auto;
    width: auto;
-   margin-bottom: 1em !important;
+   margin-bottom: 1em;
  }
 
 
@@ -60,6 +49,7 @@
   font-size: small;
   cursor: pointer;
  }
+
 
 
 //  Print Styles
@@ -97,7 +87,9 @@
 		margin: 0;
 		padding: 0;
 		position: absolute;
-	}	  
+	}
+
+	  
 	
 	.hidden-print {
 		display: none !important;
@@ -148,11 +140,6 @@
 	.identifier {
 		padding-bottom: 2em;
 	}
-
-	.table {
-		overflow: visible;
-		max-height: none;
-	}
 }
 
 @media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
@@ -163,14 +150,5 @@
   }
 }
 
-.hidden {
-	visibility: hidden;
-	height:1px;
-	overflow: hidden;
-}
 
-// .dropdown-menu {
-//     max-height: 150px;
-//     width: 90%;
-//     /*overflow-y:scroll;*/
-// }
+

@@ -1,14 +1,23 @@
 <div class="app-body">
 	<tot-sidebar id="sidebarWrapper"></tot-sidebar>
 	<div class="app-content">
-		<tot-map class="full-map" id="mapWrapper" [report]="false"></tot-map><!--[modal]="false"-->
+		<tot-map class="{{mapSize}}-map" id="mapWrapper" [report]="false"></tot-map><!--[modal]="false"-->
 		<tot-footer class="footer"></tot-footer>
 
 		<!-- Button to toggle map height -->
 		<div id="mapHeightToggle" class="map-height-toggle">
-			<button (click)="changeMapSize('full');">Full</button>
-			<button (click)="changeMapSize('half');">Half</button>
-			<button (click)="changeMapSize('small');">Small</button>
+			<button (click)="mapSize = 'full'" [ngClass]="{'active': mapSize === 'full'}">
+				<i class="far fa-rectangle-portrait"></i>
+				Full
+			</button>
+			<button (click)="mapSize = 'half'" [ngClass]="{'active': mapSize === 'half'}">
+				<i class="far fa-rectangle-landscape"></i>
+				Half
+			</button>
+			<button (click)="mapSize = 'small'" [ngClass]="{'active': mapSize === 'small'}">
+				<i class="far fa-rectangle-wide"></i>
+				Small
+			</button>
 		</div>
 	</div>
 </div>
