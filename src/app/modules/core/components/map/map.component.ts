@@ -225,6 +225,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
             // this.MapService.FlowLines.next(response.features);
+            console.log(response);
             this.getFlowLineLayerGroup(response.features);
             this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
             this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
@@ -241,15 +242,24 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public getFlowLineLayerGroup(features) {
     const layerGroup = new L.FeatureGroup([]);
     const reportlayerGroup = new L.FeatureGroup([]);
+    let gagesArray = [];
 
     features.forEach(i => {
+
       if (i.geometry.type === 'Point') {
         layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
         reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
+        gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
-        layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-        reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+        if (i.properties.StreamRiver > 80) {
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+        } else {
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+        }
+
 
         const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
         const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
@@ -270,6 +280,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
     });
+
+    //create service
+    //add gage
+    console.log(layerGroup);
+    console.log('calling gages array function');
+    this.MapService.gagesArray.next(gagesArray);
   }
 
 

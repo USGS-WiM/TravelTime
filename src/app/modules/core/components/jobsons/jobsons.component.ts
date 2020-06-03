@@ -99,9 +99,7 @@ export class JobsonsModalComponent implements OnInit {
         } else {
             return true;
         }
-
     }
-
 
   public updateDischarge(): void {
       this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(3);
@@ -224,7 +222,6 @@ export class JobsonsModalComponent implements OnInit {
 
     this.gettingResults = true;
 
-
  if (this.dateModel instanceof Date) {
     } else {
       this.dateModel = new Date(this.dateModel);
@@ -264,14 +261,25 @@ export class JobsonsModalComponent implements OnInit {
         reach.parameters.splice(6, 1);
         postReachList.push(reach);
       });
+   console.log(postReachList);
     }
 
  this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
-      .toPromise().then(data => {
+   .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
         this.StudyService.SetWorkFlow('totResults', true);
         this.gettingResults = false;
         this.activeModal.dismiss();
+
+        //check if there is a gage data;
+     if (this.MapService.gagesArray.value.length > 0) {
+
+       let date = (new Date(this.StudyService.selectedStudy.SpillDate));
+       this.MapService.getRealTimeFlow(date, this.MapService.gagesArray.value);
+        } else {
+          console.log(false);
+        }
+
         this.StudyService.setProcedure(3); // open next panel;
       })
       .catch((err) => {
@@ -301,8 +309,9 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Private methods"
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
-
+    console.log(this.StudyService.selectedStudy.Reaches);
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
+      if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver <80) {break}
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;

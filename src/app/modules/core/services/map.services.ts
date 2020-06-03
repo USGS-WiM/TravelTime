@@ -106,10 +106,10 @@ export class MapService {
             paddingTopLeft: [0, 0],
             paddingBottomRight: [100, 0]
           });
-          o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
+          o.setStyle({ color: "#FF3333" , weight: 5, opacity: 1 }) //highlight specific one
         } else {
           o.setStyle({
-            "color": "#FF3333",
+            "color": "#2C26DE",
             "weight": 3,
             "opacity": 0.60
           })
@@ -222,5 +222,17 @@ export class MapService {
     this.latlng = latlng;
     this.LatLng.next(this.latlng);
   }
+
+  getRealTimeFlow(time: Date, site: any) {
+    for (var i = 0; i < site.length; i++) {
+      let spilldate = time.toISOString().split('T')[0]
+      let gage = site[i];
+      let siteid = (gage.properties.identifier.replace("USGS-", ""));
+      let baseurl = "https://waterservices.usgs.gov/nwis/dv/?format=json&sites=" + siteid + "&startDT=" + spilldate + "&endDT=" + spilldate + "&parameterCd=00060&siteStatus=active";
+      this.http.get<any>(baseurl).subscribe(result => (console.log(result)));
+    }
+  }
+
+  public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
 
 }
