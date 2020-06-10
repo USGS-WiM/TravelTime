@@ -224,11 +224,13 @@ export class MapService {
   }
 
   getRealTimeFlow(time: Date, site: any) {
+    console.log("getRealTimeFLow called");
     for (var i = 0; i < site.length; i++) {
       let spilldate = time.toISOString().split('T')[0]
       let gage = site[i];
       let siteid = (gage.properties.identifier.replace("USGS-", ""));
       let baseurl = "https://waterservices.usgs.gov/nwis/dv/?format=json&sites=" + siteid + "&startDT=" + spilldate + "&endDT=" + spilldate + "&parameterCd=00060&siteStatus=active";
+
       this.http.get<any>(baseurl).subscribe(result => (console.log(result)));
     }
   }

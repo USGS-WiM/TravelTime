@@ -19,7 +19,7 @@ declare let search_api: any;
 
 export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
-  //#region "General variables"
+  //#region "Declarations"
   private messager: ToastrService;
   private MapService: MapService;
   private NavigationService: NavigationService;
@@ -80,7 +80,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor( mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -235,6 +235,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
           });
 
         });
+
     }
 
   }

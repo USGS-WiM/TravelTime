@@ -21,9 +21,20 @@ import { StudyService } from 'src/app/modules/core/services/study.service';
 })
 
 export class DateTimePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit {
+
+  constructor(private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService) {
+    config.autoClose = 'outside';
+    config.placement = 'left-top';
+    this.StudyService = studyservice;
+  }
+
+  ngOnInit(): void {
+    this.ngControl = this.inj.get(NgControl);
+  }
+
+  //#region "UI acessors and declaration"
   @Input()
   dateString: string;
-
   @Input()
   inputDatetimeFormat = 'M/d/yyyy H:mm:ss';
   @Input()
@@ -36,16 +47,17 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   seconds = true;
   @Input()
   disabled = false;
-
-  private showTimePickerToggle = false;
-  private datetime: DateTimeModel = new DateTimeModel();
-  private firstTimeAssign = true;
-
   @ViewChild(NgbDatepicker, { static: false })
   private dp: NgbDatepicker;
 
   @ViewChild(NgbPopover, { static: false })
   private popover: NgbPopover;
+  //#endregion
+
+  //#region "Declarations"
+  private showTimePickerToggle = false;
+  private datetime: DateTimeModel = new DateTimeModel();
+  private firstTimeAssign = true;
 
   private onTouched: () => void = noop;
   private onChange: (_: any) => void = noop;
@@ -55,17 +67,9 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   private ngControl: NgControl;
   private StudyService: StudyService;
 
-  constructor(private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService) {
-    config.autoClose = 'outside';
-    config.placement = 'left-top';
+  //#endregion
 
-    this.StudyService = studyservice;
-  }
-
-  ngOnInit(): void {
-    this.ngControl = this.inj.get(NgControl);
-  }
-
+  //#region "Methods"
   ngAfterViewInit(): void {
     this.popover.hidden.subscribe($event => {
       this.showTimePickerToggle = false;
@@ -171,5 +175,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   inputBlur($event) {
     this.onTouched();
   }
+
+  //#endregion
 
 }

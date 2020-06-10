@@ -1,0 +1,36 @@
+<div class="modal-wrapper">
+  <div class="modal-box">
+    <!-- Header -->
+    <div class="modal-top">
+      <div class="title">Stream flow gages were found</div>
+      <div class="close-modal" (click)="activeModal.dismiss()">
+        <i class="far fa-times"></i>
+      </div>
+    </div>
+    <!-- Main content -->
+    <div class="modal-middle">
+
+      <div *ngFor="let data of gagesArray; index as i">
+        <ngb-accordion #acc="ngbAccordion"  type="light">
+          <ngb-panel title="{{data.name}}" id="ngb-panel-{{i}}"> <!--to open them all, use activeid example-->
+            <ng-template ngbPanelContent>
+              <p>Source: {{data.source}}</p>
+              <p>Identifier: {{data.identifier}}</p>
+              <p>Name: {{data.name}}</p>
+              <p>Comid: {{data.comid}}</p>
+              <p>Navigation url: {{data.navigation}}</p>
+              <p>Nwis url: {{data.uri}}</p>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+
+    </div>
+    <!-- Footer -->
+    <div class="modal-buttons center">
+      <button class="blue" (click)="activeModal.dismiss()">
+        <span>Done</span>
+      </button>
+    </div>
+  </div>
+</div>

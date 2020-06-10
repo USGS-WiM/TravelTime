@@ -27,6 +27,7 @@ import { ReportModalComponent } from './components/report/report.component';
 import { ReportModule } from './components/report/report.module';
 import { Angulartics2Module } from 'angulartics2';
 import { AppChartsModule } from './components/appcharts/appcharts.module';
+//import { GagesmodalComponent } from './components/gagesmodal/gagesmodal.component';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent],
