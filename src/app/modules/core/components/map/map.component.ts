@@ -17,7 +17,12 @@ declare let search_api: any;
   styleUrls: ['./map.component.scss']
 })
 
-export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
+export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnChanges {
+
+
+
+
+
 
   //#region "General variables"
   private messager: ToastrService;
@@ -38,8 +43,21 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
   public evnt;
   @Input() report: boolean;
+  @Input() mapSize: string;
 
   scaleMap: string;
+
+
+  ngOnChanges(changes: any) {
+	// If map size changed, trigger resize event, which will force map to redraw
+	// InvalidteSize does not work here. Not sure why.
+	if(changes.mapSize.previousValue != null && changes.mapSize.currentValue != changes.mapSize.previousValue){
+		window.dispatchEvent(new Event('resize'));
+	}
+}
+
+
+
 
   //#endregion
 
@@ -55,6 +73,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public get MapOptions() {
     return this.MapService.Options;
   }
+
+
+
 
 
   // <!--"MapOptions"-->
@@ -167,6 +188,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public onMapReady(map: L.Map) {
     map.invalidateSize();
   }
+
 
   public onZoomChange(zoom: number) {
       this.MapService.CurrentZoomLevel = zoom;

@@ -11,6 +11,7 @@ import { ReportModule } from './components/report/report.module';
 
 export class CoreComponent {
 
+
 	//show: boolean = true;
 
 	constructor(config: NgbModalConfig, private modalService: NgbModal) {}

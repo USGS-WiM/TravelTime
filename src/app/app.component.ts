@@ -16,7 +16,7 @@ export class AppComponent {
 
   	constructor(config: NgbModalConfig, private modalService: NgbModal) {
    		this.title = 'USGS Time of Travel';
-   		this.mapSize = 'half-map';
+   		this.mapSize = 'half';
 
     	config.backdrop = 'static';
     	config.keyboard = false;
