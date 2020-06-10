@@ -77,7 +77,9 @@ export class AppchartsComponent implements OnInit {
   private maxConcentration = [];
   private mostTimeLabels = [];
   private mostConcentration = [];
-  public buttonName = 'MaximumProbable';
+
+  // Which chart is currently being viewed
+  public viewChart = 'max';
 
   public showMost = true;
   public showMax = false;
@@ -143,12 +145,12 @@ export class AppchartsComponent implements OnInit {
   };
 
   public open() {
-    if (this.buttonName === 'MostProbable') { // move this to the service;
-      this.buttonName = 'MaximumProbable';
+    if (this.viewChart === 'most') { // move this to the service;
+      this.viewChart = 'max';
       this.ChartService.displayAction('most', true);
       this.ChartService.displayAction('max', false);
     } else {
-      this.buttonName = 'MostProbable';
+      this.viewChart = 'most';
       this.ChartService.displayAction('most', false);
       this.ChartService.displayAction('max', true);
     }

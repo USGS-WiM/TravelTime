@@ -4,11 +4,7 @@
 // Reset 
 @import url('reset.scss');
 
-// Import font
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap');
-
-$sans: 'Source Sans Pro', sans-serif;
+$sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 // Variables
 $borderRadius: 4px;
 $transition: 0.2s;
@@ -255,7 +251,7 @@ input[type="checkbox"] {
 	&:after {
 		content: "\f00c";
 		transform: scale(0.75);
-		opacity: 0.2;
+		opacity: 0;
 		font-size: 15px;
 	}
 
@@ -466,6 +462,16 @@ input[type="radio"] {
 }
 
 
+.flex{
+	display: flex;
+}
+.flex-column{
+	flex-direction: column;
+}
+.flex-around{justify-content: space-around;}
+.flex-between{justify-content: space-between;}
+.flex-center{justify-content: center;}
+
 
 /////////////////////////
 //     Typography     //
@@ -478,6 +484,7 @@ h1,h2,h3,h4,h5,h6,a,p,label{
 }
 h1,h2,h3,h4,h5,h6{
 	max-width: 700px;
+	margin: 0;
 
 	&.unset{
 		max-width: none;
@@ -490,14 +497,14 @@ h1{
 	font-size: 30px;
 	padding: 0 0 2px 0;
 	line-height: 38px;
-	font-weight: 700;
+	font-weight: 600;
 	letter-spacing: 0.3px;
 }
 h2{
 	font-size: 22px;
 	line-height: 28px;
 	padding: 0 0 2px 0;
-	font-weight: 700;
+	font-weight: 600;
 }
 h3, h4, h5{
 
@@ -506,7 +513,7 @@ h3{
 	font-size: 18px;
 	letter-spacing: 0.2px;
 	line-height: 26px;
-	font-weight: 700;
+	font-weight: 600;
 }
 h4{
 	font-size: 16px;
@@ -516,10 +523,11 @@ h4{
 }
 h5{
 	font-size: 16px;
-	font-weight: 700;
+	font-weight: 600;
 	text-transform: uppercase;
 	line-height: 20px;
 	letter-spacing: 0.5px;
+	margin: 0 !important;
 }
 h6{
 	font-size: 12px;
@@ -538,7 +546,7 @@ h6{
 p{
 	font-size: 13.5px;
 	line-height: 18px;
-	max-width: 700px;
+	max-width: 600px;
 	padding: 8px 0;
 	color: #142234;
 	letter-spacing: 0.2px;
@@ -566,7 +574,7 @@ p{
 	
 	// Bold
 	b{
-		font-weight: 700;
+		font-weight: 600;
 	}
 }
 
@@ -684,7 +692,7 @@ ul{
 
 			.title{
 				font-size: 18px;
-				font-weight: 700;
+				font-weight: 600;
 			}
 
 			// Close X
@@ -830,7 +838,10 @@ ul{
         position: absolute !important;
     }
 }
-
+// Hide top right legend
+.leaflet-control-layers{
+	display: none;
+}
 
 
 // Hide everything on print
@@ -941,4 +952,39 @@ ul{
 			display: block;
 		}
 	}
+}
+
+
+
+
+// Table Styles
+.data-table{
+	font-size: 14.5px;
+
+	thead{
+		background: rgba(10,10,20,0.05);
+	}
+
+	thead tr th{
+		font-weight: 600 !important;
+		font-size: 13.5px;
+		max-width: 120px;
+		padding: 5px 3px;
+	}
+
+	tbody tr td{
+		padding: 3px 6px;
+		border-right: 1px solid rgba(0,0,0,0.5)
+	}
+
+
+	tbody tr:nth-child(even){
+		background: rgba(10,10,20,0.05);
+	}
+
+
+	tbody tr:hover{
+		background: rgba(10,15,30,0.15);
+	}
+	
 }
