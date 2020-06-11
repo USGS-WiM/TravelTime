@@ -18,6 +18,6 @@ export class gages {
     this.source = arg.source;
     this.value = "-9999";
     this.record = new Date();
-    this.drainagearea = arg.drainagearea.toFixed(1);
+    this.drainagearea = Number(arg.drainagearea).toFixed(1);
   }
 }
