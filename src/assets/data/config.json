@@ -43,18 +43,6 @@
           "useCors": false
         },
         "visible": true
-      },
-      {
-        "name": "Regulation Points",
-        "url": "https://gis.streamstats.usgs.gov/arcgis/rest/services/regulations/co/MapServer",
-        "type": "agsDynamic",
-        "visible": true,
-        "layerOptions": {
-          "zIndex": 1,
-          "format": "png8",
-          "layers": [ 0 ],
-          "f": "image"
-        }
       }
     ],
     "markerOptions": {

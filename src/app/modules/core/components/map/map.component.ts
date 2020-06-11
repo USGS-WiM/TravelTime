@@ -253,7 +253,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
         gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
-        if (i.properties.StreamRiver > 80) {
+        if (i.properties.StreamRiver > 80 || i.properties.Artificial >80) {
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
         } else {
@@ -274,7 +274,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
         i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
       }
-    });
+    })
+    //check if there is a gage data;
+    if (gagesArray.length > 0) {
+      console.log("calling get most recent flow");
+      this.MapService.getMostRecentFlow(gagesArray);
+    } else {
+      console.log(false);
+    };
 
     // because it is async it takes time to process function above, once we have it done - we get the bounds
     // Potential to improve
@@ -284,8 +291,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
     //create service
     //add gage
-    console.log(layerGroup);
-    console.log('calling gages array function');
     this.MapService.gagesArray.next(gagesArray);
   }
 

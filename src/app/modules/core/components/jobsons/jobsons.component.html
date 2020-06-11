@@ -18,7 +18,7 @@
 		<div class="modal-middle">
 	
 			<form #myForm="ngForm">
-				
+
 				<!-- Time of Spill -->
 				<div class="modal-form-row">
 					<label>
@@ -54,7 +54,15 @@
 					<label>
 						Mean annual flow of closest reach: {{FirstReachDischarge}}
 					</label>
+
+					<button *ngIf="MapService.gagesArray.value.length >0" class="icon-button blue" (click)="openGagesModal()">
+						<i class='fas fa-long-arrow-right'></i>
+						<span>Review gages</span>
+					</button>
+
 				</div>
+
+
 
 				<!-- Add space between inputs and reaches -->
 				<div class="space20"></div>
@@ -69,19 +77,19 @@
 				</div>
 				<!-- Map Layers Body -->
 				<div class="toggle-block remove-bottom-border jobsons-toggles" [ngClass]="{'visible-extend': showReaches}">
-			
+
 					<div class="toggle-block-body">
-						
-						
+
+
 						<div *ngFor="let item of reachList; let i = index; trackBy:identify" id="{{i}}">
-							
-							
+
+
 							<!-- Nested -toggles -->
 							<div class="toggle-header nested" (click)="openCloseItem(i)">
 								<div class="text">
 									<span>
 										{{item.name}} <i [ngClass]="!item.parameters.show ? 'far fa-chevron-down' : 'far fa-chevron-up'"></i>
-									</span> 
+									</span>
 								</div>
 								<div class="icon jobsons-delete" (click)="removeReach(i)">
 									<i class="far" class="far fa-trash-alt"></i>
@@ -114,7 +122,7 @@
 										</div>
 									</div>
 								</div>
-							
+
 								<!--Parameters input-->
 								<div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy" class="modal-form-row">
 									<label>
@@ -126,24 +134,24 @@
 
 										<span *ngIf="pars.required === true">
 											<input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
-														type=number ngControl="value" required autocomplete="off">
+														 type=number ngControl="value" required autocomplete="off">
 										</span>
 
 										<span *ngIf="pars.required === false">
 											<input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														type=number ngControl="value" autocomplete="off">
+														 type=number ngControl="value" autocomplete="off">
 										</span>
 									</div>
 
 									<ng-template #disable>
 										<span *ngIf="pars.required === true">
 											<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														type=number ngControl="value" required autocomplete="off">
+														 type=number ngControl="value" required autocomplete="off">
 										</span>
 
 										<span *ngIf="pars.required === false">
 											<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														type=number ngControl="value" autocomplete="off">
+														 type=number ngControl="value" autocomplete="off">
 										</span>
 									</ng-template>
 
@@ -157,7 +165,7 @@
 				</div>
 
 
-		
+
 			</form>
 
 

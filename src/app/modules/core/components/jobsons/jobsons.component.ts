@@ -27,13 +27,16 @@ export const DateTimeValidator = (fc: FormControl) => {
 })
 export class JobsonsModalComponent implements OnInit {
 
+  public gages;
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
-
     this.TravelTimeService = traveltimeservice;
     this.MapService = mapservice;
+    this.MapService.gages$.subscribe(data => {
+      this.gages = data;
+    })
     this.StudyService = studyservice;
     this.messager = tstrservice;
   }
@@ -51,10 +54,6 @@ export class JobsonsModalComponent implements OnInit {
     }, { updateOn: 'change' });
 
     if (this.MapService.gagesArray.value.length > 0) {
-      let today = new Date();
-      let yesterday = new Date(today.setDate(today.getDate() - 1));
-      this.MapService.getRealTimeFlow(yesterday, this.MapService.gagesArray.value);
-      console.log("Calling service");
       this.openGagesModal();
     }
   }
@@ -278,16 +277,6 @@ export class JobsonsModalComponent implements OnInit {
         this.StudyService.SetWorkFlow('totResults', true);
         this.gettingResults = false;
         this.activeModal.dismiss();
-
-        //check if there is a gage data;
-     if (this.MapService.gagesArray.value.length > 0) {
-
-       let date = (new Date(this.StudyService.selectedStudy.SpillDate));
-       this.MapService.getRealTimeFlow(date, this.MapService.gagesArray.value);
-        } else {
-          console.log(false);
-        }
-
         this.StudyService.setProcedure(3); // open next panel;
       })
       .catch((err) => {
@@ -315,9 +304,8 @@ export class JobsonsModalComponent implements OnInit {
  }
 
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
-    console.log(this.StudyService.selectedStudy.Reaches);
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
-      if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver <80) {break}
+      if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 80 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 80) { } else { break}
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;

@@ -223,16 +223,37 @@ export class MapService {
     this.LatLng.next(this.latlng);
   }
 
+  public gages = [];
+  private StreamGages = new Subject<any>();
+  gages$ = this.StreamGages.asObservable();
+
   getRealTimeFlow(time: Date, site: any) {
-    console.log("getRealTimeFLow called");
+    this.gages = []; //clear array
     for (var i = 0; i < site.length; i++) {
       let spilldate = time.toISOString().split('T')[0]
       let gage = site[i];
       let siteid = (gage.properties.identifier.replace("USGS-", ""));
-      let baseurl = "https://waterservices.usgs.gov/nwis/dv/?format=json&sites=" + siteid + "&startDT=" + spilldate + "&endDT=" + spilldate + "&parameterCd=00060&siteStatus=active";
-
-      this.http.get<any>(baseurl).subscribe(result => (console.log(result)));
+      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + spilldate + "&endDT=" + spilldate + "&parameterCd=00060&siteStatus=active";
+      this.http.get<any>(baseurl).subscribe(result => {
+        this.gages.push(result);
+      });
     }
+    this.StreamGages.next(this.gages);
+  }
+
+  getMostRecentFlow(site: any) {
+    console.log("used function getmostrecentflow");
+    this.gages = [];
+    for (var i = 0; i < site.length; i++) {
+      let gage = site[i];
+      let siteid = (gage.properties.identifier.replace("USGS-", ""));
+      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid+"&parameterCd=00060&siteStatus=active";
+      this.http.get<any>(baseurl).subscribe(result => {
+        this.gages.push(result);
+      });
+    }
+    console.log(this.gages);
+    this.StreamGages.next(this.gages);
   }
 
   public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
