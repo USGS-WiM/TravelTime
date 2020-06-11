@@ -7,6 +7,7 @@ export class gages {
   public source: string;
   public value: string;
   public record: Date;
+  public drainagearea: string;
 
   constructor(arg: gages) {
     this.comid = arg.comid;
@@ -17,5 +18,6 @@ export class gages {
     this.source = arg.source;
     this.value = "-9999";
     this.record = new Date();
+    this.drainagearea = arg.drainagearea.toFixed(1);
   }
 }
