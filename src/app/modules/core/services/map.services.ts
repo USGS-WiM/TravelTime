@@ -4,7 +4,9 @@ import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
-
+import { gages } from '../models/gages';
+import { ToastrService, IndividualConfig } from 'ngx-toastr';
+import * as messageType from '../../../shared/messageType';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -17,6 +19,8 @@ export class MapService {
   public Options: L.MapOptions;
   // for layers that will show up in the leaflet control
   public LayersControl: BehaviorSubject<layerControl> = new BehaviorSubject<any>({ baseLayers: [], overlays: [] });
+  public gagesarray: Array<gages> = [];
+  public newSessionGages: Array<gages> = [];
 
   public _layersControl: layerControl = {
     baseLayers: [], overlays: []
@@ -32,12 +36,16 @@ export class MapService {
   public abbrevOptions;
   public http: HttpClient;
   public map: L.Map;
-
+  public gageDischargeSearch: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  private messanger: ToastrService;
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, toastr: ToastrService) {
+
+    this.messanger = toastr;
 
     this.http = http;
 
@@ -74,7 +82,6 @@ export class MapService {
     this.CurrentZoomLevel = this.Options.zoom;
   }
 
-
   public AddMapLayer(mlayer: MapLayer) {
 
     var ml = this._layersControl.overlays.find((l: any) => (l.name === mlayer.name));
@@ -106,10 +113,10 @@ export class MapService {
             paddingTopLeft: [0, 0],
             paddingBottomRight: [100, 0]
           });
-          o.setStyle({ color: "#2C26DE", weight: 5, opacity: 1 }) //highlight specific one
+          o.setStyle({ color: "#FF3333" , weight: 5, opacity: 1 }) //highlight specific one
         } else {
           o.setStyle({
-            "color": "#FF3333",
+            "color": "#2C26DE",
             "weight": 3,
             "opacity": 0.60
           })
@@ -223,4 +230,79 @@ export class MapService {
     this.LatLng.next(this.latlng);
   }
 
+  public gages = [];
+  private StreamGages = new Subject<any>();
+  gages$ = this.StreamGages.asObservable();
+
+  getRealTimeFlow(starttime: string,endtime: string, site: any) {
+    this.gages = []; //clear array
+    for (var i = 0; i < site.length; i++) {
+      let startdate = starttime;
+      let enddate = endtime;
+      let gage = site[i];
+      let siteid = (gage.identifier.replace("USGS-", ""));
+      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + startdate + "&endDT=" + enddate + "&parameterCd=00060&siteStatus=active";
+      console.log(baseurl);
+      this.http.get<any>(baseurl).subscribe(result => {
+        this.gages.push(result);
+      });
+    }
+    this.StreamGages.next(this.gages);
+  }
+
+  getMostRecentFlow(site: any) {
+    console.log("used function getmostrecentflow");
+    this.gages = [];
+    for (var i = 0; i < site.length; i++) {
+      let gage = site[i];
+      let siteid = (gage.properties.identifier.replace("USGS-", ""));
+      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&parameterCd=00060&siteStatus=active";
+      this.http.get<any>(baseurl).subscribe(result => {
+        this.gages.push(result);
+        this.updateGageData(result, gage);
+        console.log(site);
+        console.log("USGS-" + siteid);
+        this.showGages.next(true);
+        if ("USGS-" + siteid == site[site.length-1].identifier) {
+
+        }
+      })
+    }
+
+    this.gagesArray.next(this.gagessub);
+    this.StreamGages.next(this.gages);
+  }
+
+  public gagessub = [];
+  public updateGageData(result, site) {
+    let newgage = site.properties;
+
+    if (result.value.timeSeries.length > 0) {
+      let code = "USGS-" + result.value.timeSeries[0].sourceInfo.siteCode[0].value;
+      console.log(code);
+      if (newgage.identifier == code) {
+        console.log('matched and updated discharge values');
+        newgage.value = result.value.timeSeries[0].values[0].value[0].value;
+        let date = new Date(result.value.timeSeries[0].values[0].value[0].dateTime);
+        newgage.record = date;
+      } else {
+        
+      }
+    } else {
+      this.sm('Gage is missing discharge value: ' + site.properties.identifier + "More info on: " + site.properties.uri);
+    }
+    this.gagessub.push(newgage);
+  }
+
+  private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
+    try {
+      let options: Partial<IndividualConfig> = null;
+      if (timeout) { options = { timeOut: timeout }; }
+      this.messanger.show(msg, title, options, mType);
+    } catch (e) {
+    }
+  }
+
+  public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
+  public isInsideWaterBody: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 }

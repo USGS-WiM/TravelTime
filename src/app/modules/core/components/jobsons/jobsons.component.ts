@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TravelTimeService } from '../../services/traveltimeservices.service';
 import { MapService } from '../../services/map.services';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
@@ -8,6 +8,7 @@ import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
+import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -25,89 +26,23 @@ export const DateTimeValidator = (fc: FormControl) => {
   styleUrls: ['./jobsons.component.scss']
 })
 export class JobsonsModalComponent implements OnInit {
-  public get SpillMass(): number {
-    return this._spillMass;
-  }
 
-  public set SpillMass(v: number) {
-    this._spillMass = v;
-    this.StudyService.selectedStudy.SpillMass = this._spillMass;
-  }
-
-  public get Discharge(): number {
-    return this.discharge;
-  }
-  public set Discharge(v: number) {
-    this.discharge = v;
-    this.StudyService.selectedStudy.Discharge = this.discharge;
-  }
-
-  constructor( config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService) {
+  public gages;
+  public ShowGages: boolean = false;
+  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
-
     this.TravelTimeService = traveltimeservice;
     this.MapService = mapservice;
+    this.MapService.gages$.subscribe(data => {
+      this.gages = data;
+    })
     this.StudyService = studyservice;
     this.messager = tstrservice;
   }
 
-
-  public appVersion: string;
-  public TravelTimeService: TravelTimeService;
-  public StudyService: StudyService;
-  public MapService: MapService;
-  public dateModel: Date = new Date();
-  public formGroup: FormGroup;
-  public reach_reference: reach;
-  public reachList: Array<any> = [];
-  public units;
-  public abbrev;
-  public inputIsValid: boolean = false;
-
-
-  private _spillMass: number;
-
-  public discharge: number;
-  public dischargeSub = new BehaviorSubject<number>(undefined);
-
-
-  public reachIDs = [];
-  private messager: ToastrService;
-
-  @ViewChild('reaches', { static: false }) accordion1: NgbAccordion;
-  @ViewChild('acc', { static: false }) accordion: NgbAccordion;
-  public model = {};
-  public showhidetitle = 'Show Reaches';
-  public showReaches: boolean = true;
-  public gettingResults: boolean = false;
-  public showDetails: Array<any>;
-  public reachesReady: boolean = false;
-  private lastIndex = null;
-  private selectedIndex = null;
-  private currentStep = 0;
-
-  public FirstReachDischarge;
-  
-
-    log(val) { console.log(val); }
-
-    public validateInputs(): boolean {
-        if (typeof (this.SpillMass) === "number" && typeof (this.discharge) === "number") {
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-
-
-  public updateDischarge(): void {
-      this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(3);
-  }
-
-  ngOnInit():  any {   // on init, get the services for first reach, and add them as parameters to accordion
+  ngOnInit(): any {   // on init, get the services for first reach, and add them as parameters to accordion
     this.TravelTimeService.getJobsonConfigurationObject() // get reach
       .toPromise().then(data => {
         this.reach_reference = data;
@@ -119,10 +54,91 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
-    // this.StudyService.units$.subscribe(data => {
-      // this.defaultUnits = data;
-    // })
+    this.MapService.gagesArray.subscribe(data => {
+      if (typeof (data) != 'undefined') {
+        this.MapService.showGages.subscribe(data => {
+          this.ShowGages = data;
+        })
+        if (data.length > 0 && this.ShowGages) {
+          this.openGagesModal();
+        }
+      } else { }
+    })
   }
+
+  //#region "Gages"
+  public openGagesModal() {
+    const modalConfig = this.modalService.open(GagesmodalComponent);
+    modalConfig.componentInstance.title = 'Gages';
+  }
+  //#endregion
+
+  //#region "Ui input"
+  @ViewChild('reaches', { static: false }) accordion1: NgbAccordion;
+  @ViewChild('acc', { static: false }) accordion: NgbAccordion;
+  //#endregion
+
+  //#region "Declarations"
+  public appVersion: string;
+  public TravelTimeService: TravelTimeService;
+  public StudyService: StudyService;
+  public MapService: MapService;
+  public dateModel: Date = new Date();
+  public formGroup: FormGroup;
+  public reach_reference: reach;
+  public reachList: Array<any> = [];
+  public units;
+  public abbrev;
+  public inputIsValid: boolean = false;
+  private _spillMass: number;
+  public discharge: number;
+  public dischargeSub = new BehaviorSubject<number>(undefined);
+  public reachIDs = [];
+  private messager: ToastrService;
+  public model = {};
+  public showhidetitle = 'Show Reaches';
+  public showReaches: boolean = true;
+  public gettingResults: boolean = false;
+  public showDetails: Array<any>;
+  public reachesReady: boolean = false;
+  private lastIndex = null;
+  private selectedIndex = null;
+  private currentStep = 0;
+  public FirstReachDischarge;
+  //#endregion
+
+  //#region "Setters"
+  public get SpillMass(): number {
+    return this._spillMass;
+  }
+  public set SpillMass(v: number) {
+    this._spillMass = v;
+    this.StudyService.selectedStudy.SpillMass = this._spillMass;
+  }
+  public get Discharge(): number {
+    return this.discharge;
+  }
+  public set Discharge(v: number) {
+    this.discharge = v;
+    this.StudyService.selectedStudy.Discharge = this.discharge;
+  }
+  //#endregion
+
+  log(val) { console.log(val); }
+
+  public validateInputs(): boolean {
+    if (typeof (this.SpillMass) === "number" && typeof (this.discharge) === "number") {
+        return false;
+    } else {
+        return true;
+    }
+  }
+
+  public updateDischarge(): void {
+    this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(3);
+  }
+
+
    //#region "Methods"
   public setDischarge(): void {
     if (this.reachList.length > 0) {
@@ -149,11 +165,8 @@ export class JobsonsModalComponent implements OnInit {
         item.parameters[1].value = item.parameters[0].value;
       })*/
       this.StudyService.SetWorkFlow('hasDischarge', true);
-
     } else {
-
       this.setDischarge();
-
     }
 
     this.StudyService.setDischarge(this.discharge);
@@ -224,7 +237,6 @@ export class JobsonsModalComponent implements OnInit {
 
     this.gettingResults = true;
 
-
  if (this.dateModel instanceof Date) {
     } else {
       this.dateModel = new Date(this.dateModel);
@@ -264,10 +276,11 @@ export class JobsonsModalComponent implements OnInit {
         reach.parameters.splice(6, 1);
         postReachList.push(reach);
       });
+   console.log(postReachList);
     }
 
  this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
-      .toPromise().then(data => {
+   .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
         this.StudyService.SetWorkFlow('totResults', true);
         this.gettingResults = false;
@@ -297,12 +310,20 @@ export class JobsonsModalComponent implements OnInit {
   public identify(index, item): number {
     return item.id;
  }
-  //#endregion
 
-  //#region "Private methods"
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
-
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
+      /*if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 50 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 50 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else {
+
+        if (this.reachList.length < 1) {
+          this.MapService.isInsideWaterBody.next(true);
+          this.sm("Warning, selected point of interest is inside of the water body.....");
+        }
+        //break
+
+      }*/
+
+
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;
@@ -330,7 +351,7 @@ export class JobsonsModalComponent implements OnInit {
       } else {
       }
     }
-    this.reachesReady = true;
+      this.reachesReady = true;
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
@@ -342,5 +363,6 @@ export class JobsonsModalComponent implements OnInit {
     } catch (e) {
     }
   }
+    //#endregion
 
 }

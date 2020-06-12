@@ -6,7 +6,6 @@ import { ChartDataSets } from 'chart.js';
 import { Color, BaseChartDirective} from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
-import { Subscription } from 'rxjs';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 // tslint:disable-next-line: class-name
@@ -30,23 +29,18 @@ export class AppchartsComponent implements OnInit {
     this.ChartService.displayAction('max', false);
     this.ChartService.displayAction('most', true);
   }
+  ngOnInit() {
+    this.getAllMostProbable();
+    this.generateData();
+  }  // Get time all, subscribe to selected row and plot selected one;
 
-
-  public get output$() {
-    if (this.StudyService.GetWorkFlow('totResults')) {
-      this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-      this.reaches.shift(); // remove first element (one without results)
-      this.reachesGrouped = this.splitToarray(this.reaches);// return splitted chart;
-      // update chart data;
-      return (this.reaches);
-    } else {
-      return;
-    }
-  }
+  //#region "UI chart accessors"
   @ViewChild('selectGroup', { static: false }) ref: ElementRef;
   @ViewChild(BaseChartDirective, { static: false }) chart: BaseChartDirective;
-  // Access ng-select
   @ViewChild(NgSelectComponent, { static: false }) ngSelectComponent: NgSelectComponent;
+  //#endregion
+
+  //#region "Declartions"
   public lineChartColors: Color[] = [];
   private ChartService: ChartsService;
   private StudyService: StudyService;
@@ -72,23 +66,26 @@ export class AppchartsComponent implements OnInit {
 
   // maximum probable
   private maxMaxProbableY;
-
   private maxTimeLabels = [];
   private maxConcentration = [];
   private mostTimeLabels = [];
   private mostConcentration = [];
-  public buttonName = 'MaximumProbable';
+
+  // Which chart is currently being viewed
+  public viewChart = 'max';
 
   public showMost = true;
   public showMax = false;
+  //#endregion
 
+  //#region "Chart options"
   public mostLineChartOptions: any = {
     responsive: true,
     elements: { line: { tension: 0 } },
     legend: { position: 'left' },
     title: {
       text: 'Most probable Time of Travel',
-      display: true
+      display: false
     },
     scales: {
       yAxes: [{
@@ -118,7 +115,7 @@ export class AppchartsComponent implements OnInit {
     legend: { position: 'left' },
     title: {
       text: 'Maximum probable Time of Travel',
-      display: true
+      display: false
     },
     scales: {
       yAxes: [{
@@ -141,14 +138,16 @@ export class AppchartsComponent implements OnInit {
       }],
     },
   };
+  //#endregion
 
+  //#region "Chart methods"
   public open() {
-    if (this.buttonName === 'MostProbable') { // move this to the service;
-      this.buttonName = 'MaximumProbable';
+    if (this.viewChart === 'most') { // move this to the service;
+      this.viewChart = 'max';
       this.ChartService.displayAction('most', true);
       this.ChartService.displayAction('max', false);
     } else {
-      this.buttonName = 'MostProbable';
+      this.viewChart = 'most';
       this.ChartService.displayAction('most', false);
       this.ChartService.displayAction('max', true);
     }
@@ -160,7 +159,6 @@ export class AppchartsComponent implements OnInit {
     // Call to clear
     this.ngSelectComponent.handleClearClick();
   }
-
 
   public flushChartData() {
     // most probable
@@ -186,14 +184,7 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-
   public chartIsActive(e) {
-
-    /*while (e.value.length > 1) {
-      e.value.pop();
-    }*/
-    // just to check
-
     if (typeof (e) === 'undefined') {// if nothing selected, plot all
       // Call to clear
       this.flushChartData();
@@ -218,13 +209,9 @@ export class AppchartsComponent implements OnInit {
     this.chart.update();
     this.chart.updateColors();
   }
-  // Get time all, subscribe to selected row and plot selected one;
-  ngOnInit() {
-    this.getAllMostProbable();
-    this.generateData();
+  //#endregion
 
-  }
-
+  //#region "Chart control"
   // PARSE ENTIRE DATA RETURN FOR THE CHARTS
   public generateData() {
     let c = 0;
@@ -268,7 +255,7 @@ export class AppchartsComponent implements OnInit {
         for (let i = 0; i < o.length * 3; i++) {
           myarray.push(null);
         }
-      } else {}
+      } else { }
       myarray[c] = this.mostConcentration[c];
       myarray[c + 1] = this.mostConcentration[c + 1];
       myarray[c + 2] = this.mostConcentration[c + 2];
@@ -358,7 +345,6 @@ export class AppchartsComponent implements OnInit {
       this.mostConcentration.push(o.result['tracer_Response'].peakConcentration.MostProbable.concentration);
       this.mostTimeLabels.push(o.result['tracer_Response'].trailingEdge.MostProbable.date);
       this.mostConcentration.push(o.result['tracer_Response'].trailingEdge.MostProbable.concentration);
-
       this.maxTimeLabels.push(o.result['tracer_Response'].leadingEdge.MaximumProbable.date);
       this.maxConcentration.push(o.result['tracer_Response'].leadingEdge.MaximumProbable.concentration);
       this.maxTimeLabels.push(o.result['tracer_Response'].peakConcentration.MaximumProbable.date);
@@ -384,10 +370,24 @@ export class AppchartsComponent implements OnInit {
     this.maxMaxProbableY = Math.max.apply(Math, this.maxConcentration);
   }
 
+  //#endregion
+
+  //#region "Subscriber"
+  public get output$() {
+    if (this.StudyService.GetWorkFlow('totResults')) {
+      this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
+      this.reaches.shift(); // remove first element (one without results)
+      this.reachesGrouped = this.splitToarray(this.reaches);// return splitted chart;
+      // update chart data;
+      return (this.reaches);
+    } else {
+      return;
+    }
+  }
+
   public chartClicked(): void {
-    // console.log(event, active);
   }
   public chartHovered(): void {
-    // console.log(event, active);
   }
+  //#endregion
 }

@@ -1,4 +1,5 @@
 
+<!-- Leaflet map element -->
 <div *ngIf="!report" id="leaflet"
      leaflet
      [leafletOptions]="MapOptions"
@@ -6,10 +7,13 @@
      [leafletLayers]="Layers"
      [leafletLayersControl]="LayersControl"
      (leafletZoomChange)="onZoomChange($event)"
-     [leafletFitBounds]="fitBounds"
-     [leafletFitBoundsOptions]="{maxZoom: 15}"
-     (leafletClick)="onMouseClick($event)"></div>
+	 [leafletFitBounds]="fitBounds"
+     [leafletFitBoundsOptions]="{maxZoom: 13}"
+	 (leafletClick)="onMouseClick($event)">
+</div>
 
+
+ <!-- Report -->
 <div *ngIf="report" class="map_container">
     <div id="reportMap"></div>
 </div>

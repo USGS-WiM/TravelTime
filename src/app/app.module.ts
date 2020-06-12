@@ -11,6 +11,7 @@ import { ReportModalComponent } from './modules/core/components/report/report.co
 import { DateTimePickerComponent } from './modules/core/components/date-time-picker/date-time-picker.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApptoolsComponent } from './modules/core/components/apptools/apptools.component';
+import { GagesmodalComponent } from './modules/core/components/gagesmodal/gagesmodal.component';
 import { ChartsModule } from 'ng2-charts';
 //import { AppchartsComponent } from './modules/core/components/appcharts/appcharts.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
@@ -27,7 +28,8 @@ import { ReportModule } from './modules/core/components/report/report.module';
     AboutModalComponent,
     JobsonsModalComponent,
     DateTimePickerComponent,
-    ApptoolsComponent
+    ApptoolsComponent,
+    GagesmodalComponent
   ],
   imports: [
     LeafletModule.forRoot(),
@@ -52,6 +54,6 @@ import { ReportModule } from './modules/core/components/report/report.module';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent, GagesmodalComponent]
 })
 export class AppModule {}

@@ -91,7 +91,8 @@
 					<span>USGS Sites</span>
 					<span>Street Address</span>
 					<span>Hydrologic Unit</span>
-					<span>Lat/Long ('43.9,-72.1' or '43.9N,72.1W')</span>
+					<span>Lat/Long</span>
+					<span>('43.9,-72.1' or '43.9N,72.1W')</span>
 				</div>
 				<small>
 					Search provided by <a href="https://txpub.usgs.gov/dss/search_api/2.0/" target="_blank">USGS Search JavaScript API</a>
@@ -111,11 +112,11 @@
 					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Response
 				</button>
-				<button id="planning" class="full-width icon-button" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
+				<button id="planning" class="full-width icon-button" [disabled]="true" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
 					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Planning
 				</button>
-				<button [disabled]="this.StudyService.GetWorkFlow('totResults')" id="equations" class="full-width" (click)="open_config()">Configure</button>
+				<button id="equations" class="full-width" (click)="open_config()">Configure</button>
 			  </div>
 		
 		</div>

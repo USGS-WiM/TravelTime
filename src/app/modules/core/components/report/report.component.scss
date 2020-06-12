@@ -1,5 +1,3 @@
-@import "~bootstrap/dist/css/bootstrap.css";
-
 // Tables
 .table,
 .citations-table {
@@ -10,10 +8,13 @@
 	border: 1px solid #e3e3e3;
 }
 
-// Set specifics for data tables
-.table{
-	max-height:400px; 
-	overflow:scroll; 
+#div1 {
+  display: inline-block;
+}
+
+#div2 {
+  display: inline-block;
+  margin-left: 20px;
 }
 
 // Citations and Disclaimers
@@ -38,9 +39,9 @@
 
 
  #map_container {
-   height: 300px;
+   height: auto;
    width: auto;
-   margin-bottom: 1em !important;
+   margin-bottom: 1em;
  }
 
 
@@ -51,6 +52,7 @@
   font-size: small;
   cursor: pointer;
  }
+
 
 
 //  Print Styles
@@ -88,7 +90,9 @@
 		margin: 0;
 		padding: 0;
 		position: absolute;
-	}	  
+	}
+
+	  
 	
 	.hidden-print {
 		display: none !important;
@@ -139,11 +143,6 @@
 	.identifier {
 		padding-bottom: 2em;
 	}
-
-	.table {
-		overflow: visible;
-		max-height: none;
-	}
 }
 
 @media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
@@ -154,14 +153,5 @@
   }
 }
 
-.hidden {
-	visibility: hidden;
-	height:1px;
-	overflow: hidden;
-}
 
-// .dropdown-menu {
-//     max-height: 150px;
-//     width: 90%;
-//     /*overflow-y:scroll;*/
-// }
+
