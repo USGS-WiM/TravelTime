@@ -234,11 +234,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.StudyService.selectedStudy.LocationOfInterest = latlng;
             this.StudyService.setProcedure(2);
           });
-
         });
-
     }
-
   }
 
   public getFlowLineLayerGroup(features) {
