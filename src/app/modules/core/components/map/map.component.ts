@@ -167,9 +167,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.reportMap.remove();
       }
         this.reportMap = new L.Map('reportMap', this.options);
-        // add point of interest
+		// add point of interest
+	  	// MarkerMaker icon
+		var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
+        // const marker = L.marker(this.poi, {icon: myIcon});
         const marker = L.marker(this.poi, {
-            icon: L.icon(this.MapService.markerOptions.Spill)
+            icon: blackPin
         });
 
         marker.addTo(this.reportMap);
@@ -215,9 +218,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
       this.MapService.setCursor('');
       this.StudyService.SetWorkFlow('hasPOI', true);
       this.MapService.SetPoi(latlng);
-      if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) { return; }
+	  if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) { return; }
+	  
+
+	  // MarkerMaker icon
+	  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
       const marker = L.marker(latlng, {
-        icon: L.icon(this.MapService.markerOptions.Spill)
+        icon: blackPin
       });
       // add marker to map
       this.MapService.AddMapLayer({ name: 'POI', layer: marker, visible: true });
@@ -269,8 +276,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     features.forEach(i => {
 
       if (i.geometry.type === 'Point') {
-        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
-        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
+		// MarkerMaker Icon
+		var greenPin = L.divIcon({className: 'wmm-pin wmm-green wmm-icon-circle wmm-icon-white wmm-size-25'});
+        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: greenPin
+		}));
+        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: greenPin
+		}));
         gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
