@@ -2,11 +2,11 @@
 <!-- Toggle Between Max and Most probable -->
 <div class="most-max-probable-toggle">
 	<!-- Max probable -->
-	<button (click)="open()" v-if="viewChart == 'max'" [ngClass]="{'active': viewChart === 'max'}">
+	<button (click)="open()" v-if="viewChart == 'max'" [ngClass]="{'active': viewChart === 'most'}">
 		Maximum Probable
 	</button>
 	<!-- Most probable toggle -->
-	<button (click)="open()" v-if="viewChart == 'most'" [ngClass]="{'active': viewChart === 'most'}">
+	<button (click)="open()" v-if="viewChart == 'most'" [ngClass]="{'active': viewChart === 'max'}">
 		Most Probable
 	</button>
 </div>

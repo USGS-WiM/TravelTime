@@ -20,7 +20,4 @@ export class CoreComponent {
 	// 	const ModalComponentRef = this.modalService.open(ReportModule)
 	// }
 
-	// Change map size
-	public mapSize = 'full';
-
 }

@@ -130,7 +130,7 @@ $text: #0C141E;
 				flex-wrap: wrap;
 
 				span{
-					margin: 2px 0;
+					margin: 0px 0;
 					font-size: 12.5px;
 					font-weight: 500;
 					font-family: monospace;
@@ -139,6 +139,10 @@ $text: #0C141E;
 						content: '\002022';
 						display: inline-block;
 						margin: 0 5px;
+					}
+
+					&:last-child:after{
+						display: none;
 					}
 				}
 			}

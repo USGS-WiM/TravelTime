@@ -17,7 +17,7 @@ declare let search_api: any;
   styleUrls: ['./map.component.scss']
 })
 
-export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnChanges {
+export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
 
 

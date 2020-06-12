@@ -12,7 +12,7 @@
 				<i class="far fa-rectangle-portrait"></i>
 				Full
 			</button>
-			<button (click)="mapSize = 'half';" [ngClass]="{'active': mapSize === 'half'}">
+			<button (click)="mapSize = 'half';" [ngClass]="{'active': mapSize === 'half' || !mapSize}">
 				<i class="far fa-rectangle-landscape"></i>
 				Half
 			</button>
