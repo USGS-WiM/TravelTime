@@ -36,6 +36,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public layerGroup;
   public reportlayerGroup;
   public map: L.Map;
+  public isfirst = true;
 
 
   public evnt;
@@ -290,10 +291,16 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
         if (i.properties.StreamRiver > 80 || i.properties.Artificial > 80 && i.properties.IsWaterBody == 0) {
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+          this.isfirst = false;
         } else {
+          if (this.isfirst) {
+            this.sm("Warning: you selected point inside of the water body, please change location....")
+            this.MapService.isInsideWaterBody.next(true);
+          }
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
         }
+
         const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
         const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
         const temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];

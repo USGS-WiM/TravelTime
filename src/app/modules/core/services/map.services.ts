@@ -304,5 +304,5 @@ export class MapService {
   }
 
   public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
-
+  public isInsideWaterBody: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 }

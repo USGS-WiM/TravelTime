@@ -81,6 +81,9 @@ export class SidebarComponent {
     this.StudyService = studyservice;
     config.backdrop = 'static';
     config.keyboard = false;
+    this.MapService.isInsideWaterBody.subscribe(data => {
+      this.isInsideWaterBody = data;
+    })
   }
 
   ngOnInit() {
@@ -181,11 +184,19 @@ export class SidebarComponent {
     }
   }
 
+  public isInsideWaterBody: boolean = false;
+
+
+
   public open(scenario) {
     switch (scenario) {
       case 'Jobsons':
-        const jobsonsModalRef = this.modalService.open(JobsonsModalComponent);
-        jobsonsModalRef.componentInstance.title = 'Jobsons';
+        if (this.isInsideWaterBody) {
+          this.sm("Selected point of interest is inside of a water body.... please select different location")
+        } else {
+          const jobsonsModalRef = this.modalService.open(JobsonsModalComponent);
+          jobsonsModalRef.componentInstance.title = 'Jobsons';
+        }
         return;
       case 'Report':
         const reportModalRef = this.modalService.open(ReportModalComponent);

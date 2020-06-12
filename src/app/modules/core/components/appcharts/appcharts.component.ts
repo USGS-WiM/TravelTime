@@ -85,7 +85,7 @@ export class AppchartsComponent implements OnInit {
     legend: { position: 'left' },
     title: {
       text: 'Most probable Time of Travel',
-      display: true
+      display: false
     },
     scales: {
       yAxes: [{
@@ -115,7 +115,7 @@ export class AppchartsComponent implements OnInit {
     legend: { position: 'left' },
     title: {
       text: 'Maximum probable Time of Travel',
-      display: true
+      display: false
     },
     scales: {
       yAxes: [{
