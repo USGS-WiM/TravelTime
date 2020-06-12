@@ -28,6 +28,7 @@ export const DateTimeValidator = (fc: FormControl) => {
 export class JobsonsModalComponent implements OnInit {
 
   public gages;
+  public ShowGages: boolean = false;
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
@@ -53,9 +54,14 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
-    if (this.MapService.gagesArray.value.length > 0) {
-      this.openGagesModal();
-    }
+    this.MapService.gagesArray.subscribe(data => {
+      if (typeof (data) != 'undefined') {
+        this.ShowGages = true;
+        if (data.length > 0) {
+          this.openGagesModal();
+        }
+      } else { }
+    })
   }
 
   //#region "Gages"
