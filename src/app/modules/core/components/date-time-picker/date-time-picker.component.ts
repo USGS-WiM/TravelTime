@@ -5,6 +5,9 @@ import { DatePipe } from '@angular/common';
 import { DateTimeModel } from './date-time.model';
 import { noop } from 'rxjs';
 import { StudyService } from 'src/app/modules/core/services/study.service';
+import { MapService } from '../../services/map.services';
+import { ToastrService, IndividualConfig } from 'ngx-toastr';
+import * as messageType from '../../../../shared/messageType';
 
 @Component({
   selector: 'app-date-time-picker',
@@ -21,9 +24,32 @@ import { StudyService } from 'src/app/modules/core/services/study.service';
 })
 
 export class DateTimePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit {
+  private messager: ToastrService;
+  constructor(toastr: ToastrService, private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService, private mapservice: MapService) {
+
+    this.messager = toastr;
+    config.autoClose = 'outside';
+    config.placement = 'left-top';
+    this.StudyService = studyservice;
+    this.mapservice = mapservice;
+  }
+
+  private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
+    try {
+      let options: Partial<IndividualConfig> = null;
+      if (timeout) { options = { timeOut: timeout }; }
+      this.messager.show(msg, title, options, mType);
+    } catch (e) {
+    }
+  }
+
+  ngOnInit(): void {
+    this.ngControl = this.inj.get(NgControl);
+  }
+
+  //#region "UI acessors and declaration"
   @Input()
   dateString: string;
-
   @Input()
   inputDatetimeFormat = 'M/d/yyyy H:mm:ss';
   @Input()
@@ -36,16 +62,17 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   seconds = true;
   @Input()
   disabled = false;
-
-  private showTimePickerToggle = false;
-  private datetime: DateTimeModel = new DateTimeModel();
-  private firstTimeAssign = true;
-
   @ViewChild(NgbDatepicker, { static: false })
   private dp: NgbDatepicker;
 
   @ViewChild(NgbPopover, { static: false })
   private popover: NgbPopover;
+  //#endregion
+
+  //#region "Declarations"
+  private showTimePickerToggle = false;
+  private datetime: DateTimeModel = new DateTimeModel();
+  private firstTimeAssign = true;
 
   private onTouched: () => void = noop;
   private onChange: (_: any) => void = noop;
@@ -55,17 +82,9 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   private ngControl: NgControl;
   private StudyService: StudyService;
 
-  constructor(private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService) {
-    config.autoClose = 'outside';
-    config.placement = 'left-top';
+  //#endregion
 
-    this.StudyService = studyservice;
-  }
-
-  ngOnInit(): void {
-    this.ngControl = this.inj.get(NgControl);
-  }
-
+  //#region "Methods"
   ngAfterViewInit(): void {
     this.popover.hidden.subscribe($event => {
       this.showTimePickerToggle = false;
@@ -160,6 +179,15 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
     if (!this.firstTimeAssign) {
       this.onChange(this.dateString);
+      let starttime = this.dateString;
+      let endtime = this.datetime;
+      endtime.minute = (endtime.minute + 15);
+      if (endtime.minute > 60) {
+        endtime.hour = endtime.hour + 1;
+        endtime.minute = endtime.minute - 59;
+      }
+      this.sm('Access to real time flow is coming soon.......');
+      //this.mapservice.getRealTimeFlow(starttime, endtime.toString(), this.mapservice.gagesArray.value);
     } else {
       // Skip very first assignment to null done by Angular
       if (this.dateString !== null) {
@@ -171,5 +199,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   inputBlur($event) {
     this.onTouched();
   }
+
+  //#endregion
 
 }

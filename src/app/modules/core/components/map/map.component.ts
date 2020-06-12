@@ -19,12 +19,7 @@ declare let search_api: any;
 
 export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
-
-
-
-
-
-  //#region "General variables"
+  //#region "Declarations"
   private messager: ToastrService;
   private MapService: MapService;
   private NavigationService: NavigationService;
@@ -40,6 +35,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public flowlines;
   public layerGroup;
   public reportlayerGroup;
+  public map: L.Map;
+
 
   public evnt;
   @Input() report: boolean;
@@ -100,7 +97,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor( mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -187,11 +184,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   //#region "Map click events"
   public onMapReady(map: L.Map) {
     map.invalidateSize();
+    this.MapService.map = map;
   }
 
 
   public onZoomChange(zoom: number) {
-      this.MapService.CurrentZoomLevel = zoom;
+     this.MapService.CurrentZoomLevel = zoom;
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;
@@ -245,6 +243,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
             // this.MapService.FlowLines.next(response.features);
+            console.log(response);
             this.getFlowLineLayerGroup(response.features);
             this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
             this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
@@ -252,25 +251,30 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.StudyService.selectedStudy.LocationOfInterest = latlng;
             this.StudyService.setProcedure(2);
           });
-
         });
     }
-
   }
 
   public getFlowLineLayerGroup(features) {
     const layerGroup = new L.FeatureGroup([]);
     const reportlayerGroup = new L.FeatureGroup([]);
+    let gagesArray = [];
 
     features.forEach(i => {
+
       if (i.geometry.type === 'Point') {
         layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
         reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
+        gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
-        layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-        reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-
+        if (i.properties.StreamRiver > 80 || i.properties.Artificial >80) {
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+        } else {
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+        }
         const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
         const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
         const temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
@@ -283,7 +287,27 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
         i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
       }
-    });
+    })
+
+    //check if there is a gage data;
+    if (gagesArray.length > 0) {
+      for (var i = 0; i < gagesArray.length; i++) {
+        features.forEach(o => {
+          if (o.geometry.type !== "Point") {
+            if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
+              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea * 2.59; //in sqmiles
+            } else { }
+          }
+        })
+      };
+      //create service
+      //add gage
+      this.MapService.gagesArray.next(gagesArray);
+      this.MapService.gageDischargeSearch.next(true);
+      this.MapService.getMostRecentFlow(gagesArray);
+    } else {
+      this.MapService.gageDischargeSearch.next(true);
+    };
 
     // because it is async it takes time to process function above, once we have it done - we get the bounds
     // Potential to improve

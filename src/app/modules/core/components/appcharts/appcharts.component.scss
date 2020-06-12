@@ -1,8 +1,10 @@
 .most-max-probable-toggle{
-	display: block;
+	display: flex;
 	width: 100%;
 	text-align: center;
 	padding-bottom: 15px;
+	margin: 0 auto;
+	justify-content: center;
 
 	button{
 		margin: 0;

@@ -3,10 +3,8 @@ import { StudyService } from '../../services/study.service';
 import { MapService } from '../../services/map.services';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
-import * as $ from 'jquery';
 import { ChartsService } from '../../services/charts.service';
 import '../../../../shared/extensions/number.toUSGSValue';
-import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { deepCopy } from 'src/app/shared/extensions/object.DeepCopy';
 
@@ -19,64 +17,6 @@ export class FooterComponent extends deepCopy implements OnInit {
   // ngOnInit(): void {
   //   throw new Error("Method not implemented.");
   // }
-  public spillMass;
-  public spillDate;
-  public units;
-  public abbrev;
-
-  private MapService: MapService;
-  private StudyService: StudyService;
-  private ChartService: ChartsService;
-  private messanger: ToastrService;
-
-  private showMost: boolean;
-  private showMax: boolean;
-
-  private selectedReach: reach;
-  private reaches: reach[];
-  private hasReaches: boolean = false;
-  private selectedUnits: string;
-  private setClickedRow: Function;
-  private selectedRow: Number;
-
-
-  public get showResult$(): boolean {
-    this.units = this.MapService.unitsOptions;
-    this.abbrev = this.MapService.abbrevOptions;
-
-    if (this.StudyService.GetWorkFlow('totResults')) {
-      if (!this.hasReaches) {
-        if(this.StudyService.isMetric) {
-          const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
-          const reachList = Object.values(reachesCopy);
-          reachList.shift(); // remove first element (one without results)
-          this.checkUnits(reachList);
-          this.hasReaches = true;
-          this.selectedUnits = "metric";
-        } else {
-          const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
-          const reachList = Object.values(reachesCopy);
-          reachList.shift(); // remove first element (one without results)
-          this.checkUnits(reachList);
-          this.hasReaches = true;
-          this.selectedUnits = "imperial";
-        }
-      } // else if (this.hasReaches && this.selectedUnits === "metric") {
-      //     if (!this.StudyService.isMetric) {
-      //       let reachList = Object.values(this.StudyService.selectedStudy.Results['reaches']);
-      //       reachList.shift(); //remove first element (one without results)
-      //       this.checkUnits(reachList);
-      //       this.selectedUnits = "imperial";
-      //     }
-      // }
-    }
-    return (this.StudyService.GetWorkFlow('totResults'));
-  }
-
-  public get output$() {
-      return this.reaches;
-  }
-
   constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService, chartservice: ChartsService) {
     super();
     this.messanger = toastr;
@@ -105,6 +45,59 @@ export class FooterComponent extends deepCopy implements OnInit {
       this.spillDate = mystudy.SpillDate;
     })
 
+  }
+
+  //#region "Declarations"
+  public spillMass;
+  public spillDate;
+  public units;
+  public abbrev;
+
+  private MapService: MapService;
+  private StudyService: StudyService;
+  private ChartService: ChartsService;
+  private messanger: ToastrService;
+
+  private showMost: boolean;
+  private showMax: boolean;
+
+  private selectedReach: reach;
+  private reaches: reach[];
+  private hasReaches: boolean = false;
+  private selectedUnits: string;
+  private setClickedRow: Function;
+  private selectedRow: Number;
+  //#endregion
+
+  //#region "Methods"
+  public get showResult$(): boolean {
+    this.units = this.MapService.unitsOptions;
+    this.abbrev = this.MapService.abbrevOptions;
+
+    if (this.StudyService.GetWorkFlow('totResults')) {
+      if (!this.hasReaches) {
+        if(this.StudyService.isMetric) {
+          const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
+          const reachList = Object.values(reachesCopy);
+          reachList.shift(); // remove first element (one without results)
+          this.checkUnits(reachList);
+          this.hasReaches = true;
+          this.selectedUnits = "metric";
+        } else {
+          const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
+          const reachList = Object.values(reachesCopy);
+          reachList.shift(); // remove first element (one without results)
+          this.checkUnits(reachList);
+          this.hasReaches = true;
+          this.selectedUnits = "imperial";
+        }
+      }
+    }
+    return (this.StudyService.GetWorkFlow('totResults'));
+  }
+
+  public get output$() {
+      return this.reaches;
   }
 
   public toDecimals(timeval: string) {
@@ -159,5 +152,5 @@ export class FooterComponent extends deepCopy implements OnInit {
       this.reaches = reaches;
     } // keep existing metric units
   }
-
+  //#endregion
 }

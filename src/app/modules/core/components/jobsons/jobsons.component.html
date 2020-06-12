@@ -1,17 +1,23 @@
-<div class="modal-wrapper">
-	<div class="modal-box">
+<div *ngIf="!reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
+		<i style="margin:auto;" class='far fa-sync fa-spin'></i>
+	</div>
+</div>
+
+<div *ngIf="reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
 		<!-- Header -->
 		<div class="modal-top">
 			<div class="title">Jobsons Results</div>
 			<div class="close-modal" (click)="activeModal.dismiss()">
 				<i class="far fa-times"></i>
+				{{updateDischarge()}}
 			</div>
 		</div>
 		<!-- Main content -->
 		<div class="modal-middle">
 	
 			<form #myForm="ngForm">
-				
 				<!-- Time of Spill -->
 				<div class="modal-form-row">
 					<label>
@@ -28,7 +34,7 @@
 						<small>({{this.StudyService.defConcentration}}):</small>
 					</label>
 					<div class="row-input">
-						<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event)" type=number required placeholder="Value" name="spillmass" class="up">
+						<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event);validateInputs();" type=number required placeholder="Value" name="spillmass" class="up">
 					</div>
 				</div>
 				<!-- Discharge -->
@@ -38,16 +44,23 @@
 						<small>({{this.StudyService.defDischarge}}):</small>
 					</label>
 					<div class="row-input">
-						<input [(ngModel)]="Discharge" (ngModelChange)="setDischarge($event)" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
+						<input [(ngModel)]="discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
 					</div>
 				</div>
 
 
 				<div>
-					<label>
+					<label style="padding: 15px 0; display: block;">
 						Mean annual flow of closest reach: {{FirstReachDischarge}}
 					</label>
+					<button *ngIf="ShowGages" class="icon-button blue" (click)="openGagesModal()">
+						<i class='fas fa-long-arrow-right'></i>
+						<span>Review gages</span>
+					</button>
+
 				</div>
+
+
 
 				<!-- Add space between inputs and reaches -->
 				<div class="space20"></div>
@@ -62,19 +75,19 @@
 				</div>
 				<!-- Map Layers Body -->
 				<div class="toggle-block remove-bottom-border jobsons-toggles" [ngClass]="{'visible-extend': showReaches}">
-			
+
 					<div class="toggle-block-body">
-						
-						
+
+
 						<div *ngFor="let item of reachList; let i = index; trackBy:identify" id="{{i}}">
-							
-							
+
+
 							<!-- Nested -toggles -->
 							<div class="toggle-header nested" (click)="openCloseItem(i)">
 								<div class="text">
 									<span>
 										{{item.name}} <i [ngClass]="!item.parameters.show ? 'far fa-chevron-down' : 'far fa-chevron-up'"></i>
-									</span> 
+									</span>
 								</div>
 								<div class="icon jobsons-delete" (click)="removeReach(i)">
 									<i class="far" class="far fa-trash-alt"></i>
@@ -107,7 +120,6 @@
 										</div>
 									</div>
 								</div>
-							
 								<!--Parameters input-->
 								<div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy" class="modal-form-row">
 									<label>
@@ -144,31 +156,31 @@
 
 
 							</div> <!-- End Nested toggle body-->
- 
-						 </div>
+
+						</div>
 					</div> <!-- End toggle block body -->
 				</div>
 
 
-		
 			</form>
 
 
 
+			</div>
+			<!-- Footer -->
+			<div class="modal-buttons space-around">
+				<button *ngIf="mylist !== null" class="icon-button white" (click)="onClick_clear()">
+					<i class="far fa-trash-alt"></i>
+					<span>Clear</span>
+				</button>
+				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setDischarge(); getResults();">
+					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
+					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
+				</button>
+			</div>
 		</div>
-		<!-- Footer -->
-		<div class="modal-buttons space-around">
-			<button *ngIf="mylist !== null" class="icon-button white" (click)="onClick_clear()">
-				<i class="far fa-trash-alt"></i>
-				<span>Clear</span>
-			</button>
-			<button [disabled]="!myForm.form.valid" class="icon-button blue" (click)="getResults()">
-				<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
-				<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
-			</button>
-	  </div>
+		
 	</div>
-</div>
 
 
       

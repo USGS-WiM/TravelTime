@@ -13,12 +13,6 @@ import '../../../../shared/extensions/number.toUSGSValue';
 
 export class ApptoolsComponent implements OnInit {
 
-  public formGroup: FormGroup;
-  public StudyService: StudyService;
-  public distance: number;
-  public units: UnitsArray[];
-  public unit = [];
-
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, public studyservice: StudyService) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
@@ -27,18 +21,24 @@ export class ApptoolsComponent implements OnInit {
     this.distance = this.StudyService.distance;
     this.units = this.StudyService.units;
   }
-
   ngOnInit(): any {
     this.formGroup = new FormGroup({
-    activeEndDate: new FormControl(new Date(), { validators: [Validators.required] })
+      activeEndDate: new FormControl(new Date(), { validators: [Validators.required] })
     }, { updateOn: 'change' });
     this.unit.push(' (kilometers)');
     this.unit.push(' (miles)');
   }
 
-  public setUnits(indx) {
+  //#region "Declarations"
+  public formGroup: FormGroup;
+  public StudyService: StudyService;
+  public distance: number;
+  public units: UnitsArray[];
+  public unit = [];
+  //#endregion
 
-    // -> should trigger change for observable
+  //#region "Methods"
+  public setUnits(indx) {
     let j = 0;
     this.distance = this.StudyService.distance;
     const initialDist = this.distance; // initial distance no reference
@@ -59,10 +59,10 @@ export class ApptoolsComponent implements OnInit {
       } else {}
       this.distance = this.distance.toUSGSvalue();
       this.StudyService.distance = this.distance;
-      // because on module construction this.distance gets value from shared service
-      // we need to assign last value of the distance to that shared service
       j += 1;
     })
   }
+
+  //#endregion
 
 }

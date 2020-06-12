@@ -32,6 +32,10 @@ app-root{
 	overflow: hidden;
 }
 
+.center{
+	text-align: center;
+}
+
 // Initial loader that shows before angular
 .initial-loader {
 	position: fixed !important;
@@ -110,11 +114,14 @@ button{
 	// Active button waiting for action
 	// Green Background
 	&.waiting{
-		background-color: #44BEAE;
+		background-color: #E1E7EE;
 		transition: $transition;
+		color: #96a6b9;
 
 		&:hover{
-			background-color: #389C8F;
+			text-decoration: none;
+			cursor: default;
+			background-color: #E1E7EE;
 		}
 	}
 
