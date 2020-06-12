@@ -384,5 +384,10 @@ export class AppchartsComponent implements OnInit {
       return;
     }
   }
+
+  public chartClicked(): void {
+  }
+  public chartHovered(): void {
+  }
   //#endregion
 }

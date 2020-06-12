@@ -287,7 +287,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
         gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
-        if (i.properties.StreamRiver > 80 || i.properties.Artificial >80) {
+        if (i.properties.StreamRiver > 80 || i.properties.Artificial > 80 && i.properties.IsWaterBody == 0) {
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
         } else {

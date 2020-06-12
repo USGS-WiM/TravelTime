@@ -56,8 +56,10 @@ export class JobsonsModalComponent implements OnInit {
 
     this.MapService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
-        this.ShowGages = true;
-        if (data.length > 0) {
+        this.MapService.showGages.subscribe(data => {
+          this.ShowGages = data;
+        })
+        if (data.length > 0 && this.ShowGages) {
           this.openGagesModal();
         }
       } else { }
@@ -311,7 +313,7 @@ export class JobsonsModalComponent implements OnInit {
 
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
-      if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 80 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 80) { } else { break}
+      if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 80 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 80 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else { break }
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;

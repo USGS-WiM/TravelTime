@@ -8,7 +8,6 @@ import { gages } from '../models/gages';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType';
 
-
 export interface layerControl {
   baseLayers: Array<any>;
   overlays: Array<any>
@@ -42,6 +41,7 @@ export class MapService {
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(http: HttpClient, toastr: ToastrService) {
 
@@ -256,13 +256,19 @@ export class MapService {
     for (var i = 0; i < site.length; i++) {
       let gage = site[i];
       let siteid = (gage.properties.identifier.replace("USGS-", ""));
-      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid+"&parameterCd=00060&siteStatus=active";
+      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&parameterCd=00060&siteStatus=active";
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
-        console.log('updating gage info');
         this.updateGageData(result, gage);
-      });
+        console.log(site);
+        console.log("USGS-" + siteid);
+        this.showGages.next(true);
+        if ("USGS-" + siteid == site[site.length-1].identifier) {
+
+        }
+      })
     }
+
     this.gagesArray.next(this.gagessub);
     this.StreamGages.next(this.gages);
   }
