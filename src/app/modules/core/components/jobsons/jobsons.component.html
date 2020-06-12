@@ -53,7 +53,7 @@
 					<label style="padding: 15px 0; display: block;">
 						Mean annual flow of closest reach: {{FirstReachDischarge}}
 					</label>
-					<button id="response" class="icon-button blue" [disabled]="!ShowGages" (click)="openGagesModal()" [ngClass]="{'waiting': ShowGages}">
+					<button id="response" class="icon-button blue" [hidden]="!ShowGages" (click)="openGagesModal()" [ngClass]="{'waiting': ShowGages}">
 						<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 						Review gages
 					</button>

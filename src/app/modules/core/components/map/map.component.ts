@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { MapService } from '../../services/map.services';
@@ -17,7 +17,7 @@ declare let search_api: any;
   styleUrls: ['./map.component.scss']
 })
 
-export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
+export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnChanges {
 
   //#region "Declarations"
   private messager: ToastrService;
@@ -49,9 +49,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   ngOnChanges(changes: any) {
 	// If map size changed, trigger resize event, which will force map to redraw
 	// InvalidteSize does not work here. Not sure why.
-	if(changes.mapSize.previousValue != null && changes.mapSize.currentValue != changes.mapSize.previousValue){
-		window.dispatchEvent(new Event('resize'));
-	}
+	  /*if(changes.mapSize.previousValue != null && changes.mapSize.currentValue != changes.mapSize.previousValue){
+		  window.dispatchEvent(new Event('resize'));
+    }*/
+
+    if (typeof (changes.previousValue) == 'undefined') {
+      window.dispatchEvent(new Event('resize'));
+    }
 }
 
 

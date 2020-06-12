@@ -12,7 +12,7 @@
 		<div class="modal-middle" id="printArea">
 
 			<!-- Instructions -->
-            <p class="hidden-print">Enter a report title and/or comments here that will display on the printed report. Use the print button below.</p>
+			<p class="hidden-print">Enter a report title and/or comments here that will display on the printed report. Use the print button below.</p>
 
 			<!-- Report Title -->
 			<div class="modal-form-row hidden-print">
@@ -41,8 +41,48 @@
 			<h2 class="report-title">{{reportTitle}}</h2>
 
 			<!-- Map -->
-			<div *ngIf="StudyService.ReportOptions[0].checked">
+			<div>
+				<div *ngIf="StudyService.ReportOptions[0].checked" id="div1">
 					<tot-map id="mapWrapper" [report]="true"></tot-map>
+				</div>
+				<div id="div2">
+					<table id="UnitTable" class="data-table">
+						<tbody>
+							<tr>
+								<td>Discharge (Q):</td>
+								<td>{{ !StudyService.isMetric() ? 'cubic feet per second (cfs)' : 'cubic meters per second (cms)' }}</td>
+							</tr>
+							<tr>
+								<td>Drainage area (Da):</td>
+								<td>{{ !StudyService.isMetric() ? 'square miles (mi^2)' : 'square kilometers (km^2)' }}</td>
+							</tr>
+							<tr>
+								<td>Distance (L):</td>
+								<td>{{ !StudyService.isMetric() ? 'miles (mi)' : 'kilometers (km)' }}</td>
+							</tr>
+							<tr>
+								<td>Reach velocity (V):</td>
+								<td>{{ !StudyService.isMetric() ? 'feets per second (ft/s)' : 'meters per second (m/s)' }}</td>
+							</tr>
+							<tr>
+								<td>Time of leading edge (Tl):</td>
+								<td>hours</td>
+							</tr>
+							<tr>
+								<td>Time of peak concentration (Tp):</td>
+								<td>hours</td>
+							</tr>
+							<tr>
+								<td>Time of trailing edge at 10% peak concentration (Td10):</td>
+								<td>hours</td>
+							</tr>
+							<tr>
+								<td>Peak concentration (Ct)</td>
+								<td>milligrams per liter (mg/L)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 
@@ -116,42 +156,7 @@
 					</tbody>
 				</table>
 				<div class="hidden">
-					<table id="UnitTable" class="data-table">
-						<tbody>
-							<tr>
-								<td>Discharge (Q):</td>
-								<td>{{ !StudyService.isMetric() ? 'cubic feet per second (cfs)' : 'cubic meters per second (cms)' }}</td>
-							</tr>
-							<tr>
-								<td>Drainage area (Da):</td>
-								<td>{{ !StudyService.isMetric() ? 'square miles (mi^2)' : 'square kilometers (km^2)' }}</td>
-							</tr>
-							<tr>
-								<td>Distance (L):</td>
-								<td>{{ !StudyService.isMetric() ? 'miles (mi)' : 'kilometers (km)' }}</td>
-							</tr>
-							<tr>
-								<td>Reach velocity (V):</td>
-								<td>{{ !StudyService.isMetric() ? 'feets per second (ft/s)' : 'meters per second (m/s)' }}</td>
-							</tr>
-							<tr>
-								<td>Time of leading edge (Tl):</td>
-								<td>hours</td>
-							</tr>
-							<tr>
-								<td>Time of peak concentration (Tp):</td>
-								<td>hours</td>
-							</tr>
-							<tr>
-								<td>Time of trailing edge at 10% peak concentration (Td10):</td>
-								<td>hours</td>
-							</tr>
-							<tr>
-								<td>Peak concentration (Ct)</td>
-								<td>milligrams per liter (mg/L)</td>
-							</tr>
-						</tbody>
-					</table>
+
 					<table id="MostProbTableDL" class="data-table">
 						<thead>
 							<tr>
@@ -338,11 +343,11 @@
 				<div class="space10"></div>
 				<p class="disclaimer">
 					USGS Data Disclaimer: Unless otherwise stated, all data, metadata and related materials are considered to satisfy the quality standards relative to the purpose for which the data were collected.
-				  Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.
+					Although these data and associated metadata have been reviewed for accuracy and completeness and approved for release by the U.S. Geological Survey (USGS), no warranty expressed or implied is made regarding the display or utility of the data for other purposes, nor on all computer systems, nor shall the act of distribution constitute any such warranty.
 				</p>
 				<p class="disclaimer">
 					USGS Software Disclaimer: This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review.
-				  No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.
+					No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.
 				</p>
 				<p class="disclaimer">
 					USGS Product Names Disclaimer: Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
