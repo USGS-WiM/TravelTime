@@ -333,7 +333,7 @@ export class JobsonsModalComponent implements OnInit {
       } else {
       }
     }
-    this.reachesReady = true;
+      this.reachesReady = true;
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

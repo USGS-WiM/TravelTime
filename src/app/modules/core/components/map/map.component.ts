@@ -37,6 +37,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public reportlayerGroup;
   public map: L.Map;
 
+
   public evnt;
   @Input() report: boolean;
 
@@ -285,10 +286,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
           }
         })
       };
-
+      //create service
+      //add gage
+      this.MapService.gagesArray.next(gagesArray);
+      this.MapService.gageDischargeSearch.next(true);
       this.MapService.getMostRecentFlow(gagesArray);
     } else {
-      console.log(false);
+      this.MapService.gageDischargeSearch.next(true);
     };
 
     // because it is async it takes time to process function above, once we have it done - we get the bounds
@@ -296,9 +300,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
     });
-    //create service
-    //add gage
-    this.MapService.gagesArray.next(gagesArray);
   }
 
 

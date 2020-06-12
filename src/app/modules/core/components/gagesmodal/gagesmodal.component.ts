@@ -19,21 +19,12 @@ export class GagesmodalComponent implements OnInit {
   ngOnInit() {
 
     this.MapService.gagesArray.subscribe(data => {
+      console.log(data);
       data.forEach(r => {
-        let gage = new gages(r.properties);
+        let gage = new gages(r);
         this.newSessionGages.push(gage);
       })
+      this.gagesArray = this.newSessionGages;
     })
-
-    for (var i = 0; i < this.MapService.gages.length; i++) {
-      if (this.MapService.gages[i].value.timeSeries.length > 0) {
-        this.newSessionGages[i].value = this.MapService.gages[i].value.timeSeries[0].values[0].value[0].value;
-        let date = new Date (this.MapService.gages[i].value.timeSeries[0].values[0].value[0].dateTime);
-        this.newSessionGages[i].record = date;
-        this.gagesArray.push(this.newSessionGages[i]);
-      } else {
-        this.gagesArray.push(this.newSessionGages[i]);
-      }
-    }
   }
 }
