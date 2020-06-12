@@ -216,7 +216,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
                       break;
               case 5: item.value = inputString;
                       break;
-              case 0: item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+              case 0: if (this.StudyService.isMetric()) {
+                        item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+                      } else {
+                        var imp_distance = this.StudyService.distance * 1.609344; //converts miles to kilometers
+                        item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: imp_distance, valueType: 'numeric' };
+                      }
+                      
             }// end switch
           }); // next item
           return config;
