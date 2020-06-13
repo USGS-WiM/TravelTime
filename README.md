@@ -29,6 +29,8 @@ https://help.github.com/articles/cloning-a-repository/
 Run `ng serve -o` for a dev server. 
 Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+Run `npn run hmr` or `ng serve --configuration hmr` for hot module replacement, which injects html and css changes without a full reload of the page. 
+
 ## Deployment
 
 Run `ng build` to build a deployed project. Configureation has now moved to angular.json file

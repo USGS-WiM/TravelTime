@@ -1,78 +1,61 @@
+// Footer.scss
+// _______________________________________________
+// 
+// Bottom data view - graph, data tables, etc
+// 
+
 .footer-wrapper {
-	display: block;
-	box-sizing: border-box;
-	padding: 25px 25px 25px 25px;
-	width: 100%;
-	max-width: 100%;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
+  display: block;
+  box-sizing: border-box;
+  padding: 15px 25px 25px 25px;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
 
-	// Header, title, etc
-	.footer-header{
-		display: block;
-		padding: 0 0 10px 0;
-		h3{
-			font-size: 22px;
-			font-weight: 600;
-			margin: 0;
-			padding: 0;
-		}
-	}
+  .footer-data {
+    display: flex;
+	justify-content: space-around;
+	margin-top: 15px;
 
-  	.footer-data {
-		display: flex;
-		justify-content: space-around;
-		flex-grow: 3;
-		overflow: hidden;;
+    .footer-data-left {
+      overflow: hidden;
+      box-sizing: border-box;
+      padding-right: 15px;
+      flex-grow: 3;
+      display: flex;
+	  flex-direction: column;
 
-		// Title for data display area
-		.data-display-title{
-			font-size: 20px;
-			font-weight: 600;
-			margin: 0;
-			padding: 0 0 6px 0;
-		}
+	  h2{
+		  margin: 0 0 6px 0;
+	  }
 
-    	.footer-data-left {
-			overflow: hidden;
-			box-sizing: border-box;
-			padding-right: 15px;
-			flex-grow: 3;
-			display: flex;
-			flex-direction: column;
+      &.reverse {
+        flex-direction: column-reverse;
+      }
 
-			&.reverse {
-				flex-direction: column-reverse;
-			}
+      .data-display {
+        display: block;
+        width: 100%;
+		/*overflow: scroll;*/
+		overflow: auto;
 
-			.data-display {
-				display: flex;
-				flex-direction: column;
-				width: 100%;
-				height: 100%;
-				/*overflow: scroll;*/
+        .table-display {
+          display: block;
+          width: 100%;
+          overflow: auto;
+        }
+      }
+    }
 
-				.table-display {
-					width: 100%;
-					overflow: auto;
-
-					// Make table full width
-					table.basic{
-						min-width: 100%;
-					}
-				}
-     	 	}
-    	}
-
-		.footer-data-right {
-			padding-left: 15px;
-			box-sizing: border-box;
-			overflow: hidden;
-			min-width: 400px;
-		}
-  	}
+    .footer-data-right {
+      padding-left: 15px;
+      box-sizing: border-box;
+      overflow: hidden;
+      min-width: 400px;
+    }
+  }
 }
+
 
 
 // table.fixed tbody {

@@ -2,14 +2,10 @@
 // All styles here apply to all components and elements
 
 // Reset 
-@import url('reset.scss');
+@import url('app/global_styles/reset.scss');
+@import url('app/global_styles/markers.css');
 
-// Import font
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap');
-@import url('app/global_styles/tables.scss');
-
-$sans: 'Source Sans Pro', sans-serif;
+$sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 // Variables
 $borderRadius: 4px;
 $transition: 0.2s;
@@ -119,11 +115,14 @@ button{
 	// Active button waiting for action
 	// Green Background
 	&.waiting{
-		background-color: #44BEAE;
+		background-color: #E1E7EE;
 		transition: $transition;
+		color: #96a6b9;
 
 		&:hover{
-			background-color: #389C8F;
+			text-decoration: none;
+			cursor: default;
+			background-color: #E1E7EE;
 		}
 	}
 
@@ -213,7 +212,7 @@ input[type="radio"] {
 		transition: 0.2s;
 		transform: scale(0.75);
 		color: #1052D9;
-		opacity: 0.2;
+		opacity: 0;
 		font-size: 16px;
 		width: 100%;
 		height: 100%;
@@ -260,7 +259,7 @@ input[type="checkbox"] {
 	&:after {
 		content: "\f00c";
 		transform: scale(0.75);
-		opacity: 0.2;
+		opacity: 0;
 		font-size: 15px;
 	}
 
@@ -471,6 +470,16 @@ input[type="radio"] {
 }
 
 
+.flex{
+	display: flex;
+}
+.flex-column{
+	flex-direction: column;
+}
+.flex-around{justify-content: space-around;}
+.flex-between{justify-content: space-between;}
+.flex-center{justify-content: center;}
+
 
 /////////////////////////
 //     Typography     //
@@ -483,6 +492,7 @@ h1,h2,h3,h4,h5,h6,a,p,label{
 }
 h1,h2,h3,h4,h5,h6{
 	max-width: 700px;
+	margin: 0;
 
 	&.unset{
 		max-width: none;
@@ -495,23 +505,23 @@ h1{
 	font-size: 30px;
 	padding: 0 0 2px 0;
 	line-height: 38px;
-	font-weight: 700;
+	font-weight: 600;
 	letter-spacing: 0.3px;
 }
 h2{
 	font-size: 22px;
 	line-height: 28px;
 	padding: 0 0 2px 0;
-	font-weight: 700;
+	font-weight: 600;
 }
-// h3, h4, h5{
+h3, h4, h5{
 
-// }
+}
 h3{
 	font-size: 18px;
 	letter-spacing: 0.2px;
 	line-height: 26px;
-	font-weight: 700;
+	font-weight: 600;
 }
 h4{
 	font-size: 16px;
@@ -521,16 +531,15 @@ h4{
 }
 h5{
 	font-size: 16px;
-	font-weight: 700;
-	text-transform: uppercase;
+	font-weight: 600;
 	line-height: 20px;
 	letter-spacing: 0.5px;
+	margin: 0 !important;
 }
 h6{
 	font-size: 12px;
 	color: #1D304B;
 	font-weight: 800;
-	text-transform: uppercase;
 	line-height: 16px;
 	letter-spacing: 0.6px;
 }
@@ -543,7 +552,7 @@ h6{
 p{
 	font-size: 13.5px;
 	line-height: 18px;
-	max-width: 700px;
+	max-width: 600px;
 	padding: 8px 0;
 	color: #142234;
 	letter-spacing: 0.2px;
@@ -571,7 +580,7 @@ p{
 	
 	// Bold
 	b{
-		font-weight: 700;
+		font-weight: 600;
 	}
 }
 
@@ -655,6 +664,21 @@ ul{
 			border-bottom-right-radius: 0;
 		}
 
+
+		// Wider modal
+		&.wide{
+			width: 1000px;
+			max-width: 100%;
+			margin-left: -500px;
+
+			// Full width under 1100px
+			@media (max-width: 1100px) {
+				width: 92%;
+				margin-left: 0;
+				left: 4;
+			}
+		}
+
 		// Top of modal / header
 		.modal-top{
 			display: flex;
@@ -674,7 +698,7 @@ ul{
 
 			.title{
 				font-size: 18px;
-				font-weight: 700;
+				font-weight: 600;
 			}
 
 			// Close X
@@ -806,7 +830,7 @@ ul{
 	top: 0;
 	margin: 0;
 	width: 100% !important;
-	height: 100%;
+	height: 100% !important;
 }
 .leaflet-control-attribution{
 	font-size: 8px !important;
@@ -820,12 +844,10 @@ ul{
         position: absolute !important;
     }
 }
-
-.leaflet-pane.leaflet-map-pane {
-    width: 100% !important;
-    height: 100% !important;
-    transform: none;
-  }
+// Hide top right legend
+.leaflet-control-layers{
+	display: none;
+}
 
 
 // Hide everything on print
@@ -898,48 +920,115 @@ ul{
 
 
 
-// Table Styling
-table.basic {
-	background-color: #FFFFFF;
-	text-align: left;
-	border-collapse: collapse;
-	width: 100%;
+// Tooltips
+.hint{
+	position: relative;
+	display: inline-block;
+
+	i{
+
+	}
+
+
+	.hint-text{
+		display: none;
+		position: absolute;
+		bottom: 0;
+		background: #0C141E;
+		color: white;
+		border-radius: 4px;
+		box-sizing: border-box;
+		padding: 6px;
+		font-size: 13.5px;
+		line-height: 15px;
+		left: 110%;
+		width: 164px;
+
+		a{
+			text-decoration: underline;
+			color: white;
+		}
+	}
+
+	// Hover to show text
+	&:hover{
+		cursor: help;
+
+		.hint-text{
+			display: block;
+		}
+	}
+}
+
+
+
+
+// Table Styles
+.data-table{
+	font-size: 14.5px;
+	border: 1px solid rgba(0,0,0,0.25);
+
 	table-layout: fixed;
-	overflow-wrap: break-word;
+	border-collapse: collapse;
+	margin-bottom: 25px;
+	// background: red;
+  
+	thead{
+		background: rgba(10,10,20,0.05);
+		background-color: white;
+		border-bottom: 1px solid rgba(0,0,0,0.25);
 
-	// td and th
-	td, th {
-		border: 1px solid #AAAAAA;
-		padding: 3px 0px;
-	}
+		tr {
+			display: block;
+			position: relative;
 
-	// Header rows
-	thead {
-		background-color: #DEE2EC;
-
-		th {
-			font-size: 11px;
-			font-weight: bold;
-			text-align: center;
-			line-height: 11.5px;
-			padding: 4px;
-			vertical-align: bottom;
+			th{
+				font-weight: 600 !important;
+				font-size: 13.5px;
+			}
 		}
 	}
 
-	// Body blocks
 	tbody{
-		td {
-			font-size: 13px;
-			padding: 2px;
-		}
-		tr:nth-child(even) {
-			background: #EEF4FF;
-		}
-		tr:hover {
-			background-color: #B2B8D2;
+		display: block;
+		width: 100%;
+		height: 260px;
+		overflow-y: auto;
+
+		@media print{
+			height: auto;
 		}
 
+		tr td{
+			border-right: 1px solid rgba(0,0,0,0.25);
+			white-space: pre-wrap;
+			break-inside: auto;
+			// word-wrap: break-word;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		tr:nth-child(even) {
+			background: rgba(10,10,20,0.05);
+		}
+	} 
+  
+	// td:nth-child(1), th:nth-child(1) { min-width: 100px; }
+	// td:nth-child(2), th:nth-child(2) { min-width: 100px; }
+	// td:nth-child(3), th:nth-child(3) { width: 100px; }
+	td, th{
+		min-width: 100px;
+		max-width: 100px;
+		padding: 4px;
 	}
 
+	tbody tr:hover{
+		background: rgba(10,15,30,0.15);
+	}
+
+
+
+
+	
 }

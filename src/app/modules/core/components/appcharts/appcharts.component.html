@@ -1,17 +1,29 @@
+
+<!-- Toggle Between Max and Most probable -->
 <div class="most-max-probable-toggle">
-	<ng-select #selectGroup [items]="reachesGrouped"
-						[disabled]="isDisabled"
-						[virtualScroll]="true"
-						bindLabel="label"
-						bindValue="id"
-						(change)="chartIsActive($event)"
-					placeholder="Selected group"
-					[(ngModel)]="selectedGroupId">
-	</ng-select>
-	
-	<!-- Toggle max/min probable -->
-	<button class="blue" (click)="open()">{{buttonName}}</button>
+	<!-- Max probable -->
+	<button (click)="open()" v-if="viewChart == 'max'" [ngClass]="{'active': viewChart === 'most'}">
+		Maximum Probable
+	</button>
+	<!-- Most probable toggle -->
+	<button (click)="open()" v-if="viewChart == 'most'" [ngClass]="{'active': viewChart === 'max'}">
+		Most Probable
+	</button>
 </div>
+
+<!-- Selected Group Dropdown -->
+<div class="flex flex-center">
+	<ng-select #selectGroup [items]="reachesGrouped"
+		[disabled]="isDisabled"
+		[virtualScroll]="true"
+		bindLabel="label"
+		bindValue="id"
+		(change)="chartIsActive($event)"
+		placeholder="Selected group"
+		[(ngModel)]="selectedGroupId">
+	</ng-select>
+</div>
+
 
 
 

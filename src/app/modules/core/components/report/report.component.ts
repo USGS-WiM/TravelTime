@@ -18,18 +18,13 @@ import { NavigationService } from '../../services/navigationservices.service';
 })
 export class ReportModalComponent extends deepCopy implements OnInit {
 
+  //#region "Declarations"
   private StudyService: StudyService;
   private MapService: MapService;
   private reaches: reach[];
   private _layersControl;
   private _layers = [];
   public closed = false;
-
-  private optionsSpec: any = {
-    layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
-    zoom: 5,
-    center: [46.879966, -121.726909]
-  };
 
   public reportTitle = 'Time of Travel Report';
   public reportComments = '';
@@ -39,7 +34,13 @@ export class ReportModalComponent extends deepCopy implements OnInit {
   public fitBounds;
   public evnt;
   public reachesGeoJson;
-  
+  //#endregion
+
+  private optionsSpec: any = {
+    layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
+    zoom: 5,
+    center: [46.879966, -121.726909]
+  };
 
   public get output$ () {
     if (this.StudyService.GetWorkFlow('totResults')) {

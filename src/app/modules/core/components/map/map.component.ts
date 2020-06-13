@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { MapService } from '../../services/map.services';
@@ -17,9 +17,9 @@ declare let search_api: any;
   styleUrls: ['./map.component.scss']
 })
 
-export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
+export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnChanges {
 
-  //#region "General variables"
+  //#region "Declarations"
   private messager: ToastrService;
   private MapService: MapService;
   private NavigationService: NavigationService;
@@ -35,11 +35,31 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public flowlines;
   public layerGroup;
   public reportlayerGroup;
+  public map: L.Map;
+  public isfirst = true;
+
 
   public evnt;
   @Input() report: boolean;
+  @Input() mapSize: string;
 
   scaleMap: string;
+
+
+  ngOnChanges(changes: any) {
+	// If map size changed, trigger resize event, which will force map to redraw
+	// InvalidteSize does not work here. Not sure why.
+	  /*if(changes.mapSize.previousValue != null && changes.mapSize.currentValue != changes.mapSize.previousValue){
+		  window.dispatchEvent(new Event('resize'));
+    }*/
+
+    if (typeof (changes.previousValue) == 'undefined') {
+      window.dispatchEvent(new Event('resize'));
+    }
+}
+
+
+
 
   //#endregion
 
@@ -55,6 +75,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   public get MapOptions() {
     return this.MapService.Options;
   }
+
+
+
 
 
   // <!--"MapOptions"-->
@@ -79,7 +102,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor( mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -149,9 +172,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.reportMap.remove();
       }
         this.reportMap = new L.Map('reportMap', this.options);
-        // add point of interest
+		// add point of interest
+	  	// MarkerMaker icon
+		var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
+        // const marker = L.marker(this.poi, {icon: myIcon});
         const marker = L.marker(this.poi, {
-            icon: L.icon(this.MapService.markerOptions.Spill)
+            icon: blackPin
         });
 
         marker.addTo(this.reportMap);
@@ -166,10 +192,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
   //#region "Map click events"
   public onMapReady(map: L.Map) {
     map.invalidateSize();
+    this.MapService.map = map;
   }
 
+
   public onZoomChange(zoom: number) {
-      this.MapService.CurrentZoomLevel = zoom;
+     this.MapService.CurrentZoomLevel = zoom;
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;
@@ -195,9 +223,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
       this.MapService.setCursor('');
       this.StudyService.SetWorkFlow('hasPOI', true);
       this.MapService.SetPoi(latlng);
-      if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) { return; }
+	  if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) { return; }
+	  
+
+	  // MarkerMaker icon
+	  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
       const marker = L.marker(latlng, {
-        icon: L.icon(this.MapService.markerOptions.Spill)
+        icon: blackPin
       });
       // add marker to map
       this.MapService.AddMapLayer({ name: 'POI', layer: marker, visible: true });
@@ -214,7 +246,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
                       break;
               case 5: item.value = inputString;
                       break;
-              case 0: item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+              case 0: if (this.StudyService.isMetric()) {
+                        item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+                      } else {
+                        var imp_distance = this.StudyService.distance * 1.609344; //converts miles to kilometers
+                        item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: imp_distance, valueType: 'numeric' };
+                      }
+                      
             }// end switch
           }); // next item
           return config;
@@ -223,6 +261,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
             // this.MapService.FlowLines.next(response.features);
+            console.log(response);
             this.getFlowLineLayerGroup(response.features);
             this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
             this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
@@ -230,24 +269,41 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
             this.StudyService.selectedStudy.LocationOfInterest = latlng;
             this.StudyService.setProcedure(2);
           });
-
         });
     }
-
   }
 
   public getFlowLineLayerGroup(features) {
     const layerGroup = new L.FeatureGroup([]);
     const reportlayerGroup = new L.FeatureGroup([]);
+    let gagesArray = [];
 
     features.forEach(i => {
+
       if (i.geometry.type === 'Point') {
-        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
-        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { icon: L.icon(this.MapService.markerOptions.GagesDownstream) }));
+		// MarkerMaker Icon
+		var greenPin = L.divIcon({className: 'wmm-pin wmm-green wmm-icon-circle wmm-icon-white wmm-size-25'});
+        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: greenPin
+		}));
+        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: greenPin
+		}));
+        gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
-        layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-        reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+        if (i.properties.StreamRiver > 50 || i.properties.Artificial > 50 && i.properties.IsWaterBody == 0) {
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
+          this.isfirst = false;
+        } else {
+          if (this.isfirst) {
+            this.sm("Warning: you selected point inside of the water body, please change location....")
+            this.MapService.isInsideWaterBody.next(true);
+          }
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+        }
 
         const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
         const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
@@ -261,7 +317,27 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit {
 
         i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
       }
-    });
+    })
+
+    //check if there is a gage data;
+    if (gagesArray.length > 0) {
+      for (var i = 0; i < gagesArray.length; i++) {
+        features.forEach(o => {
+          if (o.geometry.type !== "Point") {
+            if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
+              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea * 2.59; //in sqmiles
+            } else { }
+          }
+        })
+      };
+      //create service
+      //add gage
+      this.MapService.gagesArray.next(gagesArray);
+      this.MapService.gageDischargeSearch.next(true);
+      this.MapService.getMostRecentFlow(gagesArray);
+    } else {
+      this.MapService.gageDischargeSearch.next(true);
+    };
 
     // because it is async it takes time to process function above, once we have it done - we get the bounds
     // Potential to improve
