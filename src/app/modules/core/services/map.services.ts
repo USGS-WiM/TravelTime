@@ -25,7 +25,7 @@ export class MapService {
   public _layersControl: layerControl = {
     baseLayers: [], overlays: []
   };
-  public CurrentZoomLevel;
+  public CurrentZoomLevel: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public CurrentLayer: String;
   public isClickable: boolean = false;
   public Cursor: String;
@@ -53,6 +53,7 @@ export class MapService {
       zoom: 4,
       center: L.latLng(39, -100)
     };
+    //this.CurrentZoomLevel.next(this.Options.zoom);
 
     http.get("assets/data/config.json").subscribe(data => {
       //load baselayers
@@ -79,7 +80,7 @@ export class MapService {
       this.abbrevOptions = conf.Abbreviations;
 
     });
-    this.CurrentZoomLevel = this.Options.zoom;
+
   }
 
   public AddMapLayer(mlayer: MapLayer) {
