@@ -56,15 +56,15 @@
 		<div class="toggle-block-body">
 
 			<!-- Steps -->
-			<div *ngIf="ZoomLevel < 10">
+			<div *ngIf="zoom < 10">
 				<h5>Step 1:</h5>
 				<p>Use the map or the search tool below to identify an area of interest. At zoom level <b>10 or greater</b>, trace methods will be enabled.</p>
 				<div class="sidebar-zoom-level">
 					<span>Current Zoom Level:</span>
-					<b>{{this.MapService.CurrentZoomLevel}}</b>
+					<b>{{this.MapService.CurrentZoomLevel.value}}</b>
 				</div>
 			</div>
-			<div *ngIf="ZoomLevel > 9">
+			<div *ngIf="zoom > 9">
 				<h5>Step 2:</h5>
 				<p>You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</p>
 			</div>

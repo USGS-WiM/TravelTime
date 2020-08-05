@@ -103,7 +103,7 @@ export class ReportModalComponent extends deepCopy implements OnInit {
   }
 
   public onZoomChange(zoom: number) {
-      this.MapService.CurrentZoomLevel = zoom;
+    this.MapService.CurrentZoomLevel.next(zoom);
     // this.sm("Zoom changed to " + zoom);
   }
 
