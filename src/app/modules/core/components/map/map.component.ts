@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { MapService } from '../../services/map.services';
@@ -102,7 +102,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -197,7 +197,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 
 
   public onZoomChange(zoom: number) {
-     this.MapService.CurrentZoomLevel = zoom;
+    this.MapService.CurrentZoomLevel.next(zoom);
+    this.cdref.detectChanges();
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;
@@ -223,7 +224,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       this.MapService.setCursor('');
       this.StudyService.SetWorkFlow('hasPOI', true);
       this.MapService.SetPoi(latlng);
-	  if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) { return; }
+      if (this.MapService.CurrentZoomLevel.value < 10 || !this.MapService.isClickable) { return; }
 	  
 
 	  // MarkerMaker icon
@@ -297,10 +298,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
           this.isfirst = false;
         } else {
-          if (this.isfirst) {
+          /*if (this.isfirst) {
             this.sm("Warning: you selected point inside of the water body, please change location....")
             this.MapService.isInsideWaterBody.next(true);
-          }
+          }*/
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
         }
