@@ -33,8 +33,8 @@
     ],
     "overlayLayers": [
       {
-        "name": "Texas",
-        "url": "https://txgeo.usgs.gov/arcgis/rest/services/Mapping/HydroBaseMapForTerrain/MapServer",
+        "name": "USGSHydroCached",
+        "url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSHydroCached/MapServer",
         "type": "agsTile",
         "layerOptions": {
           "opacity": 0.6,
