@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
@@ -20,7 +20,8 @@ declare let search_api: any;
 })
 
 
-export class SidebarComponent {
+export class SidebarComponent implements AfterViewChecked {
+
 
   private MapService: MapService;
   private StudyService: StudyService;
@@ -58,12 +59,15 @@ export class SidebarComponent {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : '');
   }
 
-  public get ZoomLevel(): number {
-    if (this.MapService.CurrentZoomLevel > 9 && this.toggleButton === true) {
-      this.StudyService.SetWorkFlow('reachedZoom', true);
-    }
-    return this.MapService.CurrentZoomLevel;
-  }
+  /*public ZoomLevel() {
+    this.MapService.CurrentZoomLevel.subscribe(z => {
+      if (z > 9 && this.toggleButton === true) {
+        this.StudyService.SetWorkFlow('reachedZoom', true);
+      }
+      return z;
+    })
+    //return this.MapService.CurrentZoomLevel.value;
+  }*/
 
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
@@ -72,10 +76,13 @@ export class SidebarComponent {
   public model;
   private messager: ToastrService;
   private toggleButton = true;
+  public zoom = 4;
 
-
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
+  }
   // tslint:disable-next-line: max-line-length
-  constructor(mapservice: MapService, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
+  constructor(mapservice: MapService, private cdRef: ChangeDetectorRef, toastr: ToastrService, studyservice: StudyService, config: NgbModalConfig, private modalService: NgbModal) {
     this.messager = toastr;
     this.MapService = mapservice;
     this.StudyService = studyservice;
@@ -83,6 +90,15 @@ export class SidebarComponent {
     config.keyboard = false;
     this.MapService.isInsideWaterBody.subscribe(data => {
       this.isInsideWaterBody = data;
+    })
+    this.MapService.CurrentZoomLevel.next(this.zoom);
+    this.MapService.CurrentZoomLevel.subscribe(z => {
+      this.zoom = z;
+      if (z > 9 && this.toggleButton === true) {
+        this.StudyService.SetWorkFlow('reachedZoom', true);
+      } else {
+        this.StudyService.SetWorkFlow('reachedZoom', false);
+      }
     })
   }
 
@@ -97,7 +113,7 @@ export class SidebarComponent {
       });
 
       search_api.create('searchBox', {
-      on_result: (o) => { // changed from function(o) to (o) =>
+        on_result: (o) => { // changed from function(o) to (o) =>
         this.MapService.setBounds([ // zoom to location
           [o.result.properties.LatMin, o.result.properties.LonMin],
           [o.result.properties.LatMax, o.result.properties.LonMax]

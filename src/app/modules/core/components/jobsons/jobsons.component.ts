@@ -195,12 +195,13 @@ export class JobsonsModalComponent implements OnInit {
   public beforeChange($event: NgbPanelChangeEvent): void {
     this.currentStep = +($event.panelId);
   }
-  public removeReach(index): void {   // remove reach by id
+  //Future enhancement - allowing user to remove gage parameters.
+  /*public removeReach(index): void {   // remove reach by id
     if (index >= 0) {
       this.reachList.splice(index, this.reachList.length);
       this.reachIDs.splice(index, this.reachList.length);
     }
-  }
+  }*/
 
   public getLabel(label) {
     try {
@@ -276,7 +277,6 @@ export class JobsonsModalComponent implements OnInit {
         reach.parameters.splice(6, 1);
         postReachList.push(reach);
       });
-   console.log(postReachList);
     }
 
  this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
