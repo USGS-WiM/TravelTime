@@ -732,6 +732,7 @@ ul{
 			box-sizing: border-box;
 			border-top: 1px solid #D9DDE4;
 			display: flex;
+			min-height: fit-content;
 
 			&.center{
 				justify-content: center;
@@ -1026,9 +1027,68 @@ ul{
 	tbody tr:hover{
 		background: rgba(10,15,30,0.15);
 	}
-
-
-
-
 	
+}
+
+
+
+
+// Gages modal
+// List of gages
+.gage-modal-list{
+	display: block;
+	width: 100%;
+
+	.card{
+		width: 100%;
+		margin-bottom: 10px !important;
+
+		.card-header{
+			width: 100%;
+
+			button{
+				width: 100% !important;
+				display: flex;
+				justify-content: space-between;
+
+				&:after{
+					content: '\f054';
+					transform: scale(1.05);
+					font-family: 'Font Awesome 5 Pro';
+					text-decoration: none !important;
+				}
+
+				&.collapsed{
+					&:after{
+						content: '\f078';
+					}
+				}
+			}
+		}
+
+		.gage-list-body{
+			font-size: 14px;
+			line-height: 16px;
+			box-sizing: border-box;
+			padding: 10px 15px;
+
+			div{
+				margin: 0 0 10px 0;
+				display: flex;
+
+				span,b{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+				}
+
+				span{
+					padding-right: 10px;
+					box-sizing: border-box;
+					white-space: pre-line;
+					min-width: 110px;
+				}
+			}
+		}
+	}
 }
