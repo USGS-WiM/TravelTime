@@ -75,7 +75,32 @@
         "radius": 100
       },
       "Polyline": {
-        "color": "#0000FF",
+        "color": "#0BDCD5",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline2": {
+        "color": "#0BDCD5",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline3": {
+        "color": "#D3DC0B",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline4": {
+        "color": "#144893",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline5": {
+        "color": "#14933E",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline6": {
+        "color": "#020234",
         "weight": 3,
         "opacity": 1
       },
