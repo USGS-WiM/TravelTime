@@ -56,15 +56,15 @@
 		<div class="toggle-block-body">
 
 			<!-- Steps -->
-			<div *ngIf="ZoomLevel < 10">
+			<div *ngIf="zoom < 10">
 				<h5>Step 1:</h5>
 				<p>Use the map or the search tool below to identify an area of interest. At zoom level <b>10 or greater</b>, trace methods will be enabled.</p>
 				<div class="sidebar-zoom-level">
 					<span>Current Zoom Level:</span>
-					<b>{{this.MapService.CurrentZoomLevel}}</b>
+					<b>{{this.MapService.CurrentZoomLevel.value}}</b>
 				</div>
 			</div>
-			<div *ngIf="ZoomLevel > 9">
+			<div *ngIf="zoom > 9">
 				<h5>Step 2:</h5>
 				<p>You have zoomed in sufficiently to select a trace method. Select an option below then click or tap a point on the map.</p>
 			</div>
@@ -112,12 +112,12 @@
 					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Response
 				</button>
-				<button id="planning" class="full-width icon-button" [disabled]="true" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
+				<button id="planning" class="full-width icon-button" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
 					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Planning
 				</button>
 				<button id="equations" class="full-width" (click)="open_config()">Configure</button>
-			  </div>
+			</div>
 		
 		</div>
 		<!-- End identify area panel --> 
@@ -197,6 +197,22 @@
 
 			<button class="full-width blue" (click)="open('Report')" [disabled]="!CanContinue">Continue</button>
 
+		</div>
+	</div>
+
+
+	<!-- Footer, USGS Links -->
+	<div class="sidebar-footer">
+		<div class="identification">Powered by <a href="https://wim.usgs.gov/" target="_blank">WIM <img src="assets/images/favicon.png"/></a></div>
+		
+		<div class="sidebar-footer-links">
+			<a href="https://usgs.gov" target="_blank">USGS Home</a><a href="https://answers.usgs.gov" target="_blank">Contact
+				USGS</a>
+			<a href="https://search.usgs.gov" target="_blank">Search USGS</a>
+			<a href="https://www2.usgs.gov/laws/accessibility.html" target="_blank">Accessibility</a>
+			<a href="https://www2.usgs.gov/foia/" target="_blank">FOIA</a>
+			<a href="https://www2.usgs.gov/laws/privacy.html" target="_blank">Privacy</a>
+			<a href="https://www2.usgs.gov/laws/policies_notices.html" target="_blank">Policies &amp; Notices</a>
 		</div>
 	</div>
 

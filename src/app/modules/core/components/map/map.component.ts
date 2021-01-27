@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { MapService } from '../../services/map.services';
@@ -9,6 +9,7 @@ import * as L from 'leaflet';
 import * as turf from '@turf/turf';
 import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
+import { UpstreamtotService } from '../../services/upstreamtot.service';
 declare let search_api: any;
 
 @Component({
@@ -24,6 +25,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private MapService: MapService;
   private NavigationService: NavigationService;
   private StudyService: StudyService;
+  private ToTCalculator: UpstreamtotService;
   private _layersControl;
   private _bounds;
   private _layers = [];
@@ -102,7 +104,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, ToTCalculator: UpstreamtotService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -110,6 +112,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.StudyService = studyservice;
     this.layerGroup = new L.FeatureGroup([]); // streamLayer
     this.reportlayerGroup = new L.FeatureGroup([]);
+    this.ToTCalculator = ToTCalculator;
   }
 
   ngOnInit() {
@@ -197,7 +200,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 
 
   public onZoomChange(zoom: number) {
-     this.MapService.CurrentZoomLevel = zoom;
+    this.MapService.CurrentZoomLevel.next(zoom);
+    this.cdref.detectChanges();
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;
@@ -223,7 +227,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       this.MapService.setCursor('');
       this.StudyService.SetWorkFlow('hasPOI', true);
       this.MapService.SetPoi(latlng);
-	  if (this.MapService.CurrentZoomLevel < 10 || !this.MapService.isClickable) { return; }
+      if (this.MapService.CurrentZoomLevel.value < 10 || !this.MapService.isClickable) { return; }
 	  
 
 	  // MarkerMaker icon
@@ -260,24 +264,78 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           this.NavigationService.getRoute('3', config, true).subscribe(response => {
             this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
-            // this.MapService.FlowLines.next(response.features);
-            console.log(response);
-            this.getFlowLineLayerGroup(response.features);
-            this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-            this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
-            this.StudyService.SetWorkFlow('hasReaches', true);
-            this.StudyService.selectedStudy.LocationOfInterest = latlng;
-            this.StudyService.setProcedure(2);
+            this.ToTCalculator.passageTimeTest();
+            //this.MapService.FlowLines.next(response.features);
+            //console.log(response);
+            if (inputString == "upstream") {
+              this.ComputeTOT(response.features);
+              this.accumTOT(response.features);
+              this.getFlowLineLayerGroup(response.features);
+              this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+              this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
+              this.StudyService.selectedStudy.LocationOfInterest = latlng;
+            } else {
+              this.getFlowLineLayerGroup(response.features);
+              this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+              this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
+              this.StudyService.SetWorkFlow('hasReaches', true);
+              this.StudyService.selectedStudy.LocationOfInterest = latlng;
+              this.StudyService.setProcedure(2);
+            }
+
+
+            //one with the biggest drainage area is the first one to trace up
           });
         });
     }
+  }
+
+  public ComputeTOT(data) {
+    data.forEach(reach => {
+      if (reach.properties.hasOwnProperty("Discharge")) {
+        var tot = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.Discharge * 0.0283168, reach.properties.Discharge * 0.0283168, reach.properties.DrainageArea * 10 ^ 6);
+        reach.properties["result"] = tot;
+        reach.properties["touched"] = false;
+      }
+    })
+  }
+
+  public accumTOT(data) {
+    var DA = 0;
+    var headCOMID = 0;
+    var newDA = 0;
+
+    data.forEach(reach => { //find the biggest drainage corresponding to the selected POI
+      newDA = reach.properties.DrainageArea;
+      if (newDA > DA) {
+        DA = newDA;
+        headCOMID = reach.properties.nhdplus_comid;
+      }
+    })
+
+    data.forEach(reach => { //mark reach with biggest drainage
+      if (reach.properties.nhdplus_comid == headCOMID) {
+        reach.properties["accutot"] = reach.properties.result;
+        reach.properties.touched = true;
+        this.sumacc(data, reach);
+      }
+    })
+  }
+
+  public sumacc(data, prev) {
+    data.forEach(reach => {
+      if (reach.properties.ToNode == prev.properties.FromNode && !reach.properties.touched) {
+        reach.properties.accutot = prev.properties.accutot + reach.properties.result;
+        reach.properties.touched = true;
+        this.sumacc(data, reach);
+      }
+    })
   }
 
   public getFlowLineLayerGroup(features) {
     const layerGroup = new L.FeatureGroup([]);
     const reportlayerGroup = new L.FeatureGroup([]);
     let gagesArray = [];
-
     features.forEach(i => {
 
       if (i.geometry.type === 'Point') {
@@ -292,17 +350,28 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
         gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
-        if (i.properties.StreamRiver > 50 || i.properties.Artificial > 50 && i.properties.IsWaterBody == 0) {
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline));
-          this.isfirst = false;
-        } else {
-          if (this.isfirst) {
-            this.sm("Warning: you selected point inside of the water body, please change location....")
-            this.MapService.isInsideWaterBody.next(true);
-          }
+        if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
           layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
           reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
+        } else if (i.properties.accutot > 0 && i.properties.accutot <= 5) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline2));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline2));
+        } else if (i.properties.accutot > 5 && i.properties.accutot <= 15) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline3));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline3));
+        } else if (i.properties.accutot > 15 && i.properties.accutot <= 35) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline4));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline4));
+        } else if (i.properties.accutot > 35 && i.properties.accutot <= 60) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline5));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline5));
+        }  else {
+          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline6));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline6));
         }
 
         const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
@@ -344,6 +413,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
     });
+
+
   }
 
 
