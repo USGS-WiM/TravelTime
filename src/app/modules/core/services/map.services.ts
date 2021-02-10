@@ -4,6 +4,7 @@ import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
+import { Drift } from '../models/drift';
 import { gages } from '../models/gages';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType';
@@ -78,10 +79,29 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
-
+      this.addDrift();
     });
 
   }
+
+
+  public addDrift() {
+    this.http.get('assets/data/table.csv', { responseType: 'text' }).subscribe(data => {
+      let csvToRowArray = data.split("\n");
+      var driftLayer = L.layerGroup();
+      var blackPin = L.divIcon({ className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-10' });
+      for (let index = 1; index < csvToRowArray.length - 1; index++) {
+        let row = csvToRowArray[index].split(",");
+        var markerPoint = new Drift(row[0], row[1], row[2].trim())
+        var newMarker = new L.Marker(L.latLng(parseFloat(markerPoint['lat']), parseFloat(markerPoint['lon'])), {
+          icon: blackPin
+        });
+        newMarker.addTo(driftLayer);
+      }
+      this.AddMapLayer({ name: 'DRIFT', layer: driftLayer, visible: false });
+    })
+  }
+
 
   public AddMapLayer(mlayer: MapLayer) {
 
