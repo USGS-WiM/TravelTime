@@ -9,6 +9,7 @@ import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
 import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
+import { round } from '@turf/turf';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -332,14 +333,14 @@ export class JobsonsModalComponent implements OnInit {
         let selectedUnits;
         if (this.StudyService.isMetric()) {
           selectedUnits = this.units.metric;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847); // cfs to cms
+          newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847), 3); // cfs to cms
           newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0); // square kilometers to square meters
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000); // kilometers to meters
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toFixed(3); // kilometers to meters
         } else {
           selectedUnits = this.units.imperial;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge); // cfs
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102); // square kilometers to square miles
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84); // kilometers to feet
+          newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge), 3); // cfs
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102).toFixed(0); // square kilometers to square miles
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toFixed(3); // kilometers to feet
         }
         newreach.parameters[0].unit.unit = selectedUnits['discharge'];   // mean annual discharge
         newreach.parameters[1].unit.unit = selectedUnits['discharge'];   // real-time discharge
