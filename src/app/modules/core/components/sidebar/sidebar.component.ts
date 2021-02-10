@@ -9,6 +9,7 @@ import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JobsonsModalComponent } from '../jobsons/jobsons.component';
 import { ApptoolsComponent } from '../apptools/apptools.component';
 import { ReportModalComponent } from '../report/report.component';
+import * as L from 'leaflet';
 
 declare let search_api: any;
 
@@ -114,12 +115,18 @@ export class SidebarComponent implements AfterViewChecked {
 
       search_api.create('searchBox', {
         on_result: (o) => { // changed from function(o) to (o) =>
-        this.MapService.setBounds([ // zoom to location
-          [o.result.properties.LatMin, o.result.properties.LonMin],
-          [o.result.properties.LatMax, o.result.properties.LonMax]
-        ]);
-      },
-      on_failure: (o) => {
+          this.MapService.setBounds([ // zoom to location
+            [o.result.properties.LatMin, o.result.properties.LonMin],
+            [o.result.properties.LatMax, o.result.properties.LonMax]
+          ]);
+          // MarkerMaker icon
+          var redCircle = L.divIcon({className: 'wmm-circle wmm-borderless wmm-red wmm-size-35'});
+          const marker = L.marker([o.result.properties.Lat, o.result.properties.Lon], {
+          icon: redCircle
+      });
+          this.MapService.AddMapLayer({ name: 'Search Location', layer: marker, visible: true });
+        },
+        on_failure: (o) => {
         // Should we alert the user ? this can be used if (for example length of the array is not sufficient for search)
         // alert("Sorry, a location could not be found for '" + o.val() + "'");
       }
