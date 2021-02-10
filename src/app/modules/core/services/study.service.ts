@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
 import { reach } from '../models/reach';
 
-export interface UnitsArray { name: string, isactive: boolean };
+export interface UnitsArray { name: string, isactive: boolean, units: string };
 
 export interface workflowControl {
     reachedZoom: boolean;
@@ -94,8 +94,8 @@ export class StudyService  {
     private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
     public units: UnitsArray[] = [
-      { name: "metric", isactive: true },
-      { name: "imperial", isactive: false }
+      { name: "metric", isactive: true, units: "kilometers" },
+      { name: "imperial", isactive: false, units: "miles" }
     ];
 
     constructor(toastr: ToastrService) {

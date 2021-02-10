@@ -45,7 +45,7 @@
 				<div *ngIf="StudyService.ReportOptions[0].checked" id="div1">
 					<tot-map id="mapWrapper" [report]="true"></tot-map>
 				</div>
-				<div id="div2">
+				<!-- <div id="div2">
 					<table id="UnitTable" class="data-table">
 						<tbody>
 							<tr>
@@ -82,7 +82,7 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
+				</div> -->
 			</div>
 
 
@@ -109,14 +109,14 @@
 						</tr>
 						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
 							<th rowspan="2" vertical-align="center">Reach ID</th>
-							<th title="{{ !StudyService.isMetric() ? 'cfs' : 'cms' }}">Discharge</th>
-							<th title="{{ !StudyService.isMetric() ? 'mi^2' : 'km^2' }}">Drainage area</th>
-							<th title="{{ !StudyService.isMetric() ? 'mi' : 'km' }}">Distance</th>
-							<th title="{{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }}">Reach Velocity</th>
-							<th title="hours">Leading edge</th>
-							<th title="hours">Peak concentration</th>
-							<th title="hours">Trailing edge at 10% peak concentration</th>
-							<th title="mg/L">Peak concentration</th>
+							<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+							<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+							<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+							<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+							<th>Leading edge<br />(hours)</th>
+							<th>Peak concentration<br />(hours)</th>
+							<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+							<th>Peak concentration<br />(mg/L)</th>
 						</tr>
 						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
 							<th></th>
@@ -156,20 +156,20 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="hidden">
+				<div class="hidden-data" style="display:none;">
 
 					<table id="MostProbTableDL" class="data-table">
 						<thead>
 							<tr>
 								<th>Reach ID</th>
-								<th>Discharge</th>
-								<th>Drainage area</th>
-								<th>Distance</th>
-								<th>Reach Velocity</th>
-								<th>Time of Leading edge</th>
-								<th>Time of Peak concentration</th>
-								<th>Time of Trailing edge at 10% peak concentration</th>
-								<th>Peak concentration</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Leading edge<br />(hours)</th>
+								<th>Peak concentration<br />(hours)</th>
+								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+								<th>Peak concentration<br />(mg/L)</th>
 							</tr>
 							<tr>
 								<th></th>
@@ -226,15 +226,15 @@
 							<th></th>
 						</tr>
 						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-							<th rowspan="2" vertical-align="center">Name</th>
-							<th title="{{ !StudyService.isMetric() ? 'cfs' : 'cms' }}">Discharge</th>
-							<th title="{{ !StudyService.isMetric() ? 'mi^2' : 'km^2' }}">Drainage area</th>
-							<th title="{{ !StudyService.isMetric() ? 'mi' : 'km' }}">Distance</th>
-							<th title="{{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }}">Reach Velocity</th>
-							<th title="hours">Leading edge</th>
-							<th title="hours">Peak Concentration</th>
-							<th title="hours">Trailing edge at 10% peak concentration</th>
-							<th title="mg/L">Peak concentration</th>
+							<th rowspan="2" vertical-align="center">Reach ID</th>
+							<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+							<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+							<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+							<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+							<th>Leading edge<br />(hours)</th>
+							<th>Peak concentration<br />(hours)</th>
+							<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+							<th>Peak concentration<br />(mg/L)</th>
 						</tr>
 						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
 							<th></th>
@@ -274,19 +274,19 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="hidden">
+				<div class="hidden-data" style="display:none;">
 					<table id="MaxProbTableDL" class="data-table">
 						<thead>
 							<tr>
-								<th>Name</th>
-								<th>Discharge</th>
-								<th>Drainage area</th>
-								<th>Distance</th>
-								<th>Reach Velocity</th>
-								<th>Leading edge</th>
-								<th>Peak Concentration</th>
-								<th>Trailing edge at 10% peak concentration</th>
-								<th>Peak concentration</th>
+								<th>Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Leading edge<br />(hours)</th>
+								<th>Peak concentration<br />(hours)</th>
+								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+								<th>Peak concentration<br />(mg/L)</th>
 							</tr>
 							<tr>
 								<th></th>

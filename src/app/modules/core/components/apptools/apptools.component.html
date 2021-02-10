@@ -29,7 +29,7 @@
 					<div class="row-input">
 						<span *ngFor="let item of units; let i = index" class="modal-form-row">
 							<input type="radio" id="configUnits{{i}}" name="Units" (change)="setUnits(i);" [checked]="item.isactive" />
-							<label for="configUnits{{i}}">{{item.name}}</label>
+							<label for="configUnits{{i}}">{{item.name}} ({{item.units}})</label>
 						</span>
 					</div>
 				</div>

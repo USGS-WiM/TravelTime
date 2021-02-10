@@ -230,8 +230,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       if (this.MapService.CurrentZoomLevel.value < 10 || !this.MapService.isClickable) { return; }
 	  
 
-	  // MarkerMaker icon
-	  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
+      // MarkerMaker icon
+      var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
       const marker = L.marker(latlng, {
         icon: blackPin
       });
