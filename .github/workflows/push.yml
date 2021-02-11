@@ -21,7 +21,7 @@ jobs:
         aws-region: us-east-2
     - run: aws s3 cp /home/runner/work/TravelTime/TravelTime/dist/ s3://test.streamstats.usgs.gov/tot/ --recursive
     - name: GitHub Action for Slack
-      uses: Ilshidur/action-slack@9273a03
+      uses: Ilshidur/action-slack@9273a038d94644256c1ba855c9ed6f4391b9cd89
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       with:
