@@ -1,4 +1,9 @@
 
+<div class="map-position leaflet-bottom leaflet-left">
+    <span>Zoom Level: {{this.MapService.CurrentZoomLevel.value}}</span> <br />
+    <span id="mapscale">Map Scale: 1:{{this.MapService.nominalZoomLevel.value}}</span> <br />
+    <!-- <span>{{mousePosition}}</span> -->
+</div>
 <!-- Leaflet map element -->
 <div *ngIf="!report" id="leaflet"
      leaflet
@@ -11,7 +16,6 @@
      [leafletFitBoundsOptions]="{maxZoom: 13}"
 	 (leafletClick)="onMouseClick($event)">
 </div>
-
 
  <!-- Report -->
 <div *ngIf="report" class="map_container">

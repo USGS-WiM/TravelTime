@@ -14,6 +14,7 @@
 <!-- Selected Group Dropdown -->
 <div class="flex flex-center">
 	<ng-select #selectGroup [items]="reachesGrouped"
+		width="100px"
 		[disabled]="isDisabled"
 		[virtualScroll]="true"
 		bindLabel="label"
@@ -40,7 +41,7 @@
 					(chartClick)="chartClicked($event)"></canvas>
 </div>
 
-<div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMax">
+<div style="display: block;" *ngIf="maxLineChartData.length > 1 && showMax">
 	<canvas baseChart width="600" height="400"
 					[datasets]="maxLineChartData"
 					[labels]="maxLineChartLabels"

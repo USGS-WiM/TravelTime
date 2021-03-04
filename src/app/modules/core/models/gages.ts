@@ -8,6 +8,7 @@ export class gages {
   public value: string;
   public record: Date;
   public drainagearea: string;
+  public status: string;
 
   constructor(arg: gages) {
     this.comid = arg.comid;

@@ -125,6 +125,23 @@ export class AppchartsComponent implements OnInit {
         }
       }],
       xAxes: [{
+        // type: 'time',
+        // time: {
+        //   parser: 'MM/DD/YYYY HH:mm',
+        //   tooltipFormat: 'll HH:mm',
+        //   unit: 'minute',
+        //   unitStepSize: 10,
+        //   displayFormats: {
+        //     second: 'HH:mm:ss',
+        //     minute: 'HH:mm:ss',
+        //     hour: 'HH:mm'
+        //   }
+        // },
+        // ticks: {
+        //   unit: 'minute',
+        //   stepSize: 10,
+        // },
+
         type: 'time',
         ticks: {
           unit: 'minute',
@@ -132,7 +149,7 @@ export class AppchartsComponent implements OnInit {
           displayFormats: {
             second: 'HH:mm:ss',
             minute: 'HH:mm:ss',
-            hour: 'HH:mm',
+            hour: 'HH:mm'
           },
         },
       }],
@@ -146,10 +163,14 @@ export class AppchartsComponent implements OnInit {
       this.viewChart = 'max';
       this.ChartService.displayAction('most', true);
       this.ChartService.displayAction('max', false);
+      this.showMax = false;
+      this.showMost = true;
     } else {
       this.viewChart = 'most';
       this.ChartService.displayAction('most', false);
       this.ChartService.displayAction('max', true);
+      this.showMost = false;
+      this.showMax = true;
     }
     this.flushChartData();
     this.getAllMostProbable();

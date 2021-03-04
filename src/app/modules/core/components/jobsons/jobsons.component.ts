@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TravelTimeService } from '../../services/traveltimeservices.service';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { reach } from '../../models/reach';
 import { StudyService } from '../../services/study.service';
@@ -9,6 +9,7 @@ import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
 import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
+import { NWISService } from '../../services/nwisservices.service'
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -29,13 +30,16 @@ export class JobsonsModalComponent implements OnInit {
 
   public gages;
   public ShowGages: boolean = false;
-  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal) {
+  public NWISService: NWISService;
+
+  constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
     config.keyboard = false;
     this.TravelTimeService = traveltimeservice;
     this.MapService = mapservice;
-    this.MapService.gages$.subscribe(data => {
+    this.NWISService = nwisservice;
+    this.NWISService.gages$.subscribe(data => {
       this.gages = data;
     })
     this.StudyService = studyservice;
@@ -54,7 +58,7 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
-    this.MapService.gagesArray.subscribe(data => {
+    this.NWISService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
         this.MapService.showGages.subscribe(data => {
           this.ShowGages = data;

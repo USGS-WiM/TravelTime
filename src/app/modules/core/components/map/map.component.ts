@@ -1,15 +1,17 @@
 import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { deepCopy } from '../../../../shared/extensions/object.DeepCopy';
 import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
+import { NWISService } from '../../services/nwisservices.service'
 import * as L from 'leaflet';
 import * as turf from '@turf/turf';
 import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
 import { UpstreamtotService } from '../../services/upstreamtot.service';
+import 'leaflet-mouse-position';
 declare let search_api: any;
 
 @Component({
@@ -25,6 +27,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private MapService: MapService;
   private NavigationService: NavigationService;
   private StudyService: StudyService;
+  private NWISService: NWISService;
   private ToTCalculator: UpstreamtotService;
   private _layersControl;
   private _bounds;
@@ -39,7 +42,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public reportlayerGroup;
   public map: L.Map;
   public isfirst = true;
-
 
   public evnt;
   @Input() report: boolean;
@@ -59,10 +61,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       window.dispatchEvent(new Event('resize'));
     }
 }
-
-
-
-
   //#endregion
 
   //#region "Map helper methods of layerControl"
@@ -79,12 +77,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   }
 
 
-
-
-
-  // <!--"MapOptions"-->
-
-
+  //MapOptions
   optionsSpec: any = {
     layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
     zoom: 5,
@@ -98,26 +91,25 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   options = {
     layers: [L.tileLayer(this.optionsSpec.layers[0].url, { attribution: this.optionsSpec.layers[0].attribution })],
     zoom: this.optionsSpec.zoom,
-    center: L.latLng(this.optionsSpec.center)
+    center: L.latLng(this.optionsSpec.center),
   };
 
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, ToTCalculator: UpstreamtotService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, ToTCalculator: UpstreamtotService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
     this.NavigationService = navigationservice;
     this.StudyService = studyservice;
+    this.NWISService = nwisservice;
     this.layerGroup = new L.FeatureGroup([]); // streamLayer
     this.reportlayerGroup = new L.FeatureGroup([]);
     this.ToTCalculator = ToTCalculator;
   }
 
   ngOnInit() {
-
-
     this.MapService.bounds.subscribe(b => {
       this.fitBounds = b;
     });
@@ -160,7 +152,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
       this.reportlayerGroup = reportlayerGroup;
     });
-    //#endregion
+    var scale = L.control.scale();
   }
 
   //#endregion
@@ -196,11 +188,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public onMapReady(map: L.Map) {
     map.invalidateSize();
     this.MapService.map = map;
+    L.control.scale().addTo(map);
   }
-
 
   public onZoomChange(zoom: number) {
     this.MapService.CurrentZoomLevel.next(zoom);
+    this.MapService.nominalZoomLevel.next(this.MapService.scaleLookup(zoom))
     this.cdref.detectChanges();
   }
 
@@ -264,7 +257,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           this.NavigationService.getRoute('3', config, true).subscribe(response => {
             this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
-            this.ToTCalculator.passageTimeTest();
+            //this.ToTCalculator.passageTimeTest();
             //this.MapService.FlowLines.next(response.features);
             //console.log(response);
             if (inputString == "upstream") {
@@ -401,9 +394,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       };
       //create service
       //add gage
-      this.MapService.gagesArray.next(gagesArray);
+      this.NWISService.gagesArray.next(gagesArray);
       this.MapService.gageDischargeSearch.next(true);
-      this.MapService.getMostRecentFlow(gagesArray);
+      this.NWISService.getMostRecentFlow(gagesArray);
     } else {
       this.MapService.gageDischargeSearch.next(true);
     };
@@ -413,10 +406,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
     });
-
-
   }
-
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
     try {
