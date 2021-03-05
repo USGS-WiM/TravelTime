@@ -86,10 +86,12 @@ export class MapService {
 
 
   public addDrift() {
+
     this.http.get('assets/data/table.csv', { responseType: 'text' }).subscribe(data => {
       let csvToRowArray = data.split("\n");
       var driftLayer = L.layerGroup();
       var blackPin = L.divIcon({ className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-10' });
+      var myRenderer = L.canvas({ padding: 0.5 });
       for (let index = 1; index < csvToRowArray.length - 1; index++) {
         let row = csvToRowArray[index].split(",");
         var markerPoint = new Drift(row[0], row[1], row[2].trim())

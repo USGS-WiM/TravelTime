@@ -343,11 +343,15 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 		var greenPin = L.divIcon({className: 'wmm-pin wmm-green wmm-icon-circle wmm-icon-white wmm-size-25'});
         layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
 			icon: greenPin
-		}));
+        }).bindPopup('NHDCOMID-' + i.properties.comid + ' NWIS ' + i.properties.identifier + ' url-' + i.properties.uri));
+
         reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
 			icon: greenPin
-		}));
+        }).bindPopup('NHDCOMID-' + i.properties.comid + ' NWIS' + i.properties.identifier + ' url-' +  i.properties.uri));
+
+
         gagesArray.push(i);
+        console.log(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
         if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
