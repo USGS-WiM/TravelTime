@@ -31,6 +31,33 @@ export class JobsonsModalComponent implements OnInit {
   public gages;
   public ShowGages: boolean = false;
   public NWISService: NWISService;
+  public appVersion: string;
+  public TravelTimeService: TravelTimeService;
+  public StudyService: StudyService;
+  public MapService: MapService;
+  public dateModel: Date = new Date();
+  public formGroup: FormGroup;
+  public reach_reference: reach;
+  public reachList: Array<any> = [];
+  public units;
+  public abbrev;
+  public inputIsValid: boolean = false;
+  private _spillMass: number;
+  private _discharge: number;
+  private _recoveryratio = 1;
+  public dischargeSub = new BehaviorSubject<number>(undefined);
+  public reachIDs = [];
+  private messager: ToastrService;
+  public model = {};
+  public showhidetitle = 'Show Reaches';
+  public showReaches: boolean = true;
+  public gettingResults: boolean = false;
+  public showDetails: Array<any>;
+  public reachesReady: boolean = false;
+  private lastIndex = null;
+  private selectedIndex = null;
+  private currentStep = 0;
+  public FirstReachDischarge;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
@@ -63,9 +90,6 @@ export class JobsonsModalComponent implements OnInit {
         this.MapService.showGages.subscribe(data => {
           this.ShowGages = data;
         })
-        if (data.length > 0 && this.ShowGages) {
-          this.openGagesModal();
-        }
       } else { }
     })
   }
@@ -82,35 +106,6 @@ export class JobsonsModalComponent implements OnInit {
   @ViewChild('acc', { static: false }) accordion: NgbAccordion;
   //#endregion
 
-  //#region "Declarations"
-  public appVersion: string;
-  public TravelTimeService: TravelTimeService;
-  public StudyService: StudyService;
-  public MapService: MapService;
-  public dateModel: Date = new Date();
-  public formGroup: FormGroup;
-  public reach_reference: reach;
-  public reachList: Array<any> = [];
-  public units;
-  public abbrev;
-  public inputIsValid: boolean = false;
-  private _spillMass: number;
-  public discharge: number;
-  public dischargeSub = new BehaviorSubject<number>(undefined);
-  public reachIDs = [];
-  private messager: ToastrService;
-  public model = {};
-  public showhidetitle = 'Show Reaches';
-  public showReaches: boolean = true;
-  public gettingResults: boolean = false;
-  public showDetails: Array<any>;
-  public reachesReady: boolean = false;
-  private lastIndex = null;
-  private selectedIndex = null;
-  private currentStep = 0;
-  public FirstReachDischarge;
-  //#endregion
-
   //#region "Setters"
   public get SpillMass(): number {
     return this._spillMass;
@@ -120,18 +115,25 @@ export class JobsonsModalComponent implements OnInit {
     this.StudyService.selectedStudy.SpillMass = this._spillMass;
   }
   public get Discharge(): number {
-    return this.discharge;
+    return this._discharge;
   }
   public set Discharge(v: number) {
-    this.discharge = v;
-    this.StudyService.selectedStudy.Discharge = this.discharge;
+    this._discharge = v;
+    this.StudyService.selectedStudy.Discharge = this._discharge;
+  }
+  public set RecoveryRatio(v: number) {
+    this._recoveryratio = v;
+    this.StudyService.selectedStudy.RecoveryRatio = this._recoveryratio;
+  }
+  public get RecoveryRatio(): number {
+    return this._recoveryratio;
   }
   //#endregion
 
   log(val) { console.log(val); }
 
   public validateInputs(): boolean {
-    if (typeof (this.SpillMass) === "number" && typeof (this.discharge) === "number") {
+    if (typeof (this.SpillMass) === "number" && typeof (this.Discharge) === "number" && typeof (this.RecoveryRatio) === "number") {
         return false;
     } else {
         return true;
@@ -144,10 +146,14 @@ export class JobsonsModalComponent implements OnInit {
 
 
    //#region "Methods"
+  public setParameters(): void {
+    this.setDischarge();
+    this.setRecoveryRatio();
+  }
   public setDischarge(): void {
     if (this.reachList.length > 0) {
-      this.StudyService.selectedStudy.Discharge = this.discharge;
-      let accumRatio = [this.discharge];
+      this.StudyService.selectedStudy.Discharge = this._discharge;
+      let accumRatio = [this._discharge];
       let cond = false;
       let value;
 
@@ -159,7 +165,7 @@ export class JobsonsModalComponent implements OnInit {
           accumRatio.push(value);
         } else {
           //this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
-          item.parameters[1].value = this.discharge;
+          item.parameters[1].value = this._discharge;
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
           cond = true;
@@ -173,15 +179,28 @@ export class JobsonsModalComponent implements OnInit {
       this.setDischarge();
     }
 
-    this.StudyService.setDischarge(this.discharge);
+    this.StudyService.setDischarge(this._discharge);
   }
 
-    public setConc(event): void {
-      if (this.reachList) {
-        this.StudyService.selectedStudy.SpillMass = this._spillMass;
-        this.StudyService.setConcentration(this._spillMass);
-      }
+  public setRecoveryRatio(): void {
+    if (this.reachList.length > 0) {
+      this.StudyService.selectedStudy.RecoveryRatio = this.RecoveryRatio;
+      this.reachList.forEach((item) => {
+          item.parameters[5].value = this.RecoveryRatio; 
+      });
+      //this.StudyService.SetWorkFlow('hasDischarge', true);
+    } else {
+      //this.setRecoveryRatio();
     }
+    this.StudyService.setRecoveryRatio(this.RecoveryRatio);
+  }
+
+  public setConc(event): void {
+    if (this.reachList) {
+      this.StudyService.selectedStudy.SpillMass = this._spillMass;
+      this.StudyService.setConcentration(this._spillMass);
+    }
+  }
 
   public validateForm(mainForm): boolean {
       console.log(mainForm.$valid);

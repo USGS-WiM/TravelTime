@@ -387,7 +387,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
         features.forEach(o => {
           if (o.geometry.type !== "Point") {
             if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
-              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea * 2.59; //in sqmiles
+              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea / 2.59; //in sqmiles
             } else { }
           }
         })
