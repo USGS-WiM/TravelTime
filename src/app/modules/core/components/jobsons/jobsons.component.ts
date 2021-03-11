@@ -93,6 +93,7 @@ export class JobsonsModalComponent implements OnInit {
   public inputIsValid: boolean = false;
   private _spillMass: number;
   public discharge: number;
+  public recratio: number;
   public dischargeSub = new BehaviorSubject<number>(undefined);
   public reachIDs = [];
   private messager: ToastrService;
@@ -109,6 +110,15 @@ export class JobsonsModalComponent implements OnInit {
   //#endregion
 
   //#region "Setters"
+
+  public get Recratio(): number {
+    return this.recratio;
+  }
+  public set Recratio(v: number) {
+    this.recratio = v;
+    //this.updateRecRatio(v);
+  }
+
   public get SpillMass(): number {
     return this._spillMass;
   }
@@ -137,6 +147,13 @@ export class JobsonsModalComponent implements OnInit {
 
   public updateDischarge(): void {
     this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(3);
+  }
+
+  public updateRecRatio(v:number) {
+    this.reachList.forEach((item) => {
+      item.parameters[5].value = v;
+      console.log(item.parameters[5]);
+    })
   }
 
 
@@ -327,6 +344,7 @@ export class JobsonsModalComponent implements OnInit {
 
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
+        if (i > 0) { newreach.description = "reach" };
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope;
 

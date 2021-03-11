@@ -52,6 +52,7 @@ export class StudyService  {
 
     public defDischarge = "cubic meters per second";
     public defConcentration = "kilograms";
+    public defRecratio = 'unitless';
 
     private selectedProcedure = new Subject<number>();
     procedureType$ = this.selectedProcedure.asObservable();

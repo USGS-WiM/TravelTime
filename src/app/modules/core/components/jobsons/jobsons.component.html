@@ -34,7 +34,7 @@
 						<small>({{this.StudyService.defConcentration}}):</small>
 					</label>
 					<div class="row-input">
-						<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event);validateInputs();" type=number required placeholder="Value" name="spillmass" class="up">
+						<input [(ngModel)]="SpillMass" name="spillmass" (ngModelChange)="setConc($event);validateInputs();" type=number required placeholder="Value" name="spillmass" class="up">
 					</div>
 				</div>
 				<!-- Discharge -->
@@ -47,7 +47,16 @@
 						<input [(ngModel)]="discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
 					</div>
 				</div>
-
+				<!-- Recovery ratio -->
+				<div class="modal-form-row">
+					<label>
+						Recovery ratio
+						<small>({{this.StudyService.defRecratio}}):</small>
+					</label>
+					<div class="row-input">
+						<input [(ngModel)]="recratio" (ngModelChange)="updateRecRatio($event);validateInputs();" type=number required placeholder="define recovery ratio" name="recovery ratio" class="form-control tight">
+					</div>
+				</div>
 
 				<div>
 					<label style="padding: 15px 0; display: block;">
@@ -90,8 +99,8 @@
 									</span>
 								</div>
 								<!--<div class="icon jobsons-delete" (click)="removeReach(i)">
-			<i class="far" class="far fa-trash-alt"></i>
-		</div>-->
+						<i class="far" class="far fa-trash-alt"></i>
+					</div>-->
 							</div>
 
 							<!-- Nested toggle body -->

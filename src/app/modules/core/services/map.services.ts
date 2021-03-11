@@ -8,6 +8,7 @@ import { Drift } from '../models/drift';
 import { gages } from '../models/gages';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType';
+import * as xml2js from 'xml2js';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -257,6 +258,16 @@ export class MapService {
   private StreamGages = new Subject<any>();
   gages$ = this.StreamGages.asObservable();
 
+  getGageInfoNwis(site: any)  {
+    let baseurl = "https://waterdata.usgs.gov/nwis/inventory?search_site_no=" + site + "&search_site_no_match_type=exact&group_key=NONE&format=sitefile_output&sitefile_output_format=xml&column_name=agency_cd&column_name=site_no&column_name=station_nm&column_name=site_tp_cd&column_name=lat_va&column_name=long_va&column_name=dec_lat_va&column_name=dec_long_va&column_name=coord_meth_cd&column_name=coord_acy_cd&column_name=coord_datum_cd&column_name=dec_coord_datum_cd&column_name=district_cd&column_name=state_cd&column_name=county_cd&column_name=country_cd&column_name=land_net_ds&column_name=map_nm&column_name=map_scale_fc&column_name=alt_va&column_name=alt_meth_cd&column_name=alt_acy_va&column_name=alt_datum_cd&column_name=huc_cd&column_name=basin_cd&column_name=topo_cd&column_name=data_types_cd&column_name=instruments_cd&column_name=construction_dt&column_name=inventory_dt&column_name=drain_area_va&column_name=contrib_drain_area_va&column_name=tz_cd&column_name=local_time_fg&column_name=reliability_cd&column_name=gw_file_cd&column_name=nat_aqfr_cd&column_name=aqfr_cd&column_name=aqfr_type_cd&column_name=well_depth_va&column_name=hole_depth_va&column_name=depth_src_cd&column_name=project_no&column_name=rt_bol&column_name=peak_begin_date&column_name=peak_end_date&column_name=peak_count_nu&column_name=qw_begin_date&column_name=qw_end_date&column_name=qw_count_nu&column_name=gw_begin_date&column_name=gw_end_date&column_name=gw_count_nu&column_name=sv_begin_date&column_name=sv_end_date&column_name=sv_count_nu&list_of_search_criteria=search_site_no";
+    return (this.http.get<any>(baseurl, <Object>{ responseType: 'text' }));
+  }
+
+  getGageInfoNwisv2(site: any) {
+    let baseurl = "https://waterservices.usgs.gov/nwis/site/?site=" + site + "&siteoutput=expanded";
+    return (this.http.get<any>(baseurl, <Object>{ responseType: 'text' }));
+  }
+
   getRealTimeFlow(starttime: string,endtime: string, site: any) {
     this.gages = []; //clear array
     for (var i = 0; i < site.length; i++) {
@@ -265,7 +276,6 @@ export class MapService {
       let gage = site[i];
       let siteid = (gage.identifier.replace("USGS-", ""));
       let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + startdate + "&endDT=" + enddate + "&parameterCd=00060&siteStatus=active";
-      console.log(baseurl);
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
       });
@@ -273,8 +283,33 @@ export class MapService {
     this.StreamGages.next(this.gages);
   }
 
+
+  public csvJSON(csv) {
+    var lines = csv.split(" ");
+
+    var result = [];
+
+    var headers = lines[0].split(" ");
+
+    for (var i = 1; i < lines.length; i++) {
+
+      var obj = {};
+      var currentline = lines[i].split(" ");
+
+      for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
+      }
+
+      result.push(obj);
+
+    }
+
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
+  }
+
+
   getMostRecentFlow(site: any) {
-    console.log("used function getmostrecentflow");
     this.gages = [];
     for (var i = 0; i < site.length; i++) {
       let gage = site[i];
@@ -282,10 +317,76 @@ export class MapService {
       let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&parameterCd=00060&siteStatus=active";
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
-        this.updateGageData(result, gage);
-        console.log(site);
-        console.log("USGS-" + siteid);
-        this.showGages.next(true);
+        this.getGageInfoNwisv2(siteid).subscribe(Nwisresult => {
+          const csv = [];
+          const lines = Nwisresult.split('#');
+          lines.forEach(element => {
+            const cols: string[] = element.split(';');
+            csv.push(cols);
+          });
+          let myresult = csv[csv.length - 1][0];
+          let jsonresult = JSON.stringify(myresult);
+          let myarrayv1 = jsonresult.split('\\n');
+          let myarrayv2 = [];
+          myarrayv1.forEach(item => {
+            let temparray = item.split('\\t');
+            myarrayv2.push(temparray);
+          })
+          let params = myarrayv2[1];
+          let time = myarrayv2[2];
+          let value = myarrayv2[3];
+          let len = params.length;
+          let data = []
+          for (let x = 0; x < len; x++) {
+            let element = {
+              [params[x].toString()]: value[x],
+              "time": time[x]
+            };
+            data.push(element);
+          }
+          let mydata = JSON.stringify(data);
+          let parsedJson = JSON.parse(mydata);
+          //let contribda = parsedJson[30].contrib_drain_area_va;
+          //let da = parsedJson[29].drain_area_va;
+          parsedJson.forEach(item => {
+            let contribda = 0;
+            let da = 0;
+            if (item.hasOwnProperty('contrib_drain_area_va') | item.hasOwnProperty('drain_area_va')) {
+               if (item.contrib_drain_area_va > 0) {
+                contribda = item.contrib_drain_area_va
+              } else if (item.drain_area_va > 0) {
+                da = item.drain_area_va
+              } else {}
+
+              if (contribda > 0) {
+                  this.updateGageData(result, gage, contribda);
+                } else if (da > 0) {
+                  this.updateGageData(result, gage, da);
+                } else {
+                  this.http.get<any>("https://test.streamstats.usgs.gov/gagestatsservices/stations/" + siteid).subscribe(SSresult => {
+                    let SSd = SSresult.characteristics[0].value;
+                    this.updateGageData(result, gage, SSd); //failed
+                  })
+                }
+              }
+          })
+          this.showGages.next(true);
+        });
+
+        /*const p: xml2js.Parser = new xml2js.Parser();
+        this.getGageInfoNwis(siteid).subscribe(nwisresult => {
+          p.parseString(nwisresult, (err, jsonresult) => {
+            if (err) {
+              throw err;
+            } //contributing drainage area first, next drain area va
+
+            const json = JSON.stringify(jsonresult); //format your json output
+            let d = JSON.parse(json);//update gage info to match from nwis
+            this.updateGageData(result, gage, d.usgs_nwis.site[0].drain_area_va[0]);
+          });
+        });*/
+
+
         if ("USGS-" + siteid == site[site.length-1].identifier) {
 
         }
@@ -297,12 +398,13 @@ export class MapService {
   }
 
   public gagessub = [];
-  public updateGageData(result, site) {
+  public updateGageData(result, site, F) {
     let newgage = site.properties;
-
+    if (F > 0) {
+      newgage.drainagearea = F;
+    }
     if (result.value.timeSeries.length > 0) {
       let code = "USGS-" + result.value.timeSeries[0].sourceInfo.siteCode[0].value;
-      console.log(code);
       if (newgage.identifier == code) {
         console.log('matched and updated discharge values');
         newgage.value = result.value.timeSeries[0].values[0].value[0].value;
