@@ -52,7 +52,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     return this._mousePosition;
   }
 
-  public evnt;
   @Input() report: boolean;
   @Input() mapSize: string;
 
@@ -161,7 +160,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
       this.reportlayerGroup = reportlayerGroup;
     });
-    var scale = L.control.scale();
   }
 
   //#endregion
@@ -207,7 +205,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;
-    this.evnt = evnt.latlng;
     if (this.StudyService.GetWorkFlow('hasMethod')) {
       (document.getElementById(this.StudyService.selectedStudy.MethodType) as HTMLInputElement).disabled = true;
       (document.getElementById(this.StudyService.selectedStudy.MethodType) as HTMLInputElement).classList.remove('waiting');
@@ -221,7 +218,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   }
 
   public getLatLong(evnt: any) { 
-    this.evnt = evnt.latlng;
     this._mousePosition = evnt.latlng;
   }
 

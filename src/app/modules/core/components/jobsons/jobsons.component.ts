@@ -188,10 +188,7 @@ export class JobsonsModalComponent implements OnInit {
       this.reachList.forEach((item) => {
           item.parameters[5].value = this.RecoveryRatio; 
       });
-      //this.StudyService.SetWorkFlow('hasDischarge', true);
-    } else {
-      //this.setRecoveryRatio();
-    }
+    } 
     this.StudyService.setRecoveryRatio(this.RecoveryRatio);
   }
 

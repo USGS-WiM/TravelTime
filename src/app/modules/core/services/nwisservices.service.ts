@@ -88,20 +88,10 @@ export class NWISService {
 
     return this.http.get<any>(url)
     .pipe(
-    //   map(res => {
-    //     switch (res.status) {
-    //       case 404:
-    //           return false;
-    //       case 200:
-    //           return true;
-    //       default:
-    //           return false;
-    //     }
-    //   },
       catchError(err => {
       if (err.status === 404) {
         return of(false);
       }}
-      ))//)
+      ))
   }
 }

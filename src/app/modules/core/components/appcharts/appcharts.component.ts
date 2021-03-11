@@ -125,23 +125,6 @@ export class AppchartsComponent implements OnInit {
         }
       }],
       xAxes: [{
-        // type: 'time',
-        // time: {
-        //   parser: 'MM/DD/YYYY HH:mm',
-        //   tooltipFormat: 'll HH:mm',
-        //   unit: 'minute',
-        //   unitStepSize: 10,
-        //   displayFormats: {
-        //     second: 'HH:mm:ss',
-        //     minute: 'HH:mm:ss',
-        //     hour: 'HH:mm'
-        //   }
-        // },
-        // ticks: {
-        //   unit: 'minute',
-        //   stepSize: 10,
-        // },
-
         type: 'time',
         ticks: {
           unit: 'minute',
