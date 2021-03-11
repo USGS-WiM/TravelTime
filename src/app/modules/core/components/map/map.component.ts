@@ -30,6 +30,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private NWISService: NWISService;
   private ToTCalculator: UpstreamtotService;
   private _layersControl;
+  private _mousePosition;
   private _bounds;
   private _layers = [];
   private subscription: Subscription;
@@ -42,6 +43,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public reportlayerGroup;
   public map: L.Map;
   public isfirst = true;
+
+  public set MousePosition(v: any) {
+    this._mousePosition = v;
+  }
+
+  public get MousePosition(): any {
+    return this._mousePosition;
+  }
 
   public evnt;
   @Input() report: boolean;
@@ -211,6 +220,11 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     }
   }
 
+  public getLatLong(evnt: any) { 
+    this.evnt = evnt.latlng;
+    this._mousePosition = evnt.latlng;
+  }
+
   //#endregion
 
   //#region "Helper methods (create FeatureGroup layer)"
@@ -332,13 +346,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     features.forEach(i => {
 
       if (i.geometry.type === 'Point') {
+        var siteID = i.properties.identifier.replace("USGS-", "");
 		// MarkerMaker Icon
-		var greenPin = L.divIcon({className: 'wmm-pin wmm-green wmm-icon-circle wmm-icon-white wmm-size-25'});
+		var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
         layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-			icon: greenPin
-		}));
+			icon: blackTriangle
+		}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
         reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-			icon: greenPin
+			icon: blackTriangle
 		}));
         gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
@@ -416,7 +431,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     } catch (e) {
     }
   }
-
 
   private formatReaches(data): any {
     const streamArray = [];

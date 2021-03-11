@@ -47,7 +47,7 @@
 						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
 					</div>
 				</div>
-				<!-- Recovery Ratio-->
+				<!-- Recovery Ratio -->
 				<div class="modal-form-row">
 					<label>
 						Recovery Ratio
@@ -57,6 +57,16 @@
 						<input [(ngModel)]="RecoveryRatio" (ngModelChange)="validateInputs();" type=number required placeholder="Enter a value" name="recoveryratio" class="form-control tight">
 					</div>
 				</div>
+				<!-- Recovery Ratio -->
+				<div class="modal-form-row">
+					<label>
+						Include Dye Tracer Data?
+					</label>
+					<div class="row-input">
+						<select [(ngModel)]="includeDT" ng-options="x.option for x in DyeTracer" required placeholder="Choose an option" name="dyetracer" class="form-control tight"></select>
+					</div>
+				</div>
+				<!-- Mean Annual Flow -->
 				<div>
 					<label style="padding: 15px 0; display: block;">
 						Mean annual flow of closest reach: {{FirstReachDischarge}}

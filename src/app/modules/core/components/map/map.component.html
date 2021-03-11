@@ -2,8 +2,9 @@
 <div class="map-position leaflet-bottom leaflet-left">
     <span>Zoom Level: {{this.MapService.CurrentZoomLevel.value}}</span> <br />
     <span id="mapscale">Map Scale: 1:{{this.MapService.nominalZoomLevel.value}}</span> <br />
-    <!-- <span>{{mousePosition}}</span> -->
+    <span>Lat: {{MousePosition.lat.toFixed(4)}}, Lon: {{MousePosition.lng.toFixed(4)}}</span>
 </div>
+
 <!-- Leaflet map element -->
 <div *ngIf="!report" id="leaflet"
      leaflet
@@ -14,7 +15,8 @@
      (leafletZoomChange)="onZoomChange($event)"
 	 [leafletFitBounds]="fitBounds"
      [leafletFitBoundsOptions]="{maxZoom: 13}"
-	 (leafletClick)="onMouseClick($event)">
+	 (leafletClick)="onMouseClick($event)"
+     (leafletMouseMove)="getLatLong($event)">
 </div>
 
  <!-- Report -->

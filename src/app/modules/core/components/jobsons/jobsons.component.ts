@@ -45,6 +45,7 @@ export class JobsonsModalComponent implements OnInit {
   private _spillMass: number;
   private _discharge: number;
   private _recoveryratio = 1;
+  public DyeTracer = [{option: "yes"},{option: "no"}];
   public dischargeSub = new BehaviorSubject<number>(undefined);
   public reachIDs = [];
   private messager: ToastrService;
@@ -58,6 +59,7 @@ export class JobsonsModalComponent implements OnInit {
   private selectedIndex = null;
   private currentStep = 0;
   public FirstReachDischarge;
+  public includeDT = "yes";
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
