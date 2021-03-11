@@ -2,7 +2,7 @@
 <div class="map-position leaflet-bottom leaflet-left">
     <span>Zoom Level: {{this.MapService.CurrentZoomLevel.value}}</span> <br />
     <span id="mapscale">Map Scale: 1:{{this.MapService.nominalZoomLevel.value}}</span> <br />
-    <span>Lat: {{MousePosition.lat.toFixed(4)}}, Lon: {{MousePosition.lng.toFixed(4)}}</span>
+    <span>Lat: {{ MousePosition ? MousePosition.lat.toFixed(4) : "" }}, Lon: {{ MousePosition ? MousePosition.lng.toFixed(4) : "" }}</span>
 </div>
 
 <!-- Leaflet map element -->
