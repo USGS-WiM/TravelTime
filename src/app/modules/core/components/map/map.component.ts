@@ -351,7 +351,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 
 
         gagesArray.push(i);
-        console.log(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
       } else {
         if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {

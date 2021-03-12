@@ -1,5 +1,6 @@
 import { Injectable, ElementRef, EventEmitter, Injector } from '@angular/core';
 import * as L from 'leaflet';
+import { markerClusterGroup } from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
@@ -9,6 +10,7 @@ import { gages } from '../models/gages';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType';
 import * as xml2js from 'xml2js';
+import 'leaflet.markercluster';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -80,7 +82,8 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
-      this.addDrift();
+      //this.addDrift();
+      this.addLeafletG();
     });
 
   }
@@ -90,7 +93,7 @@ export class MapService {
 
     this.http.get('assets/data/table.csv', { responseType: 'text' }).subscribe(data => {
       let csvToRowArray = data.split("\n");
-      var driftLayer = L.layerGroup();
+      var driftLayer = L.markerClusterGroup();
       var blackPin = L.divIcon({ className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-10' });
       var myRenderer = L.canvas({ padding: 0.5 });
       for (let index = 1; index < csvToRowArray.length - 1; index++) {
@@ -105,6 +108,18 @@ export class MapService {
     })
   }
 
+  public addLeafletG() {
+    this.http.get('assets/data/table.geojson').subscribe((data: any) => {
+      var markers = markerClusterGroup();
+      var geoJsonLayer = L.geoJSON(data, {
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.name);
+        }
+      });
+      markers.addLayer(geoJsonLayer);
+      this.AddMapLayer({ name: 'DRIFTgson', layer: markers, visible: false })
+    })
+  }
 
   public AddMapLayer(mlayer: MapLayer) {
 
@@ -364,8 +379,16 @@ export class MapService {
                   this.updateGageData(result, gage, da);
                 } else {
                   this.http.get<any>("https://test.streamstats.usgs.gov/gagestatsservices/stations/" + siteid).subscribe(SSresult => {
-                    let SSd = SSresult.characteristics[0].value;
-                    this.updateGageData(result, gage, SSd); //failed
+                    try {
+                      let SSd = SSresult.characteristics[0].value;
+                      this.updateGageData(result, gage, SSd);
+                    } catch {
+                      console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
+                      this.updateGageData(result, gage, 0);
+                    } //failed
+                  }, (error) => {
+                      console.error ('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
+                      this.updateGageData(result, gage, 0);
                   })
                 }
               }
