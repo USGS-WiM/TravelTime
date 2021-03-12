@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModalConfig, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import { StudyService } from '../../services/study.service';
 import { reach } from '../../models/reach';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { MapComponent } from '../map/map.component';
 import { Angulartics2 } from 'angulartics2';

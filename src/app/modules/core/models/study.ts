@@ -7,7 +7,7 @@ export class Study {
     public SpillMass: number;
     public Discharge: number;
     public SpillDate: string;
-    
+    public RecoveryRatio: number;
     private _methodType : string;
     public get MethodType() : string {
       return this._methodType;

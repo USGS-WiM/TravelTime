@@ -11,7 +11,7 @@ import { MatProgressButtonsModule } from 'mat-progress-buttons';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NavigationService } from './services/navigationservices.service';
-import { MapService} from './services/map.services';
+import { MapService} from './services/map.service';
 import { StudyService } from './services/study.service';
 import { TravelTimeService } from './services/traveltimeservices.service';
 import { NgxPrintModule} from 'ngx-print';
@@ -27,6 +27,7 @@ import { ReportModalComponent } from './components/report/report.component';
 import { ReportModule } from './components/report/report.module';
 import { Angulartics2Module } from 'angulartics2';
 import { AppChartsModule } from './components/appcharts/appcharts.module';
+import { NWISService } from './services/nwisservices.service';
 //import { GagesmodalComponent } from './components/gagesmodal/gagesmodal.component';
 
 @NgModule({
@@ -51,7 +52,7 @@ import { AppChartsModule } from './components/appcharts/appcharts.module';
     Angulartics2Module.forRoot(),
     AppChartsModule
     ],
-  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService],
+  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService, NWISService],
   exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],
   bootstrap: [CoreComponent]
 })

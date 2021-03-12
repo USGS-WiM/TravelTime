@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StudyService } from '../../services/study.service';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
 import { ChartsService } from '../../services/charts.service';
