@@ -2,9 +2,8 @@ import { Injectable, ElementRef, EventEmitter, Injector } from '@angular/core';
 import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
-import { gages } from '../models/gages';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType';
 
@@ -19,13 +18,12 @@ export class MapService {
   public Options: L.MapOptions;
   // for layers that will show up in the leaflet control
   public LayersControl: BehaviorSubject<layerControl> = new BehaviorSubject<any>({ baseLayers: [], overlays: [] });
-  public gagesarray: Array<gages> = [];
-  public newSessionGages: Array<gages> = [];
 
   public _layersControl: layerControl = {
     baseLayers: [], overlays: []
   };
   public CurrentZoomLevel: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  public nominalZoomLevel: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public CurrentLayer: String;
   public isClickable: boolean = false;
   public Cursor: String;
@@ -36,6 +34,8 @@ export class MapService {
   public abbrevOptions;
   public http: HttpClient;
   public map: L.Map;
+  public scale: L.Control.Scale;
+  public ScaleOptions: L.Control.ScaleOptions;
   public gageDischargeSearch: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   private messanger: ToastrService;
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
@@ -53,6 +53,19 @@ export class MapService {
       zoom: 4,
       center: L.latLng(39, -100)
     };
+    
+    if(this.unitsOptions == 'metric') {
+      this.ScaleOptions = {
+        metric: true,
+        imperial: false
+      };
+    } else {
+      this.ScaleOptions = {
+        imperial: true,
+        metric: false
+      }
+    }
+
     //this.CurrentZoomLevel.next(this.Options.zoom);
 
     http.get("assets/data/config.json").subscribe(data => {
@@ -95,9 +108,7 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-
-  public HighlightFeature(layername: string, indx: number) {
-    
+  public HighlightFeature(layername: string, indx: number) {    
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
     if (!ml) return;
     if (!ml.visible) { ml.visible = true; }
@@ -128,7 +139,6 @@ export class MapService {
   }
 
   public SetOverlay (layername: string) {
-
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
 
     if (!ml) return;
@@ -142,7 +152,6 @@ export class MapService {
   }
 
   public SetBaselayer(layername: string) {
-
     if (this.CurrentLayer != layername) {
       var ml = this._layersControl.baseLayers.find((l: any) => (l.name === this.CurrentLayer))
       if (!ml) return; 
@@ -231,70 +240,6 @@ export class MapService {
     this.LatLng.next(this.latlng);
   }
 
-  public gages = [];
-  private StreamGages = new Subject<any>();
-  gages$ = this.StreamGages.asObservable();
-
-  getRealTimeFlow(starttime: string,endtime: string, site: any) {
-    this.gages = []; //clear array
-    for (var i = 0; i < site.length; i++) {
-      let startdate = starttime;
-      let enddate = endtime;
-      let gage = site[i];
-      let siteid = (gage.identifier.replace("USGS-", ""));
-      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + startdate + "&endDT=" + enddate + "&parameterCd=00060&siteStatus=active";
-      console.log(baseurl);
-      this.http.get<any>(baseurl).subscribe(result => {
-        this.gages.push(result);
-      });
-    }
-    this.StreamGages.next(this.gages);
-  }
-
-  getMostRecentFlow(site: any) {
-    console.log("used function getmostrecentflow");
-    this.gages = [];
-    for (var i = 0; i < site.length; i++) {
-      let gage = site[i];
-      let siteid = (gage.properties.identifier.replace("USGS-", ""));
-      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&parameterCd=00060&siteStatus=active";
-      this.http.get<any>(baseurl).subscribe(result => {
-        this.gages.push(result);
-        this.updateGageData(result, gage);
-        console.log(site);
-        console.log("USGS-" + siteid);
-        this.showGages.next(true);
-        if ("USGS-" + siteid == site[site.length-1].identifier) {
-
-        }
-      })
-    }
-
-    this.gagesArray.next(this.gagessub);
-    this.StreamGages.next(this.gages);
-  }
-
-  public gagessub = [];
-  public updateGageData(result, site) {
-    let newgage = site.properties;
-
-    if (result.value.timeSeries.length > 0) {
-      let code = "USGS-" + result.value.timeSeries[0].sourceInfo.siteCode[0].value;
-      console.log(code);
-      if (newgage.identifier == code) {
-        console.log('matched and updated discharge values');
-        newgage.value = result.value.timeSeries[0].values[0].value[0].value;
-        let date = new Date(result.value.timeSeries[0].values[0].value[0].dateTime);
-        newgage.record = date;
-      } else {
-        
-      }
-    } else {
-      this.sm('Gage is missing discharge value: ' + site.properties.identifier + "More info on: " + site.properties.uri);
-    }
-    this.gagessub.push(newgage);
-  }
-
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
     try {
       let options: Partial<IndividualConfig> = null;
@@ -304,6 +249,30 @@ export class MapService {
     }
   }
 
-  public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
   public isInsideWaterBody: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  public scaleLookup(mapZoom: number) {
+    switch (mapZoom) {
+        case 19: return '1,128'
+        case 18: return '2,256'
+        case 17: return '4,513'
+        case 16: return '9,027'
+        case 15: return '18,055'
+        case 14: return '36,111'
+        case 13: return '72,223'
+        case 12: return '144,447'
+        case 11: return '288,895'
+        case 10: return '577,790'
+        case 9: return '1,155,581'
+        case 8: return '2,311,162'
+        case 7: return '4,622,324'
+        case 6: return '9,244,649'
+        case 5: return '18,489,298'
+        case 4: return '36,978,596'
+        case 3: return '73,957,193'
+        case 2: return '147,914,387'
+        case 1: return '295,828,775'
+        case 0: return '591,657,550'
+    }
+  }
 }

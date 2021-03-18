@@ -44,22 +44,29 @@
 						<small>({{this.StudyService.defDischarge}}):</small>
 					</label>
 					<div class="row-input">
-						<input [(ngModel)]="discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
+						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
 					</div>
 				</div>
-
-
+				<!-- Recovery Ratio -->
+				<div class="modal-form-row">
+					<label>
+						Recovery Ratio
+						<small>({{this.StudyService.defRecoveryRatio}}):</small>
+					</label>
+					<div class="row-input">
+						<input [(ngModel)]="RecoveryRatio" (ngModelChange)="validateInputs();" type=number required placeholder="Enter a value" name="recoveryratio" class="form-control tight">
+					</div>
+				</div>
+				<!-- Mean Annual Flow -->
 				<div>
 					<label style="padding: 15px 0; display: block;">
 						Mean annual flow of closest reach: {{FirstReachDischarge}}
 					</label>
 					<button id="response" class="icon-button blue" [hidden]="!ShowGages" (click)="openGagesModal()" [ngClass]="{'waiting': ShowGages}">
 						<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
-						Review gages
+						View nearby gages
 					</button>
-
 				</div>
-
 
 
 				<!-- Add space between inputs and reaches -->
@@ -122,36 +129,34 @@
 								</div>
 								<!--Parameters input-->
 								<div *ngFor="let pars of item.parameters;  let it3 = index; trackBy:customTrackBy" class="modal-form-row">
-									<label>
-										{{pars.name}}
-										<small>({{pars.unit.unit}}):</small>
-									</label>
+									<ng-container *ngIf="pars.name !== 'Recovery ratio'" style="margin:0px">
+										<label>
+											{{pars.name}}
+											<small>({{pars.unit.unit}}):</small>
+										</label>
 
-									<div *ngIf="i === currentStep; else disable" class="row-input">
+										<div *ngIf="i === currentStep; else disable" class="row-input">
+											<span *ngIf="pars.required === true">
+												<input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
+															type=number ngControl="value" required autocomplete="off">
+											</span>
+											<span *ngIf="pars.required === false">
+												<input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+															type=number ngControl="value" autocomplete="off">
+											</span>
+										</div>
 
-										<span *ngIf="pars.required === true">
-											<input [(ngModel)]="item.parameters[it3].value" placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" required autocomplete="off">
-										</span>
-
-										<span *ngIf="pars.required === false">
-											<input [(ngModel)]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" autocomplete="off">
-										</span>
-									</div>
-
-									<ng-template #disable>
-										<span *ngIf="pars.required === true">
-											<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" required autocomplete="off">
-										</span>
-
-										<span *ngIf="pars.required === false">
-											<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
-														 type=number ngControl="value" autocomplete="off">
-										</span>
-									</ng-template>
-
+										<ng-template #disable>
+											<span *ngIf="pars.required === true">
+												<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+															type=number ngControl="value" required autocomplete="off">
+											</span>
+											<span *ngIf="pars.required === false">
+												<input [value]='item.parameters[it3].value' placeholder="value" name="{{pars.name}}"
+															type=number ngControl="value" autocomplete="off">
+											</span>
+										</ng-template>
+									</ng-container>
 								</div>
 
 
@@ -173,7 +178,7 @@
 					<i class="far fa-trash-alt"></i>
 					<span>Clear</span>
 				</button>
-				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setDischarge(); getResults();">
+				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setParameters(); getResults();">
 					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
 					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
 				</button>

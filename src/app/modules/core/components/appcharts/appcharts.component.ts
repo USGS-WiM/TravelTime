@@ -132,7 +132,7 @@ export class AppchartsComponent implements OnInit {
           displayFormats: {
             second: 'HH:mm:ss',
             minute: 'HH:mm:ss',
-            hour: 'HH:mm',
+            hour: 'HH:mm'
           },
         },
       }],
@@ -146,10 +146,14 @@ export class AppchartsComponent implements OnInit {
       this.viewChart = 'max';
       this.ChartService.displayAction('most', true);
       this.ChartService.displayAction('max', false);
+      this.showMax = false;
+      this.showMost = true;
     } else {
       this.viewChart = 'most';
       this.ChartService.displayAction('most', false);
       this.ChartService.displayAction('max', true);
+      this.showMost = false;
+      this.showMax = true;
     }
     this.flushChartData();
     this.getAllMostProbable();
