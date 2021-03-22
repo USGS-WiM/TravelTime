@@ -196,7 +196,7 @@ export class AppchartsComponent implements OnInit {
       this.generateData();
       this.chart.update();
       this.chart.updateColors();
-      this.ref['placeholder'] = 'Select group';
+      this.ref['placeholder'] = 'Select a group';
       return null;
     }
     this.ref['placeholder'] = '';
