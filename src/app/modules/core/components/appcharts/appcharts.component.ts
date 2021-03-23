@@ -7,6 +7,7 @@ import { Color, BaseChartDirective} from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { MapService } from '../../services/map.service';
 
 // tslint:disable-next-line: class-name
 interface chartData {
@@ -23,9 +24,10 @@ interface chartData {
 
 export class AppchartsComponent implements OnInit {
 
-  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService) {
+  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService, mapservice: MapService) {
     this.StudyService = studyservice;
     this.ChartService = chartservice;
+    this.MapService = mapservice;
     this.ChartService.displayAction('max', false);
     this.ChartService.displayAction('most', true);
   }
@@ -42,6 +44,7 @@ export class AppchartsComponent implements OnInit {
 
   //#region "Declartions"
   public lineChartColors: Color[] = [];
+  private MapService: MapService;
   private ChartService: ChartsService;
   private StudyService: StudyService;
   reaches: reach[];
@@ -389,8 +392,17 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-  public chartClicked(): void {
+  public chartClicked(e): void {
+    var index;
+    if (this.selectedGroupId) { // if user has selected a reach group, calculate index for point selected
+      index = ((this.selectedGroupId) * 5) + e.active[0]._datasetIndex;
+    } else {  // user has not selected reach group
+      index = e.active[0]._datasetIndex;
+    }
+    this.ChartService.noticeAction(index);
+    this.MapService.HighlightFeature('Flowlines', Number(this.output$[index].name.replace(/^\D+/g, '')));
   }
+
   public chartHovered(): void {
   }
   //#endregion
