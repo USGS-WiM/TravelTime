@@ -39,6 +39,8 @@
 }
 
 ng-select {
+	text-align: center;
+    text-align-last: center;
   > div {
     > div.single {
       > div.toggle {
@@ -69,4 +71,8 @@ ng-select {
 
 select-dropdown {
   display: none;
+}
+
+.dropdown-menu {
+	margin-left: 30%;
 }
