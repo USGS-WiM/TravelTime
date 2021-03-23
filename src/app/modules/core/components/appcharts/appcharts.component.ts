@@ -7,7 +7,11 @@ import { Color, BaseChartDirective} from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+<<<<<<< HEAD
 import { DateTimeValidator } from '../jobsons/jobsons.component';
+=======
+import { MapService } from '../../services/map.service';
+>>>>>>> 21f4d39fb631d714d781f5d8cd692638aaa54608
 
 // tslint:disable-next-line: class-name
 interface chartData {
@@ -24,6 +28,7 @@ interface chartData {
 
 export class AppchartsComponent implements OnInit {
 
+<<<<<<< HEAD
     //#region "Declarations"
     public lineChartColors: Color[] = [];
     private ChartService: ChartsService;
@@ -68,8 +73,12 @@ export class AppchartsComponent implements OnInit {
     //#endregion
 
   constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService) {
+=======
+  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService, mapservice: MapService) {
+>>>>>>> 21f4d39fb631d714d781f5d8cd692638aaa54608
     this.StudyService = studyservice;
     this.ChartService = chartservice;
+    this.MapService = mapservice;
     this.ChartService.displayAction('max', false);
     this.ChartService.displayAction('most', true);
   }
@@ -84,6 +93,48 @@ export class AppchartsComponent implements OnInit {
   @ViewChild(NgSelectComponent, { static: false }) ngSelectComponent: NgSelectComponent;
   //#endregion
 
+<<<<<<< HEAD
+=======
+  //#region "Declartions"
+  public lineChartColors: Color[] = [];
+  private MapService: MapService;
+  private ChartService: ChartsService;
+  private StudyService: StudyService;
+  reaches: reach[];
+  reachesGrouped: chartData [];
+  selectedGroupId: number;
+
+  public maxLineChartLabels: Array<any> = [];
+  public maxLineChartData: ChartDataSets[] = [];
+
+  public mostLineChartLabels: Array<any> = [];
+  public mostLineChartData: ChartDataSets[] = [];
+
+  public lineChartLegend = true;
+  public lineChartType = 'line';
+  public lineChartPlugins = [pluginAnnotations];
+
+  // site grouping disabled;
+  isDisabled = false;
+
+  // most probable
+  private maxMostProbableY;
+
+  // maximum probable
+  private maxMaxProbableY;
+  private maxTimeLabels = [];
+  private maxConcentration = [];
+  private mostTimeLabels = [];
+  private mostConcentration = [];
+
+  // Which chart is currently being viewed
+  public viewChart = 'max';
+
+  public showMost = true;
+  public showMax = false;
+  //#endregion
+
+>>>>>>> 21f4d39fb631d714d781f5d8cd692638aaa54608
   //#region "Chart options"
   public mostLineChartOptions: any = {
     responsive: true,
@@ -408,8 +459,17 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-  public chartClicked(): void {
+  public chartClicked(e): void {
+    var index;
+    if (this.selectedGroupId) { // if user has selected a reach group, calculate index for point selected
+      index = ((this.selectedGroupId) * 5) + e.active[0]._datasetIndex;
+    } else {  // user has not selected reach group
+      index = e.active[0]._datasetIndex;
+    }
+    this.ChartService.noticeAction(index);
+    this.MapService.HighlightFeature('Flowlines', Number(this.output$[index].name.replace(/^\D+/g, '')));
   }
+
   public chartHovered(): void {
   }
   //#endregion
