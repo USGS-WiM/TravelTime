@@ -60,7 +60,7 @@ export class AppchartsComponent implements OnInit {
     public showMost = true;
     public showMax = false;
 
-    // public _units = 'cms'; //implement soon in chart labels
+    // public _units = 'cms'; //implement soon in chart popup labels
     // public get Units() {
     //   return this._units;
     // }
@@ -112,23 +112,7 @@ export class AppchartsComponent implements OnInit {
       }],
       xAxes: [{
         type: 'time',
-        ticks: {
-          unit: 'minute',
-          //unitStepSize: 10,
-          displayFormats: {
-            second: 'HH:mm:ss',
-            minute: 'HH:mm:ss',
-            hour: 'HH:mm',
-          },
-        },
         time: {
-          unit: 'minute',
-          //unitStepSize: 10,
-          displayFormats: {
-            second: 'h:mm:ss',
-            minute: 'h:mm a',
-            hour: 'h a',
-          },
           tooltipFormat:'MM/DD/YYYY h:mm a'
          }
       }],
@@ -163,13 +147,6 @@ export class AppchartsComponent implements OnInit {
       xAxes: [{
         type: 'time',
         time: {
-          unit: 'minute',
-          //unitStepSize: 10,
-          displayFormats: {
-            second: 'h:mm:ss',
-            minute: 'h:mm a',
-            hour: 'h a',
-          },
           tooltipFormat:'MM/DD/YYYY h:mm a'
         }
       }],
