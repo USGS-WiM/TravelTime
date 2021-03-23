@@ -176,11 +176,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       this.reportMap = new L.Map('reportMap', this.options);
 		  // add point of interest
 	  	// MarkerMaker icon
-		  var blackPin = L.divIcon({className: 'wmm-pin_op7 wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
+		  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
       // const marker = L.marker(this.poi, {icon: myIcon});
       const marker = L.marker(this.poi, {
           icon: blackPin,
-          opacity: 0
       });
 
       marker.addTo(this.reportMap);
@@ -286,11 +285,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               this.StudyService.selectedStudy.LocationOfInterest = latlng;
               this.StudyService.setProcedure(2);
             }
-
-
             //one with the biggest drainage area is the first one to trace up
           });
-        });
+        }).finally(() => {
+          //if overland trace occurs run next line
+          //this.sm('Travel time not computed for overland/raindrop trace portion');
+        })
     }
   }
 

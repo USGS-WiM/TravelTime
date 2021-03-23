@@ -37,16 +37,6 @@
 						<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event);validateInputs();" type=number required placeholder="Value" name="spillmass" class="up">
 					</div>
 				</div>
-				<!-- Discharge -->
-				<div class="modal-form-row">
-					<label>
-						Discharge
-						<small>({{this.StudyService.defDischarge}}):</small>
-					</label>
-					<div class="row-input">
-						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Select a gage from the map or enter a value" name="discharge" class="form-control tight">
-					</div>
-				</div>
 				<!-- Recovery Ratio -->
 				<div class="modal-form-row">
 					<label>
@@ -57,21 +47,45 @@
 						<input [(ngModel)]="RecoveryRatio" (ngModelChange)="validateInputs();" type=number required placeholder="Enter a value" name="recoveryratio" class="form-control tight">
 					</div>
 				</div>
-				<!-- Mean Annual Flow -->
-				<div>
-					<label style="padding: 15px 0; display: block;">
-						Mean annual flow of closest reach: {{FirstReachDischarge}}
+				<!-- Discharge -->
+				<div class="modal-form-row">
+					<label>
+						Discharge
+						<small>({{this.StudyService.defDischarge}}):</small>
 					</label>
-					<button id="response" class="icon-button blue" [hidden]="!ShowGages" (click)="openGagesModal()" [ngClass]="{'waiting': ShowGages}">
-						<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
-						View nearby gages
-					</button>
+					<div class="row-input">
+						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Choose gage from map or enter value" name="discharge" class="form-control tight">
+					</div>
+				</div>
+				<!-- View Gages -->
+				<div class="modal-form-row">
+					<label></label>
+					<div class="row-input">
+						<button id="response" class="icon-button blue" [hidden]="!ShowGages" (click)="openGagesModal()" [ngClass]="{'waiting': ShowGages}">
+							<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
+							View nearby gages
+						</button>
+					</div>
+				</div>
+				<!-- Mean Annual Flow -->
+				<div class="modal-form-row">
+					<label></label>
+					<div class="row-input">
+						<small>(Mean annual flow of nearest reach: {{FirstReachDischarge}} {{this.StudyService.isMetric() === true ? 'cms' : 'cfs'}})</small>
+					</div>
 				</div>
 
-
-				<!-- Add space between inputs and reaches -->
 				<div class="space20"></div>
 
+				<!-- Dye Tracer Data -->
+				<div *ngIf="HasDTData" class="modal-form-row">
+					<div class="row-input">						
+						<small style="float:right;">Use Dye Tracer Velocity Data?&nbsp;&nbsp;<input [(ngModel)]="UseDTData" type="checkbox" name="dtdata" class="form-control tight"></small>
+					</div>
+				</div>
+
+				<!-- Add space between inputs and reaches -->
+				<div class="space10"></div>
 
 				<!-- Reaches -->
 				<div class="toggle-header" (click)="showReaches = !showReaches">
@@ -82,13 +96,8 @@
 				</div>
 				<!-- Map Layers Body -->
 				<div class="toggle-block remove-bottom-border jobsons-toggles" [ngClass]="{'visible-extend': showReaches}">
-
 					<div class="toggle-block-body">
-
-
 						<div *ngFor="let item of reachList; let i = index; trackBy:identify" id="{{i}}">
-
-
 							<!-- Nested -toggles -->
 							<div class="toggle-header nested" (click)="openCloseItem(i)">
 								<div class="text">
@@ -165,11 +174,7 @@
 						</div>
 					</div> <!-- End toggle block body -->
 				</div>
-
-
 			</form>
-
-
 
 			</div>
 			<!-- Footer -->
@@ -178,6 +183,11 @@
 					<i class="far fa-trash-alt"></i>
 					<span>Clear</span>
 				</button>
+				<!-- Dye Tracer Data -->
+				<!-- <div *ngIf="HasDTData" style="float:right; padding: 0; margin-right:0px;">
+					<span>Use Dye Tracer Velocity Data?&nbsp;&nbsp;<input [(ngModel)]="UseDTData" type="checkbox" name="dtdata" class="form-control tight"></span>
+				</div> -->
+				<!-- end Dye Tracer Data -->
 				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setParameters(); getResults();">
 					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
 					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
