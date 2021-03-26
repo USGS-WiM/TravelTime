@@ -324,6 +324,23 @@ export class MapService {
   }
 
 
+  public filterDA(data) {
+    let contribda = 0;
+    let da = 0;
+      data.forEach(element => {
+        if (element.variableType.code == 'CONTDA') {
+          contribda = element.value;
+        } else if (element.variableType.code == 'DRNAREA') {
+          da = element.value;
+        }
+      })
+    if (contribda > da) {
+      return (contribda);
+    } else {
+      return (da);
+    }
+  }
+
   getMostRecentFlow(site: any) {
     this.gages = [];
     for (var i = 0; i < site.length; i++) {
@@ -359,13 +376,17 @@ export class MapService {
             };
             data.push(element);
           }
+
+
           let mydata = JSON.stringify(data);
           let parsedJson = JSON.parse(mydata);
+
           //let contribda = parsedJson[30].contrib_drain_area_va;
           //let da = parsedJson[29].drain_area_va;
           parsedJson.forEach(item => {
             let contribda = 0;
             let da = 0;
+
             if (item.hasOwnProperty('contrib_drain_area_va') | item.hasOwnProperty('drain_area_va')) {
                if (item.contrib_drain_area_va > 0) {
                 contribda = item.contrib_drain_area_va
@@ -380,7 +401,11 @@ export class MapService {
                 } else {
                   this.http.get<any>("https://test.streamstats.usgs.gov/gagestatsservices/stations/" + siteid).subscribe(SSresult => {
                     try {
-                      let SSd = SSresult.characteristics[0].value;
+                      //check for drainage area (filter)
+                      let SSd = 0;
+                      if (SSresult.hasOwnProperty('characteristics')) {
+                        SSd = this.filterDA(SSresult.characteristics);
+                      }
                       this.updateGageData(result, gage, SSd);
                     } catch {
                       console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
