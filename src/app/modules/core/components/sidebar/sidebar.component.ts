@@ -115,6 +115,11 @@ export class SidebarComponent implements AfterViewChecked {
       });
 
       search_api.create('searchBox', {
+        include_usgs_sw    : true,  // surface water
+        include_usgs_gw    : true,  // ground water
+        include_usgs_sp    : true,  // spring
+        include_usgs_at    : true,  // atmospheric
+        include_usgs_ot    : true,  // other
         on_result: (o) => { // changed from function(o) to (o) =>
           this.MapService.setBounds([ // zoom to location
             [o.result.properties.LatMin, o.result.properties.LonMin],
