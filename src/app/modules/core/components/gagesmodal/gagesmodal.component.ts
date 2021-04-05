@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { MapService } from '../../services/map.service';
 import { NWISService } from '../../services/nwisservices.service';
 import { gages } from '../../models/gages';
+import { StudyService } from '../../services/study.service'
+
 @Component({
   selector: 'app-gagesmodal',
   templateUrl: './gagesmodal.component.html',
@@ -13,9 +15,12 @@ import { gages } from '../../models/gages';
 export class GagesmodalComponent implements OnInit {
   public gagesArray: Array<gages> = [];
   public newSessionGages: Array<gages> = [];
-  constructor(public activeModal: NgbActiveModal, public MapService: MapService, public NWISService: NWISService) {
+  public units: string;
+
+  constructor(public activeModal: NgbActiveModal, public MapService: MapService, public NWISService: NWISService, public StudyService: StudyService) {
     this.MapService = MapService;
     this.NWISService = NWISService;
+    this.StudyService = StudyService;
   }
 
   ngOnInit() {
@@ -44,5 +49,10 @@ export class GagesmodalComponent implements OnInit {
       })
       
     })
+    if(this.StudyService.isMetric) {
+      this.units = 'cms';
+    } else {
+      this.units = 'cfs';
+    }
   }
 }
