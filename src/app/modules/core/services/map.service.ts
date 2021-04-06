@@ -42,6 +42,7 @@ export class MapService {
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public showUpstream: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(http: HttpClient, toastr: ToastrService) {
 

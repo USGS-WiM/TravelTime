@@ -11,7 +11,7 @@ import * as turf from '@turf/turf';
 import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
 import { UpstreamtotService } from '../../services/upstreamtot.service';
-import 'leaflet-mouse-position';
+//import 'leaflet-mouse-position';
 declare let search_api: any;
 
 @Component({
@@ -23,17 +23,6 @@ declare let search_api: any;
 export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnChanges {
 
   //#region "Declarations"
-  private messager: ToastrService;
-  private MapService: MapService;
-  private NavigationService: NavigationService;
-  private StudyService: StudyService;
-  private NWISService: NWISService;
-  private ToTCalculator: UpstreamtotService;
-  private _layersControl;
-  private _mousePosition;
-  private _bounds;
-  private _layers = [];
-  private subscription: Subscription;
   public fitBounds;
   public states: any = [];
   public reportMap = undefined;
@@ -51,6 +40,32 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public get MousePosition(): any {
     return this._mousePosition;
   }
+
+  //#region "Map helper methods of layerControl"
+  public get LayersControl() {
+    return this._layersControl;
+  }
+
+  public get Layers() {
+    return this._layers;
+  }
+
+  public get MapOptions() {
+    return this.MapService.Options;
+  }
+
+  private messager: ToastrService;
+  private MapService: MapService;
+  private NavigationService: NavigationService;
+  private StudyService: StudyService;
+  private NWISService: NWISService;
+  private ToTCalculator: UpstreamtotService;
+  private _layersControl;
+  private _mousePosition;
+  private _bounds;
+  private _layers = [];
+  private subscription: Subscription;
+  private ShowUpstream: any;
 
   @Input() report: boolean;
   @Input() mapSize: string;
@@ -71,18 +86,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 }
   //#endregion
 
-  //#region "Map helper methods of layerControl"
-  public get LayersControl() {
-    return this._layersControl;
-  }
 
-  public get Layers() {
-    return this._layers;
-  }
-
-  public get MapOptions() {
-    return this.MapService.Options;
-  }
 
 
   //MapOptions
@@ -160,6 +164,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
       this.reportlayerGroup = reportlayerGroup;
     });
+
+    this.MapService.showUpstream.subscribe(data => {
+      this.ShowUpstream = data;
+    })
   }
 
   //#endregion
@@ -196,6 +204,25 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     map.invalidateSize();
     this.MapService.map = map;
     L.control.scale().addTo(map);
+
+    if(!this.ShowUpstream) {
+      const legend = new L.Control({ position: 'bottomright' });
+      legend.onAdd = map => {
+        let div = L.DomUtil.create('div', 'info legend');
+
+        div.innerHTML = '<div style="background-color: white; box-shadow: 0 5px 20px 0 rgb(0 0 0 / 20%); border-radius: 3px;">';
+        div.innerHTML += '<div><b>Travel Times</b></div>';
+        div.innerHTML += '<i style="background: #0BDCD5"> &nbsp; &nbsp;</i> &nbsp;>0-5 hours <br/>';
+        div.innerHTML += '<i style="background: #D3DC0B"> &nbsp; &nbsp;</i> &nbsp;>5-15 hours <br/>';
+        div.innerHTML += '<i style="background: #144893"> &nbsp; &nbsp;</i> &nbsp;>15-35 hours <br/>';
+        div.innerHTML += '<i style="background: #14933E"> &nbsp; &nbsp;</i> &nbsp;>35-60 hours <br/>';
+        div.innerHTML += '<i style="background: #020234"> &nbsp; &nbsp;</i> &nbsp;>60 hours <br/>';
+        div.innerHTML += '</div>';
+
+        return div;
+      }
+      legend.addTo(map);
+    }
   }
 
   public onZoomChange(zoom: number) {
