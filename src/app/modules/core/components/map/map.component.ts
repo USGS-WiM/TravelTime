@@ -168,24 +168,24 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   ngAfterViewInit() {
     // if this map is for the report
     if (this.report) {
-        // if map already initialized, reset to avoid errors
-        if (this.reportMap !== undefined) {
-            this.reportMap.off();
-            this.reportMap.remove();
+      // if map already initialized, reset to avoid errors
+      if (this.reportMap !== undefined) {
+          this.reportMap.off();
+          this.reportMap.remove();
       }
-        this.reportMap = new L.Map('reportMap', this.options);
-		// add point of interest
+      this.reportMap = new L.Map('reportMap', this.options);
+		  // add point of interest
 	  	// MarkerMaker icon
-		var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
-        // const marker = L.marker(this.poi, {icon: myIcon});
-        const marker = L.marker(this.poi, {
-            icon: blackPin
-        });
+		  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
+      // const marker = L.marker(this.poi, {icon: myIcon});
+      const marker = L.marker(this.poi, {
+          icon: blackPin,
+      });
 
-        marker.addTo(this.reportMap);
-        this.reportlayerGroup.addTo(this.reportMap);
+      marker.addTo(this.reportMap);
+      this.reportlayerGroup.addTo(this.reportMap);
 
-        this.reportMap.fitBounds(this.layerGroup.getBounds());
+      this.reportMap.fitBounds(this.layerGroup.getBounds());
     }
   }
 
@@ -285,11 +285,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               this.StudyService.selectedStudy.LocationOfInterest = latlng;
               this.StudyService.setProcedure(2);
             }
-
-
             //one with the biggest drainage area is the first one to trace up
           });
-        });
+        }).finally(() => {
+          //if overland trace occurs run next line
+          //this.sm('Travel time not computed for overland/raindrop trace portion');
+        })
     }
   }
 

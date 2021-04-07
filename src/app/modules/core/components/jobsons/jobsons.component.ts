@@ -128,6 +128,17 @@ export class JobsonsModalComponent implements OnInit {
   public get RecoveryRatio(): number {
     return this._recoveryratio;
   }
+  private _dtData: boolean = true;
+  public get HasDTData(): boolean {
+    return this._dtData;
+  }
+  private _useDTData: boolean;
+  public get UseDTData(): boolean {
+    return this._useDTData;
+  }
+  public set UseDTData(v: boolean) {
+    this._useDTData = v;
+  }
   //#endregion
 
   log(val) { console.log(val); }
@@ -141,7 +152,7 @@ export class JobsonsModalComponent implements OnInit {
   }
 
   public updateDischarge(): void {
-    this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(3);
+    this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(2);
   }
 
 

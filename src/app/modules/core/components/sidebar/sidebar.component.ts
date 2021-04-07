@@ -128,7 +128,8 @@ export class SidebarComponent implements AfterViewChecked {
           // MarkerMaker icon
           var redCircle = L.divIcon({className: 'wmm-circle wmm-borderless wmm-red wmm-size-35'});
           const marker = L.marker([o.result.properties.Lat, o.result.properties.Lon], {
-          icon: redCircle
+          icon: redCircle,
+          opacity: 0.7
       });
           this.MapService.AddMapLayer({ name: 'Search Location', layer: marker, visible: true });
         },
