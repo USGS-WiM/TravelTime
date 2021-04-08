@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { markerClusterGroup } from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
 import { Drift } from '../models/drift';
 import { gages } from '../models/gages';
@@ -23,13 +23,12 @@ export class MapService {
   public Options: L.MapOptions;
   // for layers that will show up in the leaflet control
   public LayersControl: BehaviorSubject<layerControl> = new BehaviorSubject<any>({ baseLayers: [], overlays: [] });
-  public gagesarray: Array<gages> = [];
-  public newSessionGages: Array<gages> = [];
 
   public _layersControl: layerControl = {
     baseLayers: [], overlays: []
   };
   public CurrentZoomLevel: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  public nominalZoomLevel: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public CurrentLayer: String;
   public isClickable: boolean = false;
   public Cursor: String;
@@ -40,6 +39,8 @@ export class MapService {
   public abbrevOptions;
   public http: HttpClient;
   public map: L.Map;
+  public scale: L.Control.Scale;
+  public ScaleOptions: L.Control.ScaleOptions;
   public gageDischargeSearch: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   private messanger: ToastrService;
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
@@ -57,6 +58,19 @@ export class MapService {
       zoom: 4,
       center: L.latLng(39, -100)
     };
+    
+    if(this.unitsOptions == 'metric') {
+      this.ScaleOptions = {
+        metric: true,
+        imperial: false
+      };
+    } else {
+      this.ScaleOptions = {
+        imperial: true,
+        metric: false
+      }
+    }
+
     //this.CurrentZoomLevel.next(this.Options.zoom);
 
     http.get("assets/data/config.json").subscribe(data => {
@@ -133,9 +147,7 @@ export class MapService {
     this.LayersControl.next(this._layersControl);
   }
 
-
-  public HighlightFeature(layername: string, indx: number) {
-    
+  public HighlightFeature(layername: string, indx: number) {    
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
     if (!ml) return;
     if (!ml.visible) { ml.visible = true; }
@@ -166,7 +178,6 @@ export class MapService {
   }
 
   public SetOverlay (layername: string) {
-
     var ml = this._layersControl.overlays.find((l: any) => (l.name === layername))
 
     if (!ml) return;
@@ -180,7 +191,6 @@ export class MapService {
   }
 
   public SetBaselayer(layername: string) {
-
     if (this.CurrentLayer != layername) {
       var ml = this._layersControl.baseLayers.find((l: any) => (l.name === this.CurrentLayer))
       if (!ml) return; 
@@ -476,6 +486,30 @@ export class MapService {
     }
   }
 
-  public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
   public isInsideWaterBody: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  public scaleLookup(mapZoom: number) {
+    switch (mapZoom) {
+        case 19: return '1,128'
+        case 18: return '2,256'
+        case 17: return '4,513'
+        case 16: return '9,027'
+        case 15: return '18,055'
+        case 14: return '36,111'
+        case 13: return '72,223'
+        case 12: return '144,447'
+        case 11: return '288,895'
+        case 10: return '577,790'
+        case 9: return '1,155,581'
+        case 8: return '2,311,162'
+        case 7: return '4,622,324'
+        case 6: return '9,244,649'
+        case 5: return '18,489,298'
+        case 4: return '36,978,596'
+        case 3: return '73,957,193'
+        case 2: return '147,914,387'
+        case 1: return '295,828,775'
+        case 0: return '591,657,550'
+    }
+  }
 }

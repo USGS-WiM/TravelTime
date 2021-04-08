@@ -221,3 +221,33 @@
       border-bottom: 7px solid white;
       margin-top: 3px;
       margin-left: 4px; } */
+      .leaflet-bottom,.leaflet-top {
+        position:absolute;
+        z-index:1000;
+        pointer-events:none
+      }
+      .leaflet-top {
+        top:0
+      }
+      .leaflet-right {
+        right:0
+      }
+      .leaflet-bottom {
+        bottom:0
+      }
+      .leaflet-left {
+        left:0
+      }
+      .map-position{
+        padding:4px 4px;
+        font-size:small;
+        font-weight:500;
+        background-color:rgba(255,255,255,1);
+        margin-bottom:45px;margin-left:6px;
+        z-index:99999;line-height:14px
+      }
+      .map-position{
+        border-radius:3px;
+        box-shadow:0 5px 20px 0 rgba(0,0,0,.2);
+        //z-index:5
+      }

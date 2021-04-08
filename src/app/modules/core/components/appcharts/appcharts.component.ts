@@ -8,6 +8,9 @@ import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
+import { DateTimeValidator } from '../jobsons/jobsons.component';
+import { MapService } from '../../services/map.service';
+
 // tslint:disable-next-line: class-name
 interface chartData {
   id: number;
@@ -23,9 +26,54 @@ interface chartData {
 
 export class AppchartsComponent implements OnInit {
 
-  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService) {
+    //#region "Declarations"
+    public lineChartColors: Color[] = [];
+    private MapService: MapService;
+    private ChartService: ChartsService;
+    private StudyService: StudyService;
+    reaches: reach[];
+    reachesGrouped: chartData [];
+    selectedGroupId: number;
+  
+    public maxLineChartLabels: Array<any> = [];
+    public maxLineChartData: ChartDataSets[] = [];
+  
+    public mostLineChartLabels: Array<any> = [];
+    public mostLineChartData: ChartDataSets[] = [];
+  
+    public lineChartLegend = true;
+    public lineChartType = 'line';
+    public lineChartPlugins = [pluginAnnotations];
+  
+    // site grouping disabled;
+    isDisabled = false;
+  
+    // most probable
+    private maxMostProbableY;
+  
+    // maximum probable
+    private maxMaxProbableY;
+    private maxTimeLabels = [];
+    private maxConcentration = [];
+    private mostTimeLabels = [];
+    private mostConcentration = [];
+  
+    // Which chart is currently being viewed
+    public viewChart = 'max';  
+    public showMost = true;
+    public showMax = false;
+
+    // public _units = 'cms'; //implement soon in chart popup labels
+    // public get Units() {
+    //   return this._units;
+    // }
+
+    //#endregion
+
+  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService, mapservice: MapService) {
     this.StudyService = studyservice;
     this.ChartService = chartservice;
+    this.MapService = mapservice;
     this.ChartService.displayAction('max', false);
     this.ChartService.displayAction('most', true);
   }
@@ -40,44 +88,6 @@ export class AppchartsComponent implements OnInit {
   @ViewChild(NgSelectComponent, { static: false }) ngSelectComponent: NgSelectComponent;
   //#endregion
 
-  //#region "Declartions"
-  public lineChartColors: Color[] = [];
-  private ChartService: ChartsService;
-  private StudyService: StudyService;
-  reaches: reach[];
-  reachesGrouped: chartData [];
-  selectedGroupId: number;
-
-  public maxLineChartLabels: Array<any> = [];
-  public maxLineChartData: ChartDataSets[] = [];
-
-  public mostLineChartLabels: Array<any> = [];
-  public mostLineChartData: ChartDataSets[] = [];
-
-  public lineChartLegend = true;
-  public lineChartType = 'line';
-  public lineChartPlugins = [pluginAnnotations];
-
-  // site grouping disabled;
-  isDisabled = false;
-
-  // most probable
-  private maxMostProbableY;
-
-  // maximum probable
-  private maxMaxProbableY;
-  private maxTimeLabels = [];
-  private maxConcentration = [];
-  private mostTimeLabels = [];
-  private mostConcentration = [];
-
-  // Which chart is currently being viewed
-  public viewChart = 'max';
-
-  public showMost = true;
-  public showMax = false;
-  //#endregion
-
   //#region "Chart options"
   public mostLineChartOptions: any = {
     responsive: true,
@@ -86,6 +96,16 @@ export class AppchartsComponent implements OnInit {
     title: {
       text: 'Most probable Time of Travel',
       display: false
+    },
+    data: [{
+      xValueType: 'dateTime',
+    }],
+    tooltips: {
+      callbacks: {
+        label: function(tooltipItem, data) {
+          return "Reach ID: " + data.datasets[tooltipItem.datasetIndex].label + "   Peak Concentration: " + tooltipItem.yLabel //add _units here
+        }
+      }
     },
     scales: {
       yAxes: [{
@@ -96,17 +116,11 @@ export class AppchartsComponent implements OnInit {
       }],
       xAxes: [{
         type: 'time',
-        ticks: {
-          unit: 'minute',
-          unitStepSize: 10,
-          displayFormats: {
-            second: 'HH:mm:ss',
-            minute: 'HH:mm:ss',
-            hour: 'HH:mm',
-          },
-        },
+        time: {
+          tooltipFormat:'MM/DD/YYYY h:mm a'
+         }
       }],
-    },
+    }
   };
 
   public maxLineChartOptions: any = {
@@ -117,6 +131,16 @@ export class AppchartsComponent implements OnInit {
       text: 'Maximum probable Time of Travel',
       display: false
     },
+    data: [{
+      xValueType: 'dateTime',
+    }],
+    tooltips: {
+      callbacks: {
+        label: function(tooltipItem, data) {
+          return "Reach ID: " + data.datasets[tooltipItem.datasetIndex].label + "   Peak Concentration: " + tooltipItem.yLabel
+        }
+      }
+    },
     scales: {
       yAxes: [{
         ticks: {
@@ -126,17 +150,11 @@ export class AppchartsComponent implements OnInit {
       }],
       xAxes: [{
         type: 'time',
-        ticks: {
-          unit: 'minute',
-          unitStepSize: 10,
-          displayFormats: {
-            second: 'HH:mm:ss',
-            minute: 'HH:mm:ss',
-            hour: 'HH:mm',
-          },
-        },
+        time: {
+          tooltipFormat:'MM/DD/YYYY h:mm a'
+        }
       }],
-    },
+    }
   };
   //#endregion
 
@@ -146,10 +164,14 @@ export class AppchartsComponent implements OnInit {
       this.viewChart = 'max';
       this.ChartService.displayAction('most', true);
       this.ChartService.displayAction('max', false);
+      this.showMax = false;
+      this.showMost = true;
     } else {
       this.viewChart = 'most';
       this.ChartService.displayAction('most', false);
       this.ChartService.displayAction('max', true);
+      this.showMost = false;
+      this.showMax = true;
     }
     this.flushChartData();
     this.getAllMostProbable();
@@ -192,7 +214,7 @@ export class AppchartsComponent implements OnInit {
       this.generateData();
       this.chart.update();
       this.chart.updateColors();
-      this.ref['placeholder'] = 'Select group';
+      this.ref['placeholder'] = 'Select a group';
       return null;
     }
     this.ref['placeholder'] = '';
@@ -338,6 +360,11 @@ export class AppchartsComponent implements OnInit {
   }
 
   public getAllMostProbable() {
+    // if(this.StudyService.isMetric()) { //add this in when implementing unit abbreviation in chart popup label
+    //   this._units = "cms";
+    // } else {
+    //   this._units = "cfs";
+    // }
     this.output$.forEach((o => {
       this.mostTimeLabels.push(o.result['tracer_Response'].leadingEdge.MostProbable.date);
       this.mostConcentration.push(o.result['tracer_Response'].leadingEdge.MostProbable.concentration);
@@ -385,8 +412,17 @@ export class AppchartsComponent implements OnInit {
     }
   }
 
-  public chartClicked(): void {
+  public chartClicked(e): void {
+    var index;
+    if (this.selectedGroupId) { // if user has selected a reach group, calculate index for point selected
+      index = ((this.selectedGroupId) * 5) + e.active[0]._datasetIndex;
+    } else {  // user has not selected reach group
+      index = e.active[0]._datasetIndex;
+    }
+    this.ChartService.noticeAction(index);
+    this.MapService.HighlightFeature('Flowlines', Number(this.output$[index].name.replace(/^\D+/g, '')));
   }
+
   public chartHovered(): void {
   }
   //#endregion

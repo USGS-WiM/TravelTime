@@ -12,7 +12,7 @@
 
       <div *ngFor="let data of gagesArray; index as i">
         <ngb-accordion #acc="ngbAccordion"  type="light" class="gage-modal-list">
-          <ngb-panel title="{{data.name}}" id="ngb-panel-{{i}}"> <!--to open them all, use activeid example-->
+          <ngb-panel title="{{data.name}} ({{data.status}})" id="ngb-panel-{{i}}"> <!--[ngStyle]="{'background-color':data.status === 'Active' ? 'green' : 'black' }"-->
             <ng-template ngbPanelContent>
 				<div class="gage-list-body">
 					<div><span>Source:</span><b>{{data.source}}</b></div>

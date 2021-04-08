@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { StudyService } from '../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
-import {MapService} from '../../services/map.services';
+import {MapService} from '../../services/map.service';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -93,6 +93,7 @@ export class SidebarComponent implements AfterViewChecked {
       this.isInsideWaterBody = data;
     })
     this.MapService.CurrentZoomLevel.next(this.zoom);
+    this.MapService.nominalZoomLevel.next(this.MapService.scaleLookup(this.zoom))
     this.MapService.CurrentZoomLevel.subscribe(z => {
       this.zoom = z;
       if (z > 9 && this.toggleButton === true) {
@@ -114,6 +115,11 @@ export class SidebarComponent implements AfterViewChecked {
       });
 
       search_api.create('searchBox', {
+        include_usgs_sw    : true,  // surface water
+        include_usgs_gw    : true,  // ground water
+        include_usgs_sp    : true,  // spring
+        include_usgs_at    : true,  // atmospheric
+        include_usgs_ot    : true,  // other
         on_result: (o) => { // changed from function(o) to (o) =>
           this.MapService.setBounds([ // zoom to location
             [o.result.properties.LatMin, o.result.properties.LonMin],
@@ -122,7 +128,8 @@ export class SidebarComponent implements AfterViewChecked {
           // MarkerMaker icon
           var redCircle = L.divIcon({className: 'wmm-circle wmm-borderless wmm-red wmm-size-35'});
           const marker = L.marker([o.result.properties.Lat, o.result.properties.Lon], {
-          icon: redCircle
+          icon: redCircle,
+          opacity: 0.7
       });
           this.MapService.AddMapLayer({ name: 'Search Location', layer: marker, visible: true });
         },
