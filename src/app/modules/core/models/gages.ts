@@ -20,5 +20,6 @@ export class gages {
     this.value = arg.value;
     this.record = new Date();
     this.drainagearea = Number(arg.drainagearea).toFixed(1);
+    this.status = arg.status;
   }
 }

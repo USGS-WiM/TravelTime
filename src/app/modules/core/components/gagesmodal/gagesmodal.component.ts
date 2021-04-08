@@ -21,16 +21,17 @@ export class GagesmodalComponent implements OnInit {
   ngOnInit() {
 
     this.NWISService.gagesArray.subscribe(data => {
-      console.log(data);
       data.forEach(r => {
         let gage = new gages(r);
         this.newSessionGages.push(gage);
       })
       this.gagesArray = this.newSessionGages;
+
+      //Outputs console error, we need to move this part to fill in gage data before we open modal
       this.gagesArray.forEach(r => {
         var siteid = r.identifier.split('-')[1];
-        this.NWISService.getStatus(siteid).subscribe(data => {
-          if (data) {
+        this.NWISService.getStatus(siteid).subscribe(result => {
+          if (result) {
             r.status = "Inactive";
           } else {
             r.status = "Active";

@@ -98,36 +98,42 @@ export class MapService {
   }
 
 
-  public addDrift() {
-
-    this.http.get('assets/data/table.csv', { responseType: 'text' }).subscribe(data => {
-      let csvToRowArray = data.split("\n");
-      var driftLayer = L.markerClusterGroup();
-      var blackPin = L.divIcon({ className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-10' });
-      var myRenderer = L.canvas({ padding: 0.5 });
-      for (let index = 1; index < csvToRowArray.length - 1; index++) {
-        let row = csvToRowArray[index].split(",");
-        var markerPoint = new Drift(row[0], row[1], row[2].trim())
-        var newMarker = new L.Marker(L.latLng(parseFloat(markerPoint['lat']), parseFloat(markerPoint['lon'])), {
-          icon: blackPin
-        });
-        newMarker.addTo(driftLayer);
-      }
-      this.AddMapLayer({ name: 'DRIFT', layer: driftLayer, visible: false });
-    })
-  }
-
   public addLeafletG() {
-    this.http.get('assets/data/table.geojson').subscribe((data: any) => {
+    this.http.get('assets/data/mydatas.geojson').subscribe((data: any) => {
       var markers = markerClusterGroup();
+
+      var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      };
+
+
       var geoJsonLayer = L.geoJSON(data, {
+
+        pointToLayer: function (feature, latlng) {
+          switch (feature.properties.Condition) {
+            case 'Injection': return L.circleMarker(latlng, geojsonMarkerOptions);
+            case 'Reach': return L.circleMarker(latlng);
+          }
+        },
         onEachFeature: function (feature, layer) {
-          layer.bindPopup(feature.properties.name);
+          layer.bindPopup(feature.properties.RiverName + ' ' + feature.properties.Condition + ' - '+ feature.properties.Study);
         }
       });
       markers.addLayer(geoJsonLayer);
       this.AddMapLayer({ name: 'DRIFTgson', layer: markers, visible: false })
     })
+  }
+
+
+  public readDriftJson() {
+    this.http.get('assets/data/driftdbV2.json').subscribe((data: any) => {
+      console.log(data);
+    }) 
   }
 
   public AddMapLayer(mlayer: MapLayer) {
@@ -272,31 +278,6 @@ export class MapService {
   SetPoi(latlng: L.LatLng) {
     this.latlng = latlng;
     this.LatLng.next(this.latlng);
-  }
-
-
-  public csvJSON(csv) {
-    var lines = csv.split(" ");
-
-    var result = [];
-
-    var headers = lines[0].split(" ");
-
-    for (var i = 1; i < lines.length; i++) {
-
-      var obj = {};
-      var currentline = lines[i].split(" ");
-
-      for (var j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j];
-      }
-
-      result.push(obj);
-
-    }
-
-    //return result; //JavaScript object
-    return JSON.stringify(result); //JSON
   }
 
 

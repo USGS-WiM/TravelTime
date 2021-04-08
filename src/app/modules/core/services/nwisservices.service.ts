@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaderResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-//import { gages } from '../models/gages';
+import { gages } from '../models/gages';
 import { MapService } from '../services/map.service'
 import * as messageType from '../../../shared/messageType';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { ToastrService, IndividualConfig } from 'ngx-toastr';
 export class NWISService {
   public get baseURL() {return "https://waterservices.usgs.gov/nwis";}
   public gages = [];
-  public gagesArray: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>(undefined);
+  public gagesArray: BehaviorSubject<Array<gages>> = new BehaviorSubject<Array<gages>>(undefined);
   private MapService: MapService;
   private StreamGages = new Subject<any>();
   public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -88,13 +88,14 @@ export class NWISService {
           let value = myarrayv2[3];
           let len = params.length;
           let data = []
+
           for (let x = 0; x < len; x++) {
             let element = {
               [params[x].toString()]: value[x],
               "time": time[x]
             };
             data.push(element);
-          }
+            }
 
 
           let mydata = JSON.stringify(data);
