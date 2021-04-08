@@ -28,7 +28,6 @@ import { ReportModule } from './components/report/report.module';
 import { Angulartics2Module } from 'angulartics2';
 import { AppChartsModule } from './components/appcharts/appcharts.module';
 import { NWISService } from './services/nwisservices.service';
-//import { GagesmodalComponent } from './components/gagesmodal/gagesmodal.component';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent],

@@ -12,6 +12,8 @@ export class Study {
     public get MethodType() : string {
       return this._methodType;
     }
+
+    public spillPlanningResponse: any;
     
     public Results: Array<any>;
 

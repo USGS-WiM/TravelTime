@@ -1,0 +1,100 @@
+<div *ngIf="!reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
+		<i style="margin:auto;" class='far fa-sync fa-spin'></i>
+	</div>
+</div>
+
+<div *ngIf="reachesReady" class="modal-wrapper">
+	<div class="modal-box">		
+		<!-- Header -->
+		<div class="modal-top">
+			<div class="title">Jobsons Results</div>
+			<div class="close-modal" (click)="activeModal.dismiss()">
+				<i class="far fa-times"></i>
+				{{updateDischarge()}}
+			</div>
+		</div>
+		<!-- Main content -->
+		<div class="modal-middle">
+	
+			<form #myForm="ngForm">
+				<!-- Time of Spill -->
+				<div class="modal-form-row">
+					<label>
+						Time of Spill:
+					</label>
+					<div class="row-input ri-flex">
+						<app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
+					</div>
+				</div>
+				<!-- Spill Mass -->
+				<div class="modal-form-row">
+					<label>
+						Spill Mass
+						<small>({{this.StudyService.defConcentration ? this.StudyService.defConcentration : "none"}}):</small>
+					</label>
+					<div class="row-input">
+						<input [(ngModel)]="SpillMass" (ngModelChange)="setConc($event);validateInputs();" type=number required placeholder="Enter spill mass" name="spillmass" class="up">
+					</div>
+				</div>
+				<!-- Recovery Ratio -->
+				<div class="modal-form-row">
+					<label>
+						Recovery Ratio
+						<small>({{this.StudyService.defRecoveryRatio}}):</small>
+					</label>
+					<div class="row-input">
+						<input [(ngModel)]="RecoveryRatio" (ngModelChange)="validateInputs();" type=number required placeholder="Enter a value" name="recoveryratio" class="form-control tight">
+					</div>
+				</div>
+				<!-- Discharge -->
+				<div class="modal-form-row">
+					<label>
+						Discharge
+						<small>({{this.StudyService.defDischarge}}):</small>
+					</label>
+					<div class="input-group" style="width:auto; margin-left: 7px;">
+						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="form-control tight">
+						<!-- <div class="input-group-append">
+							<button type="button" class="btn btn-outline-secondary" id="response" [hidden]="!ShowGages" (click)="openGagesModal()">
+								<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View gages
+							</button>
+						</div> -->
+					</div>
+				</div>
+				<div class="modal-form-row">
+					<label></label>
+					<div class="row-input">
+						<small>(Mean annual flow of nearest reach: {{FirstReachDischarge}} {{this.StudyService.isMetric() === true ? 'cms' : 'cfs'}})</small>
+					</div>
+				</div>
+
+				<div class="space20"></div>
+
+				<!-- Dye Tracer Data -->
+				<div *ngIf="HasDTData" class="modal-form-row">
+					<div class="row-input">						
+						<small style="float:right;">Use Dye Tracer Velocity Data?&nbsp;&nbsp;<input [(ngModel)]="UseDTData" type="checkbox" name="dtdata"></small>
+					</div>
+				</div>
+
+				
+			</form>
+
+			</div>
+			<!-- Footer -->
+			<div class="modal-buttons space-around">
+				<button *ngIf="mylist !== null" class="icon-button white" (click)="onClick_clear()">
+					<i class="far fa-trash-alt"></i>
+					<span>Clear</span>
+				</button>
+				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setParameters(); getResults();">
+					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
+					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>
+				</button>
+			</div>
+		</div>
+		
+	</div>
+
+

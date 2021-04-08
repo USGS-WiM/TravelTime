@@ -10,8 +10,10 @@ import * as L from 'leaflet';
 import * as turf from '@turf/turf';
 import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
-import { UpstreamtotService } from '../../services/upstreamtot.service';
-//import 'leaflet-mouse-position';
+import { SpillPlanningService } from '../../services/spillplanning.service';
+import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SpillPlanningModalComponent } from '../spillplanningmodal/spillplanningmodal.component';
+
 declare let search_api: any;
 
 @Component({
@@ -32,6 +34,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public reportlayerGroup;
   public map: L.Map;
   public isfirst = true;
+  public isInsideWaterBody: boolean = false;
 
   public set MousePosition(v: any) {
     this._mousePosition = v;
@@ -59,7 +62,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private NavigationService: NavigationService;
   private StudyService: StudyService;
   private NWISService: NWISService;
-  private ToTCalculator: UpstreamtotService;
+  private ToTCalculator: SpillPlanningService;
   private _layersControl;
   private _mousePosition;
   private _bounds;
@@ -109,7 +112,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, ToTCalculator: UpstreamtotService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService) {
+  constructor(mapservice: MapService, ToTCalculator: SpillPlanningService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService, private modalService: NgbModal) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -119,6 +122,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.layerGroup = new L.FeatureGroup([]); // streamLayer
     this.reportlayerGroup = new L.FeatureGroup([]);
     this.ToTCalculator = ToTCalculator;
+
+    this.MapService.isInsideWaterBody.subscribe(data => {
+      this.isInsideWaterBody = data;
+    })
   }
 
   ngOnInit() {
@@ -298,12 +305,15 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
             //this.MapService.FlowLines.next(response.features);
             //console.log(response);
             if (inputString == "upstream") {
-              this.ComputeTOT(response.features);
-              this.accumTOT(response.features);
-              this.getFlowLineLayerGroup(response.features);
               this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-              this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
-              this.StudyService.selectedStudy.LocationOfInterest = latlng;
+              this.StudyService.selectedStudy.spillPlanningResponse = response.features;
+              this.openPlanningModal();
+              //this.ComputeTOT(response.features);
+              // this.accumTOT(response.features);
+              // this.getFlowLineLayerGroup(response.features);
+              // this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+              // this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
+              // this.StudyService.selectedStudy.LocationOfInterest = latlng;
             } else {
               this.getFlowLineLayerGroup(response.features);
               this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
@@ -445,6 +455,15 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
     });
+  }
+
+  private openPlanningModal(): void {
+    if (this.isInsideWaterBody) {
+      this.sm("Selected point of interest is inside of a water body.... please select different location")
+    } else {
+      const spillPlanningModalRef = this.modalService.open(SpillPlanningModalComponent);
+      spillPlanningModalRef.componentInstance.title = 'Spill Planning';
+    }
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

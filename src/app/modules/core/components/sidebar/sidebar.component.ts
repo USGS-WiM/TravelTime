@@ -60,24 +60,15 @@ export class SidebarComponent implements AfterViewChecked {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : '');
   }
 
-  /*public ZoomLevel() {
-    this.MapService.CurrentZoomLevel.subscribe(z => {
-      if (z > 9 && this.toggleButton === true) {
-        this.StudyService.SetWorkFlow('reachedZoom', true);
-      }
-      return z;
-    })
-    //return this.MapService.CurrentZoomLevel.value;
-  }*/
-
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
   public baselayers = [];
   public overlays = [];
   public model;
+  public zoom = 4;
+  public isInsideWaterBody: boolean = false;
   private messager: ToastrService;
   private toggleButton = true;
-  public zoom = 4;
 
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
@@ -153,8 +144,6 @@ export class SidebarComponent implements AfterViewChecked {
       this.SelectedProcedureType = data;
     });
 
-
-
       this.StudyService.ReportOptions = [
       { name: 'Map of study area', checked: false },
       { name: 'Table of values', checked: false },
@@ -213,10 +202,6 @@ export class SidebarComponent implements AfterViewChecked {
       return true;
     }
   }
-
-  public isInsideWaterBody: boolean = false;
-
-
 
   public open(scenario) {
     switch (scenario) {

@@ -18,9 +18,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapModule } from './modules/core/components/map/map.module';
 import { AppRoutingModule } from './modules/core/core-routing.module';
 import { ReportModule } from './modules/core/components/report/report.module';
-
-
-
+import { SpillPlanningModalComponent } from './modules/core/components/spillplanningmodal/spillplanningmodal.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +27,8 @@ import { ReportModule } from './modules/core/components/report/report.module';
     JobsonsModalComponent,
     DateTimePickerComponent,
     ApptoolsComponent,
-    GagesmodalComponent
+    GagesmodalComponent,
+    SpillPlanningModalComponent
   ],
   imports: [
     LeafletModule.forRoot(),
@@ -54,6 +53,6 @@ import { ReportModule } from './modules/core/components/report/report.module';
   ],
   providers: [NgbActiveModal],
   bootstrap: [AppComponent],
-  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent, GagesmodalComponent]
+  entryComponents: [AppComponent, AboutModalComponent, JobsonsModalComponent, DateTimePickerComponent, ApptoolsComponent, GagesmodalComponent, SpillPlanningModalComponent]
 })
 export class AppModule {}

@@ -7,14 +7,14 @@ import { Component } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class UpstreamtotService {
+export class SpillPlanningService {
   private messanger: ToastrService;
 
 
   public upstreamTOT() {
   }
 
-  public relativeDrainge(D, MAF) { //D units (m), MAF units (m3/s)
+  public relativeDrainage(D, MAF) { //D units (m), MAF units (m3/s)
     let D_a: number;
     D_a = (Math.pow(D, 1.25) * 3.13209) / MAF;
     return D_a;
@@ -39,7 +39,7 @@ export class UpstreamtotService {
     } else {
       relativeDis = this.relativeDischarge();
     }
-    V_p = 0.02 + 0.051 * Math.pow(this.relativeDrainge(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * q / D;
+    V_p = 0.02 + 0.051 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * q / D;
     return V_p;
   }
 
@@ -89,7 +89,7 @@ export class UpstreamtotService {
       this.messanger.show("Passed unit test, relative discharge");
     }
 
-    let D_r = (this.relativeDrainge(D, MAF)).toFixed(2);
+    let D_r = (this.relativeDrainage(D, MAF)).toFixed(2);
     if (D_r != "96396867095.29") {
       this.messanger.show("Failed unit test, compute relative drainage");
     } else {
