@@ -59,6 +59,7 @@ export class JobsonsModalComponent implements OnInit {
   private selectedIndex = null;
   private currentStep = 0;
   public FirstReachDischarge;
+  public recratio: number;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
@@ -88,7 +89,7 @@ export class JobsonsModalComponent implements OnInit {
 
     this.NWISService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
-        this.MapService.showGages.subscribe(data => {
+        this.nwisservice.showGages.subscribe(data => {
           this.ShowGages = data;
         })
       } else { }
