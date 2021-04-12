@@ -171,10 +171,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
       this.reportlayerGroup = reportlayerGroup;
     });
-
-    this.MapService.showUpstream.subscribe(data => {
-      this.ShowUpstream = data;
-    })
   }
 
   //#endregion
@@ -212,7 +208,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.map = map;
     L.control.scale().addTo(map);
 
-    if(!this.ShowUpstream) {
+    if(this.ShowUpstream) {
       const legend = new L.Control({ position: 'bottomright' });
       legend.onAdd = map => {
         let div = L.DomUtil.create('div', 'info legend');
@@ -308,14 +304,15 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
               this.StudyService.selectedStudy.spillPlanningResponse = response.features;
               this.openPlanningModal();
-              //this.ComputeTOT(response.features);
+              // this.ComputeTOT(response.features);
               // this.accumTOT(response.features);
               // this.getFlowLineLayerGroup(response.features);
               // this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
               // this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
               // this.StudyService.selectedStudy.LocationOfInterest = latlng;
             } else {
-              this.getFlowLineLayerGroup(response.features);
+              this.MapService.getFlowLineLayerGroup(response.features);
+              this.check4gages(response.features);
               this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
               this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
               this.StudyService.SetWorkFlow('hasReaches', true);
@@ -373,7 +370,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     })
   }
 
-  public getFlowLineLayerGroup(features) {
+  private check4gages(features) {
     const layerGroup = new L.FeatureGroup([]);
     const reportlayerGroup = new L.FeatureGroup([]);
     let gagesArray = [];
@@ -390,44 +387,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 			icon: blackTriangle
 		}));
         gagesArray.push(i);
-      } else if (typeof i.properties.nhdplus_comid === 'undefined') {
-      } else {
-        if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline_break));
-        } else if (i.properties.accutot > 0 && i.properties.accutot <= 5) {
-
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline2));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline2));
-        } else if (i.properties.accutot > 5 && i.properties.accutot <= 15) {
-
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline3));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline3));
-        } else if (i.properties.accutot > 15 && i.properties.accutot <= 35) {
-
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline4));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline4));
-        } else if (i.properties.accutot > 35 && i.properties.accutot <= 60) {
-
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline5));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline5));
-        }  else {
-          layerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline6));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.MapService.markerOptions.Polyline6));
-        }
-
-        const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
-        const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
-        const temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
-
-        layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + '\n' + drainage));
-        reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.MapService.markerOptions.EndNode).bindPopup(nhdcomid + '\n' + drainage));
-
-        this.MapService.layerGroup.next(layerGroup);
-        this.MapService.reportlayerGroup.next(reportlayerGroup);
-
-        i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
-      }
+      } 
     })
 
     //check if there is a gage data;

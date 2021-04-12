@@ -6,6 +6,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../shared/messageType';
+import * as turf from '@turf/turf';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -42,7 +43,7 @@ export class MapService {
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public showUpstream: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public showUpstream = false;
 
   constructor(http: HttpClient, toastr: ToastrService) {
 
@@ -92,7 +93,6 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
-
     });
 
   }
@@ -188,6 +188,70 @@ export class MapService {
     this.fitBounds.next(this._bound);
   }
 
+  public getFlowLineLayerGroup(features) {
+    const layerGroup = new L.FeatureGroup([]);
+    const reportlayerGroup = new L.FeatureGroup([]);
+    let gagesArray = [];
+    features.forEach(i => {
+
+      if (i.geometry.type === 'Point') {
+        var siteID = i.properties.identifier.replace("USGS-", "");
+		// MarkerMaker Icon
+		var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
+        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: blackTriangle
+		}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
+        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: blackTriangle
+		}));
+        gagesArray.push(i);
+      } else if (typeof i.properties.nhdplus_comid === 'undefined') {
+      } else {
+        if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
+        } else if (i.properties.accutot > 0 && i.properties.accutot <= 5) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+        } else if (i.properties.accutot > 5 && i.properties.accutot <= 15) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+        } else if (i.properties.accutot > 15 && i.properties.accutot <= 35) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+        } else if (i.properties.accutot > 35 && i.properties.accutot <= 60) {
+
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+        }  else {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+        }
+
+        const nhdcomid = 'NHDPLUSid: ' + String(i.properties.nhdplus_comid);
+        const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
+        const temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+
+        layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '\n' + drainage));
+        reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '\n' + drainage));
+
+        this.layerGroup.next(layerGroup);
+        this.reportlayerGroup.next(reportlayerGroup);
+
+        i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
+      }
+    })
+
+    // because it is async it takes time to process function above, once we have it done - we get the bounds
+    // Potential to improve
+    setTimeout(() => {
+      this.setBounds(layerGroup.getBounds());
+    });
+  }
+
   private loadLayer(ml): L.Layer {
     try {
       switch (ml.type) {
@@ -239,6 +303,9 @@ export class MapService {
   SetPoi(latlng: L.LatLng) {
     this.latlng = latlng;
     this.LatLng.next(this.latlng);
+  }
+  GetPOI() {
+    return this.latlng;
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

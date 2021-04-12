@@ -11,6 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
 import { NWISService } from '../../services/nwisservices.service'
 import { SpillPlanningService } from '../../services/spillplanning.service';
+import * as L from 'leaflet';
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -51,8 +52,8 @@ export class SpillPlanningModalComponent implements OnInit {
   public showReaches: boolean = true;
   public gettingResults: boolean = false;
   public showDetails: Array<any>;
-  public reachesReady: boolean = false;
   public FirstReachDischarge;
+  public layerGroup;
   private _spillMass: number;
   private _discharge: number;
   private _recoveryratio = 1;
@@ -74,6 +75,7 @@ export class SpillPlanningModalComponent implements OnInit {
     this.StudyService = studyservice;
     this.ToTCalculator = ToTCalculator;
     this.messager = tstrservice;
+    this.layerGroup = new L.FeatureGroup([]); // streamLayer
   }
 
   ngOnInit(): any {   // on init, get the services for first reach, and add them as parameters to accordion
@@ -145,7 +147,11 @@ export class SpillPlanningModalComponent implements OnInit {
   }
 
   public updateDischarge(): void {
-    this.FirstReachDischarge = (this.StudyService.selectedStudy.spillPlanningResponse[0].properties.Discharge.value).toFixed(2);
+    try {
+      this.FirstReachDischarge = (this.StudyService.selectedStudy.spillPlanningResponse[0].properties.Discharge).toFixed(2);
+    } catch(ex) {
+      console.log(ex);
+    }
   }
 
 
@@ -153,26 +159,24 @@ export class SpillPlanningModalComponent implements OnInit {
   public setParameters(): void {
     this.setDischarge();
     this.setRecoveryRatio();
-    this.ComputeTOT(this.StudyService.selectedStudy.spillPlanningResponse);
-    this.accumTOT(this.StudyService.selectedStudy.spillPlanningResponse);
   }
   public setDischarge(): void {
-    if (this.reachList.length > 0) {
+    if (this.StudyService.selectedStudy.spillPlanningResponse.length > 0) {
       this.StudyService.selectedStudy.Discharge = this._discharge;
       let accumRatio = [this._discharge];
       let cond = false;
       let value;
 
       // current function is using ratio of i-th - 1 reach, it can be easily adjusted to nearest gage flow value;
-      this.reachList.forEach((item) => {
+      this.StudyService.selectedStudy.spillPlanningResponse.forEach((item) => {
         if (cond) {
-          item.parameters[1].value = (accumRatio[accumRatio.length - 1] * item.parameters[0].value).toFixed(3); // Number(this.StudyService.selectedStudy.Discharge) *
+          item.parameters.push({'RTDischarge': ((accumRatio[accumRatio.length - 1] * item.parameters.DrainageArea).toFixed(3))}); // Number(this.StudyService.selectedStudy.Discharge) *
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
         } else {
           //this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
-          item.parameters[1].value = this._discharge;
-          value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
+          item.parameters.push({'RTDischarge': (this._discharge)});
+          value = (item.parameters.RTDischarge / item.parameters.DrainageArea).toFixed(3);
           accumRatio.push(value);
           cond = true;
         }
@@ -189,17 +193,14 @@ export class SpillPlanningModalComponent implements OnInit {
   }
 
   public setRecoveryRatio(): void {
-    if (this.reachList.length > 0) {
+    if (this.StudyService.selectedStudy.spillPlanningResponse.length > 0) {
       this.StudyService.selectedStudy.RecoveryRatio = this.RecoveryRatio;
-      this.reachList.forEach((item) => {
-          item.parameters[5].value = this.RecoveryRatio; 
-      });
     } 
     this.StudyService.setRecoveryRatio(this.RecoveryRatio);
   }
 
   public setConc(event): void {
-    if (this.reachList) {
+    if (this.StudyService.selectedStudy.spillPlanningResponse) {
       this.StudyService.selectedStudy.SpillMass = this._spillMass;
       this.StudyService.setConcentration(this._spillMass);
     }
@@ -208,7 +209,7 @@ export class SpillPlanningModalComponent implements OnInit {
   public ComputeTOT(data) {
     data.forEach(reach => {
       //if (reach.properties.hasOwnProperty("Discharge")) {
-        var tot = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.Discharge * 0.0283168, reach.properties.Discharge * 0.0283168, reach.properties.DrainageArea * 10 ^ 6);
+        var tot = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.RTDischarge * 0.0283168, reach.properties.RTDischarge * 0.0283168, reach.properties.DrainageArea * 10 ^ 6);
         reach.properties["result"] = tot;
         reach.properties["touched"] = false;
       //}
@@ -299,6 +300,16 @@ export class SpillPlanningModalComponent implements OnInit {
   }
 
   public getResults() {
+    this.ComputeTOT(this.StudyService.selectedStudy.spillPlanningResponse);
+    this.accumTOT(this.StudyService.selectedStudy.spillPlanningResponse);
+    this.StudyService.SetWorkFlow('totResults', true);
+    this.gettingResults = false;
+    this.activeModal.dismiss();
+    this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillPlanningResponse.features);
+    this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(this.StudyService.selectedStudy.spillPlanningResponse);
+    this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
+    this.StudyService.selectedStudy.LocationOfInterest = this.MapService.GetPOI();
+    this.MapService.showUpstream = true;
 
 	// Set default footer height to half, show buttons to switch
 	$('#mapWrapper').attr('class', 'half-map');
@@ -310,12 +321,12 @@ export class SpillPlanningModalComponent implements OnInit {
     } else {
       this.dateModel = new Date(this.dateModel);
     }
- let tempReachList = [];
- let postReachList = [];
+ //let tempReachList = [];
+ //let postReachList = [];
  if (!this.StudyService.isMetric()) {
-      for (let i = 0; i < this.reachList.length; i++) {
+      for (let i = 0; i < this.StudyService.selectedStudy.spillPlanningResponse.length; i++) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
-        newreach.name = this.reachList[i].name;
+        newreach.name = this.StudyService.selectedStudy.spillPlanningResponse[i].name;
         newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   // slope
         newreach.parameters[1].value = (this.reachList[i].parameters[1].value * 0.028316847);   // real-time discharge from cfs to cms
         newreach.parameters[0].value = (this.reachList[i].parameters[0].value * 0.028316847);   // mean annual discharge from cfs to cms
@@ -333,94 +344,81 @@ export class SpillPlanningModalComponent implements OnInit {
         newreach.parameters[4].unit.unit = this.units.metric['distance'];
         newreach.parameters[4].unit.abbr = this.abbrev.metric['distance'];
 
-        tempReachList.push(newreach);
+        //tempReachList.push(newreach);
       }
-      tempReachList.forEach(reach => {
-        reach.parameters.splice(6, 1);
-        postReachList.push(reach);
-      });
+      //tempReachList.forEach(reach => {
+        //reach.parameters.splice(6, 1);
+        //postReachList.push(reach);
+      //});
       this.StudyService.selectedStudy.SpillMass = this.StudyService.selectedStudy.SpillMass * 0.453592;
     } else {
       this.reachList.forEach(reach => {
         reach.parameters.splice(6, 1);
-        postReachList.push(reach);
+        //postReachList.push(reach);
       });
     }
 
- this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
-   .toPromise().then(data => {
-        this.StudyService.selectedStudy.Results = data;
-        this.StudyService.SetWorkFlow('totResults', true);
-        this.gettingResults = false;
-        this.activeModal.dismiss();
-        this.StudyService.setProcedure(3); // open next panel;
-      })
-      .catch((err) => {
-        console.log('error: ', err.message);
-        this.sm(err, 'Time of Travel Services');
-        this.gettingResults = false;
-      });
-  }
-
-  public openCloseItem(index): void {
-    this.selectedIndex = index;
-    if (this.reachList[this.selectedIndex].parameters.show) {
-      this.reachList[this.selectedIndex].parameters.show = false;
-    } else {
-      if (this.lastIndex !== null) {
-        this.reachList[this.lastIndex].parameters.show = false;
-      }
-      this.reachList[this.selectedIndex].parameters.show = true;
-    }
-    this.lastIndex = this.selectedIndex;
-  }
+//  this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
+//    .toPromise().then(data => {
+//         this.StudyService.selectedStudy.Results = data;
+//         this.StudyService.SetWorkFlow('totResults', true);
+//         this.gettingResults = false;
+//         this.activeModal.dismiss();
+//         this.StudyService.setProcedure(3); // open next panel;
+//       })
+//       .catch((err) => {
+//         console.log('error: ', err.message);
+//         this.sm(err, 'Time of Travel Services');
+//         this.gettingResults = false;
+//       });
+   }
 
   public identify(index, item): number {
     return item.id;
  }
 
-  private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
-    for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
-      /*if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 50 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 50 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else {
+  // private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
+  //   for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
+  //     /*if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 50 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 50 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else {
 
-        if (this.reachList.length < 1) {
-          this.MapService.isInsideWaterBody.next(true);
-          this.sm("Warning, selected point of interest is inside of the water body.....");
-        }
-        //break
+  //       if (this.reachList.length < 1) {
+  //         this.MapService.isInsideWaterBody.next(true);
+  //         this.sm("Warning, selected point of interest is inside of the water body.....");
+  //       }
+  //       //break
 
-      }*/
+  //     }*/
 
 
-      if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
-        let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
-        newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;
-        newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope;
+  //     if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
+  //       let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
+  //       newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;
+  //       newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope;
 
-        let selectedUnits;
-        if (this.StudyService.isMetric()) {
-          selectedUnits = this.units.metric;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847); // cfs to cms
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0); // square kilometers to square meters
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000); // kilometers to meters
-        } else {
-          selectedUnits = this.units.imperial;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge); // cfs
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102); // square kilometers to square miles
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84); // kilometers to feet
-        }
-        newreach.parameters[0].unit.unit = selectedUnits['discharge'];   // mean annual discharge
-        newreach.parameters[1].unit.unit = selectedUnits['discharge'];   // real-time discharge
-        newreach.parameters[2].unit.unit = selectedUnits['slope'];
-        newreach.parameters[3].unit.unit = selectedUnits['drainageArea'];
-        newreach.parameters[4].unit.unit = selectedUnits['distance'];
+  //       let selectedUnits;
+  //       if (this.StudyService.isMetric()) {
+  //         selectedUnits = this.units.metric;
+  //         newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847); // cfs to cms
+  //         newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0); // square kilometers to square meters
+  //         newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000); // kilometers to meters
+  //       } else {
+  //         selectedUnits = this.units.imperial;
+  //         newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge); // cfs
+  //         newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102); // square kilometers to square miles
+  //         newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84); // kilometers to feet
+  //       }
+  //       newreach.parameters[0].unit.unit = selectedUnits['discharge'];   // mean annual discharge
+  //       newreach.parameters[1].unit.unit = selectedUnits['discharge'];   // real-time discharge
+  //       newreach.parameters[2].unit.unit = selectedUnits['slope'];
+  //       newreach.parameters[3].unit.unit = selectedUnits['drainageArea'];
+  //       newreach.parameters[4].unit.unit = selectedUnits['distance'];
 
-        this.reachList.push(newreach);
-      } else {
-      }
-    }
-      this.reachesReady = true;
-  }
+  //       this.reachList.push(newreach);
+  //     } else {
+  //     }
+  //   }
+  //     this.reachesReady = true;
+  // }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
     try {

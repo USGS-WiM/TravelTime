@@ -3,6 +3,7 @@ import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
 import { reach } from '../models/reach';
+import { deepCopy } from '../../../shared/extensions/object.DeepCopy';
 
 export interface UnitsArray { name: string, isactive: boolean, units: string };
 
@@ -17,7 +18,7 @@ export interface workflowControl {
   }
  
 @Injectable()
-export class StudyService  {
+export class StudyService extends deepCopy   {
 
   //HOLDS DISCHARGE, MASS, TIME, AND RECOVERY RATIO
   public selectedStudy: Study;
@@ -151,7 +152,26 @@ export class StudyService  {
       this.WorkFlowControl.next(this._workflow);
   }
 
+  public formatReaches(data): any {
+    const streamArray = [];
+    for (let i = 0; i < data.features.length; i++) {
+      if (data.features[i].geometry.type === 'LineString') {
+        const polylinePoints = this.deepCopy(data.features[i]);
+        streamArray.push(polylinePoints);
+      }
+    }
+    streamArray.map((reach) => {
+      reach.properties.show = false;
+    });
+
+    const sortArray = streamArray.sort( (a, b) => {
+      return a.properties.DrainageArea - b.properties.DrainageArea;
+    });
+    return (sortArray);
+  }
+
   constructor(toastr: ToastrService) {
+    super();
     this.messager = toastr;
     this.WorkFlowControl.next(this._workflow);
     this.distance = 100;
