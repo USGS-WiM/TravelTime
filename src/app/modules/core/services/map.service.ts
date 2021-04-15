@@ -193,7 +193,6 @@ export class MapService {
     const reportlayerGroup = new L.FeatureGroup([]);
     let gagesArray = [];
     features.forEach(i => {
-
       if (i.geometry.type === 'Point') {
         var siteID = i.properties.identifier.replace("USGS-", "");
 		// MarkerMaker Icon

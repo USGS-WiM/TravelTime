@@ -301,8 +301,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
             //this.MapService.FlowLines.next(response.features);
             //console.log(response);
             if (inputString == "upstream") {
-              this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-              this.StudyService.selectedStudy.spillPlanningResponse = response.features;
+              //this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+              this.StudyService.selectedStudy.spillPlanningResponse = response;
+              this.StudyService.selectedStudy.LocationOfInterest = latlng;
+              //this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
               this.openPlanningModal();
               // this.ComputeTOT(response.features);
               // this.accumTOT(response.features);
@@ -312,8 +314,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               // this.StudyService.selectedStudy.LocationOfInterest = latlng;
             } else {
               this.MapService.getFlowLineLayerGroup(response.features);
-              this.check4gages(response.features);
-              this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
+              this.NWISService.check4gages(response.features);
+              this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(response);
               this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
               this.StudyService.SetWorkFlow('hasReaches', true);
               this.StudyService.selectedStudy.LocationOfInterest = latlng;
@@ -370,52 +372,52 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     })
   }
 
-  private check4gages(features) {
-    const layerGroup = new L.FeatureGroup([]);
-    const reportlayerGroup = new L.FeatureGroup([]);
-    let gagesArray = [];
-    features.forEach(i => {
+  // private check4gages(features) {
+  //   const layerGroup = new L.FeatureGroup([]);
+  //   const reportlayerGroup = new L.FeatureGroup([]);
+  //   let gagesArray = [];
+  //   features.forEach(i => {
 
-      if (i.geometry.type === 'Point') {
-        var siteID = i.properties.identifier.replace("USGS-", "");
-		// MarkerMaker Icon
-		var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
-        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-			icon: blackTriangle
-		}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
-        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-			icon: blackTriangle
-		}));
-        gagesArray.push(i);
-      } 
-    })
+  //     if (i.geometry.type === 'Point') {
+  //       var siteID = i.properties.identifier.replace("USGS-", "");
+	// 	// MarkerMaker Icon
+	// 	var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
+  //       layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+	// 		icon: blackTriangle
+	// 	}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
+  //       reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+	// 		icon: blackTriangle
+	// 	}));
+  //       gagesArray.push(i);
+  //     } 
+  //   })
 
-    //check if there is a gage data;
-    if (gagesArray.length > 0) {
-      for (var i = 0; i < gagesArray.length; i++) {
-        features.forEach(o => {
-          if (o.geometry.type !== "Point") {
-            if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
-              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea / 2.59; //in sqmiles
-            } else { }
-          }
-        })
-      };
-      //create service
-      //add gage
-      this.NWISService.gagesArray.next(gagesArray);
-      this.MapService.gageDischargeSearch.next(true);
-      this.NWISService.getMostRecentFlow(gagesArray);
-    } else {
-      this.MapService.gageDischargeSearch.next(true);
-    };
+  //   //check if there is a gage data;
+  //   if (gagesArray.length > 0) {
+  //     for (var i = 0; i < gagesArray.length; i++) {
+  //       features.forEach(o => {
+  //         if (o.geometry.type !== "Point") {
+  //           if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
+  //             gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea / 2.59; //in sqmiles
+  //           } else { }
+  //         }
+  //       })
+  //     };
+  //     //create service
+  //     //add gage
+  //     this.NWISService.gagesArray.next(gagesArray);
+  //     this.MapService.gageDischargeSearch.next(true);
+  //     this.NWISService.getMostRecentFlow(gagesArray);
+  //   } else {
+  //     this.MapService.gageDischargeSearch.next(true);
+  //   };
 
-    // because it is async it takes time to process function above, once we have it done - we get the bounds
-    // Potential to improve
-    setTimeout(() => {
-      this.MapService.setBounds(layerGroup.getBounds());
-    });
-  }
+  //   // because it is async it takes time to process function above, once we have it done - we get the bounds
+  //   // Potential to improve
+  //   setTimeout(() => {
+  //     this.MapService.setBounds(layerGroup.getBounds());
+  //   });
+  // }
 
   private openPlanningModal(): void {
     if (this.isInsideWaterBody) {
@@ -435,23 +437,23 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     }
   }
 
-  private formatReaches(data): any {
-    const streamArray = [];
-    for (let i = 0; i < data.features.length; i++) {
-      if (data.features[i].geometry.type === 'LineString') {
-        const polylinePoints = this.deepCopy(data.features[i]);
-        streamArray.push(polylinePoints);
-      }
-    }
-    streamArray.map((reach) => {
-      reach.properties.show = false;
-    });
+  // private formatReaches(data): any {
+  //   const streamArray = [];
+  //   for (let i = 0; i < data.features.length; i++) {
+  //     if (data.features[i].geometry.type === 'LineString') {
+  //       const polylinePoints = this.deepCopy(data.features[i]);
+  //       streamArray.push(polylinePoints);
+  //     }
+  //   }
+  //   streamArray.map((reach) => {
+  //     reach.properties.show = false;
+  //   });
 
-    const sortArray = streamArray.sort( (a, b) => {
-      return a.properties.DrainageArea - b.properties.DrainageArea;
-    });
-    return (sortArray);
-  }
+  //   const sortArray = streamArray.sort( (a, b) => {
+  //     return a.properties.DrainageArea - b.properties.DrainageArea;
+  //   });
+  //   return (sortArray);
+  // }
   //#endregion
 
 }
