@@ -4,6 +4,7 @@
 // Reset 
 @import url('app/global_styles/reset.scss');
 @import url('app/global_styles/markers.css');
+@import url('app/global_styles/misc.scss');
 
 $sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 // Variables
@@ -975,6 +976,7 @@ ul{
 	.data-table{
 		font-size: 14.5px;
 		border: 1px solid rgba(0,0,0,0.25);
+		border-right: none;
 		table-layout: fixed;
 		width: 100%;
 		border-collapse: collapse;
@@ -999,9 +1001,10 @@ ul{
 
 		tbody{
 			display: block;
-			width: 100%;
+			width: fit-content;
 			height: 260px;
 			overflow-y: auto;
+			border-right: 1px solid rgba(0,0,0,0.25);
 
 			
 
