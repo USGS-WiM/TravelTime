@@ -18,7 +18,7 @@ export class gages {
     this.uri = arg.uri;
     this.source = arg.source;
     this.value = arg.value;
-    this.record = new Date();
+    this.record = arg.record;
     this.drainagearea = Number(arg.drainagearea).toFixed(1);
     this.status = arg.status;
   }

@@ -44,18 +44,52 @@ export class NWISService {
   }
 
 
-  getRealTimeFlow(starttime: string, endtime: string, site: any) {
+  getRealTimeFlow(starttime: any, site: any) {
+
+    //console.log("get real time called");
     this.gages = []; //clear array
+
+    var month = starttime.month;
+    var day = starttime.day;
+    var hour = starttime.hour;
+    var min = starttime.minute;
+
+
+    if (hour < 10) {hour = "0" + hour}
+    if (month < 10) { month = "0" + month }
+    if (min < 10) { min = "0" + min }
+    if (day < 10) {day = "0" + day}
+       
+    var dischargetime = starttime.year + "-" + month + "-" + day + "T" + hour + ":" + min + "%2b0500&endDT=";
+    var enddisttime;
+    if (Number(hour) > 19) {
+      hour = 4 + (hour - 24);
+      if (hour < 10) { hour = "0" + hour }
+      enddisttime = starttime.year + "-" + month + "-" + day + "T" + hour + ":" + min + + "%2b0500&";
+    } else if (Number(hour) < 10) {
+      hour = Number(hour) + 4;
+      if (hour < 10) {hour = "0" + hour}
+      enddisttime = starttime.year + "-" + month + "-" + day + "T" + hour + ":" + min + "%2b0500&";
+    } else {
+      enddisttime = starttime.year + "-" + month + "-" + day + "T" + (Number(hour) + 4) + ":" + min + "%2b0500&";
+    }
+
+    
     for (var i = 0; i < site.length; i++) {
-      let startdate = starttime;
-      let enddate = endtime;
       let gage = site[i];
       let siteid = (gage.identifier.replace("USGS-", ""));
-      let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + startdate + "&endDT=" + enddate + "&parameterCd=00060&siteStatus=active";
+      //let refid = "05587450"
+      let baseurl = "https://nwis.waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + dischargetime + enddisttime + "&parameterCd=00060&siteStatus=all";
+      console.log(baseurl);
       this.http.get<any>(baseurl).subscribe(result => {
-        this.gages.push(result);
+        console.log(result);
+        if ((result.value.timeSeries.length) > 0) {
+          this.updateDischarge(result);
+          this.gages.push(result);
+        }
       });
     }
+
     this.StreamGages.next(this.gages);
   }
 
@@ -140,21 +174,6 @@ export class NWISService {
           })
           this.showGages.next(true);
         });
-
-        /*const p: xml2js.Parser = new xml2js.Parser();
-        this.getGageInfoNwis(siteid).subscribe(nwisresult => {
-          p.parseString(nwisresult, (err, jsonresult) => {
-            if (err) {
-              throw err;
-            } //contributing drainage area first, next drain area va
-
-            const json = JSON.stringify(jsonresult); //format your json output
-            let d = JSON.parse(json);//update gage info to match from nwis
-            this.updateGageData(result, gage, d.usgs_nwis.site[0].drain_area_va[0]);
-          });
-        });*/
-
-
         if ("USGS-" + siteid == site[site.length - 1].identifier) {
 
         }
@@ -165,6 +184,7 @@ export class NWISService {
     this.StreamGages.next(this.gages);
   }
   public gagessub = [];
+
   public updateGageData(result, site, F) {
     let newgage = site.properties;
     if (F > 0) {
@@ -184,6 +204,24 @@ export class NWISService {
       this.sm('Gage is missing discharge value: ' + site.properties.identifier + "More info on: " + site.properties.uri);
     }
     this.gagessub.push(newgage);
+  }
+
+
+  public updateDischarge(gage) {
+    this.gagessub.forEach(g => {
+      let code = "USGS-" + gage.value.timeSeries[0].sourceInfo.siteCode[0].value;
+      if (g.identifier == code) {
+        console.log("matched identifiers code");
+        g.value = gage.value.timeSeries[0].values[0].value[0].value;
+        g.record = new Date(gage.value.timeSeries[0].values[0].value[0].dateTime);
+        console.log(g.value)
+        console.log(g.identifier)
+        console.log(g.record)
+      }
+
+    })
+    console.log ("updated gages array")
+    this.gagesArray.next(this.gagessub);
   }
 
 

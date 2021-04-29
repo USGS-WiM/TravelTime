@@ -22,7 +22,10 @@ export class GagesmodalComponent implements OnInit {
 
     this.NWISService.gagesArray.subscribe(data => {
       data.forEach(r => {
+        console.log(r);
         let gage = new gages(r);
+
+        console.log(gage.record);
         this.newSessionGages.push(gage);
       })
       this.gagesArray = this.newSessionGages;
