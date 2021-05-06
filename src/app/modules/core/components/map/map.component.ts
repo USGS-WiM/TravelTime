@@ -318,7 +318,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                   if(response.features[0].properties.nhdplus_comid === rch1comid) { //transfers clipped reach geometry to replace full reach geometry
                     response.features[0].geometry = this.RDP[0].geometry;
                   }
-                  response.features.unshift(this.RDP[1]);
+                  if(this.RDP.length > 1) {
+                    response.features.unshift(this.RDP[1]);
+                  }
                   response.features.forEach(element => {
                     element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
                   });
