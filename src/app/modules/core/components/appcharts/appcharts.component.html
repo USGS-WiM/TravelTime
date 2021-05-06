@@ -10,46 +10,47 @@
 		Most Probable
 	</button>
 </div>
-
-<!-- Selected Group Dropdown -->
-<div class="flex-center dropdown-menu">
-	<ng-select #selectGroup [items]="reachesGrouped"
-		width="100px"
-		[disabled]="isDisabled"
-		[virtualScroll]="true"
-		bindLabel="label"
-		bindValue="id"
-		(change)="chartIsActive($event)"
-		placeholder="Select a group"
-		[(ngModel)]="selectedGroupId">
-	</ng-select>
-</div>
-
-
+<div *ngIf="SelectedMethodType === 'response'">
+	<!-- Selected Group Dropdown -->
+	<div class="flex-center dropdown-menu">
+		<ng-select #selectGroup [items]="reachesGrouped"
+			width="100px"
+			[disabled]="isDisabled"
+			[virtualScroll]="true"
+			bindLabel="label"
+			bindValue="id"
+			(change)="chartIsActive($event)"
+			placeholder="Select a group"
+			[(ngModel)]="selectedGroupId">
+		</ng-select>
+	</div>
 
 
-<div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMost">
-	<canvas baseChart width="600" height="400"
-					[datasets]="mostLineChartData"
-					[labels]="mostLineChartLabels"
-					[options]="mostLineChartOptions"
-					[colors]="lineChartColors"
-					[legend]="lineChartLegend"
-					[chartType]="lineChartType"
-					[plugins]="lineChartPlugins"
-					(chartHover)="chartHovered($event)"
-					(chartClick)="chartClicked($event)"></canvas>
-</div>
 
-<div style="display: block;" *ngIf="maxLineChartData.length > 1 && showMax">
-	<canvas baseChart width="600" height="400"
-					[datasets]="maxLineChartData"
-					[labels]="maxLineChartLabels"
-					[options]="maxLineChartOptions"
-					[colors]="lineChartColors"
-					[legend]="lineChartLegend"
-					[chartType]="lineChartType"
-					[plugins]="lineChartPlugins"
-					(chartHover)="chartHovered($event)"
-					(chartClick)="chartClicked($event)"></canvas>
+
+	<div style="display: block;" *ngIf="mostLineChartData.length > 1 && showMost">
+		<canvas baseChart width="600" height="400"
+						[datasets]="mostLineChartData"
+						[labels]="mostLineChartLabels"
+						[options]="mostLineChartOptions"
+						[colors]="lineChartColors"
+						[legend]="lineChartLegend"
+						[chartType]="lineChartType"
+						[plugins]="lineChartPlugins"
+						(chartHover)="chartHovered($event)"
+						(chartClick)="chartClicked($event)"></canvas>
+	</div>
+
+	<div style="display: block;" *ngIf="maxLineChartData.length > 1 && showMax">
+		<canvas baseChart width="600" height="400"
+						[datasets]="maxLineChartData"
+						[labels]="maxLineChartLabels"
+						[options]="maxLineChartOptions"
+						[colors]="lineChartColors"
+						[legend]="lineChartLegend"
+						[chartType]="lineChartType"
+						[plugins]="lineChartPlugins"
+						(chartHover)="chartHovered($event)"
+						(chartClick)="chartClicked($event)"></canvas>
+	</div>
 </div>

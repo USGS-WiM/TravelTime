@@ -1,4 +1,4 @@
-<div class="footer-wrapper" *ngIf="showResult$ === true">
+<div class="footer-wrapper" *ngIf="showResult$ === true && SelectedMethodType === 'response'">
 	<div class="flex flex-center">
 		<h3>{{spillMass}} kg Spill Occuring {{spillDate}}</h3>
 	</div>
@@ -150,6 +150,99 @@
 		<!-- Right side - charts -->
 		<div class="footer-data-right">
 
+			<!-- Charts -->
+			<div class="chart-wrapper">
+				<tot-appcharts></tot-appcharts>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="footer-wrapper" *ngIf="showResult$ === true && SelectedMethodType === 'planning'">
+	<div class="footer-data">
+		<div class="footer-data-left" id="footerData">
+
+			<!-- Most Probable Table -->
+			<div class="data-display" *ngIf="showMost">
+				<h2>Most Probable</h2>
+
+				<div class="table-display">
+					<table class="data-table">
+						<thead>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th rowspan="2" vertical-align="center">Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Peak concentration<br />(hours)</th>
+							</tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
+								<th></th>
+								<th>Q</th>
+								<th>D<sub>a</sub></th>
+								<th>L</th>
+								<th>V</th>
+								<th>T<sub>p</sub></th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
+								<!-- <ng-container *ngFor="let prop of reach.properties"> -->
+									<td>{{reach.properties.nhdplus_comid}}</td>
+									<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
+									<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+									<td style="text-align: center;">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+									<td style="text-align: center;">{{reach.properties.VelocityMost}}</td>
+									<td>{{(reach.properties.accutot).toUSGSvalue()}}</td>					
+								<!-- </ng-container> -->
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Max Probable table -->
+			<div class="data-display" *ngIf="showMax">
+				<h2>Maximum Probable</h2>
+				<div class="table-display">
+					<table class="data-table">
+						<thead>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th rowspan="2" vertical-align="center">Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Peak concentration<br />(hours)</th>
+							</tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
+								<th></th>
+								<th>Q</th>
+								<th>D<sub>a</sub></th>
+								<th>L</th>
+								<th>V</th>
+								<th>T<sub>p</sub></th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
+								<td>{{reach.properties.nhdplus_comid}}</td>
+								<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
+								<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+								<td style="text-align: center;">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+								<td style="text-align: center;">{{reach.properties.VelocityMax}}</td>
+								<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>					
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Right side - charts -->
+		<div class="footer-data-right">
 			<!-- Charts -->
 			<div class="chart-wrapper">
 				<tot-appcharts></tot-appcharts>

@@ -45,6 +45,9 @@ export class StudyService extends deepCopy   {
     this.SelectedReturn.next(this.selectedStudy);
   }
 
+  private selectedMethod = new Subject<number>();
+  methodType$ = this.selectedMethod.asObservable();
+
   public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
   public ReportOptions: Array<any>;
   public distance: number;
@@ -164,10 +167,19 @@ export class StudyService extends deepCopy   {
       reach.properties.show = false;
     });
 
-    const sortArray = streamArray.sort( (a, b) => {
-      return a.properties.DrainageArea - b.properties.DrainageArea;
-    });
-    return (sortArray);
+    if(this.selectedStudy.MethodType == "response") { // response method sorts table by drainage area, smallest to largest
+      streamArray.shift(); //removes overland trace
+      const sortArray = streamArray.sort( (a, b) => {
+        return a.properties.DrainageArea - b.properties.DrainageArea;
+      });
+      return (sortArray);
+    } else { //planning method sorts table by total travel time, largest to smallest
+      streamArray.shift(); //removes overland trace
+      const sortArray = streamArray.sort( (a, b) => {
+        return b.properties.accutot - a.properties.accutot;
+      });
+      return (sortArray);
+    }
   }
 
   constructor(toastr: ToastrService) {

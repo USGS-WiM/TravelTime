@@ -28,6 +28,7 @@ import { ReportModule } from './components/report/report.module';
 import { Angulartics2Module } from 'angulartics2';
 import { AppChartsModule } from './components/appcharts/appcharts.module';
 import { NWISService } from './services/nwisservices.service';
+import { NLDIService } from './services/nldiservices.service';
 
 @NgModule({
     declarations: [SidebarComponent, CoreComponent, FooterComponent],
@@ -51,7 +52,7 @@ import { NWISService } from './services/nwisservices.service';
     Angulartics2Module.forRoot(),
     AppChartsModule
     ],
-  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService, NWISService],
+  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService, NWISService, NLDIService],
   exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],
   bootstrap: [CoreComponent]
 })

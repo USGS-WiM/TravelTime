@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { SpillPlanningService } from '../../services/spillplanning.service';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpillPlanningModalComponent } from '../spillplanningmodal/spillplanningmodal.component';
+import { NLDIService } from '../../services/nldiservices.service';
 
 declare let search_api: any;
 
@@ -35,6 +36,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public map: L.Map;
   public isfirst = true;
   public isInsideWaterBody: boolean = false;
+  public scaleMap: string;
 
   public set MousePosition(v: any) {
     this._mousePosition = v;
@@ -63,18 +65,22 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private StudyService: StudyService;
   private NWISService: NWISService;
   private ToTCalculator: SpillPlanningService;
+  private NLDIService: NLDIService;
   private _layersControl;
   private _mousePosition;
   private _bounds;
   private _layers = [];
   private subscription: Subscription;
-  private ShowUpstream: any;
+  private _showUpstream: any;
+  private RDP: any;
+  private firstReach: any;
+
+  public get ShowUpstream(): boolean {
+    return this._showUpstream;
+  }
 
   @Input() report: boolean;
   @Input() mapSize: string;
-
-  scaleMap: string;
-
 
   ngOnChanges(changes: any) {
 	// If map size changed, trigger resize event, which will force map to redraw
@@ -88,9 +94,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     }
 }
   //#endregion
-
-
-
 
   //MapOptions
   optionsSpec: any = {
@@ -112,13 +115,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, ToTCalculator: SpillPlanningService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService, private modalService: NgbModal) {
+  constructor(mapservice: MapService, ToTCalculator: SpillPlanningService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService, private modalService: NgbModal, nldiService: NLDIService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
     this.NavigationService = navigationservice;
     this.StudyService = studyservice;
     this.NWISService = nwisservice;
+    this.NLDIService = nldiService;
     this.layerGroup = new L.FeatureGroup([]); // streamLayer
     this.reportlayerGroup = new L.FeatureGroup([]);
     this.ToTCalculator = ToTCalculator;
@@ -192,10 +196,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       const marker = L.marker(this.poi, {
           icon: blackPin,
       });
-
       marker.addTo(this.reportMap);
       this.reportlayerGroup.addTo(this.reportMap);
-
       this.reportMap.fitBounds(this.layerGroup.getBounds());
     }
   }
@@ -208,24 +210,28 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.map = map;
     L.control.scale().addTo(map);
 
-    if(this.ShowUpstream) {
-      const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = map => {
-        let div = L.DomUtil.create('div', 'info legend');
-
-        div.innerHTML = '<div style="background-color: white; box-shadow: 0 5px 20px 0 rgb(0 0 0 / 20%); border-radius: 3px;">';
-        div.innerHTML += '<div><b>Travel Times</b></div>';
-        div.innerHTML += '<i style="background: #0BDCD5"> &nbsp; &nbsp;</i> &nbsp;>0-5 hours <br/>';
-        div.innerHTML += '<i style="background: #D3DC0B"> &nbsp; &nbsp;</i> &nbsp;>5-15 hours <br/>';
-        div.innerHTML += '<i style="background: #144893"> &nbsp; &nbsp;</i> &nbsp;>15-35 hours <br/>';
-        div.innerHTML += '<i style="background: #14933E"> &nbsp; &nbsp;</i> &nbsp;>35-60 hours <br/>';
-        div.innerHTML += '<i style="background: #020234"> &nbsp; &nbsp;</i> &nbsp;>60 hours <br/>';
-        div.innerHTML += '</div>';
-
-        return div;
+    this.MapService.showUpstream.subscribe(data => {
+      this._showUpstream = data;
+      if(this.ShowUpstream) {
+        const legend = new L.Control({ position: 'bottomright' });
+        legend.onAdd = map => {
+          let div = L.DomUtil.create('div', 'info legend');
+  
+          div.innerHTML = '<div style="background-color: white; box-shadow: 0 5px 20px 0 rgb(0 0 0 / 20%); border-radius: 3px;">';
+          div.innerHTML += '<div><b>Travel Times</b></div>';
+          div.innerHTML += '<i style="background: #CC0000"> &nbsp; &nbsp;</i> &nbsp;>0-6 hours <br/>';
+          div.innerHTML += '<i style="background: #FF0000"> &nbsp; &nbsp;</i> &nbsp;>6-12 hours <br/>';
+          div.innerHTML += '<i style="background: #FF6600"> &nbsp; &nbsp;</i> &nbsp;>12-24 hours <br/>';
+          div.innerHTML += '<i style="background: #FF9900"> &nbsp; &nbsp;</i> &nbsp;>24-36 hours <br/>';
+          div.innerHTML += '<i style="background: #CCFF00"> &nbsp; &nbsp;</i> &nbsp;>36-48 hours <br/>';
+          div.innerHTML += '<i style="background: #669900"> &nbsp; &nbsp;</i> &nbsp;>48 hours <br/>';
+          div.innerHTML += '</div>';
+  
+          return div;
+        }
+        legend.addTo(map);
       }
-      legend.addTo(map);
-    }
+    })    
   }
 
   public onZoomChange(zoom: number) {
@@ -240,9 +246,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       (document.getElementById(this.StudyService.selectedStudy.MethodType) as HTMLInputElement).classList.remove('waiting');
 
       if (this.StudyService.selectedStudy.MethodType == 'response') {
-        this.setPOI(evnt.latlng, 'downstream');
+        this.setPOI(evnt.latlng, 'response');
       } else {
-        this.setPOI(evnt.latlng, 'upstream');
+        this.setPOI(evnt.latlng, 'planning');
       }
     }
   }
@@ -250,18 +256,23 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public getLatLong(evnt: any) { 
     this._mousePosition = evnt.latlng;
   }
-
   //#endregion
 
   //#region "Helper methods (create FeatureGroup layer)"
   private setPOI(latlng: L.LatLng, inputString: string) {
     if (!this.StudyService.GetWorkFlow('hasPOI')) {
+      var direction;
+      var intersection;
       this.sm('Point selected. Loading...');
       this.MapService.setCursor('');
       this.StudyService.SetWorkFlow('hasPOI', true);
       this.MapService.SetPoi(latlng);
       if (this.MapService.CurrentZoomLevel.value < 10 || !this.MapService.isClickable) { return; }
-	  
+      if (inputString === 'response') {
+        direction = 'downstream';
+      } else {
+        direction = 'upstream';
+      }	  
 
       // MarkerMaker icon
       var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
@@ -271,153 +282,157 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       // add marker to map
       this.MapService.AddMapLayer({ name: 'POI', layer: marker, visible: true });
 
-      this.NavigationService.getNavigationResource('3')
+      this.NLDIService.GetRainDropPath(latlng.lat, latlng.lng, direction === 'downstream' ? 'down' : 'up')
         .toPromise().then(data => {
-          const config: Array<any> = data.configuration;
-          config.forEach(item => {
-            switch (item.id) {
-              case 1: item.value = marker.toGeoJSON().geometry;
-                      item.value.crs = { properties: { name: 'EPSG:4326' }, type: 'name' };
-                      break;
-              case 6: item.value = ['flowline', 'nwisgage']; // "flowline", "wqpsite", "streamStatsgage", "nwisgage"
-                      break;
-              case 5: item.value = inputString;
-                      break;
-              case 0: if (this.StudyService.isMetric()) {
-                        item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+          this.RDP = data.outputs[0].value.features;
+          this.StudyService.selectedStudy.RDP = this.RDP;
+          intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
+          if(direction === 'downstream') {
+            this.NavigationService.getNavigationResource('3')
+              .toPromise().then(data2 => {
+                const config: Array<any> = data2.configuration;
+                config.forEach(item => {
+                  switch (item.id) {
+                    case 1: item.value = intersection;//marker.toGeoJSON().geometry;
+                            item.value.crs = { properties: { name: 'EPSG:4326' }, type: 'name' };
+                            break;
+                    case 6: item.value = ['flowline', 'nwisgage']; // "flowline", "wqpsite", "streamStatsgage", "nwisgage"
+                            break;
+                    case 5: item.value = direction;
+                            break;
+                    case 0: if (this.StudyService.isMetric()) {
+                              item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+                            } else {
+                              var imp_distance = this.StudyService.distance * 1.609344; //converts miles to kilometers
+                              item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: imp_distance, valueType: 'numeric' };
+                            }
+                            
+                  }// end switch
+                }); // next item
+                return config;
+              }).then(config => {
+                this.NavigationService.getRoute('3', config, true).subscribe(response => {
+                  this.NavigationService.navigationGeoJSON$.next(response);
+                  response.features.shift();                
+                  var rch1comid = this.RDP[0].properties.comid;
+                  if(response.features[0].properties.nhdplus_comid === rch1comid) { //transfers clipped reach geometry to replace full reach geometry
+                    response.features[0].geometry = this.RDP[0].geometry;
+                  }
+                  response.features.unshift(this.RDP[1]);
+                  response.features.forEach(element => {
+                    element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
+                  });
+                  this.MapService.getFlowLineLayerGroup(response.features, inputString, this.StudyService.isMetric);
+                  this.NWISService.check4gages(response.features);
+                  this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(response);
+                  this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
+                  this.StudyService.SetWorkFlow('hasReaches', true);
+                  this.StudyService.selectedStudy.LocationOfInterest = latlng;
+                  this.StudyService.setProcedure(2);
+                  //one with the biggest drainage area is the first one to trace up
+                });
+              }).finally(() => {
+                if(this.RDP.length > 1) { 
+                 this.wm('Travel time not computed for overland/raindrop trace portion', '', 0);
+                }
+               });
+          } else { // upstream workflow
+            this.NavigationService.getNavigationResource('3')
+            .toPromise().then(data2 => {
+              const config: Array<any> = data2.configuration;
+              config.forEach(item => {
+                switch (item.id) {
+                  case 1: item.value = intersection;//marker.toGeoJSON().geometry;
+                          item.value.crs = { properties: { name: 'EPSG:4326' }, type: 'name' };
+                          break;
+                  case 6: item.value = ['flowline', 'nwisgage']; // "flowline", "wqpsite", "streamStatsgage", "nwisgage"
+                          break;
+                  case 5: item.value = "downstream";
+                          break;
+                  case 0: item.value = { id: 3, description: 'Grabs first reach with attributes', name: 'Distance (km)', value: 1, valueType: 'numeric' };
+                }// end switch
+              }); // next item
+              return config;
+            }).then(config => {
+              this.NavigationService.getRoute('3', config, true).subscribe(response => {
+                this.NavigationService.navigationGeoJSON$.next(response);
+                response.features.shift();
+                this.firstReach = response.features[0];
+                this.NavigationService.getNavigationResource('3')
+                .toPromise().then(data3 => {
+                  const config2: Array<any> = data3.configuration;
+                  config2.forEach(item => {
+                    switch (item.id) {
+                      case 1: item.value = intersection;//marker.toGeoJSON().geometry;
+                              item.value.crs = { properties: { name: 'EPSG:4326' }, type: 'name' };
+                              break;
+                      case 6: item.value = ['flowline', 'nwisgage']; // "flowline", "wqpsite", "streamStatsgage", "nwisgage"
+                              break;
+                      case 5: item.value = direction;
+                              break;
+                      case 0: item.value = { id: 3, description: 'Grabs first reach with attributes', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+                    }// end switch
+                  }); // next item
+                  return config2;
+                }).then(config2 => {
+                  this.NavigationService.getRoute('3', config2, true).subscribe(response2 => {
+                    this.NavigationService.navigationGeoJSON$.next(response2);
+                    response2.features.shift();                
+                    var rch1comid = this.RDP[0].properties.comid;
+                    if(this.firstReach.properties.nhdplus_comid === rch1comid) { //transfers clipped reach geometry to replace full reach geometry
+                      this.firstReach.geometry = this.RDP[0].geometry;
+                    }
+                    if(this.RDP.length > 1 ) { //if overland flow trace exists
+                      response2.features.unshift(this.RDP[1], this.firstReach);
+                    } else { //if user point snapped to flowline
+                      response2.features.unshift(this.firstReach);
+                    }
+                    response2.features.forEach(element => {
+                      element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
+                    });
+                    this.StudyService.selectedStudy.spillPlanningResponse = response2;
+                    this.StudyService.selectedStudy.LocationOfInterest = latlng;
+                    this.NWISService.check4gages(this.StudyService.selectedStudy.spillPlanningResponse.features);
+                    this.StudyService.SetWorkFlow('hasReaches', true);
+                    this.openPlanningModal();
+                    this.MapService.showUpstream.subscribe(data3 => {
+                      if (data3) {
+                        this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillPlanningResponse.features, inputString, this.StudyService.isMetric);
+                        //this.NWISService.check4gages(this.StudyService.selectedStudy.spillPlanningResponse.features);
+                        this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(this.StudyService.selectedStudy.spillPlanningResponse);
+                        this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });                  
+                        this.StudyService.selectedStudy.LocationOfInterest = this.MapService.GetPOI();
+                        this.StudyService.selectedStudy.LocationOfInterest = latlng;
+                        this._showUpstream = data3;
                       } else {
-                        var imp_distance = this.StudyService.distance * 1.609344; //converts miles to kilometers
-                        item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: imp_distance, valueType: 'numeric' };
+                        this._showUpstream = data3;
                       }
-                      
-            }// end switch
-          }); // next item
-          return config;
-        }).then(config => {
-          this.NavigationService.getRoute('3', config, true).subscribe(response => {
-            this.NavigationService.navigationGeoJSON$.next(response);
-            response.features.shift();
-            //this.ToTCalculator.passageTimeTest();
-            //this.MapService.FlowLines.next(response.features);
-            //console.log(response);
-            if (inputString == "upstream") {
-              //this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-              this.StudyService.selectedStudy.spillPlanningResponse = response;
-              this.StudyService.selectedStudy.LocationOfInterest = latlng;
-              //this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-              this.openPlanningModal();
-              // this.ComputeTOT(response.features);
-              // this.accumTOT(response.features);
-              // this.getFlowLineLayerGroup(response.features);
-              // this.StudyService.selectedStudy.Reaches = this.formatReaches(response);
-              // this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
-              // this.StudyService.selectedStudy.LocationOfInterest = latlng;
-            } else {
-              this.MapService.getFlowLineLayerGroup(response.features);
-              this.NWISService.check4gages(response.features);
-              this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(response);
-              this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
-              this.StudyService.SetWorkFlow('hasReaches', true);
-              this.StudyService.selectedStudy.LocationOfInterest = latlng;
-              this.StudyService.setProcedure(2);
-            }
-            //one with the biggest drainage area is the first one to trace up
-          });
-        }).finally(() => {
-          //if overland trace occurs run next line
-          //this.sm('Travel time not computed for overland/raindrop trace portion');
+                    })
+                  })              
+                })
+                //one with the biggest drainage area is the first one to trace up
+              });
+            })
+          }
         })
     }
   }
 
-  public ComputeTOT(data) {
-    data.forEach(reach => {
-      if (reach.properties.hasOwnProperty("Discharge")) {
-        var tot = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.Discharge * 0.0283168, reach.properties.Discharge * 0.0283168, reach.properties.DrainageArea * 10 ^ 6);
-        reach.properties["result"] = tot;
-        reach.properties["touched"] = false;
-      }
-    })
-  }
-
-  public accumTOT(data) {
-    var DA = 0;
-    var headCOMID = 0;
-    var newDA = 0;
-
-    data.forEach(reach => { //find the biggest drainage corresponding to the selected POI
-      newDA = reach.properties.DrainageArea;
-      if (newDA > DA) {
-        DA = newDA;
-        headCOMID = reach.properties.nhdplus_comid;
-      }
-    })
-
-    data.forEach(reach => { //mark reach with biggest drainage
-      if (reach.properties.nhdplus_comid == headCOMID) {
-        reach.properties["accutot"] = reach.properties.result;
-        reach.properties.touched = true;
-        this.sumacc(data, reach);
-      }
-    })
-  }
-
-  public sumacc(data, prev) {
-    data.forEach(reach => {
-      if (reach.properties.ToNode == prev.properties.FromNode && !reach.properties.touched) {
-        reach.properties.accutot = prev.properties.accutot + reach.properties.result;
-        reach.properties.touched = true;
-        this.sumacc(data, reach);
-      }
-    })
-  }
-
-  // private check4gages(features) {
-  //   const layerGroup = new L.FeatureGroup([]);
-  //   const reportlayerGroup = new L.FeatureGroup([]);
-  //   let gagesArray = [];
-  //   features.forEach(i => {
-
-  //     if (i.geometry.type === 'Point') {
-  //       var siteID = i.properties.identifier.replace("USGS-", "");
-	// 	// MarkerMaker Icon
-	// 	var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
-  //       layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-	// 		icon: blackTriangle
-	// 	}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
-  //       reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-	// 		icon: blackTriangle
-	// 	}));
-  //       gagesArray.push(i);
-  //     } 
-  //   })
-
-  //   //check if there is a gage data;
-  //   if (gagesArray.length > 0) {
-  //     for (var i = 0; i < gagesArray.length; i++) {
-  //       features.forEach(o => {
-  //         if (o.geometry.type !== "Point") {
-  //           if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
-  //             gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea / 2.59; //in sqmiles
-  //           } else { }
-  //         }
-  //       })
-  //     };
-  //     //create service
-  //     //add gage
-  //     this.NWISService.gagesArray.next(gagesArray);
-  //     this.MapService.gageDischargeSearch.next(true);
-  //     this.NWISService.getMostRecentFlow(gagesArray);
-  //   } else {
-  //     this.MapService.gageDischargeSearch.next(true);
-  //   };
-
-  //   // because it is async it takes time to process function above, once we have it done - we get the bounds
-  //   // Potential to improve
-  //   setTimeout(() => {
-  //     this.MapService.setBounds(layerGroup.getBounds());
-  //   });
-  // }
+  private measure(latLon1, latLon2){  // generally used geo measurement function
+    var lat1 = latLon1[1];
+    var lon1 = latLon1[0];
+    var lat2 = latLon2[1];
+    var lon2 = latLon2[0];
+    var R = 6378.137; // Radius of earth in KM
+    var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+    var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return d; // kilometers
+}
 
   private openPlanningModal(): void {
     if (this.isInsideWaterBody) {
@@ -437,23 +452,22 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     }
   }
 
-  // private formatReaches(data): any {
-  //   const streamArray = [];
-  //   for (let i = 0; i < data.features.length; i++) {
-  //     if (data.features[i].geometry.type === 'LineString') {
-  //       const polylinePoints = this.deepCopy(data.features[i]);
-  //       streamArray.push(polylinePoints);
-  //     }
-  //   }
-  //   streamArray.map((reach) => {
-  //     reach.properties.show = false;
-  //   });
-
-  //   const sortArray = streamArray.sort( (a, b) => {
-  //     return a.properties.DrainageArea - b.properties.DrainageArea;
-  //   });
-  //   return (sortArray);
-  // }
+  private wm(msg: string, title?: string, timeout?: number) {
+    try {
+      let options: Partial<IndividualConfig> = null;
+      if (timeout) { options = { timeOut: timeout }; }
+      if (timeout == 0) {
+        options = {
+          disableTimeOut : true,
+          timeOut: 0,
+          extendedTimeOut: 0,
+          tapToDismiss: false
+        };
+      }
+      this.messager.warning(msg, title, options);
+    } catch (e) {
+    }
+  }
   //#endregion
 
 }

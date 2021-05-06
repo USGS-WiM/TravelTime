@@ -28,7 +28,7 @@ export class NWISService {
       let gage = site[i];
       let siteid = (gage.identifier.replace("USGS-", ""));
       let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + startdate + "&endDT=" + enddate + "&parameterCd=00060&siteStatus=active";
-      console.log(baseurl);
+      //console.log(baseurl);
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
       });
@@ -48,8 +48,8 @@ export class NWISService {
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
         this.updateGageData(result, gage);
-        console.log(site);
-        console.log("USGS-" + siteid);
+        //console.log(site);
+        //console.log("USGS-" + siteid);
         this.MapService.showGages.next(true);
         if ("USGS-" + siteid == site[site.length-1].identifier) {
 
@@ -67,9 +67,9 @@ export class NWISService {
     let siteid = site.properties.identifier.replace("USGS-", "");
     if (result.value.timeSeries.length > 0) {
       let code = "USGS-" + result.value.timeSeries[0].sourceInfo.siteCode[0].value;
-      console.log(code);
+      //console.log(code);
       if (newgage.identifier == code) {
-        console.log('matched and updated discharge values');
+        //console.log('matched and updated discharge values');
         newgage.value = result.value.timeSeries[0].values[0].value[0].value;
         let date = new Date(result.value.timeSeries[0].values[0].value[0].dateTime);
         newgage.record = date;

@@ -144,11 +144,11 @@ export class SidebarComponent implements AfterViewChecked {
       this.SelectedProcedureType = data;
     });
 
-      this.StudyService.ReportOptions = [
-      { name: 'Map of study area', checked: false },
-      { name: 'Table of values', checked: false },
-      { name: 'Graph of timeline', checked: false }
-    ];
+    //   this.StudyService.ReportOptions = [
+    //   { name: 'Map of study area', checked: false },
+    //   { name: 'Table of values', checked: false },
+    //   { name: 'Graph of timeline', checked: false }
+    // ];
   }
 
   public SetBaselayer(LayerName: string) {
@@ -171,6 +171,19 @@ export class SidebarComponent implements AfterViewChecked {
     this.StudyService.selectedStudy = new Study(MethodType);
     this.MapService.isClickable = true;
     this.MapService.setCursor('crosshair');
+
+    if(MethodType === 'response') {
+      this.StudyService.ReportOptions = [
+        { name: 'Map of study area', checked: false },
+        { name: 'Table of values', checked: false },
+        { name: 'Graph of timeline', checked: false }
+      ];
+    } else { // planning method report options
+      this.StudyService.ReportOptions = [
+        { name: 'Map of study area', checked: false },
+        { name: 'Table of values', checked: false }
+      ];
+    }
   }
 
   public ToggleScenario(i) {

@@ -91,77 +91,25 @@
 				<p>{{reportComments}}</p>
 			</div>
 
-			<!--Tables-->
+			<!--Tables-->			
 			<div *ngIf="StudyService.ReportOptions[1].checked">
-				<h4>Most Probable</h4>
-				<table id="MostProbTablePrint" class="data-table">
-					<thead>
-						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
-							<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time after spill</th>
-							<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
-							<th></th>
-						</tr>
-						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-							<th rowspan="2" vertical-align="center">Reach ID</th>
-							<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
-							<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
-							<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
-							<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
-							<th>Leading edge<br />(hours)</th>
-							<th>Peak concentration<br />(hours)</th>
-							<th>Trailing edge at 10% peak concentration<br />(hours)</th>
-							<th>Peak concentration<br />(mg/L)</th>
-						</tr>
-						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
-							<th class="hidden-print"></th>
-							<th>Q</th>
-							<th>D<sub>a</sub></th>
-							<th>L</th>
-							<th>V</th>
-							<th>T<sub>l</sub></th>
-							<th>T<sub>p</sub></th>
-							<th>T<sub>d10</sub></th>
-							<th>C<sub>t</sub></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr *ngFor="let reach of output$; let i = index">
-							<td>{{reach.name}}</td>
-							<ng-container *ngFor="let pars of reach.parameters">
-								<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-									<td style="text-align: center;">{{pars.value}}</td>
-								</ng-container>
-								<ng-container *ngIf="pars.name === 'Drainage area'">
-									<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
-								</ng-container>
-								<ng-container *ngIf="pars.name === 'Cumulative Distance'">
-									<td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
-								</ng-container>
-							</ng-container>
-
-							<ng-container>
-								<!-- if the key is equal to v - this is av speed, else it is vmax-->
-								<td style="text-align: center;">{{reach.result.equations.v.value}}</td>
-								<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>
-								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>
-								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>
-								<td style="text-align: center;">{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
-							</ng-container>
-						</tr>
-					</tbody>
-				</table>
-				<div class="hidden-data" style="display:none;">
-
-					<table id="MostProbTableDL" class="data-table">
+				<div *ngIf="StudyService.MethodType === 'response'">
+					<h4>Most Probable</h4>
+					<table id="MostProbTablePrint" class="data-table">
 						<thead>
 							<tr>
-								<th>Reach ID</th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time after spill</th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th></th>
+							</tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th rowspan="2" vertical-align="center">Reach ID</th>
 								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
 								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
 								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
@@ -171,7 +119,7 @@
 								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
 								<th>Peak concentration<br />(mg/L)</th>
 							</tr>
-							<tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
 								<th class="hidden-print"></th>
 								<th>Q</th>
 								<th>D<sub>a</sub></th>
@@ -188,97 +136,98 @@
 								<td>{{reach.name}}</td>
 								<ng-container *ngFor="let pars of reach.parameters">
 									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-										<td>{{pars.value}}</td>
+										<td style="text-align: center;">{{pars.value}}</td>
 									</ng-container>
 									<ng-container *ngIf="pars.name === 'Drainage area'">
 										<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
 									</ng-container>
 									<ng-container *ngIf="pars.name === 'Cumulative Distance'">
-										<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
+										<td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
 									</ng-container>
 								</ng-container>
 
 								<ng-container>
 									<!-- if the key is equal to v - this is av speed, else it is vmax-->
-									<td>{{reach.result.equations.v.value}}</td>
-									<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>
-									<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>
-									<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>
-									<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
+									<td style="text-align: center;">{{reach.result.equations.v.value}}</td>
+									<td title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>
+									<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>
+									<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MostProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>
+									<td style="text-align: center;">{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
 								</ng-container>
 							</tr>
 						</tbody>
 					</table>
-				</div>
+					<div class="hidden-data" style="display:none;">
 
-				<h4>Maximum Probable</h4>
-				<table id="MaxProbTablePrint" class="data-table">
-					<thead>
-						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
-							<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time after spill</th>
-							<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
-							<th></th>
-						</tr>
-						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
-							<th rowspan="2" vertical-align="center">Reach ID</th>
-							<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
-							<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
-							<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
-							<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
-							<th>Leading edge<br />(hours)</th>
-							<th>Peak concentration<br />(hours)</th>
-							<th>Trailing edge at 10% peak concentration<br />(hours)</th>
-							<th>Peak concentration<br />(mg/L)</th>
-						</tr>
-						<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
-							<th class="hidden-print"></th>
-							<th>Q</th>
-							<th>D<sub>a</sub></th>
-							<th>L</th>
-							<th>V</th>
-							<th>T<sub>l</sub></th>
-							<th>T<sub>p</sub></th>
-							<th>T<sub>d10</sub></th>
-							<th>C<sub>t</sub></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr *ngFor="let reach of output$; let i = index">
-							<td>{{reach.name}}</td>
-							<ng-container *ngFor="let pars of reach.parameters">
-								<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-									<td style="text-align: center;">{{pars.value}}</td>
-								</ng-container>
-								<ng-container *ngIf="pars.name === 'Drainage area'">
-									<td>{{pars.value}}</td>
-								</ng-container>
-								<ng-container *ngIf="pars.name === 'Cumulative Distance'">
-									<td style="text-align: center;">{{pars.value}}</td>
-								</ng-container>
-							</ng-container>
+						<table id="MostProbTableDL" class="data-table">
+							<thead>
+								<tr>
+									<th>Reach ID</th>
+									<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+									<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+									<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+									<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+									<th>Leading edge<br />(hours)</th>
+									<th>Peak concentration<br />(hours)</th>
+									<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+									<th>Peak concentration<br />(mg/L)</th>
+								</tr>
+								<tr>
+									<th class="hidden-print"></th>
+									<th>Q</th>
+									<th>D<sub>a</sub></th>
+									<th>L</th>
+									<th>V</th>
+									<th>T<sub>l</sub></th>
+									<th>T<sub>p</sub></th>
+									<th>T<sub>d10</sub></th>
+									<th>C<sub>t</sub></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let reach of output$; let i = index">
+									<td>{{reach.name}}</td>
+									<ng-container *ngFor="let pars of reach.parameters">
+										<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Drainage area'">
+											<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Cumulative Distance'">
+											<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
+										</ng-container>
+									</ng-container>
 
-							<ng-container>
-								<!-- if the key is equal to v - this is av speed, else it is vmax-->
-								<td style="text-align: center;">{{reach.result.equations.vmax.value}}</td>
-								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
-								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>
-								<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
-								<td style="text-align: center;">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
-							</ng-container>
-						</tr>
-					</tbody>
-				</table> 
-				<div class="hidden-data" style="display:none;">
-					<table id="MaxProbTableDL" class="data-table">
+									<ng-container>
+										<!-- if the key is equal to v - this is av speed, else it is vmax-->
+										<td>{{reach.result.equations.v.value}}</td>
+										<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>
+										<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>
+										<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>
+									</ng-container>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h4>Maximum Probable</h4>
+					<table id="MaxProbTablePrint" class="data-table">
 						<thead>
 							<tr>
-								<th>Reach ID</th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time after spill</th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th></th>
+							</tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th rowspan="2" vertical-align="center">Reach ID</th>
 								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
 								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
 								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
@@ -288,7 +237,7 @@
 								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
 								<th>Peak concentration<br />(mg/L)</th>
 							</tr>
-							<tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
 								<th class="hidden-print"></th>
 								<th>Q</th>
 								<th>D<sub>a</sub></th>
@@ -305,30 +254,213 @@
 								<td>{{reach.name}}</td>
 								<ng-container *ngFor="let pars of reach.parameters">
 									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
-										<td>{{pars.value}}</td>
+										<td style="text-align: center;">{{pars.value}}</td>
 									</ng-container>
 									<ng-container *ngIf="pars.name === 'Drainage area'">
 										<td>{{pars.value}}</td>
 									</ng-container>
 									<ng-container *ngIf="pars.name === 'Cumulative Distance'">
-										<td>{{pars.value}}</td>
+										<td style="text-align: center;">{{pars.value}}</td>
 									</ng-container>
 								</ng-container>
 
 								<ng-container>
 									<!-- if the key is equal to v - this is av speed, else it is vmax-->
-									<td>{{reach.result.equations.vmax.value}}</td>
-									<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
-									<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>
-									<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
-									<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
+									<td style="text-align: center;">{{reach.result.equations.vmax.value}}</td>
+									<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
+									<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>
+									<td style="text-align: center;" title="{{reach.result.tracer_Response.leadingEdge.MaximumProbable.date}}">{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
+									<td style="text-align: center;">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
 								</ng-container>
 							</tr>
 						</tbody>
+					</table> 
+					<div class="hidden-data" style="display:none;">
+						<table id="MaxProbTableDL" class="data-table">
+							<thead>
+								<tr>
+									<th>Reach ID</th>
+									<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+									<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+									<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+									<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+									<th>Leading edge<br />(hours)</th>
+									<th>Peak concentration<br />(hours)</th>
+									<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+									<th>Peak concentration<br />(mg/L)</th>
+								</tr>
+								<tr>
+									<th class="hidden-print"></th>
+									<th>Q</th>
+									<th>D<sub>a</sub></th>
+									<th>L</th>
+									<th>V</th>
+									<th>T<sub>l</sub></th>
+									<th>T<sub>p</sub></th>
+									<th>T<sub>d10</sub></th>
+									<th>C<sub>t</sub></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let reach of output$; let i = index">
+									<td>{{reach.name}}</td>
+									<ng-container *ngFor="let pars of reach.parameters">
+										<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Drainage area'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+										<ng-container *ngIf="pars.name === 'Cumulative Distance'">
+											<td>{{pars.value}}</td>
+										</ng-container>
+									</ng-container>
+
+									<ng-container>
+										<!-- if the key is equal to v - this is av speed, else it is vmax-->
+										<td>{{reach.result.equations.vmax.value}}</td>
+										<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>
+										<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>
+										<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>
+										<td>{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>
+									</ng-container>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div *ngIf="StudyService.selectedStudy.MethodType === 'planning'">
+					<h4>Most Probable</h4>
+					<table id="MostProbTablePrint" class="data-table">
+						<thead>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th rowspan="2" vertical-align="center">Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Peak concentration<br />(hours)</th>
+							</tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
+								<th class="hidden-print"></th>
+								<th>Q</th>
+								<th>D<sub>a</sub></th>
+								<th>L</th>
+								<th>V</th>
+								<th>T<sub>p</sub></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let reach of output$; let i = index">
+								<td>{{reach.properties.nhdplus_comid}}</td>
+								<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
+								<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+								<td style="text-align: center;">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+								<td style="text-align: center;">{{reach.properties.VelocityMost}}</td>
+								<td>{{(reach.properties.accutot).toUSGSvalue()}}</td>	
+							</tr>
+						</tbody>
 					</table>
+					<div class="hidden-data" style="display:none;">
+
+						<table id="MostProbTableDL" class="data-table">
+							<thead>
+								<tr>
+									<th>Reach ID</th>
+									<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+									<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+									<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+									<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+									<th>Peak concentration<br />(hours)</th>
+								</tr>
+								<tr>
+									<th class="hidden-print"></th>
+									<th>Q</th>
+									<th>D<sub>a</sub></th>
+									<th>L</th>
+									<th>V</th>
+									<th>T<sub>p</sub></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let reach of output$; let i = index">
+									<td>{{reach.properties.nhdplus_comid}}</td>
+									<td>{{reach.properties.RTDischarge}}</td>
+									<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+									<td>{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+									<td>{{reach.properties.VelocityMax}}</td>
+									<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<h4>Maximum Probable</h4>
+					<table id="MaxProbTablePrint" class="data-table">
+						<thead>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+								<th rowspan="2" vertical-align="center">Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Peak concentration<br />(hours)</th>
+							</tr>
+							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
+								<th></th>
+								<th>Q</th>
+								<th>D<sub>a</sub></th>
+								<th>L</th>
+								<th>V</th>
+								<th>T<sub>p</sub></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let reach of output$; let i = index">
+								<td>{{reach.properties.nhdplus_comid}}</td>
+								<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
+								<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+								<td style="text-align: center;">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+								<td style="text-align: center;">{{reach.properties.VelocityMax}}</td>
+								<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>	
+							</tr>
+						</tbody>
+					</table> 
+					<div class="hidden-data" style="display:none;">
+						<table id="MaxProbTableDL" class="data-table">
+							<thead>
+								<tr>
+									<th>Reach ID</th>
+									<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+									<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+									<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+									<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+									<th>Peak concentration<br />(hours)</th>
+								</tr>
+								<tr>
+									<th class="hidden-print"></th>
+									<th>Q</th>
+									<th>D<sub>a</sub></th>
+									<th>L</th>
+									<th>V</th>
+									<th>T<sub>p</sub></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let reach of output$; let i = index">
+									<td>{{reach.properties.nhdplus_comid}}</td>
+									<td>{{reach.properties.RTDischarge}}</td>
+									<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+									<td>{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+									<td>{{reach.properties.VelocityMax}}</td>
+									<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-
 
 			<!-- Graph -->
 			<div *ngIf="StudyService.ReportOptions[2].checked">

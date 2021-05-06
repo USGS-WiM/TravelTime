@@ -87,11 +87,20 @@ export class ReportModalComponent extends deepCopy implements OnInit {
     this.units = this.MapService.unitsOptions;
     this.abbrev = this.MapService.abbrevOptions;
 
-    const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
-    const reachList = Object.values(reachesCopy);
-    reachList.shift(); // remove first element (one without results)
+    if(this.StudyService.selectedStudy.MethodType === "response") {
+      const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
+      const reachList = Object.values(reachesCopy);
+      reachList.shift(); // remove first element (one without results)
+  
+      this.checkUnits(reachList);
+    } else { // planning method
+      const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['features']);
+      const reachList = Object.values(reachesCopy);
+      reachList.shift(); // remove first element (one without results)
+  
+      //this.checkUnits(reachList);
+    }
 
-    this.checkUnits(reachList);
   }
 
   public toDecimals(timeval: string) {
