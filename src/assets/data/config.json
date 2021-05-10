@@ -3,6 +3,12 @@
   "mapLayers": {
     "baseLayers": [
       {
+        "name": "ESRI World Imagery",
+        "url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "type": "tile",
+        "visible": false
+      },
+      {
         "name": "National Geographic",
         "layer": "NationalGeographic",
         "type": "agsbase",

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StudyService } from '../../services/study.service';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
 import { ChartsService } from '../../services/charts.service';
@@ -79,14 +79,12 @@ export class FooterComponent extends deepCopy implements OnInit {
         if(this.StudyService.isMetric) {
           const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
           const reachList = Object.values(reachesCopy);
-          reachList.shift(); // remove first element (one without results)
           this.checkUnits(reachList);
           this.hasReaches = true;
           this.selectedUnits = "metric";
         } else {
           const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
           const reachList = Object.values(reachesCopy);
-          reachList.shift(); // remove first element (one without results)
           this.checkUnits(reachList);
           this.hasReaches = true;
           this.selectedUnits = "imperial";

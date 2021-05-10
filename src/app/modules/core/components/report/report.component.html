@@ -43,7 +43,7 @@
 			<!-- Map -->
 			<div>
 				<div *ngIf="StudyService.ReportOptions[0].checked" id="div1">
-					<tot-map id="mapWrapper" [report]="true"></tot-map>
+					<tot-map id="mapWrapper" [report]="true" style="position: relative; display:block;"></tot-map>
 				</div>
 				<!-- <div id="div2">
 					<table id="UnitTable" class="data-table">
@@ -273,7 +273,7 @@
 							</ng-container>
 						</tr>
 					</tbody>
-				</table>
+				</table> 
 				<div class="hidden-data" style="display:none;">
 					<table id="MaxProbTableDL" class="data-table">
 						<thead>

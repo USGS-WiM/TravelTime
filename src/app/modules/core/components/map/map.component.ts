@@ -1,15 +1,17 @@
 import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { deepCopy } from '../../../../shared/extensions/object.DeepCopy';
 import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
+import { NWISService } from '../../services/nwisservices.service'
 import * as L from 'leaflet';
 import * as turf from '@turf/turf';
 import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
 import { UpstreamtotService } from '../../services/upstreamtot.service';
+import 'leaflet-mouse-position';
 declare let search_api: any;
 
 @Component({
@@ -25,8 +27,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private MapService: MapService;
   private NavigationService: NavigationService;
   private StudyService: StudyService;
+  private NWISService: NWISService;
   private ToTCalculator: UpstreamtotService;
   private _layersControl;
+  private _mousePosition;
   private _bounds;
   private _layers = [];
   private subscription: Subscription;
@@ -40,8 +44,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public map: L.Map;
   public isfirst = true;
 
+  public set MousePosition(v: any) {
+    this._mousePosition = v;
+  }
 
-  public evnt;
+  public get MousePosition(): any {
+    return this._mousePosition;
+  }
+
   @Input() report: boolean;
   @Input() mapSize: string;
 
@@ -59,10 +69,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       window.dispatchEvent(new Event('resize'));
     }
 }
-
-
-
-
   //#endregion
 
   //#region "Map helper methods of layerControl"
@@ -79,12 +85,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   }
 
 
-
-
-
-  // <!--"MapOptions"-->
-
-
+  //MapOptions
   optionsSpec: any = {
     layers: [{ url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: 'Open Street Map' }],
     zoom: 5,
@@ -98,26 +99,25 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   options = {
     layers: [L.tileLayer(this.optionsSpec.layers[0].url, { attribution: this.optionsSpec.layers[0].attribution })],
     zoom: this.optionsSpec.zoom,
-    center: L.latLng(this.optionsSpec.center)
+    center: L.latLng(this.optionsSpec.center),
   };
 
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, ToTCalculator: UpstreamtotService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService) {
+  constructor(mapservice: MapService, ToTCalculator: UpstreamtotService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
     this.NavigationService = navigationservice;
     this.StudyService = studyservice;
+    this.NWISService = nwisservice;
     this.layerGroup = new L.FeatureGroup([]); // streamLayer
     this.reportlayerGroup = new L.FeatureGroup([]);
     this.ToTCalculator = ToTCalculator;
   }
 
   ngOnInit() {
-
-
     this.MapService.bounds.subscribe(b => {
       this.fitBounds = b;
     });
@@ -160,7 +160,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
       this.reportlayerGroup = reportlayerGroup;
     });
-    //#endregion
   }
 
   //#endregion
@@ -169,24 +168,24 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   ngAfterViewInit() {
     // if this map is for the report
     if (this.report) {
-        // if map already initialized, reset to avoid errors
-        if (this.reportMap !== undefined) {
-            this.reportMap.off();
-            this.reportMap.remove();
+      // if map already initialized, reset to avoid errors
+      if (this.reportMap !== undefined) {
+          this.reportMap.off();
+          this.reportMap.remove();
       }
-        this.reportMap = new L.Map('reportMap', this.options);
-		// add point of interest
+      this.reportMap = new L.Map('reportMap', this.options);
+		  // add point of interest
 	  	// MarkerMaker icon
-		var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
-        // const marker = L.marker(this.poi, {icon: myIcon});
-        const marker = L.marker(this.poi, {
-            icon: blackPin
-        });
+		  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
+      // const marker = L.marker(this.poi, {icon: myIcon});
+      const marker = L.marker(this.poi, {
+          icon: blackPin,
+      });
 
-        marker.addTo(this.reportMap);
-        this.reportlayerGroup.addTo(this.reportMap);
+      marker.addTo(this.reportMap);
+      this.reportlayerGroup.addTo(this.reportMap);
 
-        this.reportMap.fitBounds(this.layerGroup.getBounds());
+      this.reportMap.fitBounds(this.layerGroup.getBounds());
     }
   }
 
@@ -196,16 +195,16 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public onMapReady(map: L.Map) {
     map.invalidateSize();
     this.MapService.map = map;
+    L.control.scale().addTo(map);
   }
-
 
   public onZoomChange(zoom: number) {
     this.MapService.CurrentZoomLevel.next(zoom);
+    this.MapService.nominalZoomLevel.next(this.MapService.scaleLookup(zoom))
     this.cdref.detectChanges();
   }
 
   public onMouseClick(evnt: any) { // need to create a subscriber on init and then use it as main poi value;
-    this.evnt = evnt.latlng;
     if (this.StudyService.GetWorkFlow('hasMethod')) {
       (document.getElementById(this.StudyService.selectedStudy.MethodType) as HTMLInputElement).disabled = true;
       (document.getElementById(this.StudyService.selectedStudy.MethodType) as HTMLInputElement).classList.remove('waiting');
@@ -216,6 +215,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
         this.setPOI(evnt.latlng, 'upstream');
       }
     }
+  }
+
+  public getLatLong(evnt: any) { 
+    this._mousePosition = evnt.latlng;
   }
 
   //#endregion
@@ -264,7 +267,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           this.NavigationService.getRoute('3', config, true).subscribe(response => {
             this.NavigationService.navigationGeoJSON$.next(response);
             response.features.shift();
-            this.ToTCalculator.passageTimeTest();
+            //this.ToTCalculator.passageTimeTest();
             //this.MapService.FlowLines.next(response.features);
             //console.log(response);
             if (inputString == "upstream") {
@@ -282,11 +285,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               this.StudyService.selectedStudy.LocationOfInterest = latlng;
               this.StudyService.setProcedure(2);
             }
-
-
             //one with the biggest drainage area is the first one to trace up
           });
-        });
+        }).finally(() => {
+          //if overland trace occurs run next line
+          //this.sm('Travel time not computed for overland/raindrop trace portion');
+        })
     }
   }
 
@@ -339,13 +343,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     features.forEach(i => {
 
       if (i.geometry.type === 'Point') {
+        var siteID = i.properties.identifier.replace("USGS-", "");
 		// MarkerMaker Icon
-		var greenPin = L.divIcon({className: 'wmm-pin wmm-green wmm-icon-circle wmm-icon-white wmm-size-25'});
+		var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
         layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-			icon: greenPin
-		}));
+			icon: blackTriangle
+		}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
         reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
-			icon: greenPin
+			icon: blackTriangle
 		}));
         gagesArray.push(i);
       } else if (typeof i.properties.nhdplus_comid === 'undefined') {
@@ -394,16 +399,16 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
         features.forEach(o => {
           if (o.geometry.type !== "Point") {
             if (gagesArray[i].properties.comid == String(o.properties.nhdplus_comid)) {
-              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea * 2.59; //in sqmiles
+              gagesArray[i].properties["drainagearea"] = o.properties.DrainageArea / 2.59; //in sqmiles
             } else { }
           }
         })
       };
       //create service
       //add gage
-      this.MapService.gagesArray.next(gagesArray);
+      this.NWISService.gagesArray.next(gagesArray);
       this.MapService.gageDischargeSearch.next(true);
-      this.MapService.getMostRecentFlow(gagesArray);
+      this.NWISService.getMostRecentFlow(gagesArray);
     } else {
       this.MapService.gageDischargeSearch.next(true);
     };
@@ -413,10 +418,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     setTimeout(() => {
       this.MapService.setBounds(layerGroup.getBounds());
     });
-
-
   }
-
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
     try {
@@ -426,7 +428,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     } catch (e) {
     }
   }
-
 
   private formatReaches(data): any {
     const streamArray = [];

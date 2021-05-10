@@ -5,7 +5,7 @@ import { DatePipe } from '@angular/common';
 import { DateTimeModel } from './date-time.model';
 import { noop } from 'rxjs';
 import { StudyService } from 'src/app/modules/core/services/study.service';
-import { MapService } from '../../services/map.services';
+import { MapService } from '../../services/map.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 

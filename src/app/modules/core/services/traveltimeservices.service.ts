@@ -20,7 +20,7 @@ private messager:ToastrService;
         .pipe(catchError(this.handleError('getJobsonConfigurationObject',[])));
   }
   public ExecuteJobson(massconcentration:Number, starttime, reaches): Observable <any>{
-    let url = this.baseURL+"jobsons?initialmassconcentration="+massconcentration+"&starttime="+starttime;
+    let url = this.baseURL+"jobsons/Execute?initialmassconcentration="+massconcentration+"&starttime="+starttime;
 
     // I'm thinking this should occure before here (in a validation method or something)
     
