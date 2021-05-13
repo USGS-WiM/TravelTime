@@ -8,7 +8,7 @@ import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
-import { DateTimeValidator } from '../jobsons/jobsons.component';
+import { DateTimeValidator } from '../modals/spill-response/spill-response.component';
 import { MapService } from '../../services/map.service';
 
 // tslint:disable-next-line: class-name

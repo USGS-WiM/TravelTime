@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { MapService } from '../../services/map.service';
-import { NWISService } from '../../services/nwisservices.service';
-import { gages } from '../../models/gages';
-import { StudyService } from '../../services/study.service'
+import { MapService } from '../../../services/map.service';
+import { NWISService } from '../../../services/nwisservices.service';
+import { gages } from '../../../models/gages';
+import { StudyService } from '../../../services/study.service'
 
 @Component({
-  selector: 'app-gagesmodal',
-  templateUrl: './gagesmodal.component.html',
-  styleUrls: ['./gagesmodal.component.scss']
+  selector: 'app-gages',
+  templateUrl: './gages.component.html',
+  styleUrls: ['./gages.component.scss']
 })
-export class GagesmodalComponent implements OnInit {
+export class GagesComponent implements OnInit {
   public gagesArray: Array<gages> = [];
   public newSessionGages: Array<gages> = [];
   public units: any = {discharge: "", drnarea: ""};

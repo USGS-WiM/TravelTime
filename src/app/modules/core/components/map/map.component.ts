@@ -12,7 +12,7 @@ import * as $ from 'jquery';
 import { Subscription } from 'rxjs';
 import { SpillPlanningService } from '../../services/spillplanning.service';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SpillPlanningModalComponent } from '../spillplanningmodal/spillplanningmodal.component';
+import { SpillPlanningComponent } from '../modals/spill-planning/spillplanning.component';
 import { NLDIService } from '../../services/nldiservices.service';
 
 declare let search_api: any;
@@ -449,7 +449,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     if (this.isInsideWaterBody) {
       this.sm("Selected point of interest is inside of a water body.... please select different location")
     } else {
-      const spillPlanningModalRef = this.modalService.open(SpillPlanningModalComponent);
+      const spillPlanningModalRef = this.modalService.open(SpillPlanningComponent);
       spillPlanningModalRef.componentInstance.title = 'Spill Planning';
     }
   }

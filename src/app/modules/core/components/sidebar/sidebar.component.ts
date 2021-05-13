@@ -6,9 +6,9 @@ import {MapService} from '../../services/map.service';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JobsonsModalComponent } from '../jobsons/jobsons.component';
-import { ApptoolsComponent } from '../apptools/apptools.component';
-import { ReportModalComponent } from '../report/report.component';
+import { SpillResponseComponent } from '../modals/spill-response/spill-response.component';
+import { ConfigurationComponent } from '../modals/configuration/configuration.component';
+import { ReportComponent } from '../modals/report/report.component';
 import * as L from 'leaflet';
 
 declare let search_api: any;
@@ -143,12 +143,6 @@ export class SidebarComponent implements AfterViewChecked {
       }
       this.SelectedProcedureType = data;
     });
-
-    //   this.StudyService.ReportOptions = [
-    //   { name: 'Map of study area', checked: false },
-    //   { name: 'Table of values', checked: false },
-    //   { name: 'Graph of timeline', checked: false }
-    // ];
   }
 
   public SetBaselayer(LayerName: string) {
@@ -222,12 +216,12 @@ export class SidebarComponent implements AfterViewChecked {
         if (this.isInsideWaterBody) {
           this.sm("Selected point of interest is inside of a water body.... please select different location")
         } else {
-          const jobsonsModalRef = this.modalService.open(JobsonsModalComponent);
+          const jobsonsModalRef = this.modalService.open(SpillResponseComponent);
           jobsonsModalRef.componentInstance.title = 'Jobsons';
         }
         return;
       case 'Report':
-        const reportModalRef = this.modalService.open(ReportModalComponent);
+        const reportModalRef = this.modalService.open(ReportComponent);
         reportModalRef.componentInstance.title = 'Report';
         return;
       default: return;
@@ -243,7 +237,7 @@ export class SidebarComponent implements AfterViewChecked {
   }
 
   public open_config() {
-    const modalConfig = this.modalService.open(ApptoolsComponent);
+    const modalConfig = this.modalService.open(ConfigurationComponent);
     modalConfig.componentInstance.title = 'Configure';
   }
   //#endregion

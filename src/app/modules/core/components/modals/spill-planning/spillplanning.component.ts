@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TravelTimeService } from '../../services/traveltimeservices.service';
-import { MapService } from '../../services/map.service';
+import { TravelTimeService } from '../../../services/traveltimeservices.service';
+import { MapService } from '../../../services/map.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { reach } from '../../models/reach';
-import { StudyService } from '../../services/study.service';
+import { reach } from '../../../models/reach';
+import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
-import * as messageType from '../../../../shared/messageType';
+import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
-import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
-import { NWISService } from '../../services/nwisservices.service'
-import { SpillPlanningService } from '../../services/spillplanning.service';
+import { GagesComponent } from '../gages/gages.component';
+import { NWISService } from '../../../services/nwisservices.service'
+import { SpillPlanningService } from '../../../services/spillplanning.service';
 import * as L from 'leaflet';
 
 export const DateTimeValidator = (fc: FormControl) => {
@@ -24,11 +24,11 @@ export const DateTimeValidator = (fc: FormControl) => {
 };
 
 @Component({
-  selector: 'app-spillplanningmodal',
-  templateUrl: './spillplanningmodal.component.html',
-  styleUrls: ['./spillplanningmodal.component.scss']
+  selector: 'app-spillplanning',
+  templateUrl: './spillplanning.component.html',
+  styleUrls: ['./spillplanning.component.scss']
 })
-export class SpillPlanningModalComponent implements OnInit {
+export class SpillPlanningComponent implements OnInit {
 
   public gages;
   public NWISService: NWISService;
@@ -134,7 +134,7 @@ export class SpillPlanningModalComponent implements OnInit {
 
   //#region "Gages"
   public openGagesModal() {
-    const modalConfig = this.modalService.open(GagesmodalComponent);
+    const modalConfig = this.modalService.open(GagesComponent);
     modalConfig.componentInstance.title = 'Gages';
   }
   //#endregion

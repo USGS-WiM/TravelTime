@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GagesmodalComponent } from './gagesmodal.component';
+import { SpillPlanningComponent } from './spillplanning.component';
 
-describe('GagesmodalComponent', () => {
-  let component: GagesmodalComponent;
-  let fixture: ComponentFixture<GagesmodalComponent>;
+describe('JobsonsComponent', () => {
+  let component: SpillPlanningComponent;
+  let fixture: ComponentFixture<SpillPlanningComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GagesmodalComponent ]
+      declarations: [ SpillPlanningComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GagesmodalComponent);
+    fixture = TestBed.createComponent(SpillPlanningComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

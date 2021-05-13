@@ -23,8 +23,8 @@ import { ChartsService } from './services/charts.service';
 import { MapModule } from './components/map/map.module';
 import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ReportModalComponent } from './components/report/report.component';
-import { ReportModule } from './components/report/report.module';
+import { ReportComponent } from './components/modals/report/report.component';
+import { ReportModule } from './components/modals/report/report.module';
 import { Angulartics2Module } from 'angulartics2';
 import { AppChartsModule } from './components/appcharts/appcharts.module';
 import { NWISService } from './services/nwisservices.service';
@@ -53,7 +53,7 @@ import { NLDIService } from './services/nldiservices.service';
     AppChartsModule
     ],
   providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService, NWISService, NLDIService],
-  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportModalComponent],
+  exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportComponent],
   bootstrap: [CoreComponent]
 })
 export class CoreModule { }

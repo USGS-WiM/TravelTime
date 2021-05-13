@@ -1,15 +1,15 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TravelTimeService } from '../../services/traveltimeservices.service';
-import { MapService } from '../../services/map.service';
+import { TravelTimeService } from '../../../services/traveltimeservices.service';
+import { MapService } from '../../../services/map.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { reach } from '../../models/reach';
-import { StudyService } from '../../services/study.service';
+import { reach } from '../../../models/reach';
+import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
-import * as messageType from '../../../../shared/messageType';
+import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
-import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
-import { NWISService } from '../../services/nwisservices.service'
+import { GagesComponent } from '../gages/gages.component';
+import { NWISService } from '../../../services/nwisservices.service'
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -22,11 +22,11 @@ export const DateTimeValidator = (fc: FormControl) => {
 };
 
 @Component({
-  selector: 'app-jobsons',
-  templateUrl: './jobsons.component.html',
-  styleUrls: ['./jobsons.component.scss']
+  selector: 'app-spill-response',
+  templateUrl: './spill-response.component.html',
+  styleUrls: ['./spill-response.component.scss']
 })
-export class JobsonsModalComponent implements OnInit {
+export class SpillResponseComponent implements OnInit {
 
   public gages;
   public ShowGages: boolean = false;
@@ -96,7 +96,7 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Gages"
   public openGagesModal() {
-    const modalConfig = this.modalService.open(GagesmodalComponent);
+    const modalConfig = this.modalService.open(GagesComponent);
     modalConfig.componentInstance.title = 'Gages';
   }
   //#endregion
