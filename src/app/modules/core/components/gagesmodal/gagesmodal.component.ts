@@ -15,7 +15,7 @@ import { StudyService } from '../../services/study.service'
 export class GagesmodalComponent implements OnInit {
   public gagesArray: Array<gages> = [];
   public newSessionGages: Array<gages> = [];
-  public units: string;
+  public units: any = {discharge: "", drnarea: ""};
 
   constructor(public activeModal: NgbActiveModal, public MapService: MapService, public NWISService: NWISService, public StudyService: StudyService) {
     this.MapService = MapService;
@@ -49,10 +49,12 @@ export class GagesmodalComponent implements OnInit {
       })
       
     })
-    if(this.StudyService.isMetric) {
-      this.units = 'cms';
+    if(this.StudyService.isMetric()) {
+      this.units.discharge = 'cms';
+      this.units.drnarea = 'km';
     } else {
-      this.units = 'cfs';
+      this.units.discharge = 'cfs';
+      this.units.drnarea = 'mi';
     }
   }
 }

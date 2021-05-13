@@ -168,7 +168,9 @@ export class StudyService extends deepCopy   {
     });
 
     if(this.selectedStudy.MethodType == "response") { // response method sorts table by drainage area, smallest to largest
-      streamArray.shift(); //removes overland trace
+      if(this.selectedStudy.RDP.length > 1) {
+        streamArray.shift(); //removes overland trace
+      }
       const sortArray = streamArray.sort( (a, b) => {
         return a.properties.DrainageArea - b.properties.DrainageArea;
       });

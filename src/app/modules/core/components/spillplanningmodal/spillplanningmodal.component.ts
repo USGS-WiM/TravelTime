@@ -151,7 +151,7 @@ export class SpillPlanningModalComponent implements OnInit {
     }
   }
 
-  public updateDischarge(): void {
+  public firstReachDischarge(): void {
     try {
       if(this.StudyService.isMetric()) {
         if(this.StudyService.selectedStudy.RDP.length > 1) {
@@ -183,14 +183,10 @@ export class SpillPlanningModalComponent implements OnInit {
         if (!this.StudyService.isMetric()) {  //spillPlanningResponse is in imperial units and must be converted to metric for jobson's equations. User input is in whatever units he/she specifies.
           if (cond) { //user has specified imperial units            
             i.properties.Discharge = i.properties.Discharge * 0.028316847;  // mean annual discharge from cfs to cms
-            //i.properties.DrainageArea = i.properties.DrainageArea * 1000000;  // drainage area from square kilometers to square meters
-            //i.properties.Length = i.properties.Length * 1000;  // reach length from km to meters
             i.properties.RTDischarge = (ratio * i.properties.Discharge).toFixed(3); 
           } else {
             i.properties.RTDischarge = this._discharge * 0.028316847; // discharge from cfs to cms
             i.properties.Discharge = i.properties.Discharge * 0.028316847;  // mean annual discharge from cfs to cms
-            //i.properties.DrainageArea = i.properties.DrainageArea * 1000000;  // drainage area from square kilometers to square meters
-            //i.properties.Length = i.properties.Length * 1000;  // reach length from km to meters
             ratio = (i.properties.RTDischarge / i.properties.Discharge).toFixed(3);
             cond = true;
           } 
@@ -198,13 +194,9 @@ export class SpillPlanningModalComponent implements OnInit {
           if (cond) { //user has specified metric units
             i.properties.Discharge = i.properties.Discharge * 0.028316847;  // mean annual discharge from cfs to cms
             i.properties.RTDischarge = (ratio * i.properties.Discharge).toFixed(3);
-            //i.properties.DrainageArea = i.properties.DrainageArea / 0.00000038610215855;  // drainage area from square miles to square meters
-            //i.properties.Length = i.properties.Length * 1000;  // reach length from km to meters
           } else {
             i.properties.RTDischarge = this._discharge;
             i.properties.Discharge = i.properties.Discharge * 0.028316847;  // mean annual discharge from cfs to cms
-            //i.properties.DrainageArea = i.properties.DrainageArea * 1000000;  // drainage area from square kilometers to square meters
-            //i.properties.Length = i.properties.Length * 1000;  // reach length from km to meters
             ratio = (i.properties.RTDischarge / i.properties.Discharge).toFixed(3);
             cond = true;
           }
@@ -223,8 +215,17 @@ export class SpillPlanningModalComponent implements OnInit {
       if (reach.properties.hasOwnProperty("Discharge")) {
           var tot = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
           var totmax = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+          var tl = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
+          var tlmax = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+          var td10 = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
+          var td10max = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+          
           reach.properties["T_p"] = tot;
           reach.properties["T_pmax"] = totmax;
+          reach.properties["T_l"] = tl;
+          reach.properties["T_lmax"] = tlmax;
+          reach.properties["T_d10"] = td10;
+          reach.properties["T_d10max"] = td10max;
           reach.properties["VelocityMost"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
           reach.properties["VelocityMax"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
           reach.properties["touched"] = false;
@@ -250,7 +251,11 @@ export class SpillPlanningModalComponent implements OnInit {
     this.StudyService.selectedStudy.spillPlanningResponse.features.forEach(reach => { //mark reach with biggest drainage
       if (reach.properties.nhdplus_comid == headCOMID) {
         reach.properties["accutot"] = reach.properties.T_p;
-        reach.properties["accutotmax"] = reach.properties.T_pmax;      
+        reach.properties["accutl"] = reach.properties.T_l;
+        reach.properties["accutd10"] = reach.properties.T_d10;
+        reach.properties["accutotmax"] = reach.properties.T_pmax; 
+        reach.properties["accutlmax"] = reach.properties.T_lmax;
+        reach.properties["accutd10max"] = reach.properties.T_d10max;     
         reach.properties.touched = true;
         this.sumacc(this.StudyService.selectedStudy.spillPlanningResponse.features, reach);
       }
@@ -262,6 +267,10 @@ export class SpillPlanningModalComponent implements OnInit {
       if (reach.properties.ToNode == prev.properties.FromNode && !reach.properties.touched) {
         reach.properties.accutot = prev.properties.accutot + reach.properties.T_p;
         reach.properties.accutotmax = prev.properties.accutotmax + reach.properties.T_pmax;
+        reach.properties.accutl = prev.properties.accutl + reach.properties.T_l;
+        reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
+        reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
+        reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
         reach.properties.touched = true;
         this.sumacc(data, reach);
       }
@@ -273,7 +282,7 @@ export class SpillPlanningModalComponent implements OnInit {
       if (!this.StudyService.isMetric()) {            
         i.properties.RTDischarge = (i.properties.RTDischarge * 35.314666212661).toUSGSvalue(); //real-time flow from cms to cfs
         i.properties.Discharge = (i.properties.Discharge * 35.314666212661).toUSGSvalue(); //mean annual flow from cms to cfs
-        i.properties.DrainageArea = (i.properties.DrainageArea * 0.38610).toUSGSvalue();  // drainage area from square meters to square miles
+        i.properties.DrainageArea = (i.properties.DrainageArea * 0.38610).toUSGSvalue();  // drainage area from square kilometers to square miles
         i.properties.Length = (i.properties.Length * 0.621371).toUSGSvalue();  // reach length from kilometers to miles
         i.properties.VelocityMost = (i.properties.VelocityMost * 3.28084).toUSGSvalue(); //velocity from m/s to ft/s
         i.properties.VelocityMax = (i.properties.VelocityMax * 3.28084).toUSGSvalue(); //velocity from m/s to ft/s

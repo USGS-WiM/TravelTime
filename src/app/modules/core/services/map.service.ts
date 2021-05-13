@@ -5,8 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
+import { StudyService } from '../services/study.service';
 import * as messageType from '../../../shared/messageType';
 import * as turf from '@turf/turf';
+import { Study } from '../models/study';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -39,15 +41,17 @@ export class MapService {
   public ScaleOptions: L.Control.ScaleOptions;
   public gageDischargeSearch: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   private messanger: ToastrService;
+  private StudyService: StudyService;
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public showUpstream: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(http: HttpClient, toastr: ToastrService) {
+  constructor(http: HttpClient, toastr: ToastrService, studyService: StudyService) {
 
     this.messanger = toastr;
+    this.StudyService = studyService;
 
     this.http = http;
 
@@ -247,15 +251,38 @@ export class MapService {
         }
 
         //i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
+        var nhdcomid;
+        var rtDischarge;
+        var maDischarge;
+        var length;
+        var drainage;
+        var velocity;
+        var accutot;
+        var temppoint;
 
-        const nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
-        const rtDischarge = 'Real-time discharge: ' + String(i.properties.RTDischarge);
-        const maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge);
-        const length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());
-        const drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
-        const velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
-        const accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
-        const temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+        if(this.StudyService.selectedStudy.MethodType === 'response') {
+          nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
+          if(isMetric) {            
+            maDischarge = 'Mean annual discharge: ' + String((i.properties.Discharge * 0.0283).toUSGSvalue());  //cfs to cms
+            length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());  //kilometers (single reach)
+            drainage = ' Drainage area: ' + String(i.properties.DrainageArea);  //square kilometers
+            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+          } else { //imperial units
+            maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge); // cfs
+            length = 'Length: ' + String((i.properties.Length * 0.6214).toUSGSvalue()); //miles (single reach)
+            drainage = ' Drainage area: ' + String((i.properties.DrainageArea * 0.386102).toUSGSvalue());  //square miles
+            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+          }
+        } else { //methodType = planning
+          nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
+          rtDischarge = 'Real-time discharge: ' + String(i.properties.RTDischarge);
+          maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge);
+          length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());
+          drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
+          velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
+          accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
+          temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+        }
 
         if(method === 'response'){
           if(isMetric) {

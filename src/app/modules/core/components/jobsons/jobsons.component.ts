@@ -155,7 +155,6 @@ export class JobsonsModalComponent implements OnInit {
     this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(2);
   }
 
-
    //#region "Methods"
   public setParameters(): void {
     this.setDischarge();
@@ -175,16 +174,12 @@ export class JobsonsModalComponent implements OnInit {
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
         } else {
-          //this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
           item.parameters[1].value = this._discharge;
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
           cond = true;
         }
       });
-      /*this.reachList.forEach((item) => {
-        item.parameters[1].value = item.parameters[0].value;
-      })*/
       this.StudyService.SetWorkFlow('hasDischarge', true);
     } else {
       this.setDischarge();
@@ -344,17 +339,6 @@ export class JobsonsModalComponent implements OnInit {
 
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
-      /*if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 50 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 50 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else {
-
-        if (this.reachList.length < 1) {
-          this.MapService.isInsideWaterBody.next(true);
-          this.sm("Warning, selected point of interest is inside of the water body.....");
-        }
-        //break
-
-      }*/
-
-
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;

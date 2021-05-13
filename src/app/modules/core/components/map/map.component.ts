@@ -192,7 +192,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 		  // add point of interest
 	  	// MarkerMaker icon
 		  var blackPin = L.divIcon({className: 'wmm-pin wmm-black wmm-icon-circle wmm-icon-white wmm-size-25'});
-      // const marker = L.marker(this.poi, {icon: myIcon});
       const marker = L.marker(this.poi, {
           icon: blackPin,
       });
@@ -213,7 +212,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.showUpstream.subscribe(data => {
       this._showUpstream = data;
       if(this.ShowUpstream) {
-        const legend = new L.Control({ position: 'bottomright' });
+        const legend = new L.Control({ position: 'topright' });
         legend.onAdd = map => {
           let div = L.DomUtil.create('div', 'info legend');
   
@@ -288,7 +287,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
             this.RDP = data.outputs[0].value.features;
             this.StudyService.selectedStudy.RDP = this.RDP;
             intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
-            if(direction === 'downstream') {
+            if(direction === 'downstream') { //spill response workflow
               this.NavigationService.getNavigationResource('3')
                 .toPromise().then(data2 => {
                   const config: Array<any> = data2.configuration;
@@ -304,10 +303,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                       case 0: if (this.StudyService.isMetric()) {
                                 item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
                               } else {
-                                var imp_distance = this.StudyService.distance * 1.609344; //converts miles to kilometers
+                                var imp_distance = (this.StudyService.distance * 1.609344).toFixed(0); //converts miles to kilometers
                                 item.value = { id: 3, description: 'Limiting distance in kilometers from starting point', name: 'Distance (km)', value: imp_distance, valueType: 'numeric' };
                               }
-                              
                     }// end switch
                   }); // next item
                   return config;
@@ -339,7 +337,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                   this.wm('Travel time not computed for overland/raindrop trace portion', '', 0);
                   }
                 });
-            } else { // upstream workflow
+            } else { // spill planning workflow
               this.NavigationService.getNavigationResource('3')
               .toPromise().then(data2 => {
                 const config: Array<any> = data2.configuration;
@@ -373,7 +371,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                                 break;
                         case 5: item.value = direction;
                                 break;
-                        case 0: item.value = { id: 3, description: 'Grabs first reach with attributes', name: 'Distance (km)', value: this.StudyService.distance, valueType: 'numeric' };
+                        case 0: if (this.StudyService.isMetric()) {
+                                  item.value = { id: 3, description: 'Grabs first reach with attributes', name: 'Distance (km)', value: (this.StudyService.distance).toFixed(0), valueType: 'numeric' };
+                                } else {
+                                  var imp_distance = (this.StudyService.distance * 1.609344).toFixed(0); //converts miles to kilometers
+                                  item.value = { id: 3, description: 'Grabs first reach with attributes', name: 'Distance (km)', value: imp_distance, valueType: 'numeric' };
+                                }
                       }// end switch
                     }); // next item
                     return config2;
@@ -401,7 +404,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                       this.MapService.showUpstream.subscribe(data3 => {
                         if (data3) {
                           this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillPlanningResponse.features, inputString, this.StudyService.isMetric);
-                          //this.NWISService.check4gages(this.StudyService.selectedStudy.spillPlanningResponse.features);
                           this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(this.StudyService.selectedStudy.spillPlanningResponse);
                           this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });                  
                           this.StudyService.selectedStudy.LocationOfInterest = this.MapService.GetPOI();
@@ -418,11 +420,11 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               })
             }
           } else {
-            this.em('NLDI Raindrop Trace Malfunction');
+            this.em('NLDI Raindrop Trace Error, Please try a different location', '', 0);
           }
         }).catch((err) => {
           console.log('error: ', err.message);
-          this.em(err, 'NLDI Raindrop Trace Failed');
+          this.em('NLDI Raindrop Trace Failed, Please try again', '', 0);
         });
     }
   }
@@ -482,6 +484,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     try {
       let options: Partial<IndividualConfig> = null;
       if (timeout) { options = { timeOut: timeout }; }
+      if (timeout == 0) {
+        options = {
+          disableTimeOut : true,
+          timeOut: 0,
+          extendedTimeOut: 0,
+          tapToDismiss: false
+        };
+      }
       this.messager.error(msg, title, options);
     } catch (e) {
     }

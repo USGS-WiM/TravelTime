@@ -80,29 +80,23 @@ export class FooterComponent extends deepCopy implements OnInit {
           if(this.StudyService.isMetric) {
             const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
             const reachList = Object.values(reachesCopy);
-            //reachList.shift(); // remove first element (one without results)
             this.checkUnits(reachList);
             this.hasReaches = true;
             this.selectedUnits = "metric";
           } else {
             const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
             const reachList = Object.values(reachesCopy);
-            //reachList.shift(); // remove first element (one without results)
             this.checkUnits(reachList);
             this.hasReaches = true;
             this.selectedUnits = "imperial";
           }
         } else { // planning method
           if(this.StudyService.isMetric) {
-            const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Reaches);
-            const reachList = Object.values(reachesCopy);
-            this.checkUnits(reachList);
+            this.checkUnits(this.StudyService.selectedStudy.Reaches);
             this.hasReaches = true;
             this.selectedUnits = "metric";
           } else {
-            const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Reaches);
-            const reachList = Object.values(reachesCopy);
-            this.checkUnits(reachList);
+            this.checkUnits(this.StudyService.selectedStudy.Reaches);
             this.hasReaches = true;
             this.selectedUnits = "imperial";
           }
@@ -178,18 +172,10 @@ export class FooterComponent extends deepCopy implements OnInit {
       } // keep existing metric unit
 
     } else { // planning methodd
-      if(!this.StudyService.isMetric()) {
-        reaches.forEach(reach => {
-            reach.properties.RTDischarge = (reach.properties.RTDischarge * 35.314666212661).toUSGSvalue(); // real-time discharge from cms to cfs
-            reach.properties.Discharge = (reach.properties.Discharge * 35.314666212661).toUSGSvalue(); // mean annual discharge from cms to cfs
-            reach.properties.DrainageArea = (reach.properties.Discharge * 0.00000038610215855).toUSGSvalue(); // drainage area from square meters to square miles
-            reach.properties.Length = (reach.properties.Length * 0.00062137).toUSGSvalue(); // length from meters to miles
-        });
-        this.StudyService.selectedStudy.SpillMass = (this.StudyService.selectedStudy.SpillMass * 0.453592).toUSGSvalue();
-      } // keep existing metric units
       this.reaches = reaches;
     }
   }
+
   private wm(msg: string, title?: string, timeout?: number) {
     try {
       let options: Partial<IndividualConfig> = null;
