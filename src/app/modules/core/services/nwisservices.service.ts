@@ -80,9 +80,7 @@ export class NWISService {
       let siteid = (gage.identifier.replace("USGS-", ""));
       //let refid = "05587450"
       let baseurl = "https://nwis.waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&startDT=" + dischargetime + enddisttime + "&parameterCd=00060&siteStatus=all";
-      console.log(baseurl);
       this.http.get<any>(baseurl).subscribe(result => {
-        console.log(result);
         if ((result.value.timeSeries.length) > 0) {
           this.updateDischarge(result);
           this.gages.push(result);
@@ -211,16 +209,16 @@ export class NWISService {
     this.gagessub.forEach(g => {
       let code = "USGS-" + gage.value.timeSeries[0].sourceInfo.siteCode[0].value;
       if (g.identifier == code) {
-        console.log("matched identifiers code");
+        //console.log("matched identifiers code");
         g.value = gage.value.timeSeries[0].values[0].value[0].value;
         g.record = new Date(gage.value.timeSeries[0].values[0].value[0].dateTime);
-        console.log(g.value)
-        console.log(g.identifier)
-        console.log(g.record)
+        //console.log(g.value)
+        //console.log(g.identifier)
+        //console.log(g.record)
       }
 
     })
-    console.log ("updated gages array")
+    console.log("updated gages array")
     this.gagesArray.next(this.gagessub);
   }
 
@@ -229,6 +227,7 @@ export class NWISService {
   public getStatus(siteid:string) {
     let url = this.baseURL + "/site/?site=" + siteid + "&siteStatus=inactive";
 
+    console.log(siteid);
     return this.http.get<any>(url)
     .pipe(
       catchError(err => {

@@ -17,9 +17,23 @@ export class gages {
     this.navigation = arg.navigation;
     this.uri = arg.uri;
     this.source = arg.source;
-    this.value = arg.value;
-    this.record = arg.record;
+    if (typeof (arg.value) == 'undefined') {
+      this.value = '-999999';
+    } else {
+      this.value = arg.value;
+    }
+
+    if (typeof (arg.record) == 'undefined') {
+      this.record = new Date();
+    } else {
+      this.record = arg.record;
+    }
     this.drainagearea = Number(arg.drainagearea).toFixed(1);
-    this.status = arg.status;
+    if (typeof (arg.status) == 'undefined') {
+      this.status = 'null'
+    } else {
+      this.status = arg.status;
+    }
+
   }
 }

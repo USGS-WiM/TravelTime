@@ -96,7 +96,6 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     if (newModel) {
       this.datetime = Object.assign(this.datetime, DateTimeModel.fromLocalString(newModel));
       this.dateString = newModel;
-      this.setDateStringModel();
     } else {
       this.datetime = new DateTimeModel();
     }
@@ -122,6 +121,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   onInputChange($event: any) {
     const value = $event.target.value;
     const dt = DateTimeModel.fromLocalString(value);
+    console.log ("Input change triggered")
 
     if (dt) {
       this.datetime = dt;
@@ -136,6 +136,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   }
 
   onDateChange($event: any | NgbDateStruct) {
+    console.log("Date change triggered")
     if ($event.year) {
       $event = `${$event.year}-${$event.month}-${$event.day}`
     }
@@ -160,28 +161,23 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     } else {
        var day = String (this.datetime.day);
     }
-
-    console.log("Date changed");
-    console.log(this.datetime);
-
     this.StudyService.selectedStudy.SpillDate =  (this.datetime.year + '-' + this.datetime.month + '-' + day);
+    console.log ("date change triggered")
     this.setDateStringModel();
   }
 
   onTimeChange(event: NgbTimeStruct) {
+    console.log("Time change triggered")
     this.datetime.hour = event.hour;
     this.datetime.minute = event.minute;
     this.datetime.second = event.second;
-    console.log("Time changed")
-    console.log(this.datetime);
-
     this.setDateStringModel();
-
   }
 
   setDateStringModel() {
     this.StudyService.setDate(this.datetime.toString());
-
+    //this.StudyService.dateSub.next(this.datetime.toString());
+    //this.StudyService.dateSub.next(new Date(this.datetime.toString()));
     if (!this.firstTimeAssign) {
       this.onChange(this.datetime.toString());
       //this.sm('Access to real time flow is coming soon.......');
