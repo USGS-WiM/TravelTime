@@ -87,6 +87,12 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
+    //this.StudyService.selectedStudy.SpillDate
+
+    this.StudyService.dateSub.subscribe(result => {
+      this.dateModel = result;
+    })
+
     this.NWISService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
         this.nwisservice.showGages.subscribe(data => {

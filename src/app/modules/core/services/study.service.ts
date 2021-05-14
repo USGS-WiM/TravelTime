@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { reach } from '../models/reach';
 
 export interface UnitsArray { name: string, isactive: boolean, units: string };
@@ -22,6 +22,7 @@ export class StudyService  {
   //HOLDS DISCHARGE, MASS, TIME, AND RECOVERY RATIO
   public selectedStudy: Study;
   private SelectedReturn = new Subject<Study>();
+  public dateSub = new BehaviorSubject<Date>(undefined);
   study$ = this.SelectedReturn.asObservable();  
   //SET MASS
   public setConcentration(mass) {
@@ -38,9 +39,15 @@ export class StudyService  {
     this.selectedStudy.RecoveryRatio = recoveryRatio;
     this.SelectedReturn.next(this.selectedStudy);
   }
+
   //SET TIME
   public setDate(datestring) {
+    console.log('time change triggered');
     this.selectedStudy.SpillDate = datestring;
+    console.log("Study service, triggered")
+    console.log(this.selectedStudy.SpillDate);
+    this.dateSub.next(new Date(this.selectedStudy.SpillDate));
+    //console.log(this.selectedStudy.SpillDate);
     this.SelectedReturn.next(this.selectedStudy);
   }
 

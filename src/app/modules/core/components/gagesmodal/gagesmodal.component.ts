@@ -22,6 +22,7 @@ export class GagesmodalComponent implements OnInit {
 
     this.NWISService.gagesArray.subscribe(data => {
       data.forEach(r => {
+        console.log(r);
         let gage = new gages(r);
         this.newSessionGages.push(gage);
       })
@@ -31,17 +32,20 @@ export class GagesmodalComponent implements OnInit {
       this.gagesArray.forEach(r => {
         var siteid = r.identifier.split('-')[1];
         this.NWISService.getStatus(siteid).subscribe(result => {
+          console.log('getting status');
           if (result) {
             r.status = "Inactive";
           } else {
             r.status = "Active";
           }
+          console.log ('status before error')
         }), error => {
           r.status = "Inactive";
         }
         if (r.status !== "Active") {
           r.status = "Inactive";
         }
+
       })
       
     })

@@ -8,6 +8,7 @@ import { StudyService } from 'src/app/modules/core/services/study.service';
 import { MapService } from '../../services/map.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
+import { NWISService } from '../../services/nwisservices.service';
 
 @Component({
   selector: 'app-date-time-picker',
@@ -25,8 +26,8 @@ import * as messageType from '../../../../shared/messageType';
 
 export class DateTimePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit {
   private messager: ToastrService;
-  constructor(toastr: ToastrService, private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService, private mapservice: MapService) {
-
+  constructor(toastr: ToastrService, private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService, private mapservice: MapService, private nwisservices: NWISService) {
+    this.nwisservices = nwisservices;
     this.messager = toastr;
     config.autoClose = 'outside';
     config.placement = 'left-top';
@@ -95,7 +96,6 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     if (newModel) {
       this.datetime = Object.assign(this.datetime, DateTimeModel.fromLocalString(newModel));
       this.dateString = newModel;
-      this.setDateStringModel();
     } else {
       this.datetime = new DateTimeModel();
     }
@@ -121,6 +121,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   onInputChange($event: any) {
     const value = $event.target.value;
     const dt = DateTimeModel.fromLocalString(value);
+    console.log ("Input change triggered")
 
     if (dt) {
       this.datetime = dt;
@@ -135,10 +136,10 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   }
 
   onDateChange($event: any | NgbDateStruct) {
+    console.log("Date change triggered")
     if ($event.year) {
       $event = `${$event.year}-${$event.month}-${$event.day}`
     }
-
     const date = DateTimeModel.fromLocalString($event);
 
     if (!date) {
@@ -152,8 +153,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
     this.datetime.year = date.year;
     this.datetime.month = date.month;
-    this.datetime.day = date.day;
-
+    this.datetime.day = date.day-1;
 
     if (this.dp) { this.dp.navigateTo({ year: this.datetime.year, month: this.datetime.month }) };
     if (this.datetime.day < 10) {
@@ -162,32 +162,26 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
        var day = String (this.datetime.day);
     }
     this.StudyService.selectedStudy.SpillDate =  (this.datetime.year + '-' + this.datetime.month + '-' + day);
+    console.log ("date change triggered")
     this.setDateStringModel();
   }
 
   onTimeChange(event: NgbTimeStruct) {
+    console.log("Time change triggered")
     this.datetime.hour = event.hour;
     this.datetime.minute = event.minute;
     this.datetime.second = event.second;
-
     this.setDateStringModel();
   }
 
   setDateStringModel() {
-    this.dateString = this.datetime.toString();
-    this.StudyService.setDate(this.dateString);
-
+    this.StudyService.setDate(this.datetime.toString());
+    //this.StudyService.dateSub.next(this.datetime.toString());
+    //this.StudyService.dateSub.next(new Date(this.datetime.toString()));
     if (!this.firstTimeAssign) {
-      this.onChange(this.dateString);
-      let starttime = this.dateString;
-      let endtime = this.datetime;
-      endtime.minute = (endtime.minute + 15);
-      if (endtime.minute > 60) {
-        endtime.hour = endtime.hour + 1;
-        endtime.minute = endtime.minute - 59;
-      }
-      this.sm('Access to real time flow is coming soon.......');
-      //this.mapservice.getRealTimeFlow(starttime, endtime.toString(), this.mapservice.gagesArray.value);
+      this.onChange(this.datetime.toString());
+      //this.sm('Access to real time flow is coming soon.......');
+      this.nwisservices.getRealTimeFlow(this.datetime, this.nwisservices.gagesArray.value);
     } else {
       // Skip very first assignment to null done by Angular
       if (this.dateString !== null) {
