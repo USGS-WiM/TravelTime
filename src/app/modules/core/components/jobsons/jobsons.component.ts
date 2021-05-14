@@ -68,9 +68,6 @@ export class JobsonsModalComponent implements OnInit {
     this.TravelTimeService = traveltimeservice;
     this.MapService = mapservice;
     this.NWISService = nwisservice;
-    this.NWISService.gages$.subscribe(data => {
-      this.gages = data;
-    })
     this.StudyService = studyservice;
     this.messager = tstrservice;
   }
@@ -87,8 +84,6 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
-    //this.StudyService.selectedStudy.SpillDate
-
     this.StudyService.dateSub.subscribe(result => {
       this.dateModel = result;
     })
@@ -104,6 +99,10 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Gages"
   public openGagesModal() {
+
+    //update gages flow for a specific date time here if gages modal open
+    this.NWISService.getRealTimeFlow(this.dateModel, this.NWISService.gagesArray.value);
+
     const modalConfig = this.modalService.open(GagesmodalComponent);
     modalConfig.componentInstance.title = 'Gages';
   }

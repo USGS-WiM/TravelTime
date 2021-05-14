@@ -132,7 +132,7 @@
 											{{getLabel(k.key)}}
 										</label>
 										<div class="row-input">
-											<input [(ngModel)]="k.value" placeholder="value" name="{{k.value}}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
+											<input [(ngModel)]="k.value" placeholder="value" name="{{k.value}}" [ngModelOptions]="{standalone: true}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
 										</div>
 									</div>
 								</div>

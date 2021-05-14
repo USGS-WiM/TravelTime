@@ -30,7 +30,7 @@ export class gages {
     }
     this.drainagearea = Number(arg.drainagearea).toFixed(1);
     if (typeof (arg.status) == 'undefined') {
-      this.status = 'null'
+      this.status = 'Inactive'
     } else {
       this.status = arg.status;
     }
