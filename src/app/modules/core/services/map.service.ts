@@ -91,14 +91,13 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
-      //this.addDrift();
-      this.addLeafletG();
+      this.addDriftGroup();
     });
 
   }
 
 
-  public addLeafletG() {
+  public addDriftGroup() {
     this.http.get('assets/data/mydatas.geojson').subscribe((data: any) => {
       var markers = markerClusterGroup();
 
@@ -125,16 +124,10 @@ export class MapService {
         }
       });
       markers.addLayer(geoJsonLayer);
-      this.AddMapLayer({ name: 'DRIFTgson', layer: markers, visible: false })
+      this.AddMapLayer({ name: 'DRIFT endpoints', layer: markers, visible: false })
     })
   }
 
-
-  public readDriftJson() {
-    this.http.get('assets/data/driftdbV2.json').subscribe((data: any) => {
-      console.log(data);
-    }) 
-  }
 
   public AddMapLayer(mlayer: MapLayer) {
 
