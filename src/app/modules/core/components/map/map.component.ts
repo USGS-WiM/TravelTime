@@ -334,7 +334,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                   });
                 }).finally(() => {
                   if(this.RDP.length > 1) { 
-                  this.wm('Travel time not computed for overland/raindrop trace portion', '', 0);
+                  this.message('Travel time not computed for overland/raindrop trace portion', 'warning', '', 0);
                   }
                 });
             } else { // spill planning workflow
@@ -420,12 +420,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
               })
             }
           } else {
-            this.em('NLDI Raindrop Trace Error, Please try a different location', '', 0);
+            this.message('NLDI Raindrop Trace Error, Please try a different location', 'error', '', 0);
             this.StudyService.SetWorkFlow('hasError', true);
           }
         }).catch((err) => {
           console.log('error: ', err.message);
-          this.em('NLDI Raindrop Trace Failed, Please try again', '', 0);
+          this.message('NLDI Raindrop Trace Failed, Please try again', 'error', '', 0);
           this.StudyService.SetWorkFlow('hasError', true);
         });
     }
@@ -465,7 +465,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     }
   }
 
-  private wm(msg: string, title?: string, timeout?: number) {
+  private message(msg: string, type: string, title?: string, timeout?: number) {
     try {
       let options: Partial<IndividualConfig> = null;
       if (timeout) { options = { timeOut: timeout }; }
@@ -477,24 +477,11 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           tapToDismiss: true
         };
       }
-      this.messager.warning(msg, title, options);
-    } catch (e) {
-    }
-  }
-
-  private em(msg: string, title?: string, timeout?: number) {
-    try {
-      let options: Partial<IndividualConfig> = null;
-      if (timeout) { options = { timeOut: timeout }; }
-      if (timeout == 0) {
-        options = {
-          disableTimeOut : true,
-          timeOut: 0,
-          extendedTimeOut: 0,
-          tapToDismiss: true
-        };
+      if(type === 'warning') {
+        this.messager.warning(msg, title, options);
+      } else if(type === 'error') {
+        this.messager.error(msg, title, options);
       }
-      this.messager.error(msg, title, options);
     } catch (e) {
     }
   }
