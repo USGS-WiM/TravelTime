@@ -421,10 +421,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
             }
           } else {
             this.em('NLDI Raindrop Trace Error, Please try a different location', '', 0);
+            this.StudyService.SetWorkFlow('hasError', true);
           }
         }).catch((err) => {
           console.log('error: ', err.message);
           this.em('NLDI Raindrop Trace Failed, Please try again', '', 0);
+          this.StudyService.SetWorkFlow('hasError', true);
         });
     }
   }
@@ -472,7 +474,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           disableTimeOut : true,
           timeOut: 0,
           extendedTimeOut: 0,
-          tapToDismiss: false
+          tapToDismiss: true
         };
       }
       this.messager.warning(msg, title, options);
@@ -489,7 +491,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           disableTimeOut : true,
           timeOut: 0,
           extendedTimeOut: 0,
-          tapToDismiss: false
+          tapToDismiss: true
         };
       }
       this.messager.error(msg, title, options);

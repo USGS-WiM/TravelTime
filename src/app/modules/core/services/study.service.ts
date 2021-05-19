@@ -11,6 +11,7 @@ export interface workflowControl {
     reachedZoom: boolean;
     hasMethod: boolean;
     hasPOI: boolean;
+    hasError: boolean;
     hasReaches: boolean;
     hasDischarge: boolean;
     totResults: boolean;
@@ -98,7 +99,7 @@ export class StudyService extends deepCopy   {
   private UnitsReturn = new Subject<string>();
   units$ = this.UnitsReturn.asObservable();
 
-  private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
+  private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasError: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
   public units: UnitsArray[] = [
     { name: "metric", isactive: true, units: "kilometers" },
