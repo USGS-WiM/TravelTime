@@ -2,20 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { MapService } from '../../services/map.service';
-import { NWISService } from '../../services/nwisservices.service';
-import { gages } from '../../models/gages';
+import { MapService } from '../../../services/map.service';
+import { NWISService } from '../../../services/nwisservices.service';
+import { gages } from '../../../models/gages';
+import { StudyService } from '../../../services/study.service'
+
 @Component({
-  selector: 'app-gagesmodal',
-  templateUrl: './gagesmodal.component.html',
-  styleUrls: ['./gagesmodal.component.scss']
+  selector: 'app-gages',
+  templateUrl: './gages.component.html',
+  styleUrls: ['./gages.component.scss']
 })
-export class GagesmodalComponent implements OnInit {
+export class GagesComponent implements OnInit {
   public gagesArray: Array<gages> = [];
   public newSessionGages: Array<gages> = [];
-  constructor(public activeModal: NgbActiveModal, public MapService: MapService, public NWISService: NWISService) {
+  public units: any = {discharge: "", drnarea: ""};
+
+  constructor(public activeModal: NgbActiveModal, public MapService: MapService, public NWISService: NWISService, public StudyService: StudyService) {
     this.MapService = MapService;
     this.NWISService = NWISService;
+    this.StudyService = StudyService;
   }
 
   ngOnInit() {
@@ -44,5 +49,12 @@ export class GagesmodalComponent implements OnInit {
       })
       
     })
+    if(this.StudyService.isMetric()) {
+      this.units.discharge = 'cms';
+      this.units.drnarea = 'km';
+    } else {
+      this.units.discharge = 'cfs';
+      this.units.drnarea = 'mi';
+    }
   }
 }

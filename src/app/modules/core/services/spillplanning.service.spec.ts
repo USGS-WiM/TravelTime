@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UpstreamtotService } from './upstreamtot.service';
+import { SpillPlanningService } from './spillplanning.service';
 
-describe('UpstreamtotService', () => {
+describe('SpillPlanningService  ', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: UpstreamtotService = TestBed.get(UpstreamtotService);
+    const service: SpillPlanningService = TestBed.get(SpillPlanningService);
     expect(service).toBeTruthy();
   });
 });
