@@ -47,7 +47,7 @@ export class FooterComponent extends deepCopy implements OnInit {
     this.MapService = mapservice;
     this.ChartService = chartservice;
     this.setClickedRow = function (index) {
-      this.selectedRow = index; // memorise selected row
+      this.selectedRow = index; // memorize selected row
       this.selectedReach = this.reaches[index] // selected reach
       if (this.reaches[index].ischeked) { // change
         this.reaches[index].ischeked = false;
@@ -171,7 +171,10 @@ export class FooterComponent extends deepCopy implements OnInit {
         this.reaches = reaches;
       } // keep existing metric unit
 
-    } else { // planning methodd
+    } else { // planning method
+      reaches.forEach(reach => {
+        reach.name = reach.properties.nhdplus_comid; //needed to highlight map with table row click
+      })
       this.reaches = reaches;
     }
   }

@@ -49,7 +49,7 @@
 						</thead>
 
 						<tbody>
-							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
 								<td>{{reach.name}}</td>
 								<ng-container *ngFor="let pars of reach.parameters">
 									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
@@ -119,7 +119,7 @@
 						</thead>
 
 						<tbody>
-							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
 								<td>{{reach.name}}</td>
 								<ng-container *ngFor="let pars of reach.parameters">
 									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
@@ -202,7 +202,7 @@
 						</thead>
 
 						<tbody>
-							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
 								<!-- <ng-container *ngFor="let prop of reach.properties"> -->
 									<td>{{reach.properties.nhdplus_comid}}</td>
 									<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
@@ -259,7 +259,7 @@
 						</thead>
 
 						<tbody>
-							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
 								<td>{{reach.properties.nhdplus_comid}}</td>
 								<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
 								<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
