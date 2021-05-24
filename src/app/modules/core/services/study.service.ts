@@ -23,6 +23,7 @@ export class StudyService extends deepCopy   {
 
   //HOLDS DISCHARGE, MASS, TIME, AND RECOVERY RATIO
   public selectedStudy: Study;
+  public DriftData: Array<any>;
   private SelectedReturn = new Subject<Study>();
   study$ = this.SelectedReturn.asObservable();  
   //SET MASS

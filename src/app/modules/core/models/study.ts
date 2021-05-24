@@ -11,6 +11,7 @@ export class Study {
     public spillPlanningResponse: any;
     public RDP: any; //rain drop path response    
     public Results: Array<any>;
+    public SelectedDriftData: Array<any>;
 
     private _methodType : string;
     public get MethodType() : string {

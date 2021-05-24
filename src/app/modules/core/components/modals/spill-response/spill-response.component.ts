@@ -71,6 +71,9 @@ export class SpillResponseComponent implements OnInit {
     })
     this.StudyService = studyservice;
     this.messager = tstrservice;
+    if(this.StudyService.selectedStudy.SelectedDriftData.length > 0){
+      this._dtData = true;
+    }
   }
 
   ngOnInit(): any {   // on init, get the services for first reach, and add them as parameters to accordion
@@ -128,7 +131,7 @@ export class SpillResponseComponent implements OnInit {
   public get RecoveryRatio(): number {
     return this._recoveryratio;
   }
-  private _dtData: boolean = true;
+  private _dtData: boolean = false;
   public get HasDTData(): boolean {
     return this._dtData;
   }
