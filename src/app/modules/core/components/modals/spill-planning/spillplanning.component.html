@@ -18,11 +18,12 @@
 						Discharge
 						<small>({{this.StudyService.defDischarge}}):</small>
 					</label>
-					<div class="input-group" style="width:auto; margin-left: 7px;">
-						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="form-control tight">
+					
+					<div class="row-input row-input-horizontal button-right">
+						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="input-styled">
 						<div class="input-group-append">
 							<button type="button" class="btn btn-outline-secondary" id="response" [hidden]="!ShowGages" (click)="openGagesModal()">
-								<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View gages
+								<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View Gages
 							</button>
 						</div>
 					</div>
