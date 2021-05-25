@@ -53,7 +53,7 @@
 						Discharge
 						<small>({{this.StudyService.defDischarge}}):</small>
 					</label>
-					<div class="row-input">
+					<div class="row-input row-input-horizontal button-right">
 						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="form-control input-styled">
 						<button type="button" class="btn btn-outline-secondary" id="response" [hidden]="!ShowGages" (click)="openGagesModal()" style="margin-top: 5px;">
 							<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View Gages

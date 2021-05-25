@@ -807,6 +807,29 @@ ul{
 			}
 		}
 	}
+
+	.row-input-horizontal{
+		display: flex;
+		flex-direction: row;
+
+		button{
+			width: fit-content;
+			min-width: fit-content;
+			margin: 0 !important;
+		}
+
+		// Button on right, hide curved borders
+		&.button-right{
+			button{
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+			input{
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+		}
+	}
 }
 
 
