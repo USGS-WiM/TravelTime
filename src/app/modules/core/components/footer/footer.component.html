@@ -8,7 +8,7 @@
 		</div>
 		<!-- Header -->
 		<div class="dfh-center">
-			&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate}}
+			&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate  | date:'medium'}}
 		</div>
 		<!-- Max/Most Probable toggle -->
 		<div class="dfh-right">
