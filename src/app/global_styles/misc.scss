@@ -34,3 +34,24 @@
 sup{
 	line-height: 8px !important;
 }
+
+
+// Toast Adjustments
+.toast-container * {
+	font-weight: 600 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+}
+body.small-toast-map .toast-container{
+	top: 28%;
+	bottom: unset !important;
+	top: calc(26% - 50px);
+}
+body.half-toast-map .toast-container{
+	top: 50;
+	bottom: unset !important;
+	top: calc(50% - 50px);
+}
+
+
+

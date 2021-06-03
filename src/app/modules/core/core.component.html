@@ -8,17 +8,17 @@
 
 		<!-- Button to toggle map height -->
 		<div id="mapHeightToggle" class="map-height-toggle">
-			<button (click)="mapSize = 'full'" [ngClass]="{'active': mapSize === 'full'}">
+			<button (click)="changeMapSize('full')" [ngClass]="{'active': mapSize === 'full'}">
 				<i class="far fa-rectangle-portrait"></i>
 				Full
 			</button>
-			<button (click)="mapSize = 'half';" [ngClass]="{'active': mapSize === 'half' || !mapSize}">
+			<button (click)="changeMapSize('half')" [ngClass]="{'active': mapSize === 'half' || !mapSize}">
 				<i class="far fa-rectangle-landscape"></i>
 				Half
 			</button>
-			<button (click)="mapSize = 'small'" [ngClass]="{'active': mapSize === 'small'}">
+			<button (click)="changeMapSize('small')" [ngClass]="{'active': mapSize === 'small'}">
 				<i class="far fa-rectangle-wide"></i>
-				Small
+				Small {{mapSize}}
 			</button>
 		</div>
 
@@ -27,6 +27,7 @@
 
 		<!-- Bottom footer / data view -->
 		<tot-footer class="footer"></tot-footer>
+
 
 	</div>
 </div>
