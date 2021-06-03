@@ -1,3 +1,10 @@
+#appChartsWrapper{
+	display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: visible;
+}
+
 .most-max-probable-toggle{
 	display: flex;
 	width: 100%;
@@ -38,6 +45,9 @@
 		}
 	}
 }
+.modal-wrapper .most-max-probable-toggle{
+	margin-top: 0;
+}
 
 ng-select {
 	text-align: center;
@@ -74,6 +84,14 @@ select-dropdown {
   display: none;
 }
 
-.dropdown-menu {
-	margin-left: 30%;
+#groupSelection {
+	width: 100%;
+	max-width: 240px;
+	padding-bottom: 8px;
+	box-sizing: border-box;
+
+	ng-select{
+		width: 100%;
+		background-color: white;
+	}
 }
