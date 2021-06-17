@@ -1,0 +1,31 @@
+// Jobsons.scss
+// _______________________________________________
+// 
+// Specific styles for changes within jobsons toggles
+// 
+
+$sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+// Variables
+$borderRadius: 4px;
+$transition: 0.2s;
+$text: #0C141E;
+
+
+.jobsons-toggles{
+
+	.jobsons-delete{
+		color: #ED1515;
+		opacity: 0.4;
+		font-size: 16px;
+		transition: $transition;
+		transform: scale(0.75);
+
+		&:hover{
+			opacity: 1;
+			transform: scale(1);
+			transition: $transition;
+		}
+	}
+
+}
+

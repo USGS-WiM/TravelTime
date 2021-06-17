@@ -1,0 +1,36 @@
+.main-map{
+	position: relative !important;
+}
+.map-position{
+	position: absolute !important;
+	bottom: 0 !important;
+	z-index: 401 !important;
+}
+
+
+
+
+
+
+
+
+#gageList{
+	display: flex;
+	flex-direction: column;
+}
+.active-gage{
+	order: -10;
+}
+.inactive-gage{
+	order: 100;
+}
+
+.inactive-gage .gage-modal-list .card .card-header button{
+	background-color: rgba(0,0,0,0.05) !important;
+	color: rgba(0,0,0,0.35) !important;
+}
+
+
+sup{
+	line-height: 8px !important;
+}

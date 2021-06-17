@@ -1,16 +1,18 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TravelTimeService } from '../../services/traveltimeservices.service';
-import { MapService } from '../../services/map.service';
+import { TravelTimeService } from '../../../services/traveltimeservices.service';
+import { MapService } from '../../../services/map.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { reach } from '../../models/reach';
-import { StudyService } from '../../services/study.service';
+import { reach } from '../../../models/reach';
+import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
-import * as messageType from '../../../../shared/messageType';
+import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
 import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
 import { round } from '@turf/turf';
 import { NWISService } from '../../services/nwisservices.service'
+import { GagesComponent } from '../gages/gages.component';
+import { NWISService } from '../../../services/nwisservices.service'
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -23,11 +25,11 @@ export const DateTimeValidator = (fc: FormControl) => {
 };
 
 @Component({
-  selector: 'app-jobsons',
-  templateUrl: './jobsons.component.html',
-  styleUrls: ['./jobsons.component.scss']
+  selector: 'app-spill-response',
+  templateUrl: './spill-response.component.html',
+  styleUrls: ['./spill-response.component.scss']
 })
-export class JobsonsModalComponent implements OnInit {
+export class SpillResponseComponent implements OnInit {
 
   public gages;
   public ShowGages: boolean = false;
@@ -101,7 +103,8 @@ export class JobsonsModalComponent implements OnInit {
   public openGagesModal() {
 
     //update gages flow for a specific date time here if gages modal open
-    this.NWISService.getRealTimeFlow(this.dateModel, this.NWISService.gagesArray.value);
+    //get real time flow values
+    //this.NWISService.getRealTimeFlow(this.dateModel, this.NWISService.gagesArray.value);
 
     const modalConfig = this.modalService.open(GagesmodalComponent);
     modalConfig.componentInstance.title = 'Gages';
@@ -198,16 +201,12 @@ export class JobsonsModalComponent implements OnInit {
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
         } else {
-          //this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
           item.parameters[1].value = this._discharge;
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
           cond = true;
         }
       });
-      /*this.reachList.forEach((item) => {
-        item.parameters[1].value = item.parameters[0].value;
-      })*/
       this.StudyService.SetWorkFlow('hasDischarge', true);
     } else {
       this.setDischarge();
@@ -367,17 +366,6 @@ export class JobsonsModalComponent implements OnInit {
 
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
-      /*if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 50 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 50 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else {
-
-        if (this.reachList.length < 1) {
-          this.MapService.isInsideWaterBody.next(true);
-          this.sm("Warning, selected point of interest is inside of the water body.....");
-        }
-        //break
-
-      }*/
-
-
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
         if (i > 0) { newreach.description = "reach" };

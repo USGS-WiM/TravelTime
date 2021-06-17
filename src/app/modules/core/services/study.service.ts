@@ -3,6 +3,7 @@ import { Study } from '../models/study';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { reach } from '../models/reach';
+import { deepCopy } from '../../../shared/extensions/object.DeepCopy';
 
 export interface UnitsArray { name: string, isactive: boolean, units: string };
 
@@ -10,6 +11,7 @@ export interface workflowControl {
     reachedZoom: boolean;
     hasMethod: boolean;
     hasPOI: boolean;
+    hasError: boolean;
     hasReaches: boolean;
     hasDischarge: boolean;
     totResults: boolean;
@@ -17,7 +19,7 @@ export interface workflowControl {
   }
  
 @Injectable()
-export class StudyService  {
+export class StudyService extends deepCopy   {
 
   //HOLDS DISCHARGE, MASS, TIME, AND RECOVERY RATIO
   public selectedStudy: Study;
@@ -50,6 +52,9 @@ export class StudyService  {
     //console.log(this.selectedStudy.SpillDate);
     this.SelectedReturn.next(this.selectedStudy);
   }
+
+  private selectedMethod = new Subject<number>();
+  methodType$ = this.selectedMethod.asObservable();
 
   public WorkFlowControl: Subject<workflowControl> = new Subject<any>();
   public ReportOptions: Array<any>;
@@ -101,7 +106,7 @@ export class StudyService  {
   private UnitsReturn = new Subject<string>();
   units$ = this.UnitsReturn.asObservable();
 
-  private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
+  private _workflow: workflowControl = { reachedZoom: false, hasMethod: false, hasPOI: false, hasError: false, hasReaches: false, hasDischarge: false, totResults: false, onInit: true };
 
   public units: UnitsArray[] = [
     { name: "metric", isactive: true, units: "kilometers" },
@@ -158,7 +163,37 @@ export class StudyService  {
       this.WorkFlowControl.next(this._workflow);
   }
 
+  public formatReaches(data): any {
+    const streamArray = [];
+    for (let i = 0; i < data.features.length; i++) {
+      if (data.features[i].geometry.type === 'LineString') {
+        const polylinePoints = this.deepCopy(data.features[i]);
+        streamArray.push(polylinePoints);
+      }
+    }
+    streamArray.map((reach) => {
+      reach.properties.show = false;
+    });
+
+    if(this.selectedStudy.MethodType == "response") { // response method sorts table by drainage area, smallest to largest
+      if(this.selectedStudy.RDP.length > 1) {
+        streamArray.shift(); //removes overland trace
+      }
+      const sortArray = streamArray.sort( (a, b) => {
+        return a.properties.DrainageArea - b.properties.DrainageArea;
+      });
+      return (sortArray);
+    } else { //planning method sorts table by total travel time, largest to smallest
+      streamArray.shift(); //removes overland trace
+      const sortArray = streamArray.sort( (a, b) => {
+        return b.properties.accutot - a.properties.accutot;
+      });
+      return (sortArray);
+    }
+  }
+
   constructor(toastr: ToastrService) {
+    super();
     this.messager = toastr;
     this.WorkFlowControl.next(this._workflow);
     this.distance = 100;

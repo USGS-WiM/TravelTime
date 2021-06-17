@@ -7,29 +7,41 @@ import * as messageType from '../../../shared/messageType'
 import { reach } from '../models/reach';
 
 @Injectable()
-export class TravelTimeService {
-public get baseURL() {return "https://test.streamstats.usgs.gov/timeoftravelservices/";}
-private messager:ToastrService;
+export class NLDIService {
+  public get baseURL() { return "https://nhgf.wim.usgs.gov/processes/";}
+  private messager:ToastrService;
+
   constructor(private http: HttpClient,toastr: ToastrService) {
     this.messager = toastr;
    }
 
-  public getJobsonConfigurationObject(): Observable <any>{
-    let url = this.baseURL+"jobsons";
-    return this.http.get<any>(url)
-        .pipe(catchError(this.handleError('getJobsonConfigurationObject',[])));
-  }
-  public ExecuteJobson(massconcentration:Number, starttime, reaches): Observable <any>{
-    let url = this.baseURL+"jobsons/Execute?initialmassconcentration="+massconcentration+"&starttime="+starttime;
-
-    // I'm thinking this should occure before here (in a validation method or something)
-    
-    let reachdictionary = {};
-    for (let index = 0; index < reaches.length; index++) {
-      reachdictionary[index] = reaches[index];      
+  public GetRainDropPath(lat, lon, dir): Observable <any>{
+    let url = this.baseURL+"nldi-flowtrace/jobs?response=document";
+    let post = {
+      "inputs": [
+        {
+          "id": "lat",
+          "type": "text/plain",
+          "value": lat
+        },
+        {
+          "id": "lng",
+          "type": "text/plain",
+          "value": lon
+        },
+        {
+          "id": "raindroptrace",
+          "type": "text/plain",
+          "value": "True"
+        },
+        {
+          "id": "direction",
+          "type": "text/plain",
+          "value": dir
+        }
+      ]
     }
-
-    return this.http.post<reach>(url, {reaches: reachdictionary})
+    return this.http.post<any>(url, post)
         .pipe(catchError(this.handleError('Execute',[])));
   }
   

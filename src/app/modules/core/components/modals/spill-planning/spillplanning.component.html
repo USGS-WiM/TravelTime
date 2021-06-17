@@ -1,0 +1,55 @@
+<div class="modal-wrapper">
+	<div class="modal-box">		
+		<!-- Header -->
+		<div class="modal-top">
+			<div class="title">Spill Planning</div>
+			<div class="close-modal" (click)="activeModal.dismiss()">
+				<i class="far fa-times"></i>
+				{{firstReachDischarge()}}
+			</div>
+		</div>
+		<!-- Main content -->
+		<div class="modal-middle">
+	
+			<form #myForm="ngForm">
+				<!-- Discharge -->
+				<div class="modal-form-row">
+					<label>
+						Discharge
+						<small>({{this.StudyService.defDischarge}}):</small>
+					</label>
+					
+					<div class="row-input row-input-horizontal button-right">
+						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="input-styled">
+						<div class="input-group-append">
+							<button type="button" class="btn btn-outline-secondary" id="response" [hidden]="!ShowGages" (click)="openGagesModal()">
+								<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View Gages
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-form-row">
+					<label></label>
+					<div class="row-input">
+						<small>(Mean annual flow of nearest reach: {{FirstReachDischarge}} {{this.StudyService.isMetric() === true ? 'cms' : 'cfs'}})</small>
+					</div>
+				</div>	
+			</form>
+
+			</div>
+			<!-- Footer -->
+			<div class="modal-buttons space-around">
+				<button *ngIf="mylist !== null" class="icon-button white" (click)="onClick_clear()">
+					<i class="far fa-trash-alt"></i>
+					<span>Clear</span>
+				</button>
+				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setDischarge(); getResults();">
+					<i class="fas fa-long-arrow-right"></i>
+					<span>Get Results</span>
+				</button>
+			</div>
+		</div>
+		
+	</div>
+
+
