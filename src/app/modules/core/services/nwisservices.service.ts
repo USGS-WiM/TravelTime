@@ -97,6 +97,7 @@ export class NWISService {
 
   getMostRecentFlow(site: any) {
     this.gages = [];
+    console.log("get most recent flow");
     for (var i = 0; i < site.length; i++) {
       let gage = site[i];
       let siteid = (gage.properties.identifier.replace("USGS-", ""));
@@ -135,12 +136,12 @@ export class NWISService {
 
           let mydata = JSON.stringify(data);
           let parsedJson = JSON.parse(mydata);
-
           //let contribda = parsedJson[30].contrib_drain_area_va;
           //let da = parsedJson[29].drain_area_va;
           parsedJson.forEach(item => {
             let contribda = 0;
             let da = 0;
+
 
             if (item.hasOwnProperty('contrib_drain_area_va') | item.hasOwnProperty('drain_area_va')) {
               if (item.contrib_drain_area_va > 0) {
@@ -149,11 +150,14 @@ export class NWISService {
                 da = item.drain_area_va
               } else { }
 
+
+
               if (contribda > 0) {
                 this.updateGageData(result, gage, contribda);
               } else if (da > 0) {
                 this.updateGageData(result, gage, da);
               } else {
+                /*console.log (" looking for else,no da")
                 this.http.get<any>("https://test.streamstats.usgs.gov/gagestatsservices/stations/" + siteid).subscribe(SSresult => {
                   try {
                     //check for drainage area (filter)
@@ -169,11 +173,12 @@ export class NWISService {
                 }, (error) => {
                   console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
                   this.updateGageData(result, gage, 0);
-                })
+                })*/
               }
             }
           })
-          console.log(this.gagesArray);
+          //console.log(this.gagesArray);
+
           this.showGages.next(true);
         });
         if ("USGS-" + siteid == site[site.length - 1].identifier) {
@@ -182,9 +187,12 @@ export class NWISService {
       })
     }
 
+    console.log("final push to gages array");
+    console.log(this.gagessub);
     this.gagesArray.next(this.gagessub);
     this.StreamGages.next(this.gages);
   }
+
   public gagessub = [];
 
   public updateGageData(result, site, F) {
@@ -205,6 +213,8 @@ export class NWISService {
     } else {
       this.sm('Gage is missing discharge value: ' + site.properties.identifier + "More info on: " + site.properties.uri);
     }
+    //console.log("updated gage data");
+    //console.log(this.gagessub);
     this.gagessub.push(newgage);
   }
 
@@ -274,6 +284,7 @@ export class NWISService {
       };
       //create service
       //add gage
+
       this.gagesArray.next(gagesArray);
       this.MapService.gageDischargeSearch.next(true);
       this.getMostRecentFlow(gagesArray);

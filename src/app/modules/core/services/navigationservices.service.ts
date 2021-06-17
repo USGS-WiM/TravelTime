@@ -29,15 +29,15 @@ export class NavigationService {
   
   public getRoute(identifier:string, configuredResource, includeproperties:boolean = true): Observable <any>{
     let url = this.baseURL + "/navigation/" + identifier + "/route?properties=" + includeproperties;
-    console.log(configuredResource);
-    console.log(url);
+    //console.log(configuredResource);
+    //console.log(url);
     return this.http.post<any>(url, configuredResource)
         .pipe(catchError(this.handleError('getRoute',[])));
   }
 
   private handleError<T>(operation ='operation', result?:T){
     return (error:any):Observable<T> => {
-      console.error(error);
+      //console.error(error);
       this.sm("Please try again.", messageType.ERROR, "Http Error Occured!",0);
       return of(result as T)
     }
