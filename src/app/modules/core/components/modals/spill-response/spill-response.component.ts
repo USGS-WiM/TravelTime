@@ -262,7 +262,8 @@ export class SpillResponseComponent implements OnInit {
   public getResults() {
 
 	// Set default footer height to half, show buttons to switch
-	$('#mapWrapper').attr('class', 'half-map');
+    $('#mapWrapper').attr('class', 'half-map');
+    $('body').attr('class', 'half-toast-map');
 	$('#mapHeightToggle').attr('class', 'visible');
 
     this.gettingResults = true;

@@ -29,3 +29,82 @@
 	background-color: rgba(0,0,0,0.05) !important;
 	color: rgba(0,0,0,0.35) !important;
 }
+
+
+sup{
+	line-height: 8px !important;
+}
+
+
+// Toast Adjustments
+.toast-container {
+	z-index: 1000 !important;
+}
+.toast-container * {
+	font-weight: 600 !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+	z-index: 1000 !important;
+}
+body.small-toast-map .toast-container{
+	top: 28%;
+	bottom: unset !important;
+	top: calc(26% - 50px);
+	z-index: 1000 !important;
+}
+body.half-toast-map .toast-container{
+	z-index: 1000 !important;
+	top: 50;
+	bottom: unset !important;
+	top: calc(46% - 50px);
+}
+
+
+
+
+
+.modal-content #appChartsWrapper {
+    margin-top: 80px !important;
+}
+.modal-content  {
+
+	.ng-value-container{
+		width: fit-content;
+		border: 1px solid black;
+		max-width: fit-content;
+		box-sizing: border-box;
+		padding: 8px;
+		border-radius: 4px;
+	}
+
+	.ng-select-container{
+
+		.ng-placeholder{
+			
+		}
+	}
+    
+	
+	.ng-dropdown-panel{
+		box-sizing: border-box;
+		position: absolute;
+		left: 0;
+		text-align: left;
+		z-index: 1050;
+		width: 200px;
+		background: white;
+		box-sizing: border-box;
+		padding: 10px;
+		top: 32px;
+		border-radius: 5px;
+		border: 1px solid rgba(0,0,0,0.75);
+
+		.ng-option{
+			padding: 3px 0;
+
+			&:hover{
+				text-decoration: underline;
+			}
+		}
+	}
+}

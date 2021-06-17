@@ -93,7 +93,7 @@ export class NWISService {
       if (err.status === 404) {
         return of(false);
       }}
-      ))
+    ))
   }
 
   public check4gages(features) {

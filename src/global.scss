@@ -480,6 +480,7 @@ input[type="radio"] {
 .flex-around{justify-content: space-around;}
 .flex-between{justify-content: space-between;}
 .flex-center{justify-content: center;}
+.flex-end{justify-content: flex-end;}
 
 
 /////////////////////////
@@ -785,6 +786,7 @@ ul{
 		flex-grow: 3;
 
 		input[type=text],
+		.input-styled,
 		input[type=number]{
 			width: 100%;
 			padding: 7px;
@@ -803,6 +805,29 @@ ul{
 				display: flex;
 				justify-content: space-between;
 				flex-grow: 3;
+			}
+		}
+	}
+
+	.row-input-horizontal{
+		display: flex;
+		flex-direction: row;
+
+		button{
+			width: fit-content;
+			min-width: fit-content;
+			margin: 0 !important;
+		}
+
+		// Button on right, hide curved borders
+		&.button-right{
+			button{
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+			input{
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
 			}
 		}
 	}
@@ -974,19 +999,20 @@ ul{
 // Table Styles
 @media screen{
 	.data-table{
-		font-size: 14.5px;
-		border: 1px solid rgba(0,0,0,0.25);
+		font-size: 14px;
 		border-right: none;
 		table-layout: fixed;
 		width: 100%;
 		border-collapse: collapse;
 		margin-bottom: 25px;
+		display: flex;
+		flex-direction: column;
 		// background: red;
+		max-height: 100%;
 	
 		thead{
 			background: rgba(10,10,20,0.05);
 			background-color: white;
-			border-bottom: 1px solid rgba(0,0,0,0.25);
 
 			tr {
 				display: block;
@@ -994,7 +1020,10 @@ ul{
 
 				th{
 					font-weight: 600 !important;
-					font-size: 13.5px;
+					font-size: 13px;
+					letter-spacing: -0.5px;
+					padding-top: 0;
+					padding-bottom: 0;
 				}
 			}
 		}
@@ -1004,7 +1033,6 @@ ul{
 			width: fit-content;
 			height: 260px;
 			overflow-y: auto;
-			border-right: 1px solid rgba(0,0,0,0.25);
 
 			
 
@@ -1036,6 +1064,10 @@ ul{
 			background: rgba(10,15,30,0.15);
 		}
 		
+	}
+	.footer-data .data-table{
+		border: none !important;
+		margin-bottom: 0;
 	}
 }
 
@@ -1147,4 +1179,23 @@ ul{
 			}
 		}
 	}
+}
+
+
+.single-line{
+	white-space: pre !important;
+}
+.th-border-bottom th{
+	padding: 3px;
+	border-bottom: solid black 1px; 
+}
+
+
+// Planning Legend
+.leaflet-control.legend{
+	background-color: white;
+	box-sizing: border-box;
+	padding: 8px;
+	border-radius: 4px;
+	box-shadow: 0 5px 20px 0 rgba(0,0,0,0.2);
 }
