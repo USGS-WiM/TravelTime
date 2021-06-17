@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModalConfig, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import { StudyService } from '../../services/study.service';
-import { reach } from '../../models/reach';
-import { MapService } from '../../services/map.service';
+import { StudyService } from '../../../services/study.service';
+import { reach } from '../../../models/reach';
+import { MapService } from '../../../services/map.service';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-import { MapComponent } from '../map/map.component';
+import { MapComponent } from '../../map/map.component';
 import { Angulartics2 } from 'angulartics2';
 import * as L from 'leaflet';
 import * as moment from 'moment';
 import { deepCopy } from 'src/app/shared/extensions/object.DeepCopy';
-import { NavigationService } from '../../services/navigationservices.service';
+import { NavigationService } from '../../../services/navigationservices.service';
 
 @Component({
   selector: 'tot-report',
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss']
 })
-export class ReportModalComponent extends deepCopy implements OnInit {
+export class ReportComponent extends deepCopy implements OnInit {
 
   //#region "Declarations"
   private StudyService: StudyService;
@@ -87,11 +87,14 @@ export class ReportModalComponent extends deepCopy implements OnInit {
     this.units = this.MapService.unitsOptions;
     this.abbrev = this.MapService.abbrevOptions;
 
-    const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
-    const reachList = Object.values(reachesCopy);
-    reachList.shift(); // remove first element (one without results)
-
-    this.checkUnits(reachList);
+    if(this.StudyService.selectedStudy.MethodType === "response") {
+      const reachesCopy = this.deepCopy(this.StudyService.selectedStudy.Results['reaches']);
+      const reachList = Object.values(reachesCopy);
+      reachList.shift(); // remove first element (one without results)  
+      this.checkUnits(reachList);
+    } else { // planning method
+      this.reaches = this.StudyService.selectedStudy.Reaches;       
+    }
   }
 
   public toDecimals(timeval: string) {

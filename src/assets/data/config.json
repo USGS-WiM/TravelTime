@@ -85,40 +85,51 @@
         "weight": 3,
         "opacity": 1
       },
-      "Polyline2": {
-        "color": "#0BDCD5",
-        "weight": 3,
-        "opacity": 1
-      },
-      "Polyline3": {
-        "color": "#D3DC0B",
-        "weight": 3,
-        "opacity": 1
-      },
-      "Polyline4": {
-        "color": "#144893",
-        "weight": 3,
-        "opacity": 1
-      },
-      "Polyline5": {
-        "color": "#14933E",
+      "Polyline7": {
+        "color": "#669900",
         "weight": 3,
         "opacity": 1
       },
       "Polyline6": {
-        "color": "#020234",
+        "color": "#CCFF00",  
         "weight": 3,
         "opacity": 1
       },
+      "Polyline5": {
+        "color": "#FF9900",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline4": {
+        "color": "#FF6600", 
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline3": {
+        "color": "#FF0000",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline2": {
+        "color": "#CC0000",
+        "weight": 3,
+        "opacity": 1
+      },  
       "Polyline_upstream": {
         "color": "green",
         "weight": 3,
         "opacity": 1
       },
       "Polyline_break": {
-        "color": "red",
+        "color": "gray",
         "weight": 3,
         "opacity": 1
+      },
+      "Polyline_dash": {
+        "color": "gray",
+        "weight": 3,
+        "opacity": 1,
+        "dasharray": "20,20"
       },
       "GagesUpstream": {
         "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",

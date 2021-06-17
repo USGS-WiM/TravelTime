@@ -8,7 +8,7 @@ import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { ChartsService } from '../../services/charts.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
-import { DateTimeValidator } from '../jobsons/jobsons.component';
+import { DateTimeValidator } from '../modals/spill-response/spill-response.component';
 import { MapService } from '../../services/map.service';
 
 // tslint:disable-next-line: class-name
@@ -70,6 +70,10 @@ export class AppchartsComponent implements OnInit {
 
     //#endregion
 
+    public get SelectedMethodType() {
+      return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : '');
+    }
+
   constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService, mapservice: MapService) {
     this.StudyService = studyservice;
     this.ChartService = chartservice;
@@ -78,8 +82,10 @@ export class AppchartsComponent implements OnInit {
     this.ChartService.displayAction('most', true);
   }
   ngOnInit() {
-    this.getAllMostProbable();
-    this.generateData();
+    if(this.SelectedMethodType === 'response') {
+      this.getAllMostProbable();
+      this.generateData();
+    }
   }  // Get time all, subscribe to selected row and plot selected one;
 
   //#region "UI chart accessors"
@@ -401,7 +407,7 @@ export class AppchartsComponent implements OnInit {
 
   //#region "Subscriber"
   public get output$() {
-    if (this.StudyService.GetWorkFlow('totResults')) {
+    if (this.StudyService.GetWorkFlow('totResults') && this.SelectedMethodType === 'response') {
       this.reaches = Object.values(this.StudyService.selectedStudy.Results['reaches']);
       this.reaches.shift(); // remove first element (one without results)
       this.reachesGrouped = this.splitToarray(this.reaches);// return splitted chart;

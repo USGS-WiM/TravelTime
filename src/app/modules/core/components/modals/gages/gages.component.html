@@ -2,15 +2,15 @@
   <div class="modal-box">
     <!-- Header -->
     <div class="modal-top">
-      <div class="title">Stream flow gages were found</div>
+      <div class="title">Streamgages were found</div>
       <div class="close-modal" (click)="activeModal.dismiss()">
         <i class="far fa-times"></i>
       </div>
     </div>
     <!-- Main content -->
-    <div class="modal-middle">
+    <div class="modal-middle" id="gageList">
 
-      <div *ngFor="let data of gagesArray; index as i">
+      <div *ngFor="let data of gagesArray; index as i" [ngClass]="{'inactive-gage': data.status === 'Inactive', 'active-gage': data.status === 'Active'}">
         <ngb-accordion #acc="ngbAccordion"  type="light" class="gage-modal-list">
           <ngb-panel title="{{data.name}} ({{data.status}})" id="ngb-panel-{{i}}"> <!--[ngStyle]="{'background-color':data.status === 'Active' ? 'green' : 'black' }"-->
             <ng-template ngbPanelContent>
@@ -21,10 +21,10 @@
 					<div><span>Comid:</span><b>{{data.comid}}</b></div>
 					<div><span>Navigation url:</span><b><a href="{{data.navigation}}" target="_blank">{{data.navigation}}</a></b></div>
 					<div><span>Nwis url:</span><b><a href="{{data.uri}}" target="_blank">{{data.uri}}</a></b></div>
-					<div><span>Flow value:</span><b *ngIf="data.value">{{data.value}}f3/s</b><b *ngIf="!data.value">N/A</b></div>
+					<div><span>Flow value:</span><b *ngIf="data.value === '-999999'">Ice conditions</b><b *ngIf="data.value && data.value !== '-999999' && !StudyService.isMetric()">{{ data.value + ' ' + units.discharge }}</b><b *ngIf="data.value && data.value !== '-999999' && StudyService.isMetric()">{{(data.value * 0.028).toUSGSvalue() + ' ' + units.discharge}}</b><b *ngIf="!data.value">N/A</b></div> <!--checks for ice conditions and converts cfs to cms if metric units are chosen-->
 					<div></div>
 					<div><b>{{data.record}}</b></div>
-					<div><span>Drainage area:</span><b *ngIf="data.drainagearea">{{data.drainagearea}} sqmiles</b><b *ngIf="!data.drainagearea">N/A</b></div>
+					<div><span>Drainage area:</span><b *ngIf="data.drainagearea">{{StudyService.isMetric() ? (data.drainagearea * 2.58999).toUSGSvalue() : data.drainagearea}} {{units.drnarea}}</b><sup>2</sup><b *ngIf="!data.drainagearea">N/A</b></div> <!--coverts drainage area to square kilometers if metric units are chosen-->
 				</div>
             </ng-template>
           </ngb-panel>
