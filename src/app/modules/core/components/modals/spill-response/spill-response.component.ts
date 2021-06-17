@@ -8,9 +8,7 @@ import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
-import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
 import { round } from '@turf/turf';
-//import { NWISService } from '../../services/nwisservices.service'
 import { GagesComponent } from '../gages/gages.component';
 import { NWISService } from '../../../services/nwisservices.service'
 
@@ -106,7 +104,7 @@ export class SpillResponseComponent implements OnInit {
     //get real time flow values
     //this.NWISService.getRealTimeFlow(this.dateModel, this.NWISService.gagesArray.value);
 
-    const modalConfig = this.modalService.open(GagesmodalComponent);
+    const modalConfig = this.modalService.open(GagesComponent);
     modalConfig.componentInstance.title = 'Gages';
   }
   //#endregion
