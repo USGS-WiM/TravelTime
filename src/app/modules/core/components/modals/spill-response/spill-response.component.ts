@@ -8,14 +8,9 @@ import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
-<<<<<<< HEAD:src/app/modules/core/components/jobsons/jobsons.component.ts
-import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
 import { round } from '@turf/turf';
-import { NWISService } from '../../services/nwisservices.service'
-=======
 import { GagesComponent } from '../gages/gages.component';
 import { NWISService } from '../../../services/nwisservices.service'
->>>>>>> e154002f156f90f1119bc2cd1fe9901c0af92c8d:src/app/modules/core/components/modals/spill-response/spill-response.component.ts
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -104,15 +99,7 @@ export class SpillResponseComponent implements OnInit {
 
   //#region "Gages"
   public openGagesModal() {
-<<<<<<< HEAD:src/app/modules/core/components/jobsons/jobsons.component.ts
-
-    //update gages flow for a specific date time here if gages modal open
-    this.NWISService.getRealTimeFlow(this.dateModel, this.NWISService.gagesArray.value);
-
-    const modalConfig = this.modalService.open(GagesmodalComponent);
-=======
     const modalConfig = this.modalService.open(GagesComponent);
->>>>>>> e154002f156f90f1119bc2cd1fe9901c0af92c8d:src/app/modules/core/components/modals/spill-response/spill-response.component.ts
     modalConfig.componentInstance.title = 'Gages';
   }
   //#endregion
@@ -180,7 +167,6 @@ export class SpillResponseComponent implements OnInit {
     this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(2);
   }
 
-<<<<<<< HEAD:src/app/modules/core/components/jobsons/jobsons.component.ts
   public updateRecRatio(v:number) {
     this.reachList.forEach((item) => {
       item.parameters[5].value = v;
@@ -188,9 +174,6 @@ export class SpillResponseComponent implements OnInit {
     })
   }
 
-
-=======
->>>>>>> e154002f156f90f1119bc2cd1fe9901c0af92c8d:src/app/modules/core/components/modals/spill-response/spill-response.component.ts
    //#region "Methods"
   public setParameters(): void {
     this.setDischarge();
