@@ -8,7 +8,7 @@ import { reach } from '../models/reach';
 
 @Injectable()
 export class NLDIService {
-  public get baseURL() { return "https://nhgf.wim.usgs.gov/processes/";}
+  public get baseURL() { return "https://labs.dev-wma.chs.usgs.gov/pygeoapi/processes/";}
   private messager:ToastrService;
 
   constructor(private http: HttpClient,toastr: ToastrService) {
@@ -25,7 +25,7 @@ export class NLDIService {
           "value": lat
         },
         {
-          "id": "lng",
+          "id": "lon",
           "type": "text/plain",
           "value": lon
         },
