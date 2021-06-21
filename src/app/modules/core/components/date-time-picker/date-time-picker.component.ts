@@ -36,7 +36,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   private onTouched: () => void = noop;
   private onChange: (_: any) => void = noop;
   @Input()
-  dateString: string;
+  dateString: string = (new Date).toString();
   private showTimePickerToggle = false;
   @ViewChild(NgbPopover, { static: false })
   private popover: NgbPopover;
@@ -50,8 +50,6 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   minuteStep = 15;
   @Input()
   secondStep = 30;
-
-
 
   constructor(toastr: ToastrService, private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService, private mapservice: MapService, private nwisservices: NWISService) {
     this.nwisservices = nwisservices;
