@@ -5,7 +5,6 @@ import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
-import { Drift } from '../models/drift';
 import { gages } from '../models/gages';
 import * as xml2js from 'xml2js';
 import 'leaflet.markercluster';
@@ -14,8 +13,6 @@ import { StudyService } from '../services/study.service';
 import * as messageType from '../../../shared/messageType';
 import { Study } from '../models/study';
 import { Drift } from '../models/drift';
-import 'leaflet.markercluster';
-import { markerClusterGroup } from 'leaflet';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -108,39 +105,6 @@ export class MapService {
     });
 
   }
-
-
-  public addDriftGroup() {
-    this.http.get('assets/data/mydatas.geojson').subscribe((data: any) => {
-      var markers = markerClusterGroup();
-
-      var geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      };
-
-
-      var geoJsonLayer = L.geoJSON(data, {
-
-        pointToLayer: function (feature, latlng) {
-          switch (feature.properties.Condition) {
-            case 'Injection': return L.circleMarker(latlng, geojsonMarkerOptions);
-            case 'Reach': return L.circleMarker(latlng);
-          }
-        },
-        onEachFeature: function (feature, layer) {
-          layer.bindPopup(feature.properties.RiverName + ' ' + feature.properties.Condition + ' - '+ feature.properties.Study);
-        }
-      });
-      markers.addLayer(geoJsonLayer);
-      this.AddMapLayer({ name: 'DRIFT endpoints', layer: markers, visible: false })
-    })
-  }
-
 
   public AddMapLayer(mlayer: MapLayer) {
 
@@ -368,7 +332,6 @@ export class MapService {
         opacity: 1,
         fillOpacity: 0.8
       };
-
 
       var geoJsonLayer = L.geoJSON(data, {
 

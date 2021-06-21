@@ -93,7 +93,7 @@ export class SpillResponseComponent implements OnInit {
 
     this.NWISService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
-        this.nwisservice.showGages.subscribe(data => {
+        this.MapService.showGages.subscribe(data => {
           this.ShowGages = data;
         })
       } else { }

@@ -101,6 +101,7 @@ export class NWISService {
       let baseurl = "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + siteid + "&parameterCd=00060&siteStatus=active";
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
+        this.MapService.showGages.next(true);
         this.getGageInfoNwisv2(siteid).subscribe(Nwisresult => {
           const csv = [];
           const lines = Nwisresult.split('#');
@@ -171,7 +172,7 @@ export class NWISService {
               }
             }
           })
-          // if ("USGS-" + siteid == site[site.length - 1].identifier) {
+          // if ("USGS-" + siteid == site[site.length - 1].identifier) {             //cannot remember what this was for...
           //   this.updateGageData(result, gage);
           //   this.MapService.showGages.next(true);
           // }
@@ -198,29 +199,22 @@ export class NWISService {
         newgage.record = date;
       } 
     } else {
-      this.sm('Gage is missing discharge value: ' + site.properties.identifier + "More info on: " + site.properties.uri);
+      //this.sm('Gage is missing discharge value: ' + site.properties.identifier + "More info on: " + site.properties.uri);
     }
     this.gagessub.push(newgage);
   }
-
 
   public updateDischarge(gage) {
     this.gagessub.forEach(g => {
       let code = "USGS-" + gage.value.timeSeries[0].sourceInfo.siteCode[0].value;
       if (g.identifier == code) {
-        //console.log("matched identifiers code");
         g.value = gage.value.timeSeries[0].values[0].value[0].value;
         g.record = new Date(gage.value.timeSeries[0].values[0].value[0].dateTime);
-        //console.log(g.value)
-        //console.log(g.identifier)
-        //console.log(g.record)
       }
-
     })
     console.log("updated gages array")
     this.gagesArray.next(this.gagessub);
   }
-
 
   //checks to see if site is inactive
   public getStatus(siteid:string) {
