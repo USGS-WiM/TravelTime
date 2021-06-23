@@ -142,7 +142,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
       //this.sm('Access to real time flow is coming soon.......');
       console.log(this.datetime.toString());
       console.log("getting real time flow");
-      //this.nwisservices.getRealTimeFlow(this.datetime, this.nwisservices.gagesArray.value);
+      this.nwisservices.getRealTimeFlow(this.datetime, this.nwisservices.gagesArray.value);
     } else {
       // Skip very first assignment to null done by Angular
       if (this.dateString !== null) {
