@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, ViewChild, AfterViewInit, Injector } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild, AfterViewInit, Injector, EventEmitter, Output } from '@angular/core';
 import { NgbTimeStruct, NgbDateStruct, NgbPopoverConfig, NgbPopover, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, NgControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -8,6 +8,7 @@ import { StudyService } from 'src/app/modules/core/services/study.service';
 import { MapService } from '../../services/map.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
+import { NWISService } from '../../services/nwisservices.service';
 
 @Component({
   selector: 'app-date-time-picker',
@@ -25,8 +26,35 @@ import * as messageType from '../../../../shared/messageType';
 
 export class DateTimePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit {
   private messager: ToastrService;
-  constructor(toastr: ToastrService, private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService, private mapservice: MapService) {
+  model: NgbDateStruct;
+  time: NgbTimeStruct = { hour: 13, minute: 30, second: 30 };
+  seconds = true;
+  private StudyService: StudyService;
+  private ngControl: NgControl;
+  private datetime: DateTimeModel = new DateTimeModel();
+  private firstTimeAssign = true;
+  private onTouched: () => void = noop;
+  private onChange: (_: any) => void = noop;
+  @Input()
+  dateString: string;
+  private showTimePickerToggle = false;
+  @ViewChild(NgbPopover, { static: false })
+  private popover: NgbPopover;
+  @Input()
+  disabled = false;
+  @Input()
+  inputDatetimeFormat = 'M/d/yyyy H:mm:ss';
+  @Input()
+  hourStep = 1;
+  @Input()
+  minuteStep = 15;
+  @Input()
+  secondStep = 30;
 
+
+
+  constructor(toastr: ToastrService, private config: NgbPopoverConfig, private inj: Injector, private studyservice: StudyService, private mapservice: MapService, private nwisservices: NWISService) {
+    this.nwisservices = nwisservices;
     this.messager = toastr;
     config.autoClose = 'outside';
     config.placement = 'left-top';
@@ -47,43 +75,6 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     this.ngControl = this.inj.get(NgControl);
   }
 
-  //#region "UI acessors and declaration"
-  @Input()
-  dateString: string;
-  @Input()
-  inputDatetimeFormat = 'M/d/yyyy H:mm:ss';
-  @Input()
-  hourStep = 1;
-  @Input()
-  minuteStep = 15;
-  @Input()
-  secondStep = 30;
-  @Input()
-  seconds = true;
-  @Input()
-  disabled = false;
-  @ViewChild(NgbDatepicker, { static: false })
-  private dp: NgbDatepicker;
-
-  @ViewChild(NgbPopover, { static: false })
-  private popover: NgbPopover;
-  //#endregion
-
-  //#region "Declarations"
-  private showTimePickerToggle = false;
-  private datetime: DateTimeModel = new DateTimeModel();
-  private firstTimeAssign = true;
-
-  private onTouched: () => void = noop;
-  private onChange: (_: any) => void = noop;
-
-  public nwisdate: string;
-
-  private ngControl: NgControl;
-  private StudyService: StudyService;
-
-  //#endregion
-
   //#region "Methods"
   ngAfterViewInit(): void {
     this.popover.hidden.subscribe($event => {
@@ -93,9 +84,11 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   writeValue(newModel: string) {
     if (newModel) {
+      console.log(newModel);
       this.datetime = Object.assign(this.datetime, DateTimeModel.fromLocalString(newModel));
       this.dateString = newModel;
-      this.setDateStringModel();
+      console.log("changed actual date time of calendar");
+      console.log(this.datetime);
     } else {
       this.datetime = new DateTimeModel();
     }
@@ -118,76 +111,40 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     this.disabled = isDisabled;
   }
 
-  onInputChange($event: any) {
-    const value = $event.target.value;
-    const dt = DateTimeModel.fromLocalString(value);
-
-    if (dt) {
-      this.datetime = dt;
-      this.setDateStringModel();
-    } else if (value.trim() === '') {
-      this.datetime = new DateTimeModel();
-      this.dateString = '';
-      this.onChange(this.dateString);
-    } else {
-      this.onChange(value);
-    }
+  inputBlur($event) {
+    this.onTouched();
   }
 
   onDateChange($event: any | NgbDateStruct) {
-    if ($event.year) {
-      $event = `${$event.year}-${$event.month}-${$event.day}`
-    }
-
-    const date = DateTimeModel.fromLocalString($event);
-
-    if (!date) {
-      this.dateString = this.dateString;
-      return;
-    }
-
-    if (!this.datetime) {
-      this.datetime = date;
-    }
-
-    this.datetime.year = date.year;
-    this.datetime.month = date.month;
-    this.datetime.day = date.day;
-
-
-    if (this.dp) { this.dp.navigateTo({ year: this.datetime.year, month: this.datetime.month }) };
-    if (this.datetime.day < 10) {
-       var day = '0' + this.datetime.day;
-    } else {
-       var day = String (this.datetime.day);
-    }
-    this.StudyService.selectedStudy.SpillDate =  (this.datetime.year + '-' + this.datetime.month + '-' + day);
-    this.setDateStringModel();
+    this.datetime.day = $event.day;
+    this.datetime.month = $event.month;
+    this.datetime.year = $event.year;
+    this.StudyService.setDate(this.datetime.toString());
+    this.dateString = this.datetime.toString();
   }
 
-  onTimeChange(event: NgbTimeStruct) {
-    this.datetime.hour = event.hour;
-    this.datetime.minute = event.minute;
-    this.datetime.second = event.second;
-
-    this.setDateStringModel();
+  onTimeChange ($event: any | NgbDateStruct) {
+    this.datetime.hour = $event.hour;
+    this.datetime.minute = $event.minute;
+    this.datetime.second = $event.second;
+    this.StudyService.setDate(this.datetime.toString());
+    this.dateString = this.datetime.toString();
   }
+
+  onInputChange($event) {
+    console.log(this.dateString);
+    this.writeValue($event);
+  }
+
 
   setDateStringModel() {
-    this.dateString = this.datetime.toString();
-    this.StudyService.setDate(this.dateString);
-
+    //this.StudyService.setDate(this.datetime.toString());
     if (!this.firstTimeAssign) {
-      this.onChange(this.dateString);
-      let starttime = this.dateString;
-      let endtime = this.datetime;
-      endtime.minute = (endtime.minute + 15);
-      if (endtime.minute > 60) {
-        endtime.hour = endtime.hour + 1;
-        endtime.minute = endtime.minute - 59;
-      }
-      this.sm('Access to real time flow is coming soon.......');
-      //this.mapservice.getRealTimeFlow(starttime, endtime.toString(), this.mapservice.gagesArray.value);
+      //this.onChange(this.datetime.toString());
+      //this.sm('Access to real time flow is coming soon.......');
+      console.log(this.datetime.toString());
+      console.log("getting real time flow");
+      //this.nwisservices.getRealTimeFlow(this.datetime, this.nwisservices.gagesArray.value);
     } else {
       // Skip very first assignment to null done by Angular
       if (this.dateString !== null) {
@@ -196,10 +153,5 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     }
   }
 
-  inputBlur($event) {
-    this.onTouched();
-  }
-
-  //#endregion
-
 }
+
