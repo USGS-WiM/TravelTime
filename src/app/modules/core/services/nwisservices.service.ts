@@ -13,10 +13,11 @@ export class NWISService {
   public get baseURL() {return "https://waterservices.usgs.gov/nwis";}
   public gages = [];
   public gagesArray: BehaviorSubject<Array<gages>> = new BehaviorSubject<Array<gages>>(undefined);
+  public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public gagessub = [];
+  private messanger: ToastrService;
   private MapService: MapService;
   private StreamGages = new Subject<any>();
-  public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private messanger: ToastrService;
 
   constructor(private http: HttpClient, mapservice: MapService, toastr: ToastrService) {
     this.MapService = mapservice;
@@ -44,17 +45,13 @@ export class NWISService {
     }
   }
 
-
-  getRealTimeFlow(starttime: any, site: any) {
-
-    //console.log("get real time called");
+  getDateSpecificFlow(starttime: any, site: any) {
     this.gages = []; //clear array
 
     var month = starttime.month;
     var day = starttime.day;
     var hour = starttime.hour;
     var min = starttime.minute;
-
 
     if (hour < 10) {hour = "0" + hour}
     if (month < 10) { month = "0" + month }
@@ -63,6 +60,7 @@ export class NWISService {
        
     var dischargetime = starttime.year + "-" + month + "-" + day + "T" + hour + ":" + min + "%2b0500&endDT=";
     var enddisttime;
+
     if (Number(hour) > 19) {
       hour = 4 + (hour - 24);
       if (hour < 10) { hour = "0" + hour }
@@ -74,7 +72,6 @@ export class NWISService {
     } else {
       enddisttime = starttime.year + "-" + month + "-" + day + "T" + (Number(hour) + 4) + ":" + min + "%2b0500&";
     }
-
     
     for (var i = 0; i < site.length; i++) {
       let gage = site[i];
@@ -88,10 +85,9 @@ export class NWISService {
         }
       });
     }
-
+    
     this.StreamGages.next(this.gages);
   }
-
 
   getMostRecentFlow(site: any) {
     this.gages = [];
@@ -102,7 +98,7 @@ export class NWISService {
       this.http.get<any>(baseurl).subscribe(result => {
         this.gages.push(result);
         this.MapService.showGages.next(true);
-        this.getGageInfoNwisv2(siteid).subscribe(Nwisresult => {
+        this.getGageInfoNwisv2(siteid).subscribe(Nwisresult => { //call to retrieve Drainage Area
           const csv = [];
           const lines = Nwisresult.split('#');
           lines.forEach(element => {
@@ -131,26 +127,27 @@ export class NWISService {
             data.push(element);
             }
 
-
           let mydata = JSON.stringify(data);
           let parsedJson = JSON.parse(mydata);
 
           //let contribda = parsedJson[30].contrib_drain_area_va;
           //let da = parsedJson[29].drain_area_va;
           parsedJson.forEach(item => {
-            let contribda = 0;
+            //let contribda = 0;
             let da = 0;
 
-            if (item.hasOwnProperty('contrib_drain_area_va') | item.hasOwnProperty('drain_area_va')) {
-              if (item.contrib_drain_area_va > 0) {
-                contribda = item.contrib_drain_area_va
-              } else if (item.drain_area_va > 0) {
+            if (item.hasOwnProperty('drain_area_va')) { //use the following to also check for contributing da...  item.hasOwnProperty('contrib_drain_area_va')
+              // if (item.contrib_drain_area_va > 0) {
+              //   contribda = item.contrib_drain_area_va
+              // } else 
+              if (item.drain_area_va > 0) {
                 da = item.drain_area_va
-              } else { }
+              }
 
-              if (contribda > 0) {
-                this.updateGageData(result, gage, contribda);
-              } else if (da > 0) {
+              // if (contribda > 0) {
+              //   this.updateGageData(result, gage, contribda);
+              // } else 
+              if (da > 0) {
                 this.updateGageData(result, gage, da);
               } else {
                 this.http.get<any>("https://test.streamstats.usgs.gov/gagestatsservices/stations/" + siteid).subscribe(SSresult => {
@@ -183,7 +180,6 @@ export class NWISService {
     this.gagesArray.next(this.gagessub);
     this.StreamGages.next(this.gages);
   }
-  public gagessub = [];
 
   public updateGageData(result, site, F) {
     let newgage = site.properties;

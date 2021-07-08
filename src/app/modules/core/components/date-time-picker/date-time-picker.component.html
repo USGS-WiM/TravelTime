@@ -1,7 +1,7 @@
 <div class="input-group mr-2">
   <input [ngClass]="ngControl?.valid ? 'ng-valid' : 'ng-invalid'" class="form-control" (blur)="inputBlur($event)" [ngModel]="dateString | date:inputDatetimeFormat" (ngModelChange) = "onInputChange($event)" [disabled]='disabled' />
   <div class="input-group-append">
-    <button class="btn btn-outline-secondary" [ngbPopover]="calendarContent" [disabled]='disabled' type="button">
+    <button class="btn btn-outline-secondary" [ngbPopover]="calendarContent" [autoClose]="inside" [disabled]='disabled' type="button" (click)="postDate()">
       <i class="fa fa-calendar"></i>
     </button>
   </div>

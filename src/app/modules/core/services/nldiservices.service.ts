@@ -52,6 +52,7 @@ export class NLDIService {
       return of(result as T)
     }
   }
+  
   private sm(msg: string, mType:string = messageType.INFO,title?:string,timeout?:number) {
     try {
       let options:Partial<IndividualConfig> = null;

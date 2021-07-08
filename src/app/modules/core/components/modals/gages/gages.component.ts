@@ -24,7 +24,6 @@ export class GagesComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.NWISService.gagesArray.subscribe(data => {
       data.forEach(r => {
         let gage = new gages(r);
@@ -49,9 +48,7 @@ export class GagesComponent implements OnInit {
         if (r.status !== "Active") {
           r.status = "Inactive";
         }
-
-      })
-      
+      })      
     })
     if(this.StudyService.isMetric()) {
       this.units.discharge = 'cms';

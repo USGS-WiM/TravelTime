@@ -40,6 +40,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   private showTimePickerToggle = false;
   @ViewChild(NgbPopover, { static: false })
   private popover: NgbPopover;
+  private isOpen = false;
   @Input()
   disabled = false;
   @Input()
@@ -71,6 +72,14 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   ngOnInit(): void {
     this.ngControl = this.inj.get(NgControl);
+    var date = new Date;
+    this.datetime.day = date.getDate();
+    this.datetime.month = date.getMonth() + 1;
+    this.datetime.year = date.getFullYear();
+    this.datetime.hour = date.getHours();
+    this.datetime.minute = date.getMinutes();
+    this.datetime.second = date.getSeconds();
+    this.dateString = this.datetime.toString();
   }
 
   //#region "Methods"
@@ -82,11 +91,8 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   writeValue(newModel: string) {
     if (newModel) {
-      console.log(newModel);
       this.datetime = Object.assign(this.datetime, DateTimeModel.fromLocalString(newModel));
       this.dateString = newModel;
-      console.log("changed actual date time of calendar");
-      console.log(this.datetime);
     } else {
       this.datetime = new DateTimeModel();
     }
@@ -114,42 +120,73 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
   }
 
   onDateChange($event: any | NgbDateStruct) {
-    this.datetime.day = $event.day;
-    this.datetime.month = $event.month;
-    this.datetime.year = $event.year;
-    this.StudyService.setDate(this.datetime.toString());
-    this.dateString = this.datetime.toString();
-  }
-
-  onTimeChange ($event: any | NgbDateStruct) {
-    this.datetime.hour = $event.hour;
-    this.datetime.minute = $event.minute;
-    this.datetime.second = $event.second;
-    this.StudyService.setDate(this.datetime.toString());
-    this.dateString = this.datetime.toString();
-  }
-
-  onInputChange($event) {
-    console.log(this.dateString);
-    this.writeValue($event);
-  }
-
-
-  setDateStringModel() {
-    //this.StudyService.setDate(this.datetime.toString());
-    if (!this.firstTimeAssign) {
-      //this.onChange(this.datetime.toString());
-      //this.sm('Access to real time flow is coming soon.......');
-      console.log(this.datetime.toString());
-      console.log("getting real time flow");
-      this.nwisservices.getRealTimeFlow(this.datetime, this.nwisservices.gagesArray.value);
+    if(this.check4FutureDate($event, 1)) {
+      this.datetime.day = $event.day;
+      this.datetime.month = $event.month;
+      this.datetime.year = $event.year;
+      this.StudyService.setDate(this.datetime.toString());
+      this.dateString = this.datetime.toString();
     } else {
-      // Skip very first assignment to null done by Angular
-      if (this.dateString !== null) {
-        this.firstTimeAssign = false;
-      }
+      alert("Selected date occurs in the future, current date/time will be used.")
     }
   }
 
+  onTimeChange ($event: any | NgbDateStruct) {
+    if(this.check4FutureDate($event, 2)) {
+      this.datetime.hour = $event.hour;
+      this.datetime.minute = $event.minute;
+      this.datetime.second = $event.second;
+      this.StudyService.setDate(this.datetime.toString());
+      this.dateString = this.datetime.toString();
+    } else {
+      alert("Selected time occurs in the future, current date/time will be used.")
+    }
+  }
+
+  onInputChange($event) {
+    if(this.check4FutureDate($event, 4)) {
+      this.writeValue($event);
+    } else {
+      alert("Selected date/time occurs in the future, current date/time will be used.")
+    }
+  }
+  
+  postDate() {
+    if(!this.isOpen) { //calendar popup is active, wait for new date/time
+      this.isOpen = true;
+    } else { //calendar popup is closing, calls to nwis with new date/time required on close
+      this.isOpen = false;
+      this.nwisservices.getDateSpecificFlow(this.datetime, this.nwisservices.gagesArray.value);
+    }
+  }
+
+  check4FutureDate(DM, type) { //1=date, 2=time, 3=all, 4=string input (example: "7/14/2021 16:14:38")
+    var currentDT = new Date;
+    var year = currentDT.getFullYear;
+    var month = currentDT.getMonth;
+    var date = currentDT.getDate;    
+    var hour = currentDT.getHours;
+    var minutes = currentDT.getMinutes;
+
+    if(type == 1){
+      var selectedDate = new Date(DM.year, DM.month - 1, DM.day, 0, 0, 0, 0)
+    } else if(type == 2) {
+      var selectedDate = new Date(this.datetime.year, this.datetime.month - 1, this.datetime.day, 0, 0, 0, 0);
+    } else if(type == 3) {
+      var selectedDate = new Date(DM.year, DM.month - 1, DM.day, DM.hour, DM.minute, DM.seconds, 0);
+    } else if(type == 4) {
+      var splitDate = DM.split(" ");
+      var dt = splitDate[0].split("/");
+      var tm = splitDate[1].split(":");      
+      var selectedDate = new Date(dt[2], dt[0] - 1, dt[1], tm[3], tm[4], tm[5], 0);
+    }
+
+    if(selectedDate > currentDT) {
+      return false;
+    } else {
+      return true;
+    }
+    
+  }
 }
 

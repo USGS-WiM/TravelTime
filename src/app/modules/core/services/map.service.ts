@@ -103,11 +103,9 @@ export class MapService {
       this.abbrevOptions = conf.Abbreviations;
       this.addDriftGroup();
     });
-
   }
 
   public AddMapLayer(mlayer: MapLayer) {
-
     var ml = this._layersControl.overlays.find((l: any) => (l.name === mlayer.name));
 
     if (ml != null) ml.layer = mlayer.layer;
@@ -309,8 +307,6 @@ export class MapService {
 
         this.layerGroup.next(layerGroup);
         this.reportlayerGroup.next(reportlayerGroup);
-
-
       }
     })
 
@@ -320,6 +316,7 @@ export class MapService {
       this.setBounds(layerGroup.getBounds());
     });
   }
+  
   public addDriftGroup() {
     this.http.get('assets/data/mydatas.geojson').subscribe((data: any) => {
       var markers = markerClusterGroup();
