@@ -364,6 +364,7 @@ export class SpillPlanningComponent implements OnInit {
 
     //Set default footer height to half, show buttons to switch
     $('#mapWrapper').attr('class', 'half-map');
+    $('body').attr('class', 'half-toast-map');
     $('#mapHeightToggle').attr('class', 'visible');
 
     this.StudyService.setProcedure(3); // open footer panel;
