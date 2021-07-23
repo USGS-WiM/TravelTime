@@ -88,7 +88,9 @@ export class SpillResponseComponent implements OnInit {
     }, { updateOn: 'change' });
 
     this.StudyService.dateSub.subscribe(result => {
-      this.dateModel = result;
+      if(result) {
+        this.dateModel = result;
+      }      
     })
 
     this.NWISService.gagesArray.subscribe(data => {

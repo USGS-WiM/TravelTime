@@ -93,6 +93,7 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
     if (newModel) {
       this.datetime = Object.assign(this.datetime, DateTimeModel.fromLocalString(newModel));
       this.dateString = newModel;
+      this.setDateStringModel();
     } else {
       this.datetime = new DateTimeModel();
     }
@@ -113,6 +114,28 @@ export class DateTimePickerComponent implements ControlValueAccessor, OnInit, Af
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  setDateStringModel() {
+    this.dateString = this.datetime.toString();
+    this.StudyService.setDate(this.dateString);
+
+    if (!this.firstTimeAssign) {
+      this.onChange(this.dateString);
+      let starttime = this.dateString;
+      let endtime = this.datetime;
+      endtime.minute = (endtime.minute + 15);
+      if (endtime.minute > 60) {
+        endtime.hour = endtime.hour + 1;
+        endtime.minute = endtime.minute - 59;
+      }
+      //this.mapservice.getRealTimeFlow(starttime, endtime.toString(), this.mapservice.gagesArray.value);
+    } else {
+      // Skip very first assignment to null done by Angular
+      if (this.dateString !== null) {
+        this.firstTimeAssign = false;
+      }
+    }
   }
 
   inputBlur($event) {
