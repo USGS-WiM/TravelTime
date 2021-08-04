@@ -55,7 +55,7 @@
 					</label>
 					<div class="row-input row-input-horizontal button-right">
 						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="form-control input-styled">
-						<button type="button" class="btn btn-outline-secondary" id="response" [hidden]="!ShowGages" (click)="openGagesModal()" style="margin-top: 5px;">
+						<button type="button" class="simple-button" id="response" [hidden]="!ShowGages" (click)="openGagesModal()">
 							<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View Gages
 						</button>
 					</div>
@@ -134,11 +134,7 @@
 											{{getLabel(k.key)}}
 										</label>
 										<div class="row-input">
-<<<<<<< HEAD:src/app/modules/core/components/jobsons/jobsons.component.html
 											<input [(ngModel)]="k.value" placeholder="value" name="{{k.value}}" [ngModelOptions]="{standalone: true}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
-=======
-											<input [(ngModel)]="k.value" placeholder="value" name="k.value" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
->>>>>>> e154002f156f90f1119bc2cd1fe9901c0af92c8d:src/app/modules/core/components/modals/spill-response/spill-response.component.html
 										</div>
 									</div>
 								</div>
