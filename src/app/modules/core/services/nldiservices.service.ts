@@ -8,7 +8,7 @@ import { reach } from '../models/reach';
 
 @Injectable()
 export class NLDIService {
-  public get baseURL() { return "https://labs.dev-wma.chs.usgs.gov/pygeoapi/processes/";}
+  public get baseURL() { return "https://labs.waterdata.usgs.gov/api/nldi/pygeoapi/processes/";}
   private messager:ToastrService;
 
   constructor(private http: HttpClient,toastr: ToastrService) {
@@ -16,7 +16,7 @@ export class NLDIService {
    }
 
   public GetRainDropPath(lat, lon, dir): Observable <any>{
-    let url = this.baseURL+"nldi-flowtrace/jobs?response=document";
+    let url = this.baseURL+"nldi-flowtrace/jobs";
     let post = {
       "inputs": [
         {

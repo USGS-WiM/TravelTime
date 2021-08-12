@@ -82,7 +82,7 @@ export class NWISService {
         if ((result.value.timeSeries.length) > 0) {
           this.updateDischarge(result);
           this.gages.push(result);
-        }
+        } 
       });
     }
     
@@ -206,7 +206,7 @@ export class NWISService {
       if (g.identifier == code) {
         g.value = gage.value.timeSeries[0].values[0].value[0].value;
         g.record = new Date(gage.value.timeSeries[0].values[0].value[0].dateTime);
-      }
+      } 
     })
     console.log("updated gages array")
     this.gagesArray.next(this.gagessub);
