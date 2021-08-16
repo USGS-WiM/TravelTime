@@ -8,6 +8,7 @@ import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
+import { round } from '@turf/turf';
 import { GagesComponent } from '../gages/gages.component';
 import { NWISService } from '../../../services/nwisservices.service'
 
@@ -58,6 +59,7 @@ export class SpillResponseComponent implements OnInit {
   private selectedIndex = null;
   private currentStep = 0;
   public FirstReachDischarge;
+  public recratio: number;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
@@ -66,11 +68,11 @@ export class SpillResponseComponent implements OnInit {
     this.TravelTimeService = traveltimeservice;
     this.MapService = mapservice;
     this.NWISService = nwisservice;
-    this.NWISService.gages$.subscribe(data => {
-      this.gages = data;
-    })
     this.StudyService = studyservice;
     this.messager = tstrservice;
+    if(this.StudyService.selectedStudy.SelectedDriftData.length > 0){
+      this._dtData = true;
+    }
   }
 
   ngOnInit(): any {   // on init, get the services for first reach, and add them as parameters to accordion
@@ -84,6 +86,12 @@ export class SpillResponseComponent implements OnInit {
     this.formGroup = new FormGroup({
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
+
+    this.StudyService.dateSub.subscribe(result => {
+      if(result) {
+        this.dateModel = result;
+      }      
+    })
 
     this.NWISService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
@@ -107,6 +115,15 @@ export class SpillResponseComponent implements OnInit {
   //#endregion
 
   //#region "Setters"
+
+  public get Recratio(): number {
+    return this.recratio;
+  }
+  public set Recratio(v: number) {
+    this.recratio = v;
+    //this.updateRecRatio(v);
+  }
+
   public get SpillMass(): number {
     return this._spillMass;
   }
@@ -128,7 +145,7 @@ export class SpillResponseComponent implements OnInit {
   public get RecoveryRatio(): number {
     return this._recoveryratio;
   }
-  private _dtData: boolean = true;
+  private _dtData: boolean = false;
   public get HasDTData(): boolean {
     return this._dtData;
   }
@@ -153,6 +170,13 @@ export class SpillResponseComponent implements OnInit {
 
   public updateDischarge(): void {
     this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(2);
+  }
+
+  public updateRecRatio(v:number) {
+    this.reachList.forEach((item) => {
+      item.parameters[5].value = v;
+      console.log(item.parameters[5]);
+    })
   }
 
    //#region "Methods"
@@ -342,20 +366,21 @@ export class SpillResponseComponent implements OnInit {
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
+        if (i > 0) { newreach.description = "reach" };
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope;
 
         let selectedUnits;
         if (this.StudyService.isMetric()) {
           selectedUnits = this.units.metric;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847); // cfs to cms
+          newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847), 3); // cfs to cms
           newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0); // square kilometers to square meters
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000); // kilometers to meters
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toFixed(3); // kilometers to meters
         } else {
           selectedUnits = this.units.imperial;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge); // cfs
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102); // square kilometers to square miles
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84); // kilometers to feet
+          newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge), 3); // cfs
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102).toFixed(0); // square kilometers to square miles
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toFixed(3); // kilometers to feet
         }
         newreach.parameters[0].unit.unit = selectedUnits['discharge'];   // mean annual discharge
         newreach.parameters[1].unit.unit = selectedUnits['discharge'];   // real-time discharge

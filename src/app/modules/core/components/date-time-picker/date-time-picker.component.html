@@ -1,7 +1,7 @@
-<div class="input-group dt-picker">
-  <input [ngClass]="ngControl?.valid ? 'ng-valid' : 'ng-invalid'" class="input-styled" (blur)="inputBlur($event)" [ngModel]="dateString | date:inputDatetimeFormat" (change)="onInputChange($event)" [disabled]='disabled' />
+<div class="input-group mr-2">
+  <input [ngClass]="ngControl?.valid ? 'ng-valid' : 'ng-invalid'" class="form-control" (blur)="inputBlur($event)" [ngModel]="dateString | date:inputDatetimeFormat" (ngModelChange) = "onInputChange($event)" [disabled]='disabled' />
   <div class="input-group-append">
-    <button class="btn btn-outline-secondary" [ngbPopover]="calendarContent" [disabled]='disabled' type="button">
+    <button class="btn btn-outline-secondary" [ngbPopover]="calendarContent" [autoClose]="inside" [disabled]='disabled' type="button" (click)="postDate()">
       <i class="fa fa-calendar"></i>
     </button>
   </div>
@@ -10,8 +10,8 @@
 <ng-template #calendarContent>
   <div>
     <div *ngIf="!showTimePickerToggle">
-      <ngb-datepicker #dp name="datepicker" [ngModel]="datetime" (ngModelChange)="onDateChange($event)" style="background: white;"> </ngb-datepicker>
-      <button class="btn btn-block btn-outline-secondary" [disabled]="!datetime?.day" type="button" (click)="toggleDateTimeState($event)">
+      <ngb-datepicker #dp name="datepicker" [(ngModel)]="model" (ngModelChange)="onDateChange($event)" style="background: white;"> </ngb-datepicker>
+      <button class="btn btn-block btn-outline-secondary" type="button" (click)="toggleDateTimeState($event)">
         <i class="far fa-clock"> </i>
         Time
       </button>
@@ -22,8 +22,7 @@
         Calendar
       </button>
       <div class="mt-auto">
-        <ngb-timepicker #tp name="timepicker" [ngModel]="datetime" (ngModelChange)="onTimeChange($event)" [seconds]="seconds"
-                        [hourStep]="hourStep" [minuteStep]="minuteStep" [secondStep]="secondStep"></ngb-timepicker>
+        <ngb-timepicker [(ngModel)]="time" [seconds]="seconds" (ngModelChange)="onTimeChange($event)"></ngb-timepicker>
       </div>
     </div>
   </div>

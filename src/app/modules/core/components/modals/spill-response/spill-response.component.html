@@ -55,7 +55,7 @@
 					</label>
 					<div class="row-input row-input-horizontal button-right">
 						<input [(ngModel)]="Discharge" (ngModelChange)="validateInputs();" type=number required placeholder="Enter discharge" name="discharge" class="form-control input-styled">
-						<button type="button" class="btn btn-outline-secondary" id="response" [hidden]="!ShowGages" (click)="openGagesModal()" style="margin-top: 5px;">
+						<button type="button" class="simple-button" id="response" [hidden]="!ShowGages" (click)="openGagesModal()">
 							<i [ngClass]="!ShowGages ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>&nbsp;View Gages
 						</button>
 					</div>
@@ -134,7 +134,7 @@
 											{{getLabel(k.key)}}
 										</label>
 										<div class="row-input">
-											<input [(ngModel)]="k.value" placeholder="value" name="k.value" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
+											<input [(ngModel)]="k.value" placeholder="value" name="{{k.value}}" [ngModelOptions]="{standalone: true}" type="text" ngControl="value" ngMaxlength="50" autocomplete="off">
 										</div>
 									</div>
 								</div>
@@ -185,11 +185,7 @@
 					<i class="far fa-trash-alt"></i>
 					<span>Clear</span>
 				</button>
-				<!-- Dye Tracer Data -->
-				<!-- <div *ngIf="HasDTData" style="float:right; padding: 0; margin-right:0px;">
-					<span>Use Dye Tracer Velocity Data?&nbsp;&nbsp;<input [(ngModel)]="UseDTData" type="checkbox" name="dtdata" class="form-control tight"></span>
-				</div> -->
-				<!-- end Dye Tracer Data -->
+
 				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setParameters(); getResults();">
 					<i [ngClass]="gettingResults ? 'far fa-sync fa-spin' : 'fas fa-long-arrow-right'"></i>
 					<span>{{ gettingResults ? 'Calculating' : 'Get Results' }}</span>

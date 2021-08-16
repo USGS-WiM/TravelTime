@@ -278,13 +278,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       const marker = L.marker(latlng, {
         icon: blackPin
       });
+
       // add marker to map
       this.MapService.AddMapLayer({ name: 'POI', layer: marker, visible: true });
 
       this.NLDIService.GetRainDropPath(latlng.lat, latlng.lng, direction === 'downstream' ? 'down' : 'up')
         .toPromise().then(data => {
           if (data.outputs) {
-            this.RDP = data.outputs[0].value.features;
+            this.RDP = data.outputs.features;
             this.StudyService.selectedStudy.RDP = this.RDP;
             intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
             if(direction === 'downstream') { //spill response workflow
@@ -328,6 +329,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                     this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(response);
                     this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
                     this.StudyService.SetWorkFlow('hasReaches', true);
+                    this.Check4VelocityData();
                     this.StudyService.selectedStudy.LocationOfInterest = latlng;
                     this.StudyService.setProcedure(2);
                     //one with the biggest drainage area is the first one to trace up
@@ -431,7 +433,21 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     }
   }
 
-  private measure(latLon1, latLon2){  // generally used geo measurement function
+  private Check4VelocityData(): void {
+    var studyList = [];
+    this.StudyService.selectedStudy.Reaches.forEach(reach => {
+      this.StudyService.DriftData.forEach(study => {
+        if(reach.properties.nhdplus_comid === study.properties.comid) {
+          if(study.properties.PeakVelocity > 0 || study.properties.LeadingVelocity > 0 || study.properties.TrailingVelocity > 0) {
+            studyList.push(study);
+          }
+        }
+      })
+    })
+    this.StudyService.selectedStudy.SelectedDriftData = studyList;
+  }
+
+  private measure(latLon1, latLon2) {  // generally used geo measurement function
     var lat1 = latLon1[1];
     var lon1 = latLon1[0];
     var lat2 = latLon2[1];

@@ -1,14 +1,18 @@
 import { Injectable, ElementRef, EventEmitter, Injector } from '@angular/core';
 import * as L from 'leaflet';
+import { markerClusterGroup } from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
+import { gages } from '../models/gages';
+import * as xml2js from 'xml2js';
+import 'leaflet.markercluster';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { StudyService } from '../services/study.service';
 import * as messageType from '../../../shared/messageType';
-import * as turf from '@turf/turf';
 import { Study } from '../models/study';
+import { Drift } from '../models/drift';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -97,12 +101,11 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
+      this.addDriftGroup();
     });
-
   }
 
   public AddMapLayer(mlayer: MapLayer) {
-
     var ml = this._layersControl.overlays.find((l: any) => (l.name === mlayer.name));
 
     if (ml != null) ml.layer = mlayer.layer;
@@ -304,8 +307,6 @@ export class MapService {
 
         this.layerGroup.next(layerGroup);
         this.reportlayerGroup.next(reportlayerGroup);
-
-
       }
     })
 
@@ -314,6 +315,38 @@ export class MapService {
     setTimeout(() => {
       this.setBounds(layerGroup.getBounds());
     });
+  }
+  
+  public addDriftGroup() {
+    this.http.get('assets/data/mydatas.geojson').subscribe((data: any) => {
+      var markers = markerClusterGroup();
+
+      var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      };
+
+      var geoJsonLayer = L.geoJSON(data, {
+
+        pointToLayer: function (feature, latlng) {
+          switch (feature.properties.Condition) {
+            case 'Injection': return L.circleMarker(latlng, geojsonMarkerOptions);
+            case 'Reach': return L.circleMarker(latlng);
+          }
+        },
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.RiverName + ' ' + feature.properties.Condition + ' - '+ feature.properties.Study);
+        }
+      });
+      markers.addLayer(geoJsonLayer);
+      this.AddMapLayer({ name: 'DRIFT endpoints', layer: markers, visible: false })
+      //var geoObject = JSON.parse(data);
+      this.StudyService.DriftData = data.features;//geoObject;
+    })
   }
 
   private loadLayer(ml): L.Layer {
@@ -372,14 +405,6 @@ export class MapService {
     return this.latlng;
   }
 
-  private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
-    try {
-      let options: Partial<IndividualConfig> = null;
-      if (timeout) { options = { timeOut: timeout }; }
-      this.messanger.show(msg, title, options, mType);
-    } catch (e) {
-    }
-  }
 
   public isInsideWaterBody: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
