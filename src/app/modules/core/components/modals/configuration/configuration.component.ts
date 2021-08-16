@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { StudyService } from '../../services/study.service';
-import { UnitsArray } from '../../services/study.service';
-import '../../../../shared/extensions/number.toUSGSValue';
+import { StudyService } from '../../../services/study.service';
+import { UnitsArray } from '../../../services/study.service';
+import '../../../../../shared/extensions/number.toUSGSValue';
 
 @Component({
-  selector: 'app-apptools',
-  templateUrl: './apptools.component.html',
-  styleUrls: ['./apptools.component.scss']
+  selector: 'app-configuration',
+  templateUrl: './configuration.component.html',
+  styleUrls: ['./configuration.component.scss']
 })
 
-export class ApptoolsComponent implements OnInit {
+export class ConfigurationComponent implements OnInit {
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, public studyservice: StudyService) {
     // customize default values of modals used by this component tree

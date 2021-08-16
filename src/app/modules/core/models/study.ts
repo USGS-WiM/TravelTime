@@ -8,12 +8,15 @@ export class Study {
     public Discharge: number;
     public SpillDate: string;
     public RecoveryRatio: number;
+    public spillPlanningResponse: any;
+    public RDP: any; //rain drop path response    
+    public Results: Array<any>;
+    public SelectedDriftData: Array<any>;
+
     private _methodType : string;
     public get MethodType() : string {
       return this._methodType;
     }
-    
-    public Results: Array<any>;
 
     public constructor(methodtype: string) { 
       this._methodType = methodtype;

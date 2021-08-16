@@ -1,14 +1,27 @@
-<div class="footer-wrapper" *ngIf="showResult$ === true">
-	<div class="flex flex-center">
-		<h3>{{spillMass}} kg Spill Occuring {{spillDate}}</h3>
+<div class="footer-wrapper" *ngIf="showResult$ === true && SelectedMethodType === 'response'">
+
+	<div class="data-footer-header">
+			<!-- Label -->
+		<div class="dfh-left">
+			<span *ngIf="showMax">Maximum Probable</span>
+			<span *ngIf="showMost">Most Probable</span>
+		</div>
+		<!-- Header -->
+		<div class="dfh-center">
+			&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate  | date:'medium'}}
+		</div>
+		<!-- Max/Most Probable toggle -->
+		<div class="dfh-right">
+
+		</div>
 	</div>
+
 
 	<div class="footer-data">
 		<div class="footer-data-left" id="footerData">
 
 			<!-- Most Probable Table -->
 			<div class="data-display" *ngIf="showMost">
-				<h2>Most Probable</h2>
 
 				<div class="table-display">
 					<table class="data-table">
@@ -20,11 +33,11 @@
 								<th></th>
 								<th></th>
 								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
-								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time after spill</th>
+								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);" class="single-line">Travel time after spill</th>
 								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
 								<th></th>
 							</tr>
-							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+							<tr class="th-border-bottom" >
 								<th rowspan="2" vertical-align="center">Reach ID</th>
 								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
 								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
@@ -35,7 +48,7 @@
 								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
 								<th>Peak concentration<br />(mg/L)</th>
 							</tr>
-							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
+							<tr class="th-border-bottom" style=" vertical-align: center; text-align: center;">
 								<th></th>
 								<th>Q</th>
 								<th>D<sub>a</sub></th>
@@ -49,14 +62,14 @@
 						</thead>
 
 						<tbody>
-							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow">
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
 								<td>{{reach.name}}</td>
 								<ng-container *ngFor="let pars of reach.parameters">
 									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
 										<td style="text-align: center;">{{pars.value}}</td>
 									</ng-container>
 									<ng-container *ngIf="pars.name === 'Drainage area'">
-										<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>
+										<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000).toUSGSvalue() }}</td>
 									</ng-container>
 									<ng-container *ngIf="pars.name === 'Cumulative Distance'">
 										<td style="text-align: center;">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>
@@ -79,7 +92,6 @@
 
 			<!-- Max Probable table -->
 			<div class="data-display" *ngIf="showMax">
-				<h2>Maximum Probable</h2>
 				<div class="table-display">
 					<table class="data-table">
 						<thead>
@@ -90,11 +102,11 @@
 								<th></th>
 								<th></th>
 								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
-								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time after spill</th>
+								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);" class="single-line">Travel time after spill</th>
 								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
 								<th></th>
 							</tr>
-							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px;">
+							<tr class="th-border-bottom" >
 								<th rowspan="2" vertical-align="center">Reach ID</th>
 								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
 								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
@@ -105,7 +117,7 @@
 								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
 								<th>Peak concentration<br />(mg/L)</th>
 							</tr>
-							<tr style="border-bottom: solid black 1px; padding: 4px 4px 4px 4px; vertical-align: center; text-align: center;">
+							<tr class="th-border-bottom" style=" vertical-align: center; text-align: center;">
 								<th></th>
 								<th>Q</th>
 								<th>D<sub>a</sub></th>
@@ -119,7 +131,7 @@
 						</thead>
 
 						<tbody>
-							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow">
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i)" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
 								<td>{{reach.name}}</td>
 								<ng-container *ngFor="let pars of reach.parameters">
 									<ng-container *ngIf="pars.name === 'Discharge at time of measurement'">
@@ -150,6 +162,151 @@
 		<!-- Right side - charts -->
 		<div class="footer-data-right">
 
+			<!-- Charts -->
+			<div class="chart-wrapper">
+				<tot-appcharts></tot-appcharts>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Planning -->
+<div class="footer-wrapper" *ngIf="showResult$ === true && SelectedMethodType === 'planning'">
+
+	<div class="data-footer-header">
+		<!-- Label -->
+	<div class="dfh-left">
+		<span *ngIf="showMax">Maximum Probable</span>
+		<span *ngIf="showMost">Most Probable</span>
+	</div>
+	<!-- Header -->
+	<div class="dfh-center">
+
+	</div>
+	<!-- Right side-->
+	<div class="dfh-right">
+
+	</div>
+</div>
+
+	<div class="footer-data">
+		<div class="footer-data-left" id="footerData">
+
+			<!-- Most Probable Table -->
+			<div class="data-display" *ngIf="showMost">
+
+				<div class="table-display">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time to POI</th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th></th>
+							</tr>
+							<tr class="th-border-bottom" >
+								<th rowspan="2" vertical-align="center">Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Leading Edge<br />(hours)</th>
+								<th>Peak concentration<br />(hours)</th>
+								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+							</tr>
+							<tr class="th-border-bottom" style=" vertical-align: center; text-align: center;">
+								<th></th>
+								<th>Q</th>
+								<th>D<sub>a</sub></th>
+								<th>L</th>
+								<th>V</th>
+								<th>T<sub>l</sub></th>
+								<th>T<sub>p</sub></th>
+								<th>T<sub>d10</sub></th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
+								<!-- <ng-container *ngFor="let prop of reach.properties"> -->
+									<td>{{reach.properties.nhdplus_comid}}</td>
+									<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
+									<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+									<td style="text-align: center;">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+									<td style="text-align: center;">{{reach.properties.VelocityMost}}</td>
+									<td>{{(reach.properties.accutl).toUSGSvalue()}}</td>
+									<td>{{(reach.properties.accutot).toUSGSvalue()}}</td>	
+									<td>{{(reach.properties.accutd10).toUSGSvalue()}}</td>				
+								<!-- </ng-container> -->
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Max Probable table -->
+			<div class="data-display" *ngIf="showMax">
+				<div class="table-display">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);">Travel time to POI</th>
+								<th style="border-bottom: 1px solid rgba(0,0,0,0.5);"></th>
+								<th></th>
+							</tr>
+							<tr class="th-border-bottom" >
+								<th rowspan="2" vertical-align="center">Reach ID</th>
+								<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>
+								<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>
+								<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>
+								<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>
+								<th>Leading Edge<br />(hours)</th>
+								<th>Peak concentration<br />(hours)</th>
+								<th>Trailing edge at 10% peak concentration<br />(hours)</th>
+							</tr>
+							<tr class="th-border-bottom" style=" vertical-align: center; text-align: center;">
+								<th></th>
+								<th>Q</th>
+								<th>D<sub>a</sub></th>
+								<th>L</th>
+								<th>V</th>
+								<th>T<sub>l</sub></th>
+								<th>T<sub>p</sub></th>
+								<th>T<sub>d10</sub></th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr *ngFor="let reach of output$; let i = index" (click)="setClickedRow(i); highlightFeature(i);" [class.active]="i == selectedRow" [class.highlighted]="reach[i] === selectedReach">
+								<td>{{reach.properties.nhdplus_comid}}</td>
+								<td style="text-align: center;">{{reach.properties.RTDischarge}}</td>
+								<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>
+								<td style="text-align: center;">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>
+								<td style="text-align: center;">{{reach.properties.VelocityMax}}</td>
+								<td>{{(reach.properties.accutlmax).toUSGSvalue()}}</td>
+								<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>
+								<td>{{(reach.properties.accutd10max).toUSGSvalue()}}</td>					
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Right side - charts -->
+		<div class="footer-data-right">
 			<!-- Charts -->
 			<div class="chart-wrapper">
 				<tot-appcharts></tot-appcharts>

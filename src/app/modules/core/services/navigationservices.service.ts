@@ -29,6 +29,8 @@ export class NavigationService {
   
   public getRoute(identifier:string, configuredResource, includeproperties:boolean = true): Observable <any>{
     let url = this.baseURL + "/navigation/" + identifier + "/route?properties=" + includeproperties;
+    console.log(configuredResource);
+    console.log(url);
     return this.http.post<any>(url, configuredResource)
         .pipe(catchError(this.handleError('getRoute',[])));
   }

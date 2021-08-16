@@ -6,9 +6,9 @@ import {MapService} from '../../services/map.service';
 import { MatDialog, MatButtonToggleDefaultOptions } from '@angular/material';
 import { Study } from '../../models/study';
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JobsonsModalComponent } from '../jobsons/jobsons.component';
-import { ApptoolsComponent } from '../apptools/apptools.component';
-import { ReportModalComponent } from '../report/report.component';
+import { SpillResponseComponent } from '../modals/spill-response/spill-response.component';
+import { ConfigurationComponent } from '../modals/configuration/configuration.component';
+import { ReportComponent } from '../modals/report/report.component';
 import * as L from 'leaflet';
 
 declare let search_api: any;
@@ -60,24 +60,15 @@ export class SidebarComponent implements AfterViewChecked {
     return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : '');
   }
 
-  /*public ZoomLevel() {
-    this.MapService.CurrentZoomLevel.subscribe(z => {
-      if (z > 9 && this.toggleButton === true) {
-        this.StudyService.SetWorkFlow('reachedZoom', true);
-      }
-      return z;
-    })
-    //return this.MapService.CurrentZoomLevel.value;
-  }*/
-
   public ishiddenBasemaps = true;
   public ishiddenOverlay = false;
   public baselayers = [];
   public overlays = [];
   public model;
+  public zoom = 4;
+  public isInsideWaterBody: boolean = false;
   private messager: ToastrService;
   private toggleButton = true;
-  public zoom = 4;
 
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
@@ -152,14 +143,6 @@ export class SidebarComponent implements AfterViewChecked {
       }
       this.SelectedProcedureType = data;
     });
-
-
-
-      this.StudyService.ReportOptions = [
-      { name: 'Map of study area', checked: false },
-      { name: 'Table of values', checked: false },
-      { name: 'Graph of timeline', checked: false }
-    ];
   }
 
   public SetBaselayer(LayerName: string) {
@@ -182,6 +165,19 @@ export class SidebarComponent implements AfterViewChecked {
     this.StudyService.selectedStudy = new Study(MethodType);
     this.MapService.isClickable = true;
     this.MapService.setCursor('crosshair');
+
+    if(MethodType === 'response') {
+      this.StudyService.ReportOptions = [
+        { name: 'Map of study area', checked: false },
+        { name: 'Table of values', checked: false },
+        { name: 'Graph of timeline', checked: false }
+      ];
+    } else { // planning method report options
+      this.StudyService.ReportOptions = [
+        { name: 'Map of study area', checked: false },
+        { name: 'Table of values', checked: false }
+      ];
+    }
   }
 
   public ToggleScenario(i) {
@@ -214,22 +210,18 @@ export class SidebarComponent implements AfterViewChecked {
     }
   }
 
-  public isInsideWaterBody: boolean = false;
-
-
-
   public open(scenario) {
     switch (scenario) {
       case 'Jobsons':
         if (this.isInsideWaterBody) {
           this.sm("Selected point of interest is inside of a water body.... please select different location")
         } else {
-          const jobsonsModalRef = this.modalService.open(JobsonsModalComponent);
+          const jobsonsModalRef = this.modalService.open(SpillResponseComponent);
           jobsonsModalRef.componentInstance.title = 'Jobsons';
         }
         return;
       case 'Report':
-        const reportModalRef = this.modalService.open(ReportModalComponent);
+        const reportModalRef = this.modalService.open(ReportComponent);
         reportModalRef.componentInstance.title = 'Report';
         return;
       default: return;
@@ -245,7 +237,7 @@ export class SidebarComponent implements AfterViewChecked {
   }
 
   public open_config() {
-    const modalConfig = this.modalService.open(ApptoolsComponent);
+    const modalConfig = this.modalService.open(ConfigurationComponent);
     modalConfig.componentInstance.title = 'Configure';
   }
   //#endregion

@@ -1,15 +1,16 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NgbActiveModal, NgbModalConfig, NgbAccordion, NgbPanelChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TravelTimeService } from '../../services/traveltimeservices.service';
-import { MapService } from '../../services/map.service';
+import { TravelTimeService } from '../../../services/traveltimeservices.service';
+import { MapService } from '../../../services/map.service';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { reach } from '../../models/reach';
-import { StudyService } from '../../services/study.service';
+import { reach } from '../../../models/reach';
+import { StudyService } from '../../../services/study.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
-import * as messageType from '../../../../shared/messageType';
+import * as messageType from '../../../../../shared/messageType';
 import { BehaviorSubject } from 'rxjs';
-import { GagesmodalComponent } from '../gagesmodal/gagesmodal.component';
-import { NWISService } from '../../services/nwisservices.service'
+import { round } from '@turf/turf';
+import { GagesComponent } from '../gages/gages.component';
+import { NWISService } from '../../../services/nwisservices.service'
 
 export const DateTimeValidator = (fc: FormControl) => {
   const date = new Date(fc.value);
@@ -22,11 +23,11 @@ export const DateTimeValidator = (fc: FormControl) => {
 };
 
 @Component({
-  selector: 'app-jobsons',
-  templateUrl: './jobsons.component.html',
-  styleUrls: ['./jobsons.component.scss']
+  selector: 'app-spill-response',
+  templateUrl: './spill-response.component.html',
+  styleUrls: ['./spill-response.component.scss']
 })
-export class JobsonsModalComponent implements OnInit {
+export class SpillResponseComponent implements OnInit {
 
   public gages;
   public ShowGages: boolean = false;
@@ -58,6 +59,7 @@ export class JobsonsModalComponent implements OnInit {
   private selectedIndex = null;
   private currentStep = 0;
   public FirstReachDischarge;
+  public recratio: number;
 
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
@@ -66,11 +68,11 @@ export class JobsonsModalComponent implements OnInit {
     this.TravelTimeService = traveltimeservice;
     this.MapService = mapservice;
     this.NWISService = nwisservice;
-    this.NWISService.gages$.subscribe(data => {
-      this.gages = data;
-    })
     this.StudyService = studyservice;
     this.messager = tstrservice;
+    if(this.StudyService.selectedStudy.SelectedDriftData.length > 0){
+      this._dtData = true;
+    }
   }
 
   ngOnInit(): any {   // on init, get the services for first reach, and add them as parameters to accordion
@@ -85,6 +87,12 @@ export class JobsonsModalComponent implements OnInit {
       activeEndDate: new FormControl(new Date(), { validators: [Validators.required, DateTimeValidator] })
     }, { updateOn: 'change' });
 
+    this.StudyService.dateSub.subscribe(result => {
+      if(result) {
+        this.dateModel = result;
+      }      
+    })
+
     this.NWISService.gagesArray.subscribe(data => {
       if (typeof (data) != 'undefined') {
         this.MapService.showGages.subscribe(data => {
@@ -96,7 +104,7 @@ export class JobsonsModalComponent implements OnInit {
 
   //#region "Gages"
   public openGagesModal() {
-    const modalConfig = this.modalService.open(GagesmodalComponent);
+    const modalConfig = this.modalService.open(GagesComponent);
     modalConfig.componentInstance.title = 'Gages';
   }
   //#endregion
@@ -107,6 +115,15 @@ export class JobsonsModalComponent implements OnInit {
   //#endregion
 
   //#region "Setters"
+
+  public get Recratio(): number {
+    return this.recratio;
+  }
+  public set Recratio(v: number) {
+    this.recratio = v;
+    //this.updateRecRatio(v);
+  }
+
   public get SpillMass(): number {
     return this._spillMass;
   }
@@ -128,7 +145,7 @@ export class JobsonsModalComponent implements OnInit {
   public get RecoveryRatio(): number {
     return this._recoveryratio;
   }
-  private _dtData: boolean = true;
+  private _dtData: boolean = false;
   public get HasDTData(): boolean {
     return this._dtData;
   }
@@ -155,6 +172,12 @@ export class JobsonsModalComponent implements OnInit {
     this.FirstReachDischarge = (this.reachList[0]['parameters'][0].value).toFixed(2);
   }
 
+  public updateRecRatio(v:number) {
+    this.reachList.forEach((item) => {
+      item.parameters[5].value = v;
+      console.log(item.parameters[5]);
+    })
+  }
 
    //#region "Methods"
   public setParameters(): void {
@@ -175,16 +198,12 @@ export class JobsonsModalComponent implements OnInit {
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
         } else {
-          //this.FirstReachDischarge = (item.parameters[0].value).toFixed(2);
           item.parameters[1].value = this._discharge;
           value = (item.parameters[1].value / item.parameters[0].value).toFixed(3);
           accumRatio.push(value);
           cond = true;
         }
       });
-      /*this.reachList.forEach((item) => {
-        item.parameters[1].value = item.parameters[0].value;
-      })*/
       this.StudyService.SetWorkFlow('hasDischarge', true);
     } else {
       this.setDischarge();
@@ -264,7 +283,8 @@ export class JobsonsModalComponent implements OnInit {
   public getResults() {
 
 	// Set default footer height to half, show buttons to switch
-	$('#mapWrapper').attr('class', 'half-map');
+    $('#mapWrapper').attr('class', 'half-map');
+    $('body').attr('class', 'half-toast-map');
 	$('#mapHeightToggle').attr('class', 'visible');
 
     this.gettingResults = true;
@@ -344,33 +364,23 @@ export class JobsonsModalComponent implements OnInit {
 
   private populateReachArray(): void {   // add class jobson to an array of items that has been iterated over on ui side
     for (let i = 0; i < this.StudyService.selectedStudy.Reaches.length; i++) { // remove last traversing lines
-      /*if (this.StudyService.selectedStudy.Reaches[i].properties.StreamRiver > 50 || this.StudyService.selectedStudy.Reaches[i].properties.Artificial > 50 && this.StudyService.selectedStudy.Reaches[i].properties.IsWaterBody == 0) { } else {
-
-        if (this.reachList.length < 1) {
-          this.MapService.isInsideWaterBody.next(true);
-          this.sm("Warning, selected point of interest is inside of the water body.....");
-        }
-        //break
-
-      }*/
-
-
       if (this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid) {
         let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
+        if (i > 0) { newreach.description = "reach" };
         newreach.name = this.StudyService.selectedStudy.Reaches[i].properties.nhdplus_comid;
         newreach.parameters[2].value = this.StudyService.selectedStudy.Reaches[i].properties.Slope;
 
         let selectedUnits;
         if (this.StudyService.isMetric()) {
           selectedUnits = this.units.metric;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847); // cfs to cms
+          newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847), 3); // cfs to cms
           newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0); // square kilometers to square meters
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000); // kilometers to meters
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toFixed(3); // kilometers to meters
         } else {
           selectedUnits = this.units.imperial;
-          newreach.parameters[0].value = (this.StudyService.selectedStudy.Reaches[i].properties.Discharge); // cfs
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102); // square kilometers to square miles
-          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84); // kilometers to feet
+          newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge), 3); // cfs
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102).toFixed(0); // square kilometers to square miles
+          newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toFixed(3); // kilometers to feet
         }
         newreach.parameters[0].unit.unit = selectedUnits['discharge'];   // mean annual discharge
         newreach.parameters[1].unit.unit = selectedUnits['discharge'];   // real-time discharge

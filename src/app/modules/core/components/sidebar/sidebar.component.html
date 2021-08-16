@@ -74,11 +74,11 @@
 			<!-- Search Help -->
 			<button class="search-help-toggle" *ngIf="!showSearchHelp" (click)="showSearchHelp = true">
 				<i class="far fa-question-circle"></i> 
-				<span>Show Search Help</span>
+				<span>Search Help</span>
 			</button>
 			<button class="search-help-toggle" *ngIf="showSearchHelp" (click)="showSearchHelp = false">
 				<i class="far fa-times"></i> 
-				<span>Hide Search Help</span>
+				<span>Hide Help</span>
 			</button>
 			<!-- Help body -->
 			<div class="search-help" [ngClass]="{'visible': showSearchHelp}">
@@ -103,17 +103,17 @@
 			<!-- Methods -->
 			<div id="methods">
 				<!-- Start over -->
-				<button class="red icon-button full-width" *ngIf="StudyService.GetWorkFlow('hasReaches')" (click)="reset()">
+				<button class="red icon-button full-width" *ngIf="StudyService.GetWorkFlow('hasReaches') || StudyService.GetWorkFlow('hasError')" (click)="reset()">
 					<i class="far fa-undo"></i>
 					Start Over
 				</button>
 
 				<button id="response" class="full-width icon-button" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('response')" [ngClass]="{'waiting': MapService.isClickable}">
-					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
+					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'response' && !StudyService.GetWorkFlow('hasError') ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Response
 				</button>
 				<button id="planning" class="full-width icon-button" [disabled]="!StudyService.GetWorkFlow('reachedZoom')" (click)="SetMethodType('planning')" [ngClass]="{'waiting': MapService.isClickable}">
-					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
+					<i [ngClass]="StudyService.checkingDelineatedPoint && SelectedMethodType === 'planning' && !StudyService.GetWorkFlow('hasError') ? 'far fa-sync fa-spin' : 'far fa-map-marker-alt'"></i>
 					Spill Planning
 				</button>
 				<button id="equations" class="full-width" (click)="open_config()">Configure</button>

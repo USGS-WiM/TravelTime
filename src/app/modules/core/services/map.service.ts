@@ -1,11 +1,18 @@
 import { Injectable, ElementRef, EventEmitter, Injector } from '@angular/core';
 import * as L from 'leaflet';
+import { markerClusterGroup } from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { HttpClient } from '@angular/common/http';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { MapLayer } from '../models/maplayer';
+import { gages } from '../models/gages';
+import * as xml2js from 'xml2js';
+import 'leaflet.markercluster';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
+import { StudyService } from '../services/study.service';
 import * as messageType from '../../../shared/messageType';
+import { Study } from '../models/study';
+import { Drift } from '../models/drift';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -38,14 +45,17 @@ export class MapService {
   public ScaleOptions: L.Control.ScaleOptions;
   public gageDischargeSearch: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   private messanger: ToastrService;
+  private StudyService: StudyService;
   public layerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public reportlayerGroup: BehaviorSubject<L.FeatureGroup> = new BehaviorSubject<L.FeatureGroup>(undefined);
   public bounds: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
   public showGages: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public showUpstream: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(http: HttpClient, toastr: ToastrService) {
+  constructor(http: HttpClient, toastr: ToastrService, studyService: StudyService) {
 
     this.messanger = toastr;
+    this.StudyService = studyService;
 
     this.http = http;
 
@@ -91,13 +101,11 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
-
+      this.addDriftGroup();
     });
-
   }
 
   public AddMapLayer(mlayer: MapLayer) {
-
     var ml = this._layersControl.overlays.find((l: any) => (l.name === mlayer.name));
 
     if (ml != null) ml.layer = mlayer.layer;
@@ -187,6 +195,160 @@ export class MapService {
     this.fitBounds.next(this._bound);
   }
 
+  public getFlowLineLayerGroup(features, method, isMetric) {
+    const layerGroup = new L.FeatureGroup([]);
+    const reportlayerGroup = new L.FeatureGroup([]);
+    let gagesArray = [];
+    features.forEach(i => {
+      if (i.geometry.type === 'Point') {
+        var siteID = i.properties.identifier.replace("USGS-", "");
+		// MarkerMaker Icon
+		var blackTriangle = L.divIcon({className: 'wmm-triangle wmm-black wmm-size-15'});
+        layerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: blackTriangle
+		}).bindPopup('<h3>Streamgages</h3><br /><b>Station ID: </b>' + siteID + '<br /><b>Station Name: </b>' + i.properties.name + '<br /><b>Station Latitude: </b>' + i.geometry.coordinates[1] + '<br /><b>Station Longitude: </b>' + i.geometry.coordinates[0] + '<br /><b>NWIS page: </b><a href="' + i.properties.uri + '" target="_blank">link</a><br /><b>StreamStats Gage page: </b><a href="https://streamstatsags.cr.usgs.gov/gagepages/html/' + siteID + '.htm" target="_blank">link</a>'));
+        reportlayerGroup.addLayer(L.marker([i.geometry.coordinates[1], i.geometry.coordinates[0]], { 
+			icon: blackTriangle
+		}));
+        gagesArray.push(i);
+      } else if (typeof i.properties.nhdplus_comid === 'undefined') {
+        layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_dash));
+        reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_dash));        
+      } else {
+        if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
+        } else if (i.properties.accutot > 0 && i.properties.accutot <= 6) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+        } else if (i.properties.accutot > 6 && i.properties.accutot <= 12) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+        } else if (i.properties.accutot > 12 && i.properties.accutot <= 24) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+        } else if (i.properties.accutot > 24 && i.properties.accutot <= 36) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+        }  else if (i.properties.accutot > 36 && i.properties.accutot <=48) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+        } else if (i.properties.accutotmax > 0 && i.properties.accutotmax <= 6) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+        } else if (i.properties.accutotmax > 6 && i.properties.accutotmax <= 12) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+        } else if (i.properties.accutotmax > 12 && i.properties.accutotmax <= 24) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+        } else if (i.properties.accutotmax > 24 && i.properties.accutotmax <= 36) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+        } else if (i.properties.accutotmax > 36 && i.properties.accutotmax <=48) {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+        } else {
+          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));
+          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));
+        }
+
+        //i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
+        var nhdcomid;
+        var rtDischarge;
+        var maDischarge;
+        var length;
+        var drainage;
+        var velocity;
+        var accutot;
+        var temppoint;
+
+        if(this.StudyService.selectedStudy.MethodType === 'response') {
+          nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
+          if(isMetric) {            
+            maDischarge = 'Mean annual discharge: ' + String((i.properties.Discharge * 0.0283).toUSGSvalue());  //cfs to cms
+            length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());  //kilometers (single reach)
+            drainage = ' Drainage area: ' + String(i.properties.DrainageArea);  //square kilometers
+            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+          } else { //imperial units
+            maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge); // cfs
+            length = 'Length: ' + String((i.properties.Length * 0.6214).toUSGSvalue()); //miles (single reach)
+            drainage = ' Drainage area: ' + String((i.properties.DrainageArea * 0.386102).toUSGSvalue());  //square miles
+            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+          }
+        } else { //methodType = planning
+          nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
+          rtDischarge = 'Real-time discharge: ' + String(i.properties.RTDischarge);
+          maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge);
+          length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());
+          drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
+          velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
+          accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
+          temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+        }
+
+        if(method === 'response'){
+          if(isMetric) {
+            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + maDischarge + ' cms'));
+            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + 'km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + accutot + ' hrs'));
+          } else {
+            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + maDischarge + ' cfs'));
+            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + 'mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + accutot + ' hrs'));
+          }
+        } else { //planning
+          if(isMetric) {
+            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + accutot + ' hrs'));
+            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + accutot + 'hrs'));
+          } else {
+            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + accutot + ' hrs'));
+            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + accutot + ' hrs'));
+          }
+        }
+
+        this.layerGroup.next(layerGroup);
+        this.reportlayerGroup.next(reportlayerGroup);
+      }
+    })
+
+    // because it is async it takes time to process function above, once we have it done - we get the bounds
+    // Potential to improve
+    setTimeout(() => {
+      this.setBounds(layerGroup.getBounds());
+    });
+  }
+  
+  public addDriftGroup() {
+    this.http.get('assets/data/mydatas.geojson').subscribe((data: any) => {
+      var markers = markerClusterGroup();
+
+      var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      };
+
+      var geoJsonLayer = L.geoJSON(data, {
+
+        pointToLayer: function (feature, latlng) {
+          switch (feature.properties.Condition) {
+            case 'Injection': return L.circleMarker(latlng, geojsonMarkerOptions);
+            case 'Reach': return L.circleMarker(latlng);
+          }
+        },
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.RiverName + ' ' + feature.properties.Condition + ' - '+ feature.properties.Study);
+        }
+      });
+      markers.addLayer(geoJsonLayer);
+      this.AddMapLayer({ name: 'DRIFT endpoints', layer: markers, visible: false })
+      //var geoObject = JSON.parse(data);
+      this.StudyService.DriftData = data.features;//geoObject;
+    })
+  }
+
   private loadLayer(ml): L.Layer {
     try {
       switch (ml.type) {
@@ -239,15 +401,10 @@ export class MapService {
     this.latlng = latlng;
     this.LatLng.next(this.latlng);
   }
-
-  private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {
-    try {
-      let options: Partial<IndividualConfig> = null;
-      if (timeout) { options = { timeOut: timeout }; }
-      this.messanger.show(msg, title, options, mType);
-    } catch (e) {
-    }
+  GetPOI() {
+    return this.latlng;
   }
+
 
   public isInsideWaterBody: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
