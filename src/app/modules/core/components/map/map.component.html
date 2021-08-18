@@ -1,3 +1,4 @@
+<div *ngIf="this.StudyService.checkingDelineatedPoint && !this.StudyService.GetWorkFlow('hasError') ? this.showSpinner() : false" id="cover-spin"></div>
 
 <div class="map-position leaflet-bottom leaflet-left">
     <span>Zoom Level: {{this.MapService.CurrentZoomLevel.value}}</span> <br />

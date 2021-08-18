@@ -61,6 +61,50 @@ export class SpillResponseComponent implements OnInit {
   public FirstReachDischarge;
   public recratio: number;
 
+    //#region "Setters"
+
+    public get Recratio(): number {
+      return this.recratio;
+    }
+    public set Recratio(v: number) {
+      this.recratio = v;
+      //this.updateRecRatio(v);
+    }
+  
+    public get SpillMass(): number {
+      return this._spillMass;
+    }
+    public set SpillMass(v: number) {
+      this._spillMass = v;
+      this.StudyService.selectedStudy.SpillMass = this._spillMass;
+    }
+    public get Discharge(): number {
+      return this._discharge;
+    }
+    public set Discharge(v: number) {
+      this._discharge = v;
+      this.StudyService.selectedStudy.Discharge = this._discharge;
+    }
+    public set RecoveryRatio(v: number) {
+      this._recoveryratio = v;
+      this.StudyService.selectedStudy.RecoveryRatio = this._recoveryratio;
+    }
+    public get RecoveryRatio(): number {
+      return this._recoveryratio;
+    }
+    private _dtData: boolean = false;
+    public get HasDTData(): boolean {
+      return this._dtData;
+    }
+    private _useDTData: boolean;
+    public get UseDTData(): boolean {
+      return this._useDTData;
+    }
+    public set UseDTData(v: boolean) {
+      this._useDTData = v;
+    }
+    //#endregion
+
   constructor(config: NgbModalConfig, public activeModal: NgbActiveModal, traveltimeservice: TravelTimeService, mapservice: MapService, studyservice: StudyService, tstrservice: ToastrService, private modalService: NgbModal, public nwisservice: NWISService) {
     // customize default values of modals used by this component tree
     config.backdrop = 'static';
@@ -70,9 +114,9 @@ export class SpillResponseComponent implements OnInit {
     this.NWISService = nwisservice;
     this.StudyService = studyservice;
     this.messager = tstrservice;
-    if(this.StudyService.selectedStudy.SelectedDriftData.length > 0){
-      this._dtData = true;
-    }
+    // if(this.StudyService.selectedStudy.SelectedDriftData.length > 0){     //add back in when DRIFT becomes available
+    //   this._dtData = true;
+    // }
   }
 
   ngOnInit(): any {   // on init, get the services for first reach, and add them as parameters to accordion
@@ -112,50 +156,6 @@ export class SpillResponseComponent implements OnInit {
   //#region "Ui input"
   @ViewChild('reaches', { static: false }) accordion1: NgbAccordion;
   @ViewChild('acc', { static: false }) accordion: NgbAccordion;
-  //#endregion
-
-  //#region "Setters"
-
-  public get Recratio(): number {
-    return this.recratio;
-  }
-  public set Recratio(v: number) {
-    this.recratio = v;
-    //this.updateRecRatio(v);
-  }
-
-  public get SpillMass(): number {
-    return this._spillMass;
-  }
-  public set SpillMass(v: number) {
-    this._spillMass = v;
-    this.StudyService.selectedStudy.SpillMass = this._spillMass;
-  }
-  public get Discharge(): number {
-    return this._discharge;
-  }
-  public set Discharge(v: number) {
-    this._discharge = v;
-    this.StudyService.selectedStudy.Discharge = this._discharge;
-  }
-  public set RecoveryRatio(v: number) {
-    this._recoveryratio = v;
-    this.StudyService.selectedStudy.RecoveryRatio = this._recoveryratio;
-  }
-  public get RecoveryRatio(): number {
-    return this._recoveryratio;
-  }
-  private _dtData: boolean = false;
-  public get HasDTData(): boolean {
-    return this._dtData;
-  }
-  private _useDTData: boolean;
-  public get UseDTData(): boolean {
-    return this._useDTData;
-  }
-  public set UseDTData(v: boolean) {
-    this._useDTData = v;
-  }
   //#endregion
 
   log(val) { console.log(val); }
@@ -374,12 +374,12 @@ export class SpillResponseComponent implements OnInit {
         if (this.StudyService.isMetric()) {
           selectedUnits = this.units.metric;
           newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge * 0.028316847), 3); // cfs to cms
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000).toFixed(0); // square kilometers to square meters
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 1000000); // square kilometers to square meters
           newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 1000).toFixed(3); // kilometers to meters
         } else {
           selectedUnits = this.units.imperial;
           newreach.parameters[0].value = round((this.StudyService.selectedStudy.Reaches[i].properties.Discharge), 3); // cfs
-          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102).toFixed(0); // square kilometers to square miles
+          newreach.parameters[3].value = (this.StudyService.selectedStudy.Reaches[i].properties.DrainageArea * 0.386102); // square kilometers to square miles
           newreach.parameters[4].value = (this.StudyService.selectedStudy.Reaches[i].properties.Length * 3280.84).toFixed(3); // kilometers to feet
         }
         newreach.parameters[0].unit.unit = selectedUnits['discharge'];   // mean annual discharge

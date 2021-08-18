@@ -101,7 +101,7 @@ export class MapService {
       this.markerOptions = conf.mapLayers.markerOptions;
       this.unitsOptions = conf.Units;
       this.abbrevOptions = conf.Abbreviations;
-      this.addDriftGroup();
+      //this.addDriftGroup(); //add back in after DRIFT data becomes available
     });
   }
 
