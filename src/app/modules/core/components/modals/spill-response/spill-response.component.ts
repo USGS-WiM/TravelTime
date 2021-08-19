@@ -295,42 +295,43 @@ export class SpillResponseComponent implements OnInit {
     }
  let tempReachList = [];
  let postReachList = [];
+ let tempSpillMass = this.StudyService.selectedStudy.SpillMass;
  if (!this.StudyService.isMetric()) {
-      for (let i = 0; i < this.reachList.length; i++) {
-        let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
-        newreach.name = this.reachList[i].name;
-        newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   // slope
-        newreach.parameters[1].value = (this.reachList[i].parameters[1].value * 0.028316847);   // real-time discharge from cfs to cms
-        newreach.parameters[0].value = (this.reachList[i].parameters[0].value * 0.028316847);   // mean annual discharge from cfs to cms
-        newreach.parameters[3].value = (this.reachList[i].parameters[3].value / 0.00000038610215855); // drainage area from square miles to square meters
-        newreach.parameters[4].value = (this.reachList[i].parameters[4].value / 3.2808);        // length from feet to meters
+    for (let i = 0; i < this.reachList.length; i++) {
+      let newreach = new reach(this.reach_reference); // new Jobson reaches object that will store initial object
+      newreach.name = this.reachList[i].name;
+      newreach.parameters[2].value = this.reachList[i].parameters[2].value;                   // slope
+      newreach.parameters[1].value = (this.reachList[i].parameters[1].value * 0.028316847);   // real-time discharge from cfs to cms
+      newreach.parameters[0].value = (this.reachList[i].parameters[0].value * 0.028316847);   // mean annual discharge from cfs to cms
+      newreach.parameters[3].value = (this.reachList[i].parameters[3].value / 0.00000038610215855); // drainage area from square miles to square meters
+      newreach.parameters[4].value = (this.reachList[i].parameters[4].value / 3.2808);        // length from feet to meters
 
-        newreach.parameters[0].unit.unit = this.units.metric['discharge'];   // mean annual discharge
-        newreach.parameters[0].unit.abbr = this.abbrev.metric['discharge'];
-        newreach.parameters[1].unit.unit = this.units.metric['discharge'];   // real-time discharge
-        newreach.parameters[1].unit.abbr = this.abbrev.metric['discharge'];
-        newreach.parameters[2].unit.unit = this.units.metric['slope'];
-        newreach.parameters[2].unit.abbr = this.abbrev.metric['slope'];
-        newreach.parameters[3].unit.unit = this.units.metric['drainageArea'];
-        newreach.parameters[3].unit.abbr = this.abbrev.metric['drainageArea'];
-        newreach.parameters[4].unit.unit = this.units.metric['distance'];
-        newreach.parameters[4].unit.abbr = this.abbrev.metric['distance'];
+      newreach.parameters[0].unit.unit = this.units.metric['discharge'];   // mean annual discharge
+      newreach.parameters[0].unit.abbr = this.abbrev.metric['discharge'];
+      newreach.parameters[1].unit.unit = this.units.metric['discharge'];   // real-time discharge
+      newreach.parameters[1].unit.abbr = this.abbrev.metric['discharge'];
+      newreach.parameters[2].unit.unit = this.units.metric['slope'];
+      newreach.parameters[2].unit.abbr = this.abbrev.metric['slope'];
+      newreach.parameters[3].unit.unit = this.units.metric['drainageArea'];
+      newreach.parameters[3].unit.abbr = this.abbrev.metric['drainageArea'];
+      newreach.parameters[4].unit.unit = this.units.metric['distance'];
+      newreach.parameters[4].unit.abbr = this.abbrev.metric['distance'];
 
-        tempReachList.push(newreach);
-      }
-      tempReachList.forEach(reach => {
-        reach.parameters.splice(6, 1);
-        postReachList.push(reach);
-      });
-      this.StudyService.selectedStudy.SpillMass = this.StudyService.selectedStudy.SpillMass * 0.453592;
-    } else {
-      this.reachList.forEach(reach => {
-        reach.parameters.splice(6, 1);
-        postReachList.push(reach);
-      });
+      tempReachList.push(newreach);
     }
+    tempReachList.forEach(reach => {
+      reach.parameters.splice(6, 1);
+      postReachList.push(reach);
+    });
+    tempSpillMass = this.StudyService.selectedStudy.SpillMass * 0.453592; //sends spill mass to Jobson's in kg
+  } else {
+    this.reachList.forEach(reach => {
+      reach.parameters.splice(6, 1);
+      postReachList.push(reach);
+    });
+  }
 
- this.TravelTimeService.ExecuteJobson(this.StudyService.selectedStudy.SpillMass, this.dateModel.toISOString(), postReachList)
+ this.TravelTimeService.ExecuteJobson(tempSpillMass, this.dateModel.toISOString(), postReachList)
    .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
         this.StudyService.SetWorkFlow('totResults', true);

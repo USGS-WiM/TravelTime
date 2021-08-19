@@ -130,8 +130,9 @@ export class MapService {
         if (Number(indx) == Number(nhdplusid)) {
           let polybounds = (Object.values(o._layers)[0]["_bounds"]);
           this.map.fitBounds(polybounds, {
-            paddingTopLeft: [0, 0],
-            paddingBottomRight: [100, 0]
+            paddingTopLeft: [100, 100],
+            paddingBottomRight: [100, 100],
+            maxZoom: 14
           });
           o.setStyle({ color: "#FF3333" , weight: 5, opacity: 1 }) //highlight specific one
         } else {
@@ -172,8 +173,10 @@ export class MapService {
     else {
       ml.visible = true;
     }
-    this.CurrentLayer = ml.name
+    this.CurrentLayer = ml.name;
+    var tempOptions = this.Options;
     this.LayersControl.next(this._layersControl);
+    this.CurrentZoomLevel.next(tempOptions.zoom);
   }
 
   public setCursor(type) {
