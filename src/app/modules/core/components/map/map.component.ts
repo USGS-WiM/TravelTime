@@ -37,7 +37,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public isfirst = true;
   public isInsideWaterBody: boolean = false;
   public scaleMap: string;
-  public mapLoading: boolean = false;
 
   public set MousePosition(v: any) {
     this._mousePosition = v;
@@ -268,7 +267,6 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       var direction;
       var intersection;
       this.sm('Point selected. Loading...');
-	  this.mapLoading = true;
       this.MapService.setCursor('');
       this.StudyService.SetWorkFlow('hasPOI', true);
       this.MapService.SetPoi(latlng);
