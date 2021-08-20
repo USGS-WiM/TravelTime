@@ -8,7 +8,6 @@
 
 <!-- Leaflet map element -->
 <div *ngIf="!report" id="leaflet"
-	[ngClass]="{'map-loading': mapLoading}"
      leaflet
      [leafletOptions]="MapOptions"
      (leafletMapReady)="onMapReady($event)"
@@ -19,6 +18,9 @@
      [leafletFitBoundsOptions]="{maxZoom: 13}"
 	 (leafletClick)="onMouseClick($event)"
      (leafletMouseMove)="getLatLong($event)">
+
+	 <div id="mapLoader" *ngIf="mapLoading"></div>
+
 </div>
 
  <!-- Report -->
