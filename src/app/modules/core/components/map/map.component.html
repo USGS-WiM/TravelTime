@@ -8,6 +8,7 @@
 
 <!-- Leaflet map element -->
 <div *ngIf="!report" id="leaflet"
+	[ngClass]="{'map-loading': mapLoading}"
      leaflet
      [leafletOptions]="MapOptions"
      (leafletMapReady)="onMapReady($event)"
