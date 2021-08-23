@@ -255,6 +255,10 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   public getLatLong(evnt: any) { 
     this._mousePosition = evnt.latlng;
   }
+
+  public showSpinner(): void {
+    $('#cover-spin').show(0);
+  }
   //#endregion
 
   //#region "Helper methods (create FeatureGroup layer)"
@@ -324,12 +328,13 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                     response.features.forEach(element => {
                       element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
                     });
-                    this.MapService.getFlowLineLayerGroup(response.features, inputString, this.StudyService.isMetric);
+                    var isMetric = this.StudyService.isMetric();
+                    this.MapService.getFlowLineLayerGroup(response.features, inputString, isMetric);
                     this.NWISService.check4gages(response.features);
                     this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(response);
                     this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
                     this.StudyService.SetWorkFlow('hasReaches', true);
-                    this.Check4VelocityData();
+                    //this.Check4VelocityData();  //add this back in when DRIFT is available
                     this.StudyService.selectedStudy.LocationOfInterest = latlng;
                     this.StudyService.setProcedure(2);
                     //one with the biggest drainage area is the first one to trace up

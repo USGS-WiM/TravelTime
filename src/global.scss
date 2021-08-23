@@ -65,6 +65,31 @@ app-root{
 	}
 }
 
+#mapLoader{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	opacity: 1;
+	z-index: 5000;
+	background-color: rgba(0,0,30,0.6);
+	background-image: url('assets/images/usgs-loading.svg');
+	display: block !important;
+	background-repeat: no-repeat;
+	background-size: 120px auto;
+	background-position: center center;
+
+	&:after {
+		content: 'Loading...';
+		position: absolute;
+		top: 64%;
+		font-size: 22px;
+		color: white;
+		width: 100%;
+		text-align: center;
+		z-index: 5001;
+	}
+}
+
 ////////////////////////////
 ////////////////////////////
 //     Global styles     //

@@ -137,7 +137,7 @@ export class FooterComponent extends deepCopy implements OnInit {
   
             newreach.parameters[1].value = (reaches[i].parameters[1].value * 35.314666212661).toUSGSvalue();     // real-time discharge from cms to cfs
             newreach.parameters[0].value = (reaches[i].parameters[0].value * 35.314666212661).toUSGSvalue();     // mean annual discharge from cms to cfs
-            newreach.parameters[3].value = (reaches[i].parameters[3].value * 0.00000038610215855).toUSGSvalue(); // drainage area from square meters to square miles
+            newreach.parameters[3].value = Math.round((reaches[i].parameters[3].value * 0.00000038610215855) * 10) / 10; // drainage area from square meters to square miles
             newreach.parameters[4].value = (reaches[i].parameters[4].value * 0.00062137).toUSGSvalue();              // length from meters to miles
             if(newreach.parameters[6]) {  newreach.parameters[6].value = (reaches[i].parameters[6].value * 0.00062137).toUSGSvalue(); }             // cumulative length from meters to miles
             if(newreach.parameters[7]) {  newreach.parameters[7].value = (reaches[i].parameters[7].value * 0.0000022046).toUSGSvalue(); }            // spill mass from milligrams to pounds
