@@ -1,4 +1,3 @@
-
 <div class="map-position leaflet-bottom leaflet-left">
     <span>Zoom Level: {{this.MapService.CurrentZoomLevel.value}}</span> <br />
     <span id="mapscale">Map Scale: 1:{{this.MapService.nominalZoomLevel.value}}</span> <br />
@@ -17,6 +16,9 @@
      [leafletFitBoundsOptions]="{maxZoom: 13}"
 	 (leafletClick)="onMouseClick($event)"
      (leafletMouseMove)="getLatLong($event)">
+
+	 <div id="mapLoader" *ngIf="this.StudyService.checkingDelineatedPoint && !this.StudyService.hasError"></div>
+
 </div>
 
  <!-- Report -->
