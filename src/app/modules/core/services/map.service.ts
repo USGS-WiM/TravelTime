@@ -276,7 +276,7 @@ export class MapService {
           } else { //imperial units
             maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge); // cfs
             length = 'Length: ' + String((i.properties.Length * 0.6214).toUSGSvalue()); //miles (single reach)
-            drainage = ' Drainage area: ' + String((i.properties.DrainageArea * 0.386102).toUSGSvalue());  //square miles
+            drainage = ' Drainage area: ' + String(Math.round((i.properties.DrainageArea * 0.386102) * 10) / 10);  //square miles
             temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
           }
         } else { //methodType = planning
