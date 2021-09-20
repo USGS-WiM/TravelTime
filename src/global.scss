@@ -916,6 +916,13 @@ ul{
 	body * {
 		visibility: hidden !important;
 	}
+	.modal-top,
+	.modal-buttons{
+		display: none !important;
+	}
+	#print-content *:not(input, button){
+		visibility: visible !important;
+	}
 	.sidebar,
 	.full-map,
 	.footer{
