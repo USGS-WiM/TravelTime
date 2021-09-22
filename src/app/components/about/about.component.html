@@ -2,24 +2,25 @@
 	<div class="modal-box">
 		<!-- Header -->
 		<div class="modal-top">
-			<div class="title">About Time of Travel</div>
+			<div class="title">About the Time of Travel application {{this.version}}</div>
 			<div class="close-modal" (click)="activeModal.dismiss()">
 				<i class="far fa-times"></i>
 			</div>
 		</div>
 		<!-- Main content -->
 		<div class="modal-middle">
-			<p>
-				The <a href="https://streamstats.usgs.gov" target="_blank">SS home page</a> provides links to a more detailed description of the program, a user's manual, descriptions of the outputs, definitions
-				and streamflow statistics, limitations for use of the application, and other information.
-			</p>
-			<p>This software is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. 
-				The software has not received final approval by the U.S. Geological Survey (USGS). No warranty, expressed or implied, is made by the USGS 
-				or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. 
-				The software is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from 
-				the authorized or unauthorized use of the software.
-			</p>
+			<p>The Time of Travel application estimates travel times and concentrations between a user-selected spill location and locations of downstream critical infrastructure, such as municipal water intakes based on a user-specified distance. Estimates of travel time are provided for the leading edge, peak, and trailing edge, and peak concentration will be provided under the most-probable velocity and the maximum-probable velocity of the spilled oil, assuming the flow is steady and the spill is instantaneously and completely mixed. Users are required to input the mass of the spilled contaminant and the decay rate to obtain estimates of concentrations. Users also are able to search the stream network upstream from a selected location and identify potential spill travel times within a specified distance. 
+
+			<h4>Behind the scenes...</h4>
+			<p>The Time of Travel application utilizes <a href="https://nhdplus.com/NHDPlus/" target="_blank">NHDPlus Version 2</a> for its data network and is built with <a href="https://angular.io/" target="_blank">Angular</a>, <a
+				href="https://github.com/Asymmetrik/ngx-leaflet" target="_blank">Assymetrik ngx-leaflet</a>, and <a
+				href="https://ng-bootstrap.github.io/" target="_blank">Angular powered Bootstrap</a>.</p>
+	  
+			<p>This web application was developed by <a href="https://wim.usgs.gov" target="_blank">USGS Web Informatics and Mapping
+			(WIM)</a> in cooperation with the <a href="https://www.doi.gov/oepc/inland-oil-spill-preparedness-program-iospp" target="_blank">Inland Oil Spill Preparedness Program (IOSPP)</a>.</p>
 			
+			<small>This web application has been made possible thanks to <a href="https://valor-software.com/ng2-charts/" target="_blank">ng2-charts</a></small>
+
 		</div>
 		<!-- Footer -->
 		<div class="modal-buttons center">
