@@ -16,8 +16,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_HW }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_HW }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
     - run: aws s3 cp /home/runner/work/TravelTime/TravelTime/dist/ s3://test.streamstats.usgs.gov/tot/ --recursive
     - name: GitHub Action for Slack
