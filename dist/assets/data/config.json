@@ -1,7 +1,13 @@
 {
-  "version": "x.x.x",
+  "version": "0.5.0",
   "mapLayers": {
     "baseLayers": [
+      {
+        "name": "ESRI World Imagery",
+        "url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "type": "tile",
+        "visible": false
+      },
       {
         "name": "National Geographic",
         "layer": "NationalGeographic",
@@ -33,28 +39,15 @@
     ],
     "overlayLayers": [
       {
-        "name": "Texas",
-        "url": "https://txgeo.usgs.gov/arcgis/rest/services/Mapping/HydroBaseMapForTerrain/MapServer",
+        "name": "USGSHydroCached",
+        "url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSHydroCached/MapServer",
         "type": "agsTile",
         "layerOptions": {
           "opacity": 0.6,
-          "maxZoom": 10,
           "zIndex": 9999,
           "useCors": false
         },
         "visible": true
-      },
-      {
-        "name": "Regulation Points",
-        "url": "https://gis.streamstats.usgs.gov/arcgis/rest/services/regulations/co/MapServer",
-        "type": "agsDynamic",
-        "visible": true,
-        "layerOptions": {
-          "zIndex": 1,
-          "format": "png8",
-          "layers": [ 0 ],
-          "f": "image"
-        }
       }
     ],
     "markerOptions": {
@@ -87,19 +80,55 @@
         "radius": 100
       },
       "Polyline": {
-        "color": "#0000FF",
+        "color": "#0BDCD5",
         "weight": 3,
         "opacity": 1
       },
+      "Polyline7": {
+        "color": "#669900",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline6": {
+        "color": "#CCFF00",  
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline5": {
+        "color": "#FF9900",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline4": {
+        "color": "#FF6600", 
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline3": {
+        "color": "#FF0000",
+        "weight": 3,
+        "opacity": 1
+      },
+      "Polyline2": {
+        "color": "#CC0000",
+        "weight": 3,
+        "opacity": 1
+      },  
       "Polyline_upstream": {
         "color": "green",
         "weight": 3,
         "opacity": 1
       },
-      "Polyline_unorder": {
-        "color": "red",
+      "Polyline_break": {
+        "color": "gray",
         "weight": 3,
         "opacity": 1
+      },
+      "Polyline_dash": {
+        "color": "gray",
+        "weight": 3,
+        "opacity": 1,
+        "dasharray": "20,20"
       },
       "GagesUpstream": {
         "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
