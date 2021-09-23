@@ -20,7 +20,7 @@
 					Report title:
 				</label>
 				<div class="row-input">
-					<input class="hidden" [(ngModel)]="reportTitle" type="text">
+					<input class="hidden-print" [(ngModel)]="reportTitle" type="text">
 				</div>
 			</div>
 			<!-- Comments -->
@@ -522,7 +522,7 @@
 			<div id="reportModalDownloadButtons">
 				<!-- Download -->
 				<button ngbDropdownItem (click)="downloadGeoJSON()">Download GeoJSON</button>
-				<button ngbDropdownItem (click)="downloadCSV()">Download CSV</button>
+				<button *ngIf="StudyService.ReportOptions[1].checked" ngbDropdownItem (click)="downloadCSV()">Download CSV</button>
 
 				<!--Print-->
 				<button class="icon-button blue" (click)="onPrint()">

@@ -37,10 +37,7 @@
 			</div>
 			<!-- Footer -->
 			<div class="modal-buttons space-around">
-				<button *ngIf="mylist !== null" class="icon-button white" (click)="onClick_clear()">
-					<i class="far fa-trash-alt"></i>
-					<span>Clear</span>
-				</button>
+				<!--needs to be positioned on the right of the modal-->
 				<button [disabled]="validateInputs()" class="icon-button blue" (click)="setDischarge(); getResults();">
 					<i class="fas fa-long-arrow-right"></i>
 					<span>Get Results</span>
