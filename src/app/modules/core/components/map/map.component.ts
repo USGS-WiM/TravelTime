@@ -291,12 +291,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           if (data) {
             this.RDP = data.features;
             this.StudyService.selectedStudy.RDP = this.RDP;
-            console.log(1);
-            console.log(this.RDP[0])
-            console.log(2)
-            intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
+            intersection = { coordinates: [this.RDP[0].properties.intersection_point[1], this.RDP[0].properties.intersection_point[0]], type: "Point"};
             if(direction === 'downstream') { //spill response workflow
-              console.log('hi')
+              console.log('spill response')
               this.NavigationService.getNavigationResource('3')
                 .toPromise().then(data2 => {
                   const config: Array<any> = data2.configuration;
@@ -349,6 +346,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                   }
                 });
             } else { // spill planning workflow
+              console.log('spill planning')
               this.NavigationService.getNavigationResource('3')
               .toPromise().then(data2 => {
                 const config: Array<any> = data2.configuration;
@@ -369,6 +367,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                 this.NavigationService.getRoute('3', config, true).subscribe(response => {
                   this.NavigationService.navigationGeoJSON$.next(response);
                   response.features.shift();
+                  console.log(response)
                   this.firstReach = response.features[0];
                   this.NavigationService.getNavigationResource('3')
                   .toPromise().then(data3 => {
