@@ -288,11 +288,15 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 
       this.NLDIService.GetRainDropPath(latlng.lat, latlng.lng, direction === 'downstream' ? 'down' : 'up')
         .toPromise().then(data => {
-          if (data.outputs) {
-            this.RDP = data.outputs.features;
+          if (data) {
+            this.RDP = data.features;
             this.StudyService.selectedStudy.RDP = this.RDP;
+            console.log(1);
+            console.log(this.RDP[0])
+            console.log(2)
             intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
             if(direction === 'downstream') { //spill response workflow
+              console.log('hi')
               this.NavigationService.getNavigationResource('3')
                 .toPromise().then(data2 => {
                   const config: Array<any> = data2.configuration;
