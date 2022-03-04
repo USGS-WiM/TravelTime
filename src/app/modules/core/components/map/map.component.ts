@@ -288,11 +288,12 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 
       this.NLDIService.GetRainDropPath(latlng.lat, latlng.lng, direction === 'downstream' ? 'down' : 'up')
         .toPromise().then(data => {
-          if (data.outputs) {
-            this.RDP = data.outputs.features;
+          if (data) {
+            this.RDP = data.features;
             this.StudyService.selectedStudy.RDP = this.RDP;
-            intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
+            intersection = { coordinates: [this.RDP[0].properties.intersection_point[1], this.RDP[0].properties.intersection_point[0]], type: "Point"};
             if(direction === 'downstream') { //spill response workflow
+              console.log('spill response')
               this.NavigationService.getNavigationResource('3')
                 .toPromise().then(data2 => {
                   const config: Array<any> = data2.configuration;
@@ -319,7 +320,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                     this.NavigationService.navigationGeoJSON$.next(response);
                     response.features.shift();                
                     var rch1comid = this.RDP[0].properties.comid;
-                    if(response.features[0].properties.nhdplus_comid === rch1comid) { //transfers clipped reach geometry to replace full reach geometry
+                    if(response.features[0].properties.nhdplus_comid === rch1comid.toString() ) { //transfers clipped reach geometry to replace full reach geometry
                       response.features[0].geometry = this.RDP[0].geometry;
                     }
                     if(this.RDP.length > 1) {
@@ -345,6 +346,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                   }
                 });
             } else { // spill planning workflow
+              console.log('spill planning')
               this.NavigationService.getNavigationResource('3')
               .toPromise().then(data2 => {
                 const config: Array<any> = data2.configuration;
@@ -365,6 +367,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                 this.NavigationService.getRoute('3', config, true).subscribe(response => {
                   this.NavigationService.navigationGeoJSON$.next(response);
                   response.features.shift();
+                  console.log(response)
                   this.firstReach = response.features[0];
                   this.NavigationService.getNavigationResource('3')
                   .toPromise().then(data3 => {
@@ -392,13 +395,11 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                       this.NavigationService.navigationGeoJSON$.next(response2);
                       response2.features.shift();                
                       var rch1comid = this.RDP[0].properties.comid;
-                      if(this.firstReach.properties.nhdplus_comid === rch1comid) { //transfers clipped reach geometry to replace full reach geometry
-                        this.firstReach.geometry = this.RDP[0].geometry;
+                      if(response2.features[0].properties.nhdplus_comid === rch1comid.toString()) { //transfers clipped reach geometry to replace full reach geometry
+                        response2.features[0].geometry = this.RDP[0].geometry;
                       }
                       if(this.RDP.length > 1 ) { //if overland flow trace exists
-                        response2.features.unshift(this.RDP[1], this.firstReach);
-                      } else { //if user point snapped to flowline
-                        response2.features.unshift(this.firstReach);
+                        response2.features.unshift(this.RDP[1]);
                       }
                       response2.features.forEach(element => {
                         element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
