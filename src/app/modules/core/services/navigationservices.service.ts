@@ -7,7 +7,7 @@ import * as messageType from '../../../shared/messageType'
 
 @Injectable()
 export class NavigationService {
-  public get baseURL() {return "https://test.streamstats.usgs.gov/NavigationServices";}
+  public get baseURL() {return " https://test.streamstats.usgs.gov/NavigationServices";}
   private messager: ToastrService;
   public navigationGeoJSON$: BehaviorSubject<L.GeoJSON> = new BehaviorSubject<L.GeoJSON>(undefined);
 
