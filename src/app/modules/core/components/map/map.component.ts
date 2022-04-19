@@ -291,7 +291,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
           if (data.outputs) {
             this.RDP = data.outputs.features;
             this.StudyService.selectedStudy.RDP = this.RDP;
-            intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[1], this.RDP[0].properties.intersectionPoint[0]], type: "Point"};
+            intersection = { coordinates: [this.RDP[0].properties.intersectionPoint[0], this.RDP[0].properties.intersectionPoint[1]], type: "Point"};
             if(direction === 'downstream') { //spill response workflow
               this.NavigationService.getNavigationResource('3')
                 .toPromise().then(data2 => {
