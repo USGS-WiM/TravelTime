@@ -16,7 +16,7 @@ export class NLDIService {
    }
 
   public GetRainDropPath(lat, lon, dir): Observable <any>{
-    let url = this.baseURL+"nldi-flowtrace/jobs";
+    let url = this.baseURL+"nldi-flowtrace/execution";
     let post = {
       "inputs": [
         {
