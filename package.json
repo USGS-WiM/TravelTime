@@ -46,7 +46,7 @@
     "leaflet-search-control": "^2.0.5",
     "leaflet.markercluster": "^1.5.0",
     "mat-progress-buttons": "^8.0.4",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ng2-charts": "^2.3.0",
     "ngx-print": "^1.2.0-beta.3",
     "ngx-toastr": "^10.2.0",
