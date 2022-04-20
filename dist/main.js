@@ -1979,7 +1979,7 @@ var MapComponent = /** @class */ (function (_super) {
                 if (data) {
                     _this.RDP = data.features;
                     _this.StudyService.selectedStudy.RDP = _this.RDP;
-                    intersection = { coordinates: [_this.RDP[0].properties.intersection_point[1], _this.RDP[0].properties.intersection_point[0]], type: "Point" };
+                    intersection = { coordinates: [_this.RDP[0].properties.intersection_point[0], _this.RDP[0].properties.intersection_point[1]], type: "Point" };
                     if (direction === 'downstream') { //spill response workflow
                         console.log('spill response');
                         _this.NavigationService.getNavigationResource('3')
