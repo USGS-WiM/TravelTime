@@ -19,7 +19,7 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppchartsComponent } from './components/appcharts/appcharts.component';
 import { ChartsModule } from 'ng2-charts';
-import { ChartsService } from './services/charts.service';
+import { ChartService } from './services/chart.service';
 import { MapModule } from './components/map/map.module';
 import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -52,7 +52,7 @@ import { NLDIService } from './services/nldiservices.service';
     Angulartics2Module.forRoot(),
     AppChartsModule
     ],
-  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartsService, NWISService, NLDIService],
+  providers: [MapService, NavigationService, StudyService, TravelTimeService, NgbActiveModal, ChartService, NWISService, NLDIService],
   exports: [SidebarComponent, MapComponent, CoreComponent, FooterComponent, AppchartsComponent, ReportComponent],
   bootstrap: [CoreComponent]
 })

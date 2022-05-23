@@ -2,6 +2,7 @@ import { Component, OnInit, NgZone, Input, AfterViewInit, OnChanges, ChangeDetec
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import * as messageType from '../../../../shared/messageType';
 import { MapService } from '../../services/map.service';
+import { ChartService} from '../../services/chart.service';
 import { deepCopy } from '../../../../shared/extensions/object.DeepCopy';
 import { StudyService } from '../../services/study.service';
 import { NavigationService } from '../../services/navigationservices.service';
@@ -64,6 +65,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private NavigationService: NavigationService;
   private StudyService: StudyService;
   private NWISService: NWISService;
+  private ChartService: ChartService;
   private ToTCalculator: SpillPlanningService;
   private NLDIService: NLDIService;
   private _layersControl;
@@ -74,6 +76,9 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   private _showUpstream: any;
   private RDP: any;
   private firstReach: any;
+  private showMost: boolean = true;
+  private showMax: boolean = false;
+  private isMetric: boolean;
 
   public get ShowUpstream(): boolean {
     return this._showUpstream;
@@ -115,7 +120,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
   //#endregion
 
   //#region "Contructor & ngOnit map subscribers
-  constructor(mapservice: MapService, ToTCalculator: SpillPlanningService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService, private modalService: NgbModal, nldiService: NLDIService) {
+  constructor(mapservice: MapService, ToTCalculator: SpillPlanningService, private cdref: ChangeDetectorRef, navigationservice: NavigationService, toastr: ToastrService, studyservice: StudyService, nwisservice: NWISService, private modalService: NgbModal, nldiService: NLDIService, chartService: ChartService) {
     super();
     this.messager = toastr;
     this.MapService = mapservice;
@@ -130,6 +135,8 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
     this.MapService.isInsideWaterBody.subscribe(data => {
       this.isInsideWaterBody = data;
     })
+
+    this.ChartService = chartService;
   }
 
   ngOnInit() {
@@ -174,6 +181,14 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
 
     this.MapService.reportlayerGroup.subscribe(reportlayerGroup => {
       this.reportlayerGroup = reportlayerGroup;
+    });
+
+    this.ChartService.display$.subscribe(isShown => {
+      this.showMax = isShown.max;
+      this.showMost = isShown.most;
+      var method = this.StudyService.selectedStudy.MethodType;
+      this.setFlowlineSymbology(method);
+      this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
     });
   }
 
@@ -329,10 +344,16 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                     response.features.forEach(element => {
                       element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
                     });
-                    var isMetric = this.StudyService.isMetric();
-                    this.MapService.getFlowLineLayerGroup(response.features, inputString, isMetric);
-                    this.NWISService.check4gages(response.features);
-                    this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(response);
+                    this.StudyService.selectedStudy.spillResponseResponse = response;
+                    this.isMetric= this.StudyService.isMetric();
+                    this.setFlowlineSymbology(inputString);
+                    if(this.showMost) {
+                      this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillResponseResponse.features, inputString, this.isMetric, 'most');
+                    } else if(this.showMax) {
+                      this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillResponseResponse.features, inputString, this.isMetric, 'max');
+                    }
+                    this.NWISService.check4gages(this.StudyService.selectedStudy.spillResponseResponse.features);
+                    this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(this.StudyService.selectedStudy.spillResponseResponse);
                     this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });
                     this.StudyService.SetWorkFlow('hasReaches', true);
                     //this.Check4VelocityData();  //add this back in when DRIFT is available
@@ -411,7 +432,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                       this.openPlanningModal();
                       this.MapService.showUpstream.subscribe(data3 => {
                         if (data3) {
-                          this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillPlanningResponse.features, inputString, this.StudyService.isMetric);
+                          this.setFlowlineSymbology(inputString);
                           this.StudyService.selectedStudy.Reaches = this.StudyService.formatReaches(this.StudyService.selectedStudy.spillPlanningResponse);
                           this.MapService.AddMapLayer({ name: 'Flowlines', layer: this.layerGroup, visible: true });                  
                           this.StudyService.selectedStudy.LocationOfInterest = this.MapService.GetPOI();
@@ -476,6 +497,22 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
       const spillPlanningModalRef = this.modalService.open(SpillPlanningComponent);
       spillPlanningModalRef.componentInstance.title = 'Spill Planning';
     }
+  }
+
+  private setFlowlineSymbology(inputString: string): void {
+    if(inputString === 'response') {
+      if(this.showMost) {
+        this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillResponseResponse.features, inputString, this.isMetric, 'most');
+      } else if(this.showMax) {
+        this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillResponseResponse.features, inputString, this.isMetric, 'max');
+      }
+    } else if(inputString === 'planning') {
+      if(this.showMost) {
+        this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillPlanningResponse.features, inputString, this.isMetric, 'most');
+      } else if(this.showMax) {
+        this.MapService.getFlowLineLayerGroup(this.StudyService.selectedStudy.spillPlanningResponse.features, inputString, this.isMetric, 'max');
+      }
+    }    
   }
 
   private sm(msg: string, mType: string = messageType.INFO, title?: string, timeout?: number) {

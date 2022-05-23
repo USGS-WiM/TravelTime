@@ -4,7 +4,7 @@ import { Observable, of, Subject } from 'rxjs';
 export interface DisplayBlocks { most: boolean, max: boolean };
 
 @Injectable()
-export class ChartsService {
+export class ChartService {
 
   constructor() { }
   myarray = [];

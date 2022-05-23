@@ -13,6 +13,7 @@ import { StudyService } from '../services/study.service';
 import * as messageType from '../../../shared/messageType';
 import { Study } from '../models/study';
 import { Drift } from '../models/drift';
+import { ChartService } from './chart.service';
 
 export interface layerControl {
   baseLayers: Array<any>;
@@ -73,35 +74,36 @@ export class MapService {
       this.ScaleOptions = {
         imperial: true,
         metric: false
-      }
     }
+  }  
+  //this.CurrentZoomLevel.next(this.Options.zoom);
 
-    //this.CurrentZoomLevel.next(this.Options.zoom);
+  //DISPLAY FOOTER AND CHARTS;
 
-    http.get("assets/data/config.json").subscribe(data => {
-      //load baselayers
-      var conf: any = data;
+  http.get("assets/data/config.json").subscribe(data => {
+    //load baselayers
+    var conf: any = data;
 
-      conf.mapLayers.baseLayers.forEach(ml => {
-        if (ml.visible)
-          this.CurrentLayer = ml.name;
-        else {}
-        ml.layer = this.loadLayer(ml);
-        if (ml.layer != null)
-          this._layersControl.baseLayers.push(ml);
-      });
+    conf.mapLayers.baseLayers.forEach(ml => {
+      if (ml.visible)
+        this.CurrentLayer = ml.name;
+      else {}
+      ml.layer = this.loadLayer(ml);
+      if (ml.layer != null)
+        this._layersControl.baseLayers.push(ml);
+    });
 
-      conf.mapLayers.overlayLayers.forEach(ml => {
-        ml.layer = this.loadLayer(ml);
-        if (ml.layer != null)
-          this._layersControl.overlays.push(ml);
-      });
-      this.LayersControl.next(this._layersControl);
+    conf.mapLayers.overlayLayers.forEach(ml => {
+      ml.layer = this.loadLayer(ml);
+      if (ml.layer != null)
+        this._layersControl.overlays.push(ml);
+    });
+    this.LayersControl.next(this._layersControl);
 
-      this.markerOptions = conf.mapLayers.markerOptions;
-      this.unitsOptions = conf.Units;
-      this.abbrevOptions = conf.Abbreviations;
-      //this.addDriftGroup(); //add back in after DRIFT data becomes available
+    this.markerOptions = conf.mapLayers.markerOptions;
+    this.unitsOptions = conf.Units;
+    this.abbrevOptions = conf.Abbreviations;
+    //this.addDriftGroup(); //add back in after DRIFT data becomes available
     });
   }
 
@@ -198,7 +200,7 @@ export class MapService {
     this.fitBounds.next(this._bound);
   }
 
-  public getFlowLineLayerGroup(features, method, isMetric) {
+  public getFlowLineLayerGroup(features, method, isMetric, mostMax) {
     const layerGroup = new L.FeatureGroup([]);
     const reportlayerGroup = new L.FeatureGroup([]);
     let gagesArray = [];
@@ -218,44 +220,51 @@ export class MapService {
         layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_dash));
         reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_dash));        
       } else {
-        if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
-        } else if (i.properties.accutot > 0 && i.properties.accutot <= 6) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
-        } else if (i.properties.accutot > 6 && i.properties.accutot <= 12) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
-        } else if (i.properties.accutot > 12 && i.properties.accutot <= 24) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
-        } else if (i.properties.accutot > 24 && i.properties.accutot <= 36) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
-        }  else if (i.properties.accutot > 36 && i.properties.accutot <=48) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
-        } else if (i.properties.accutotmax > 0 && i.properties.accutotmax <= 6) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
-        } else if (i.properties.accutotmax > 6 && i.properties.accutotmax <= 12) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
-        } else if (i.properties.accutotmax > 12 && i.properties.accutotmax <= 24) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
-        } else if (i.properties.accutotmax > 24 && i.properties.accutotmax <= 36) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
-        } else if (i.properties.accutotmax > 36 && i.properties.accutotmax <=48) {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
-        } else {
-          layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));
-          reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));
+        if (mostMax === 'most') {
+          if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));     
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline_break));
+          } else if (i.properties.accutot > 0 && i.properties.accutot <= 6) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));        //red
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+          } else if (i.properties.accutot > 6 && i.properties.accutot <= 12) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));        //red orange
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+          } else if (i.properties.accutot > 12 && i.properties.accutot <= 24) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));        //orange
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+          } else if (i.properties.accutot > 24 && i.properties.accutot <= 36) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));        //yellow
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+          }  else if (i.properties.accutot > 36 && i.properties.accutot <= 48) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));        //lime green
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));
+          } else {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));    //dark green
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));
+          }
+        } else if (mostMax === 'max') {
+          if (i.properties.accutotmax > 0 && i.properties.accutotmax <= 6) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));       //red
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline2));
+          } else if (i.properties.accutotmax > 6 && i.properties.accutotmax <= 12) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));       //red orange
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline3));
+          } else if (i.properties.accutotmax > 12 && i.properties.accutotmax <= 24) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));        //orange
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline4));
+          } else if (i.properties.accutotmax > 24 && i.properties.accutotmax <= 36) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));        //yellow
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline5));
+          } else if (i.properties.accutotmax > 36 && i.properties.accutotmax <= 48) {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));        //lime green
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline6));  
+          } else {
+            layerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));    //dark green
+            reportlayerGroup.addLayer(L.geoJSON(i, this.markerOptions.Polyline7));
+          }
         }
-
+        
         //i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
         var nhdcomid;
         var rtDischarge;
