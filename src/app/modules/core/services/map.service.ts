@@ -272,6 +272,7 @@ export class MapService {
         var length;
         var drainage;
         var velocity;
+        var peak_tot;
         var accutot;
         var temppoint;
 
@@ -295,6 +296,7 @@ export class MapService {
           length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());
           drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
           velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
+          peak_tot = 'Peak ToT for reach only: ' + String(i.properties.T_p);
           accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
           temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
         }
@@ -309,11 +311,11 @@ export class MapService {
           }
         } else { //planning
           if(isMetric) {
-            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + accutot + ' hrs'));
-            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + accutot + 'hrs'));
+            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + peak_tot + 'hrs<br />' + accutot + ' hrs'));
+            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + peak_tot + 'hrs<br />' + accutot + 'hrs'));
           } else {
-            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + accutot + ' hrs'));
-            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + accutot + ' hrs'));
+            layerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + peak_tot + 'hrs<br />' + accutot + ' hrs'));
+            reportlayerGroup.addLayer(L.circle([temppoint[1], temppoint[0]], this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + peak_tot + 'hrs<br />' + accutot + ' hrs'));
           }
         }
 

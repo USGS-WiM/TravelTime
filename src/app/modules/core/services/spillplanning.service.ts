@@ -20,7 +20,6 @@ export class SpillPlanningService {
     return D_a;
   }
 
-
   public relativeDischarge(q = 0, MAF = 0) { //q units (m3/s), MAF units (m3/s)
     let Q_a: number;
     if (q > 0) {
@@ -39,17 +38,17 @@ export class SpillPlanningService {
       relativeDis = this.relativeDischarge();
     }
     if (m === 'most') {
-      let V_p = 0.02 + 0.051 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * q / D;
+      let V_p = 0.02 + 0.051 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * (q / D);
       return V_p;
     } else {
-      let V_mp = 0.2 + 0.093 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * q / D;
+      let V_mp = 0.2 + 0.093 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * (q / D);
       return V_mp;
     }
   }
 
   public peakTimeofTravel(L, q, MAF, D, m) { //L units (km), q units (m3/s), MAF units (m3/s), D units (sq m)
     let T: number;
-      T = (L * 1000) / (3600 * this.peakVelocity(q, MAF, D, m));   
+      T = (L * 1000) / this.peakVelocity(q, MAF, D, m) * 0.000277778;   
     return T;
   }
 
@@ -126,12 +125,14 @@ export class SpillPlanningService {
     } else {
       this.messanger.show("Passed unit test,  time of leading edge");
     }
+
     let T_p = this.trailingEdge(L, q, MAF, D, m).toFixed(1);
     if (T_p != "7.7") {
       this.messanger.show("Failed unit test,  time of trailing edge");
     } else {
       this.messanger.show("Passed unit test, time of trailing edge");
     }
+    
     let TOT = this.passageTime(L, q, MAF, D, m).toFixed(1);
     if (TOT != "33.4") {
       this.messanger.show("Failed unit test,  time of passage");

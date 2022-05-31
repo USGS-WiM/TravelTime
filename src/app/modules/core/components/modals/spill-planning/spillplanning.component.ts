@@ -213,8 +213,8 @@ export class SpillPlanningComponent implements OnInit {
   public ComputeTOT() {
     this.StudyService.selectedStudy.spillPlanningResponse.features.forEach(reach => {
       if (reach.properties.hasOwnProperty("Discharge")) {
-          var tot = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-          var totmax = this.ToTCalculator.passageTime(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+          var tot = this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
+          var totmax = this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
           var tl = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
           var tlmax = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
           var td10 = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
