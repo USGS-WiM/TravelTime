@@ -3206,8 +3206,8 @@ var SpillPlanningComponent = /** @class */ (function () {
                 reach.properties["T_pmax"] = totmax;
                 reach.properties["T_l"] = tl;
                 reach.properties["T_lmax"] = tlmax;
-                reach.properties["T_d10"] = td10;
-                reach.properties["T_d10max"] = td10max;
+                reach.properties["T_d10"] = td10 + tl;
+                reach.properties["T_d10max"] = td10max + tlmax;
                 reach.properties["VelocityMost"] = _this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
                 reach.properties["VelocityMax"] = _this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
                 reach.properties["touched"] = false;
@@ -5594,7 +5594,7 @@ var SpillPlanningService = /** @class */ (function () {
         else {
             relativeDis = this.relativeDischarge();
         }
-        C_up = 857 * Math.pow(this.peakTimeofTravel(L, q, MAF, D, m), (-0.76) * Math.pow(relativeDis, (-0.079)));
+        C_up = 857 * Math.pow(this.peakTimeofTravel(L, q, MAF, D, m), (-0.76 * Math.pow(relativeDis, (-0.079))));
         return C_up;
     };
     SpillPlanningService.prototype.leadingEdge = function (L, q, MAF, D, m) {
@@ -5603,7 +5603,8 @@ var SpillPlanningService = /** @class */ (function () {
     };
     SpillPlanningService.prototype.trailingEdge = function (L, q, MAF, D, m) {
         if (q === void 0) { q = 0; }
-        return ((2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m) * 3600));
+        return (2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m) * 3600);
+        //return ((2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m)));
     };
     SpillPlanningService.prototype.passageTime = function (L, q, MAF, D, m) {
         if (q === void 0) { q = 0; }

@@ -224,8 +224,8 @@ export class SpillPlanningComponent implements OnInit {
           reach.properties["T_pmax"] = totmax;
           reach.properties["T_l"] = tl;
           reach.properties["T_lmax"] = tlmax;
-          reach.properties["T_d10"] = td10;
-          reach.properties["T_d10max"] = td10max;
+          reach.properties["T_d10"] = td10 + tl;
+          reach.properties["T_d10max"] = td10max + tlmax;
           reach.properties["VelocityMost"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
           reach.properties["VelocityMax"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
           reach.properties["touched"] = false;

@@ -60,7 +60,7 @@ export class SpillPlanningService {
     } else {
       relativeDis = this.relativeDischarge();
     }
-    C_up = 857 * Math.pow(this.peakTimeofTravel(L, q, MAF, D, m), (-0.76) * Math.pow(relativeDis, (-0.079)));
+    C_up = 857 * Math.pow(this.peakTimeofTravel(L, q, MAF, D, m), (-0.76 * Math.pow(relativeDis, (-0.079))));
     return C_up;
   }
 
@@ -69,7 +69,8 @@ export class SpillPlanningService {
   }
 
   public trailingEdge(L, q = 0, MAF, D, m) {
-      return ((2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m) * 3600));
+      return (2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m) * 3600);
+      //return ((2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m)));
   }
 
   public passageTime(L, q = 0, MAF, D, m) {
@@ -132,7 +133,7 @@ export class SpillPlanningService {
     } else {
       this.messanger.show("Passed unit test, time of trailing edge");
     }
-    
+
     let TOT = this.passageTime(L, q, MAF, D, m).toFixed(1);
     if (TOT != "33.4") {
       this.messanger.show("Failed unit test,  time of passage");
