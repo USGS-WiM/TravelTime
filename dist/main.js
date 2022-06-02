@@ -1441,7 +1441,7 @@ var DateTimeModel = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'response'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t\t<!-- Label -->\r\n\t\t<div class=\"dfh-left\">\r\n\t\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t\t</div>\r\n\t\t<!-- Header -->\r\n\t\t<div class=\"dfh-center\">\r\n\t\t\t&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate  | date:'medium'}}\r\n\t\t</div>\r\n\t\t<!-- Max/Most Probable toggle -->\r\n\t\t<div class=\"dfh-right\">\r\n\r\n\t\t</div>\r\n\t</div>\r\n\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.v.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i)\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.vmax.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n\r\n\r\n<!-- Planning -->\r\n<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'planning'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t<!-- Label -->\r\n\t<div class=\"dfh-left\">\r\n\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t</div>\r\n\t<!-- Header -->\r\n\t<div class=\"dfh-center\">\r\n\r\n\t</div>\r\n\t<!-- Right side-->\r\n\t<div class=\"dfh-right\">\r\n\r\n\t</div>\r\n</div>\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<!-- <ng-container *ngFor=\"let prop of reach.properties\"> -->\r\n\t\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.VelocityMost}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutl).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutot).toUSGSvalue()}}</td>\t\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutd10).toUSGSvalue()}}</td>\t\t\t\t\r\n\t\t\t\t\t\t\t\t<!-- </ng-container> -->\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? reach.properties.DrainageArea : (reach.properties.DrainageArea) }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? reach.properties.Length : (reach.properties.Length).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.VelocityMax}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutlmax).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutd10max).toUSGSvalue()}}</td>\t\t\t\t\t\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>"
+module.exports = "<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'response'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t\t<!-- Label -->\r\n\t\t<div class=\"dfh-left\">\r\n\t\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t\t</div>\r\n\t\t<!-- Header -->\r\n\t\t<div class=\"dfh-center\">\r\n\t\t\t&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate  | date:'medium'}}\r\n\t\t</div>\r\n\t\t<!-- Max/Most Probable toggle -->\r\n\t\t<div class=\"dfh-right\">\r\n\r\n\t\t</div>\r\n\t</div>\r\n\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.v.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i)\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.vmax.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n\r\n\r\n<!-- Planning -->\r\n<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'planning'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t<!-- Label -->\r\n\t<div class=\"dfh-left\">\r\n\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t</div>\r\n\t<!-- Header -->\r\n\t<div class=\"dfh-center\">\r\n\r\n\t</div>\r\n\t<!-- Right side-->\r\n\t<div class=\"dfh-right\">\r\n\r\n\t</div>\r\n</div>\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<!-- <ng-container *ngFor=\"let prop of reach.properties\"> -->\r\n\t\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{ reach.properties.DrainageArea }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.acculength }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.VelocityMost}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutl).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutot).toUSGSvalue()}}</td>\t\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutd10).toUSGSvalue()}}</td>\t\t\t\t\r\n\t\t\t\t\t\t\t\t<!-- </ng-container> -->\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ reach.properties.DrainageArea }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.acculength }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.VelocityMax}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutlmax).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutd10max).toUSGSvalue()}}</td>\t\t\t\t\t\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>"
 
 /***/ }),
 
@@ -2124,6 +2124,7 @@ var MapComponent = /** @class */ (function (_super) {
                                             element.properties.Length = _turf_turf__WEBPACK_IMPORTED_MODULE_11__["length"](element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
                                         });
                                         _this.StudyService.selectedStudy.spillPlanningResponse = response2;
+                                        _this.isMetric = _this.StudyService.isMetric();
                                         _this.StudyService.selectedStudy.LocationOfInterest = latlng;
                                         _this.NWISService.check4gages(_this.StudyService.selectedStudy.spillPlanningResponse.features);
                                         _this.StudyService.SetWorkFlow('hasReaches', true);
@@ -3196,20 +3197,20 @@ var SpillPlanningComponent = /** @class */ (function () {
         var _this = this;
         this.StudyService.selectedStudy.spillPlanningResponse.features.forEach(function (reach) {
             if (reach.properties.hasOwnProperty("Discharge")) {
-                var tot = _this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-                var totmax = _this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
-                var tl = _this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-                var tlmax = _this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
-                var td10 = _this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-                var td10max = _this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+                var tot = _this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+                var totmax = _this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
+                var tl = _this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+                var tlmax = _this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
+                var td10 = _this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+                var td10max = _this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
                 reach.properties["T_p"] = tot;
                 reach.properties["T_pmax"] = totmax;
                 reach.properties["T_l"] = tl;
                 reach.properties["T_lmax"] = tlmax;
                 reach.properties["T_d10"] = td10 + tl;
                 reach.properties["T_d10max"] = td10max + tlmax;
-                reach.properties["VelocityMost"] = _this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-                reach.properties["VelocityMax"] = _this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+                reach.properties["VelocityMost"] = _this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+                reach.properties["VelocityMax"] = _this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
                 reach.properties["touched"] = false;
             }
         });
@@ -3236,6 +3237,7 @@ var SpillPlanningComponent = /** @class */ (function () {
                 reach.properties["accutotmax"] = reach.properties.T_pmax;
                 reach.properties["accutlmax"] = reach.properties.T_lmax;
                 reach.properties["accutd10max"] = reach.properties.T_d10max;
+                reach.properties["acculength"] = reach.properties.Length;
                 reach.properties.touched = true;
                 _this.sumacc(_this.StudyService.selectedStudy.spillPlanningResponse.features, reach);
             }
@@ -3251,6 +3253,7 @@ var SpillPlanningComponent = /** @class */ (function () {
                 reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
                 reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
                 reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
+                reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
                 reach.properties.touched = true;
                 _this.sumacc(data, reach);
             }
@@ -3270,6 +3273,7 @@ var SpillPlanningComponent = /** @class */ (function () {
                 i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
                 i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
                 i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
+                i.properties.acculength = (i.properties.acculength * 0.621371).toUSGSvalue();
             }
             else { //user has specified metric units
                 i.properties.RTDischarge = (i.properties.RTDischarge * 1).toUSGSvalue(); // rounds values
@@ -3282,6 +3286,7 @@ var SpillPlanningComponent = /** @class */ (function () {
                 i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
                 i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
                 i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
+                i.properties.acculength = (i.properties.acculength * 1).toUSGSvalue();
             }
         });
     };
@@ -4836,60 +4841,114 @@ var MapService = /** @class */ (function () {
                         reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7));
                     }
                 }
-                //i.properties.Length = turf.length(i, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
                 var nhdcomid;
                 var rtDischarge;
                 var maDischarge;
-                var length;
+                var length; //accumulated distance
                 var drainage;
                 var velocity;
-                var peak_tot;
+                //var peak_tot;  //for testing only
                 var accutot;
+                var accutotmax;
+                var velocityMax;
                 var temppoint;
                 if (_this.StudyService.selectedStudy.MethodType === 'response') {
                     nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
-                    if (isMetric) {
-                        maDischarge = 'Mean annual discharge: ' + String((i.properties.Discharge * 0.0283).toUSGSvalue()); //cfs to cms
-                        length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue()); //kilometers (single reach)
-                        drainage = ' Drainage area: ' + String(i.properties.DrainageArea); //square kilometers
-                        temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                    if (_this.StudyService.GetWorkFlow('totResults')) { //travel times have been calculated
+                        if (isMetric) {
+                            maDischarge = 'Mean annual discharge: ' + String((i.properties.Discharge * 0.0283).toUSGSvalue()); //cfs to cms
+                            //remember to grab accumulated length
+                            length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue()); //kilometers (single reach)
+                            drainage = ' Drainage area: ' + String(i.properties.DrainageArea); //square kilometers
+                            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                            //items below to be hooked up later - items above come from selectedStudy.SpillResponseResponse, items below come from selectedStudy.Results
+                            //velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);    
+                            //velocityMax = 'Velocity (max probable): ' + String(i.properties.VelocityMax);
+                            //accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
+                            //accutotmax = 'Travel time (max probable): ' + String(i.properties.accutotmax);            
+                        }
+                        else { //imperial units
+                            maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge); // cfs
+                            length = 'Length: ' + String((i.properties.Length * 0.6214).toUSGSvalue()); //miles (single reach)
+                            drainage = ' Drainage area: ' + String(Math.round((i.properties.DrainageArea * 0.386102) * 10) / 10); //square miles
+                            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                            //items below to be hooked up later - items above come from selectedStudy.SpillResponseResponse, items below come from selectedStudy.Results
+                            // velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
+                            // velocityMax = 'Velocity (max probable): ' + String(i.properties.VelocityMax);
+                            // accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
+                            // accutotmax = 'Travel time (max probable): ' + String(i.properties.accutotmax);            
+                        }
                     }
-                    else { //imperial units
-                        maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge); // cfs
-                        length = 'Length: ' + String((i.properties.Length * 0.6214).toUSGSvalue()); //miles (single reach)
-                        drainage = ' Drainage area: ' + String(Math.round((i.properties.DrainageArea * 0.386102) * 10) / 10); //square miles
-                        temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                    else { //have not yet calculated travel times
+                        if (isMetric) {
+                            maDischarge = 'Mean annual discharge: ' + String((i.properties.Discharge * 0.0283).toUSGSvalue()); //cfs to cms
+                            length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue()); //kilometers (single reach)
+                            drainage = ' Drainage area: ' + String(i.properties.DrainageArea); //square kilometers
+                            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                        }
+                        else { //imperial units
+                            maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge); // cfs
+                            length = 'Length: ' + String((i.properties.Length * 0.6214).toUSGSvalue()); //miles (single reach)
+                            drainage = ' Drainage area: ' + String(Math.round((i.properties.DrainageArea * 0.386102) * 10) / 10); //square miles
+                            temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
+                        }
                     }
                 }
                 else { //methodType = planning
                     nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
                     rtDischarge = 'Real-time discharge: ' + String(i.properties.RTDischarge);
                     maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge);
-                    length = 'Length: ' + String((i.properties.Length * 1).toUSGSvalue());
+                    length = 'Length: ' + String((i.properties.acculength * 1).toUSGSvalue());
                     drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
                     velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
-                    peak_tot = 'Peak ToT for reach only: ' + String(i.properties.T_p);
+                    velocityMax = 'Velocity (max probable): ' + String(i.properties.VelocityMax);
+                    //peak_tot = 'Peak ToT for reach only: ' + String(i.properties.T_p); for testing only
                     accutot = 'Travel time (most probable): ' + String(i.properties.accutot);
+                    accutotmax = 'Travel time (max probable): ' + String(i.properties.accutotmax);
                     temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
                 }
                 if (method === 'response') {
                     if (isMetric) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + maDischarge + ' cms'));
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + 'km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + accutot + ' hrs'));
+                        if (mostMax === "most") {
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + maDischarge + ' cms'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + 'km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms'));
+                        }
+                        else { //max probable scenario
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + maDischarge + ' cms'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + 'km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms'));
+                        }
                     }
-                    else {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + maDischarge + ' cfs'));
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + 'mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + accutot + ' hrs'));
+                    else { //imperial units
+                        if (mostMax === "most") {
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + maDischarge + ' cfs'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + 'mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs'));
+                        }
+                        else { //max probable scenario
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + maDischarge + ' cfs'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + 'mi<br />' + rtDischarge + ' cfs'));
+                        }
                     }
                 }
                 else { //planning
                     if (isMetric) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + peak_tot + 'hrs<br />' + accutot + ' hrs'));
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + peak_tot + 'hrs<br />' + accutot + 'hrs'));
+                        if (mostMax === "most") {
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + accutot + ' hrs'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocity + ' m/s<br />' + accutot + 'hrs'));
+                        }
+                        else { //max probable scenario
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocityMax + ' m/s<br />' + accutotmax + ' hrs'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' km<sup>2</sup><br />' + length + ' km<br />' + rtDischarge + ' cms<br />' + maDischarge + ' cms<br />' + velocityMax + ' m/s<br />' + accutotmax + 'hrs'));
+                        }
                     }
                     else {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + peak_tot + 'hrs<br />' + accutot + ' hrs'));
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + peak_tot + 'hrs<br />' + accutot + ' hrs'));
+                        if (mostMax === "most") {
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + accutot + ' hrs'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocity + ' f/s<br />' + accutot + ' hrs'));
+                        }
+                        else { //max probable scenario
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocityMax + ' f/s<br />' + accutotmax + ' hrs'));
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["circle"]([temppoint[1], temppoint[0]], _this.markerOptions.EndNode).bindPopup(nhdcomid + '<br />' + drainage + ' mi<sup>2</sup><br />' + length + ' mi<br />' + rtDischarge + ' cfs<br />' + maDischarge + ' cfs<br />' + velocityMax + ' f/s<br />' + accutotmax + ' hrs'));
+                        }
                     }
                 }
                 _this.layerGroup.next(layerGroup);
@@ -5548,7 +5607,7 @@ var SpillPlanningService = /** @class */ (function () {
     };
     SpillPlanningService.prototype.relativeDrainage = function (D, MAF) {
         var D_a;
-        D_a = (Math.pow(D, 1.25) * 3.13209) / MAF;
+        D_a = (Math.pow(D, 1.25) * 3.13209) / MAF; //3.13209 is the square root of 9.8 from Jobson's
         return D_a;
     };
     SpillPlanningService.prototype.relativeDischarge = function (q, MAF) {
@@ -5563,7 +5622,7 @@ var SpillPlanningService = /** @class */ (function () {
         }
         return Q_a;
     };
-    SpillPlanningService.prototype.peakVelocity = function (q, MAF, D, m) {
+    SpillPlanningService.prototype.peakVelocity = function (q, MAF, D, m, s) {
         var relativeDis;
         if (q > 0) {
             relativeDis = this.relativeDischarge(q, MAF);
@@ -5572,20 +5631,32 @@ var SpillPlanningService = /** @class */ (function () {
             relativeDis = this.relativeDischarge();
         }
         if (m === 'most') {
-            var V_p = 0.02 + 0.051 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * (q / D);
-            return V_p;
+            if (s && s > 0) {
+                var V_p = 0.094 + 0.0143 * Math.pow(this.relativeDrainage(D, MAF), 0.919) * Math.pow(relativeDis, -0.469) * Math.pow(s, 0.159) * q / D;
+                return V_p;
+            }
+            else {
+                var V_p = 0.02 + 0.051 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * (q / D);
+                return V_p;
+            }
         }
         else {
-            var V_mp = 0.2 + 0.093 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * (q / D);
-            return V_mp;
+            if (s && s > 0) {
+                var V_mp = 0.25 + 0.02 * Math.pow(this.relativeDrainage(D, MAF), 0.919) * Math.pow(relativeDis, -0.469) * Math.pow(s, 0.159) * (q / D);
+                return V_mp;
+            }
+            else {
+                var V_mp = 0.2 + 0.093 * Math.pow(this.relativeDrainage(D, MAF), 0.821) * Math.pow(relativeDis, -0.465) * (q / D);
+                return V_mp;
+            }
         }
     };
-    SpillPlanningService.prototype.peakTimeofTravel = function (L, q, MAF, D, m) {
+    SpillPlanningService.prototype.peakTimeofTravel = function (L, q, MAF, D, m, s) {
         var T;
-        T = (L * 1000) / this.peakVelocity(q, MAF, D, m) * 0.000277778;
+        T = (L * 1000) / this.peakVelocity(q, MAF, D, m, s) * 0.000277778;
         return T;
     };
-    SpillPlanningService.prototype.unitPeakConcentration = function (L, q, MAF, D, m) {
+    SpillPlanningService.prototype.unitPeakConcentration = function (L, q, MAF, D, m, s) {
         var C_up;
         var relativeDis;
         if (q > 0) {
@@ -5594,28 +5665,29 @@ var SpillPlanningService = /** @class */ (function () {
         else {
             relativeDis = this.relativeDischarge();
         }
-        C_up = 857 * Math.pow(this.peakTimeofTravel(L, q, MAF, D, m), (-0.76 * Math.pow(relativeDis, (-0.079))));
+        C_up = 857 * Math.pow(this.peakTimeofTravel(L, q, MAF, D, m, s), (-0.76 * Math.pow(relativeDis, (-0.079))));
         return C_up;
     };
-    SpillPlanningService.prototype.leadingEdge = function (L, q, MAF, D, m) {
+    SpillPlanningService.prototype.leadingEdge = function (L, q, MAF, D, m, s) {
         if (q === void 0) { q = 0; }
-        return (this.peakTimeofTravel(L, q, MAF, D, m) * 0.89);
+        return (this.peakTimeofTravel(L, q, MAF, D, m, s) * 0.89);
     };
-    SpillPlanningService.prototype.trailingEdge = function (L, q, MAF, D, m) {
+    SpillPlanningService.prototype.trailingEdge = function (L, q, MAF, D, m, s) {
         if (q === void 0) { q = 0; }
-        return (2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m) * 3600);
+        return (2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m, s) * 3600);
         //return ((2 * Math.pow(10, 6)) / (this.unitPeakConcentration(L, q, MAF, D, m)));
     };
-    SpillPlanningService.prototype.passageTime = function (L, q, MAF, D, m) {
+    SpillPlanningService.prototype.passageTime = function (L, q, MAF, D, m, s) {
         if (q === void 0) { q = 0; }
-        return ((this.leadingEdge(L, q, MAF, D, m) + this.trailingEdge(L, q, MAF, D, m)));
+        return ((this.leadingEdge(L, q, MAF, D, m, s) + this.trailingEdge(L, q, MAF, D, m, s)));
     };
     //Unit test according to jobsons example in the report, page 23
-    SpillPlanningService.prototype.passageTimeTest = function (L, q, MAF, D, m) {
+    SpillPlanningService.prototype.passageTimeTest = function (L, q, MAF, D, m, s) {
         if (L === void 0) { L = 0; }
         if (q === void 0) { q = 0; }
         if (MAF === void 0) { MAF = 0; }
         if (D === void 0) { D = 0; }
+        if (s === void 0) { s = 0; }
         console.log("unit test");
         q = 1068;
         MAF = 730;
@@ -5635,42 +5707,42 @@ var SpillPlanningService = /** @class */ (function () {
         else {
             this.messanger.show("Passed unit test, relative drainage");
         }
-        var P_v = this.peakVelocity(q, MAF, D, m).toFixed(2);
+        var P_v = this.peakVelocity(q, MAF, D, m, s).toFixed(2);
         if (P_v != "1.01") {
             this.messanger.show("Failed unit test, compute peak velocity");
         }
         else {
             this.messanger.show("Passed unit test, compute peak velocity");
         }
-        var P_tot = this.peakTimeofTravel(L, q, MAF, D, m).toFixed(1);
+        var P_tot = this.peakTimeofTravel(L, q, MAF, D, m, s).toFixed(1);
         if (P_tot != "28.8") {
             this.messanger.show("Failed unit test, peak till time of travel");
         }
         else {
             this.messanger.show("Passed unit test, peak till time of travel");
         }
-        var C_u = this.unitPeakConcentration(L, q, MAF, D, m).toFixed(1);
+        var C_u = this.unitPeakConcentration(L, q, MAF, D, m, s).toFixed(1);
         if (C_u != "71.9") {
             this.messanger.show("Failed unit test,  unit peak concentration");
         }
         else {
             this.messanger.show("Passed unit test, unit peak concentration");
         }
-        var T_l = this.leadingEdge(L, q, MAF, D, m).toFixed(1);
+        var T_l = this.leadingEdge(L, q, MAF, D, m, s).toFixed(1);
         if (T_l != "25.6") {
             this.messanger.show("Failed unit test,  time of leading edge");
         }
         else {
             this.messanger.show("Passed unit test,  time of leading edge");
         }
-        var T_p = this.trailingEdge(L, q, MAF, D, m).toFixed(1);
+        var T_p = this.trailingEdge(L, q, MAF, D, m, s).toFixed(1);
         if (T_p != "7.7") {
             this.messanger.show("Failed unit test,  time of trailing edge");
         }
         else {
             this.messanger.show("Passed unit test, time of trailing edge");
         }
-        var TOT = this.passageTime(L, q, MAF, D, m).toFixed(1);
+        var TOT = this.passageTime(L, q, MAF, D, m, s).toFixed(1);
         if (TOT != "33.4") {
             this.messanger.show("Failed unit test,  time of passage");
         }

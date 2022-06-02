@@ -426,6 +426,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                         element.properties.Length = turf.length(element, { units: 'kilometers' }); // computes actual length; (services return nhdplus length)
                       });
                       this.StudyService.selectedStudy.spillPlanningResponse = response2;
+                      this.isMetric= this.StudyService.isMetric();
                       this.StudyService.selectedStudy.LocationOfInterest = latlng;
                       this.NWISService.check4gages(this.StudyService.selectedStudy.spillPlanningResponse.features);
                       this.StudyService.SetWorkFlow('hasReaches', true);

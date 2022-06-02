@@ -213,12 +213,12 @@ export class SpillPlanningComponent implements OnInit {
   public ComputeTOT() {
     this.StudyService.selectedStudy.spillPlanningResponse.features.forEach(reach => {
       if (reach.properties.hasOwnProperty("Discharge")) {
-          var tot = this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-          var totmax = this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
-          var tl = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-          var tlmax = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
-          var td10 = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-          var td10max = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+          var tot = this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+          var totmax = this.ToTCalculator.peakTimeofTravel(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
+          var tl = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+          var tlmax = this.ToTCalculator.leadingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
+          var td10 = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+          var td10max = this.ToTCalculator.trailingEdge(reach.properties.Length, reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
           
           reach.properties["T_p"] = tot;
           reach.properties["T_pmax"] = totmax;
@@ -226,8 +226,8 @@ export class SpillPlanningComponent implements OnInit {
           reach.properties["T_lmax"] = tlmax;
           reach.properties["T_d10"] = td10 + tl;
           reach.properties["T_d10max"] = td10max + tlmax;
-          reach.properties["VelocityMost"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most');
-          reach.properties["VelocityMax"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max');
+          reach.properties["VelocityMost"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'most', reach.properties.Slope);
+          reach.properties["VelocityMax"] = this.ToTCalculator.peakVelocity(reach.properties.RTDischarge, reach.properties.Discharge, (reach.properties.DrainageArea * 1000000), 'max', reach.properties.Slope);
           reach.properties["touched"] = false;
       }
     })
@@ -255,7 +255,8 @@ export class SpillPlanningComponent implements OnInit {
         reach.properties["accutd10"] = reach.properties.T_d10;
         reach.properties["accutotmax"] = reach.properties.T_pmax; 
         reach.properties["accutlmax"] = reach.properties.T_lmax;
-        reach.properties["accutd10max"] = reach.properties.T_d10max;     
+        reach.properties["accutd10max"] = reach.properties.T_d10max;   
+        reach.properties["acculength"] = reach.properties.Length;  
         reach.properties.touched = true;
         this.sumacc(this.StudyService.selectedStudy.spillPlanningResponse.features, reach);
       }
@@ -271,6 +272,7 @@ export class SpillPlanningComponent implements OnInit {
         reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
         reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
         reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
+        reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
         reach.properties.touched = true;
         this.sumacc(data, reach);
       }
@@ -290,6 +292,7 @@ export class SpillPlanningComponent implements OnInit {
         i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
         i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
         i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
+        i.properties.acculength = (i.properties.acculength * 0.621371).toUSGSvalue();
       } else { //user has specified metric units
         i.properties.RTDischarge = (i.properties.RTDischarge * 1).toUSGSvalue(); // rounds values
         i.properties.Discharge = (i.properties.Discharge * 1).toUSGSvalue(); 
@@ -301,6 +304,7 @@ export class SpillPlanningComponent implements OnInit {
         i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
         i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
         i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
+        i.properties.acculength = (i.properties.acculength * 1).toUSGSvalue();
       }
     })  
   }
