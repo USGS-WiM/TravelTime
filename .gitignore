@@ -48,4 +48,4 @@ testem.log
 Thumbs.db
 /.vs/TravelTime/v16/Browse.VC.opendb
 
-secrets.json
+src/assets/data/secrets.json
