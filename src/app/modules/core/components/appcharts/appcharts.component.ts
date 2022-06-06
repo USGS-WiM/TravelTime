@@ -5,7 +5,7 @@ import { Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { ChartDataSets } from 'chart.js';
 import { Color, BaseChartDirective} from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
-import { ChartsService } from '../../services/charts.service';
+import { ChartService } from '../../services/chart.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 
 import { DateTimeValidator } from '../modals/spill-response/spill-response.component';
@@ -29,7 +29,7 @@ export class AppchartsComponent implements OnInit {
     //#region "Declarations"
     public lineChartColors: Color[] = [];
     private MapService: MapService;
-    private ChartService: ChartsService;
+    private ChartService: ChartService;
     private StudyService: StudyService;
     reaches: reach[];
     reachesGrouped: chartData [];
@@ -74,7 +74,7 @@ export class AppchartsComponent implements OnInit {
       return (this.StudyService && this.StudyService.selectedStudy ? this.StudyService.selectedStudy.MethodType : '');
     }
 
-  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartsService, mapservice: MapService) {
+  constructor(toastr: ToastrService, studyservice: StudyService, chartservice: ChartService, mapservice: MapService) {
     this.StudyService = studyservice;
     this.ChartService = chartservice;
     this.MapService = mapservice;

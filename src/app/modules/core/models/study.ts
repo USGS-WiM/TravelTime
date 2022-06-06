@@ -9,6 +9,7 @@ export class Study {
     public SpillDate: string;
     public RecoveryRatio: number;
     public spillPlanningResponse: any;
+    public spillResponseResponse: any;
     public RDP: any; //rain drop path response    
     public Results: Array<any>;
     public SelectedDriftData: Array<any>;

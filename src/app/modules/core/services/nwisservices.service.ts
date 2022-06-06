@@ -159,11 +159,11 @@ export class NWISService {
                     }
                     this.updateGageData(result, gage, SSd);
                   } catch {
-                    console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
+                    //console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
                     this.updateGageData(result, gage, 0);
                   } //failed
                 }, (error) => {
-                  console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
+                  //console.error('All methods failed to get drainage area for selected site, using drainage area from nldi nearest reach: ' + siteid)
                   this.updateGageData(result, gage, 0);
                 })
               }

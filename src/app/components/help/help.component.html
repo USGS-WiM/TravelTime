@@ -1,0 +1,68 @@
+<div class="modal-wrapper">
+	<div class="modal-box">
+		<!-- Header -->
+		<div class="modal-top">
+			<div class="title">Submit a Support Request</div>
+			<div class="close-modal" (click)="activeModal.dismiss()">
+				<i class="far fa-times"></i>
+			</div>
+		</div>
+		<!-- Main content -->
+		<div class="modal-middle">
+			<p>Use the form below to get support on a specific issue. Please include as much information as possible.</p>
+      <form #form="ngForm" [formGroup]="newTicketForm" (ngSubmit)="submitFreshDeskTicket()"> 
+        <div class="well well-sm">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email"
+                  [class.invalid]="newTicketForm.get('email').invalid" required
+                  pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" name="primaryEmail"
+                  formControlName="email" 
+                />                                                
+              </div>
+              <div *ngIf="newTicketForm.get('email').dirty && !(newTicketForm.get('email').valid)">
+                <small class="text-danger">Please provide a valid email address</small>
+              </div>
+              <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input class="form-control" id="subject" formControlName="subject" name ="subject" required>
+              </div>
+              <div class="form-group">
+                <label for="message">Description:</label>
+                <textarea class="form-control" rows="6" id="description" formControlName="description" name = "description" required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="title">Upload an Attachment (optional):</label>
+                <div *ngIf="!file">
+                  <label class="button small black" style="padding-top: 3px;" for="supportRequestFile">
+                    <i class="far fa-paperclip"></i>
+                    <span>Attach File</span> 
+                  </label>  
+                  <input type="file" ngf-select (change)="uploadFile($event)" formControlName="attachment" name="file" accept="image/*" id="supportRequestFile" hidden>
+                </div>
+                <div *ngIf="file">
+                  <button class="button small red" (click)=removeFile()>
+                    <i class="far fa-trash"></i>
+                    <span>Remove File</span>
+                  </button>
+                </div>
+              </div>
+              <!-- Submit -->
+              <button type="submit" [disabled]="!form.valid" class="button blue mtop-sm">
+                <i class="far fa-share"></i>
+                <span>&nbsp;&nbsp;Submit Support Request</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+		</div>
+		<!-- Footer -->
+		<div class="modal-buttons center">
+			<button (click)="activeModal.dismiss()">Close </button>
+		</div>
+	</div>
+</div>
+

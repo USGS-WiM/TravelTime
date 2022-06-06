@@ -3,7 +3,7 @@ import { StudyService } from '../../services/study.service';
 import { MapService } from '../../services/map.service';
 import { ToastrService, IndividualConfig } from 'ngx-toastr';
 import { reach } from '../../models/reach';
-import { ChartsService } from '../../services/charts.service';
+import { ChartService } from '../../services/chart.service';
 import '../../../../shared/extensions/number.toUSGSValue';
 import * as moment from 'moment';
 import { deepCopy } from 'src/app/shared/extensions/object.DeepCopy';
@@ -26,7 +26,7 @@ export class FooterComponent extends deepCopy implements OnInit {
 
   private MapService: MapService;
   private StudyService: StudyService;
-  private ChartService: ChartsService;
+  private ChartService: ChartService;
   private messager: ToastrService;
 
   private showMost: boolean;
@@ -40,7 +40,7 @@ export class FooterComponent extends deepCopy implements OnInit {
   private selectedRow: Number;
   //#endregion
 
-  constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService, chartservice: ChartsService) {
+  constructor(toastr: ToastrService, studyservice: StudyService, mapservice: MapService, chartservice: ChartService) {
     super();
     this.messager = toastr;
     this.StudyService = studyservice;
