@@ -11,6 +11,10 @@
       {
         "name": "National Geographic",
         "layer": "NationalGeographic",
+        "layerOptions": {
+          "maxZoom": 16,
+          "attribution": "This base layer is only visible at zoom level 16 and below."
+        },
         "type": "agsbase",
         "visible": true
       },

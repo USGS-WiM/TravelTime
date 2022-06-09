@@ -62,7 +62,8 @@ export class MapService {
 
     this.Options = {
       zoom: 4,
-      center: L.latLng(39, -100)
+      center: L.latLng(39, -100),
+      maxZoom: 16
     };
     
     if(this.unitsOptions == 'metric') {
