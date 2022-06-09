@@ -677,7 +677,7 @@ var AppchartsComponent = /** @class */ (function () {
             scales: {
                 yAxes: [{
                         ticks: {
-                            max: this.maxMostProbableY,
+                            //max: this.maxMostProbableY,
                             min: 0,
                         }
                     }],
@@ -710,7 +710,7 @@ var AppchartsComponent = /** @class */ (function () {
             scales: {
                 yAxes: [{
                         ticks: {
-                            max: this.maxMaxProbableY,
+                            //max: this.maxMaxProbableY,
                             min: 0,
                         }
                     }],
@@ -1441,7 +1441,7 @@ var DateTimeModel = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'response'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t\t<!-- Label -->\r\n\t\t<div class=\"dfh-left\">\r\n\t\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t\t</div>\r\n\t\t<!-- Header -->\r\n\t\t<div class=\"dfh-center\">\r\n\t\t\t&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate  | date:'medium'}}\r\n\t\t</div>\r\n\t\t<!-- Max/Most Probable toggle -->\r\n\t\t<div class=\"dfh-right\">\r\n\r\n\t\t</div>\r\n\t</div>\r\n\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.v.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i)\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.vmax.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n\r\n\r\n<!-- Planning -->\r\n<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'planning'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t<!-- Label -->\r\n\t<div class=\"dfh-left\">\r\n\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t</div>\r\n\t<!-- Header -->\r\n\t<div class=\"dfh-center\">\r\n\r\n\t</div>\r\n\t<!-- Right side-->\r\n\t<div class=\"dfh-right\">\r\n\r\n\t</div>\r\n</div>\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<!-- <ng-container *ngFor=\"let prop of reach.properties\"> -->\r\n\t\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{ reach.properties.DrainageArea }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.acculength }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.VelocityMost}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutl).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutot).toUSGSvalue()}}</td>\t\r\n\t\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutd10).toUSGSvalue()}}</td>\t\t\t\t\r\n\t\t\t\t\t\t\t\t<!-- </ng-container> -->\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ reach.properties.DrainageArea }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.acculength }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.VelocityMax}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutlmax).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutotmax).toUSGSvalue()}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{(reach.properties.accutd10max).toUSGSvalue()}}</td>\t\t\t\t\t\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>"
+module.exports = "<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'response'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t\t<!-- Label -->\r\n\t\t<div class=\"dfh-left\">\r\n\t\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t\t</div>\r\n\t\t<!-- Header -->\r\n\t\t<div class=\"dfh-center\">\r\n\t\t\t&#8212; {{spillMass}} {{StudyService.isMetric() ? 'kg' : 'lb'}} Spill Occuring {{spillDate  | date:'medium'}}\r\n\t\t</div>\r\n\t\t<!-- Max/Most Probable toggle -->\r\n\t\t<div class=\"dfh-right\">\r\n\r\n\t\t</div>\r\n\t</div>\r\n\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.v.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MostProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MostProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\" class=\"single-line\">Travel time after spill</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(mg/L)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t\t<th>C<sub>t</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i)\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.name}}</td>\r\n\t\t\t\t\t\t\t\t<ng-container *ngFor=\"let pars of reach.parameters\">\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Discharge at time of measurement'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{pars.value}}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Drainage area'\">\r\n\t\t\t\t\t\t\t\t\t\t<td>{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000000) }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t\t<ng-container *ngIf=\"pars.name === 'Cumulative Distance'\">\r\n\t\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ !StudyService.isMetric() ? pars.value : (pars.value / 1000).toUSGSvalue() }}</td>\r\n\t\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t\t<ng-container>\r\n\t\t\t\t\t\t\t\t\t<!-- if the key is equal to v - this is av speed, else it is vmax-->\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.equations.vmax.value}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.leadingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.peakConcentration.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{toDecimals(reach.result.tracer_Response.trailingEdge.MaximumProbable.cumTime)}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.result.tracer_Response.peakConcentration.MaximumProbable.concentration}}</td>\r\n\t\t\t\t\t\t\t\t</ng-container>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n\r\n\r\n<!-- Planning -->\r\n<div class=\"footer-wrapper\" *ngIf=\"showResult$ === true && SelectedMethodType === 'planning'\">\r\n\r\n\t<div class=\"data-footer-header\">\r\n\t\t<!-- Label -->\r\n\t<div class=\"dfh-left\">\r\n\t\t<span *ngIf=\"showMax\">Maximum Probable</span>\r\n\t\t<span *ngIf=\"showMost\">Most Probable</span>\r\n\t</div>\r\n\t<!-- Header -->\r\n\t<div class=\"dfh-center\">\r\n\r\n\t</div>\r\n\t<!-- Right side-->\r\n\t<div class=\"dfh-right\">\r\n\r\n\t</div>\r\n</div>\r\n\r\n\t<div class=\"footer-data\">\r\n\t\t<div class=\"footer-data-left\" id=\"footerData\">\r\n\r\n\t\t\t<!-- Most Probable Table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMost\">\r\n\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<!-- <ng-container *ngFor=\"let prop of reach.properties\"> -->\r\n\t\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{ reach.properties.DrainageArea }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.acculength }}</td>\r\n\t\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.VelocityMost }}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{ reach.properties.accutl }}</td>\r\n\t\t\t\t\t\t\t\t\t<td>{{ reach.properties.accutot }}</td>\t\r\n\t\t\t\t\t\t\t\t\t<td>{{ reach.properties.accutd10 }}</td>\t\t\t\t\r\n\t\t\t\t\t\t\t\t<!-- </ng-container> -->\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\r\n\t\t\t<!-- Max Probable table -->\r\n\t\t\t<div class=\"data-display\" *ngIf=\"showMax\">\r\n\t\t\t\t<div class=\"table-display\">\r\n\t\t\t\t\t<table class=\"data-table\">\r\n\t\t\t\t\t\t<thead>\r\n\t\t\t\t\t\t\t<tr>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th style=\"text-align: center; border-bottom: 1px solid rgba(0,0,0,0.5);\">Travel time to POI</th>\r\n\t\t\t\t\t\t\t\t<th style=\"border-bottom: 1px solid rgba(0,0,0,0.5);\"></th>\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" >\r\n\t\t\t\t\t\t\t\t<th rowspan=\"2\" vertical-align=\"center\">Reach ID</th>\r\n\t\t\t\t\t\t\t\t<th>Discharge<br />({{ !StudyService.isMetric() ? 'cfs' : 'cms' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Drainage area<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }}<sup>2</sup>)</th>\r\n\t\t\t\t\t\t\t\t<th>Distance<br />({{ !StudyService.isMetric() ? 'mi' : 'km' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Reach Velocity<br />({{ !StudyService.isMetric() ? 'ft/s' : 'm/s' }})</th>\r\n\t\t\t\t\t\t\t\t<th>Leading Edge<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t\t<th>Trailing edge at 10% peak concentration<br />(hours)</th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t\t<tr class=\"th-border-bottom\" style=\" vertical-align: center; text-align: center;\">\r\n\t\t\t\t\t\t\t\t<th></th>\r\n\t\t\t\t\t\t\t\t<th>Q</th>\r\n\t\t\t\t\t\t\t\t<th>D<sub>a</sub></th>\r\n\t\t\t\t\t\t\t\t<th>L</th>\r\n\t\t\t\t\t\t\t\t<th>V</th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>l</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>p</sub></th>\r\n\t\t\t\t\t\t\t\t<th>T<sub>d10</sub></th>\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</thead>\r\n\r\n\t\t\t\t\t\t<tbody>\r\n\t\t\t\t\t\t\t<tr *ngFor=\"let reach of output$; let i = index\" (click)=\"setClickedRow(i); highlightFeature(i);\" [class.active]=\"i == selectedRow\" [class.highlighted]=\"reach[i] === selectedReach\">\r\n\t\t\t\t\t\t\t\t<td>{{reach.properties.nhdplus_comid}}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{reach.properties.RTDischarge}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ reach.properties.DrainageArea }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.acculength }}</td>\r\n\t\t\t\t\t\t\t\t<td style=\"text-align: center;\">{{ reach.properties.VelocityMax}}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ reach.properties.accutlmax }}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ reach.properties.accutotmax }}</td>\r\n\t\t\t\t\t\t\t\t<td>{{ reach.properties.accutd10max }}</td>\t\t\t\t\t\r\n\t\t\t\t\t\t\t</tr>\r\n\t\t\t\t\t\t</tbody>\r\n\t\t\t\t\t</table>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\r\n\t\t<!-- Right side - charts -->\r\n\t\t<div class=\"footer-data-right\">\r\n\t\t\t<!-- Charts -->\r\n\t\t\t<div class=\"chart-wrapper\">\r\n\t\t\t\t<tot-appcharts></tot-appcharts>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>"
 
 /***/ }),
 
@@ -1583,7 +1583,12 @@ var FooterComponent = /** @class */ (function (_super) {
     };
     FooterComponent.prototype.highlightFeature = function (indx) {
         this.ChartService.noticeAction(indx);
-        this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+        if (this.showMost) {
+            this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+        }
+        else {
+            this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+        }
     };
     FooterComponent.prototype.checkUnits = function (reaches) {
         if (this.SelectedMethodType === 'response') {
@@ -2111,7 +2116,7 @@ var MapComponent = /** @class */ (function (_super) {
                                     return config2;
                                 }).then(function (config2) {
                                     _this.NavigationService.getRoute('3', config2, true).subscribe(function (response2) {
-                                        _this.NavigationService.navigationGeoJSON$.next(response2);
+                                        _this.NavigationService.navigationGeoJSON$.next(response2); //add check here for length of response2, if > 1 continue else throw error
                                         response2.features.shift();
                                         var rch1comid = _this.RDP[0].properties.comid;
                                         if (response2.features[0].properties.nhdplus_comid === rch1comid.toString()) { //transfers clipped reach geometry to replace full reach geometry
@@ -3247,15 +3252,28 @@ var SpillPlanningComponent = /** @class */ (function () {
         var _this = this;
         data.forEach(function (reach) {
             if (reach.properties.ToNode == prev.properties.FromNode && !reach.properties.touched) {
-                reach.properties.accutot = prev.properties.accutot + reach.properties.T_p;
-                reach.properties.accutotmax = prev.properties.accutotmax + reach.properties.T_pmax;
-                reach.properties.accutl = prev.properties.accutl + reach.properties.T_l;
-                reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
-                reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
-                reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
-                reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
-                reach.properties.touched = true;
-                _this.sumacc(data, reach);
+                //if bad data from divergence comes in it is throwing off all calculations creating NaN so we don't those in our accumulations
+                if (!isNaN(reach.properties.T_p) && !isNaN(prev.properties.T_p)) {
+                    reach.properties.accutot = prev.properties.accutot + reach.properties.T_p;
+                    reach.properties.accutotmax = prev.properties.accutotmax + reach.properties.T_pmax;
+                    reach.properties.accutl = prev.properties.accutl + reach.properties.T_l;
+                    reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
+                    reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
+                    reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
+                    reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
+                    reach.properties.touched = true;
+                    _this.sumacc(data, reach);
+                }
+                else { //we are still bringing through the NaN values and will correct them at a later point in code
+                    reach.properties.accutotmax = reach.properties.T_p;
+                    reach.properties.accutl = reach.properties.T_pmax;
+                    reach.properties.accutlmax = reach.properties.T_l;
+                    reach.properties.accutd10 = reach.properties.T_lmax;
+                    reach.properties.accutd10max = reach.properties.T_d10max;
+                    reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
+                    reach.properties.touched = true;
+                    //this.sumacc(data, prev); 
+                }
             }
         });
     };
@@ -3280,13 +3298,43 @@ var SpillPlanningComponent = /** @class */ (function () {
                 i.properties.Discharge = (i.properties.Discharge * 1).toUSGSvalue();
                 i.properties.DrainageArea = (i.properties.DrainageArea * 1).toUSGSvalue();
                 i.properties.Length = (i.properties.Length * 1).toUSGSvalue();
-                i.properties.VelocityMost = (i.properties.VelocityMost * 1).toUSGSvalue();
-                i.properties.VelocityMax = (i.properties.VelocityMax * 1).toUSGSvalue();
-                i.properties.T_p = (i.properties.T_p * 1).toUSGSvalue();
-                i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
-                i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
-                i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
-                i.properties.acculength = (i.properties.acculength * 1).toUSGSvalue();
+                if (!isNaN(i.properties.VelocityMost)) {
+                    i.properties.VelocityMost = (i.properties.VelocityMost * 1).toUSGSvalue();
+                    i.properties.VelocityMax = (i.properties.VelocityMax * 1).toUSGSvalue();
+                    i.properties.T_p = (i.properties.T_p * 1).toUSGSvalue();
+                    i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
+                    if (!isNaN(i.properties.accutot)) {
+                        i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
+                        i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
+                        i.properties.accutl = (i.properties.accutl * 1).toUSGSvalue();
+                        i.properties.accutlmax = (i.properties.accutlmax * 1).toUSGSvalue();
+                        i.properties.accutd10 = (i.properties.accutd10 * 1).toUSGSvalue();
+                        i.properties.accutd10max = (i.properties.accutd10max * 1).toUSGSvalue();
+                        i.properties.acculength = (i.properties.acculength * 1).toUSGSvalue();
+                    }
+                    else {
+                        i.properties.accutot = "N/A";
+                        i.properties.accutotmax = "N/A";
+                        i.properties.accutl = "N/A";
+                        i.properties.accutlmax = "N/A";
+                        i.properties.accutd10 = "N/A";
+                        i.properties.accutd10max = "N/A";
+                        i.properties.acculength = "N/A";
+                    }
+                }
+                else {
+                    i.properties.VelocityMost = "N/A";
+                    i.properties.VelocityMax = "N/A";
+                    i.properties.T_p = "N/A";
+                    i.properties.T_pmax = "N/A";
+                    i.properties.accutot = "N/A";
+                    i.properties.accutotmax = "N/A";
+                    i.properties.accutl = "N/A";
+                    i.properties.accutlmax = "N/A";
+                    i.properties.accutd10 = "N/A";
+                    i.properties.accutd10max = "N/A";
+                    i.properties.acculength = "N/A";
+                }
             }
         });
     };
@@ -4699,14 +4747,18 @@ var MapService = /** @class */ (function () {
                         paddingBottomRight: [100, 100],
                         maxZoom: 14
                     });
-                    o.setStyle({ color: "#FF3333", weight: 5, opacity: 1 }); //highlight specific one
+                    //record current style
+                    o.options2 = o.options;
+                    o.setStyle({ color: "#BD00FF", weight: 6, opacity: 1 }); //highlight specific one #FF3333
                 }
                 else {
-                    o.setStyle({
-                        "color": "#2C26DE",
-                        "weight": 3,
-                        "opacity": 0.60
-                    });
+                    if (o.options2) {
+                        o.setStyle(o.options2);
+                    }
+                    else {
+                        var style = o.options;
+                        o.setStyle({ style: style });
+                    }
                 }
                 j += 1;
             }
@@ -4766,6 +4818,17 @@ var MapService = /** @class */ (function () {
         var _this = this;
         var layerGroup = new leaflet__WEBPACK_IMPORTED_MODULE_2__["FeatureGroup"]([]);
         var reportlayerGroup = new leaflet__WEBPACK_IMPORTED_MODULE_2__["FeatureGroup"]([]);
+        var nhdcomid;
+        var rtDischarge;
+        var maDischarge;
+        var length; //accumulated distance
+        var drainage;
+        var velocity;
+        //var peak_tot;  //for testing only
+        var accutot;
+        var accutotmax;
+        var velocityMax;
+        var temppoint;
         var gagesArray = [];
         features.forEach(function (i) {
             if (i.geometry.type === 'Point') {
@@ -4785,73 +4848,145 @@ var MapService = /** @class */ (function () {
                 reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_dash));
             }
             else {
-                if (mostMax === 'most') {
-                    if (i.properties.CanalDitch > 50 || i.properties.Connector > 50 || i.properties.IsWaterBody == 1) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_break));
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_break));
+                if (_this.StudyService.selectedStudy.MethodType === 'planning') { //colorize spill planning trace
+                    if (mostMax === 'most') {
+                        if (i.properties.IsWaterBody === 1 || isNaN(i.properties.accutot)) {
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_break)); //gray
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_break));
+                        }
+                        else if (i.properties.accutot > 0 && i.properties.accutot <= 6) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2dash)); //red, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2)); //red
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2));
+                            }
+                        }
+                        else if (i.properties.accutot > 6 && i.properties.accutot <= 12) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3dash)); //red orange, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3)); //red orange
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3));
+                            }
+                        }
+                        else if (i.properties.accutot > 12 && i.properties.accutot <= 24) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4dash)); //orange, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4)); //orange
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4));
+                            }
+                        }
+                        else if (i.properties.accutot > 24 && i.properties.accutot <= 36) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5dash)); //yellow, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5)); //yellow
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5));
+                            }
+                        }
+                        else if (i.properties.accutot > 36 && i.properties.accutot <= 48) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6dash)); //lime green, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6)); //lime green
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6));
+                            }
+                        }
+                        else {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7dash)); //dark green, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7)); //dark green
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7));
+                            }
+                        }
                     }
-                    else if (i.properties.accutot > 0 && i.properties.accutot <= 6) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2)); //red
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2));
-                    }
-                    else if (i.properties.accutot > 6 && i.properties.accutot <= 12) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3)); //red orange
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3));
-                    }
-                    else if (i.properties.accutot > 12 && i.properties.accutot <= 24) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4)); //orange
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4));
-                    }
-                    else if (i.properties.accutot > 24 && i.properties.accutot <= 36) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5)); //yellow
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5));
-                    }
-                    else if (i.properties.accutot > 36 && i.properties.accutot <= 48) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6)); //lime green
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6));
-                    }
-                    else {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7)); //dark green
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7));
+                    else if (mostMax === 'max') {
+                        if (i.properties.IsWaterBody === 1 || isNaN(i.properties.accutot)) {
+                            layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_break)); //gray
+                            reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline_break));
+                        }
+                        else if (i.properties.accutotmax > 0 && i.properties.accutotmax <= 6) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2dash)); //red, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2)); //red
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2));
+                            }
+                        }
+                        else if (i.properties.accutotmax > 6 && i.properties.accutotmax <= 12) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3dash)); //red orange, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3)); //red orange
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3));
+                            }
+                        }
+                        else if (i.properties.accutotmax > 12 && i.properties.accutotmax <= 24) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4dash)); //orange, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4)); //orange
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4));
+                            }
+                        }
+                        else if (i.properties.accutotmax > 24 && i.properties.accutotmax <= 36) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5dash)); //yellow, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5)); //yellow
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5));
+                            }
+                        }
+                        else if (i.properties.accutotmax > 36 && i.properties.accutotmax <= 48) {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6dash)); //lime green, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6)); //lime green
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6));
+                            }
+                        }
+                        else {
+                            if (i.properties.CanalDitch > 50 || i.properties.Connector > 50) {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7dash)); //dark green, dashed
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7dash));
+                            }
+                            else {
+                                layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7)); //dark green
+                                reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7));
+                            }
+                        }
                     }
                 }
-                else if (mostMax === 'max') {
-                    if (i.properties.accutotmax > 0 && i.properties.accutotmax <= 6) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2)); //red
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline2));
-                    }
-                    else if (i.properties.accutotmax > 6 && i.properties.accutotmax <= 12) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3)); //red orange
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline3));
-                    }
-                    else if (i.properties.accutotmax > 12 && i.properties.accutotmax <= 24) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4)); //orange
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline4));
-                    }
-                    else if (i.properties.accutotmax > 24 && i.properties.accutotmax <= 36) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5)); //yellow
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline5));
-                    }
-                    else if (i.properties.accutotmax > 36 && i.properties.accutotmax <= 48) {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6)); //lime green
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline6));
-                    }
-                    else {
-                        layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7)); //dark green
-                        reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7));
-                    }
+                else { //spill response trace
+                    layerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7)); //dark green
+                    reportlayerGroup.addLayer(leaflet__WEBPACK_IMPORTED_MODULE_2__["geoJSON"](i, _this.markerOptions.Polyline7));
                 }
-                var nhdcomid;
-                var rtDischarge;
-                var maDischarge;
-                var length; //accumulated distance
-                var drainage;
-                var velocity;
-                //var peak_tot;  //for testing only
-                var accutot;
-                var accutotmax;
-                var velocityMax;
-                var temppoint;
+                //reach pop-up text assignments
                 if (_this.StudyService.selectedStudy.MethodType === 'response') {
                     nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
                     if (_this.StudyService.GetWorkFlow('totResults')) { //travel times have been calculated
@@ -4898,7 +5033,7 @@ var MapService = /** @class */ (function () {
                     nhdcomid = 'Reach ID: ' + String(i.properties.nhdplus_comid);
                     rtDischarge = 'Real-time discharge: ' + String(i.properties.RTDischarge);
                     maDischarge = 'Mean annual discharge: ' + String(i.properties.Discharge);
-                    length = 'Length: ' + String((i.properties.acculength * 1).toUSGSvalue());
+                    length = 'Length: ' + String(i.properties.acculength);
                     drainage = ' Drainage area: ' + String(i.properties.DrainageArea);
                     velocity = 'Velocity (most probable): ' + String(i.properties.VelocityMost);
                     velocityMax = 'Velocity (max probable): ' + String(i.properties.VelocityMax);
@@ -4907,6 +5042,7 @@ var MapService = /** @class */ (function () {
                     accutotmax = 'Travel time (max probable): ' + String(i.properties.accutotmax);
                     temppoint = i.geometry.coordinates[i.geometry.coordinates.length - 1];
                 }
+                //reach end node assignments
                 if (method === 'response') {
                     if (isMetric) {
                         if (mostMax === "most") {
