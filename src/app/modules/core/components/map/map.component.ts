@@ -413,7 +413,7 @@ export class MapComponent extends deepCopy implements OnInit, AfterViewInit, OnC
                     return config2;
                   }).then(config2 => {
                     this.NavigationService.getRoute('3', config2, true).subscribe(response2 => {
-                      this.NavigationService.navigationGeoJSON$.next(response2);
+                      this.NavigationService.navigationGeoJSON$.next(response2); //add check here for length of response2, if > 1 continue else throw error
                       response2.features.shift();                
                       var rch1comid = this.RDP[0].properties.comid;
                       if(response2.features[0].properties.nhdplus_comid === rch1comid.toString()) { //transfers clipped reach geometry to replace full reach geometry

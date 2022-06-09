@@ -266,16 +266,28 @@ export class SpillPlanningComponent implements OnInit {
   public sumacc(data, prev) {
     data.forEach(reach => {
       if (reach.properties.ToNode == prev.properties.FromNode && !reach.properties.touched) {
-        reach.properties.accutot = prev.properties.accutot + reach.properties.T_p;
-        reach.properties.accutotmax = prev.properties.accutotmax + reach.properties.T_pmax;
-        reach.properties.accutl = prev.properties.accutl + reach.properties.T_l;
-        reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
-        reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
-        reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
-        reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
-        reach.properties.touched = true;
-        this.sumacc(data, reach);
-      }
+        //if bad data from divergence comes in it is throwing off all calculations creating NaN so we don't those in our accumulations
+        if (!isNaN(reach.properties.T_p) && !isNaN(prev.properties.T_p)) {
+          reach.properties.accutot = prev.properties.accutot + reach.properties.T_p;
+          reach.properties.accutotmax = prev.properties.accutotmax + reach.properties.T_pmax;
+          reach.properties.accutl = prev.properties.accutl + reach.properties.T_l;
+          reach.properties.accutlmax = prev.properties.accutlmax + reach.properties.T_lmax;
+          reach.properties.accutd10 = prev.properties.accutd10 + reach.properties.T_d10;
+          reach.properties.accutd10max = prev.properties.accutd10max + reach.properties.T_d10max;
+          reach.properties.acculength = prev.properties.acculength + reach.properties.Length;
+          reach.properties.touched = true;
+          this.sumacc(data, reach);
+        } else {  //we are still bringing through the NaN values and will correct them at a later point in code
+          reach.properties.accutotmax = reach.properties.T_p;
+          reach.properties.accutl = reach.properties.T_pmax;
+          reach.properties.accutlmax = reach.properties.T_l;
+          reach.properties.accutd10 = reach.properties.T_lmax;
+          reach.properties.accutd10max = reach.properties.T_d10max; 
+          reach.properties.acculength = prev.properties.acculength + reach.properties.Length;    
+          reach.properties.touched = true;    
+          //this.sumacc(data, prev); 
+        }        
+      }      
     })
   }
 
@@ -298,13 +310,41 @@ export class SpillPlanningComponent implements OnInit {
         i.properties.Discharge = (i.properties.Discharge * 1).toUSGSvalue(); 
         i.properties.DrainageArea = (i.properties.DrainageArea * 1).toUSGSvalue();  
         i.properties.Length = (i.properties.Length * 1).toUSGSvalue();  
-        i.properties.VelocityMost = (i.properties.VelocityMost * 1).toUSGSvalue(); 
-        i.properties.VelocityMax = (i.properties.VelocityMax * 1).toUSGSvalue(); 
-        i.properties.T_p = (i.properties.T_p * 1).toUSGSvalue();
-        i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
-        i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
-        i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
-        i.properties.acculength = (i.properties.acculength * 1).toUSGSvalue();
+        if(!isNaN(i.properties.VelocityMost)){
+          i.properties.VelocityMost = (i.properties.VelocityMost * 1).toUSGSvalue(); 
+          i.properties.VelocityMax = (i.properties.VelocityMax * 1).toUSGSvalue();
+          i.properties.T_p = (i.properties.T_p * 1).toUSGSvalue();
+          i.properties.T_pmax = (i.properties.T_pmax * 1).toUSGSvalue();
+          if(!isNaN(i.properties.accutot)) {
+            i.properties.accutot = (i.properties.accutot * 1).toUSGSvalue();
+            i.properties.accutotmax = (i.properties.accutotmax * 1).toUSGSvalue();
+            i.properties.accutl = (i.properties.accutl *1).toUSGSvalue();
+            i.properties.accutlmax = (i.properties.accutlmax * 1).toUSGSvalue();
+            i.properties.accutd10 = (i.properties.accutd10 * 1).toUSGSvalue();
+            i.properties.accutd10max = (i.properties.accutd10max * 1).toUSGSvalue();
+            i.properties.acculength = (i.properties.acculength * 1).toUSGSvalue();
+          } else {
+            i.properties.accutot = "N/A";
+            i.properties.accutotmax = "N/A";
+            i.properties.accutl = "N/A";
+            i.properties.accutlmax = "N/A";
+            i.properties.accutd10 = "N/A";
+            i.properties.accutd10max = "N/A";
+            i.properties.acculength = "N/A";
+          }
+        } else {
+          i.properties.VelocityMost = "N/A"; 
+          i.properties.VelocityMax = "N/A";
+          i.properties.T_p = "N/A";
+          i.properties.T_pmax = "N/A";
+          i.properties.accutot = "N/A";
+          i.properties.accutotmax = "N/A";
+          i.properties.accutl = "N/A";
+          i.properties.accutlmax = "N/A";
+          i.properties.accutd10 = "N/A";
+          i.properties.accutd10max = "N/A";
+          i.properties.acculength = "N/A";
+        }
       }
     })  
   }

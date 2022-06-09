@@ -124,7 +124,11 @@ export class FooterComponent extends deepCopy implements OnInit {
 
   public highlightFeature(indx) {
     this.ChartService.noticeAction(indx);
-    this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+    if(this.showMost) {
+      this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+    } else {
+      this.MapService.HighlightFeature('Flowlines', Number(this.output$[indx].name.replace(/^\D+/g, '')));
+    }
   }
 
   private checkUnits(reaches) {

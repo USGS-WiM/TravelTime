@@ -11,6 +11,10 @@
       {
         "name": "National Geographic",
         "layer": "NationalGeographic",
+        "layerOptions": {
+          "maxZoom": 16,
+          "attribution": "This base layer is only visible at zoom level 16 and below."
+        },
         "type": "agsbase",
         "visible": true
       },
@@ -71,13 +75,13 @@
         "color": "orange",
         "fillColor": "#f03",
         "fillOpacity": 0.5,
-        "radius": 100
+        "radius": 30
       },
       "Reach": {
         "color": "orange",
         "fillColor": "#f03",
         "fillOpacity": 0.5,
-        "radius": 100
+        "radius": 30
       },
       "Polyline": {
         "color": "#0BDCD5",
@@ -89,30 +93,66 @@
         "weight": 3,
         "opacity": 1
       },
+      "Polyline7dash": {
+        "color": "#669900",
+        "weight": 3,
+        "opacity": 1,
+        "dashArray": "10"
+      },
       "Polyline6": {
         "color": "#CCFF00",  
         "weight": 3,
         "opacity": 1
+      },
+      "Polyline6dash": {
+        "color": "#CCFF00",
+        "weight": 3,
+        "opacity": 1,
+        "dashArray": "10"
       },
       "Polyline5": {
         "color": "#FF9900",
         "weight": 3,
         "opacity": 1
       },
+      "Polyline5dash": {
+        "color": "#FF9900",
+        "weight": 3,
+        "opacity": 1,
+        "dashArray": "10"
+      },
       "Polyline4": {
         "color": "#FF6600", 
         "weight": 3,
         "opacity": 1
+      },
+      "Polyline4dash": {
+        "color": "#FF6600", 
+        "weight": 3,
+        "opacity": 1,
+        "dashArray": "10"
       },
       "Polyline3": {
         "color": "#FF0000",
         "weight": 3,
         "opacity": 1
       },
+      "Polyline3dash": {
+        "color": "#FF0000",
+        "weight": 3,
+        "opacity": 1, 
+        "dashArray": "10"
+      },
       "Polyline2": {
         "color": "#CC0000",
         "weight": 3,
         "opacity": 1
+      },  
+      "Polyline2dash": {
+        "color": "#CC0000",
+        "weight": 3,
+        "opacity": 1,
+        "dashArray": "10"
       },  
       "Polyline_upstream": {
         "color": "green",
@@ -128,7 +168,7 @@
         "color": "gray",
         "weight": 3,
         "opacity": 1,
-        "dasharray": "20,20"
+        "dashArray": "10"
       },
       "GagesUpstream": {
         "iconUrl": "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",

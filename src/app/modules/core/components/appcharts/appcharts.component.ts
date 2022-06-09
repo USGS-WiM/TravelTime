@@ -116,7 +116,7 @@ export class AppchartsComponent implements OnInit {
     scales: {
       yAxes: [{
         ticks: {
-          max: this.maxMostProbableY,
+          //max: this.maxMostProbableY,
           min: 0,
         }
       }],
@@ -150,7 +150,7 @@ export class AppchartsComponent implements OnInit {
     scales: {
       yAxes: [{
         ticks: {
-          max: this.maxMaxProbableY,
+          //max: this.maxMaxProbableY,
           min: 0,
         }
       }],
