@@ -228,6 +228,10 @@ export class SidebarComponent implements AfterViewChecked {
     }
   }
 
+  public setAlert() {
+    alert("Spill Planning is currently under construction.\nCheck back soon!");
+  }
+
   public reset() {
     window.location.reload();
   }

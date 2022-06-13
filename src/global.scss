@@ -202,6 +202,17 @@ button{
 			}
 		}
 	}
+	//gray
+	&.gray {
+		background-color: #E1E7EE;
+		color: #9aa6b5;
+
+		&:hover{
+			background-color: #E1E7EE;
+			text-decoration: none;
+			cursor: not-allowed;
+		}
+	}
 }
 
 // Checkboxes

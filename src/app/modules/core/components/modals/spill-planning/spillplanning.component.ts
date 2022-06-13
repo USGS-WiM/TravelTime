@@ -400,6 +400,7 @@ export class SpillPlanningComponent implements OnInit {
        }
     this.ComputeTOT();
     this.accumTOT();
+    //console.log(this.StudyService.selectedStudy.spillPlanningResponse);
     this.checkUnits();
     this.StudyService.selectedStudy.Results = this.StudyService.selectedStudy.spillPlanningResponse;
     this.StudyService.SetWorkFlow('totResults', true);
