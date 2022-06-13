@@ -334,6 +334,7 @@ export class SpillResponseComponent implements OnInit {
  this.TravelTimeService.ExecuteJobson(tempSpillMass, this.dateModel.toISOString(), postReachList)
    .toPromise().then(data => {
         this.StudyService.selectedStudy.Results = data;
+        //console.log (data);
         this.StudyService.SetWorkFlow('totResults', true);
         this.gettingResults = false;
         this.activeModal.dismiss();
